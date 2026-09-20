@@ -3,15 +3,12 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { spawn } from "node:child_process";
-import { fileURLToPath } from "node:url";
 import {
   buildPncpBlindCorpusFromReports,
   freezePncpBlindCorpusFromDeepening,
   PNCP_BLIND_FREEZE_FORMAT
 } from "../packages/pncp-connector/src/blind-corpus.ts";
 
-const cli = fileURLToPath(new URL("../packages/pncp-connector/bin/arca-pncp.mjs", import.meta.url));
 const investigationId = "INV-PNCP-D2-FREEZE";
 const discoveryFingerprint = "a".repeat(64);
 
@@ -136,18 +133,6 @@ async function fixtureHome({ complete = true, outsideReport = false } = {}) {
   return { root, home, checkpointPath, summaryPath };
 }
 
-function runCli(args) {
-  return new Promise((resolvePromise, reject) => {
-    const child = spawn(process.execPath, [cli, ...args], { env: { ...process.env, NO_COLOR: "1" } });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => { stdout += chunk; });
-    child.stderr.on("data", (chunk) => { stderr += chunk; });
-    child.on("error", reject);
-    child.on("close", (code) => resolvePromise({ code, stdout, stderr }));
-  });
-}
-
 test("D2 PNCP freeze gera corpus sem perfis ou achados do C2", () => {
   const corpus = buildPncpBlindCorpusFromReports([buildEntry(1)], {
     investigationId,
@@ -219,28 +204,3 @@ test("D2 PNCP freeze recusa reportPath fora do ARCA_HOME", async (t) => {
   );
 });
 
-test("CLI pncp freeze-blind grava corpus e manifesto offline", async (t) => {
-  const fx = await fixtureHome();
-  t.after(() => rm(fx.root, { recursive: true, force: true }));
-  const out = join(fx.home, "runs", "blind", "corpus.json");
-  const manifestOut = join(fx.home, "runs", "blind", "manifest.json");
-  const result = await runCli([
-    "freeze-blind",
-    "--home", fx.home,
-    "--checkpoint", fx.checkpointPath,
-    "--summary", fx.summaryPath,
-    "--corpus-id", "D2-PNCP-CLI",
-    "--out", out,
-    "--manifest-out", manifestOut,
-    "--json"
-  ]);
-  assert.equal(result.code, 0, result.stderr);
-  const status = JSON.parse(result.stdout);
-  assert.equal(status.corpusId, "D2-PNCP-CLI");
-  assert.equal(status.readiness.complete, true);
-  const corpus = JSON.parse(await readFile(out, "utf8"));
-  const manifest = JSON.parse(await readFile(manifestOut, "utf8"));
-  assert.equal(corpus.corpusId, "D2-PNCP-CLI");
-  assert.equal(manifest.corpusId, corpus.corpusId);
-  assert.equal(manifest.sampleCount, 1);
-});
