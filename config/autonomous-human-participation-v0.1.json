@@ -1,0 +1,65 @@
+{
+  "schema": "arca.autonomous-human-participation.v0.1",
+  "status": "FOUNDATION",
+  "operating_model": "AUTONOMY_FIRST_HUMAN_PARTICIPATION",
+  "geographic_scope": {
+    "default": "BRAZIL_NATIONAL",
+    "supported_levels": ["NATIONAL", "FEDERAL", "STATE", "MUNICIPAL"],
+    "barueri_is_test_origin_only": true,
+    "barueri_is_default_scope": false,
+    "jurisdiction_profiles_are_parameterized": true
+  },
+  "activation": {
+    "always_on_state": true,
+    "workers_are_event_driven": true,
+    "triggers": [
+      "AUTONOMOUS_ANOMALY",
+      "PUBLIC_SOURCE_CHANGE",
+      "HUMAN_REQUEST",
+      "HUMAN_PUBLIC_SOURCE",
+      "HUMAN_DISPUTE",
+      "SCHEDULED_REVIEW"
+    ]
+  },
+  "shared_investigation": {
+    "deduplicate_by_canonical_key": true,
+    "agent_count_tracks_work_not_users": true,
+    "same_case_users_join_existing_investigation": true,
+    "duplicate_requests_do_not_create_work": true
+  },
+  "human_roles": [
+    "observer",
+    "subscriber",
+    "source_contributor",
+    "commenter",
+    "disputant",
+    "reviewer",
+    "auditor"
+  ],
+  "human_contribution_rules": {
+    "comment_is_evidence": false,
+    "confirmation_is_proof": false,
+    "public_source_creates_verification_work": true,
+    "dispute_reopens_adversarial_review": true,
+    "human_review_required_for_publicable_state": true
+  },
+  "public_states": [
+    "LEAD",
+    "TRIAGE",
+    "COLLECTION",
+    "ANALYSIS",
+    "ADVERSARIAL_VERIFICATION",
+    "HUMAN_REVIEW",
+    "PUBLICABLE",
+    "INCONCLUSIVE",
+    "REFUTED",
+    "ARCHIVED"
+  ],
+  "mural": {
+    "raw_investigative_artifacts_allowed": false,
+    "private_case_state_allowed": false,
+    "automatic_adverse_accusation_allowed": false,
+    "show_provenance_and_evidence_state": true,
+    "show_gaps_and_disputes": true
+  }
+}
