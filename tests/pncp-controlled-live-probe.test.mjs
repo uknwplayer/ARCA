@@ -73,7 +73,8 @@ test("controlled live probe uses one selected shard and seals custody",async()=>
   const envelope=JSON.parse(fs.readFileSync(result.envelopePath,"utf8"));
   assert.ok(!JSON.stringify(envelope).includes("raw fixture must remain encrypted"));
   const payload=openCustodyEnvelope({envelope,passphrase:secret});
-  assert.ok(JSON.stringify(payload).includes("raw fixture must remain encrypted"));
+  const recovered=payload.files.map(file=>Buffer.from(file.data,"base64").toString("utf8")).join("\\n");
+  assert.ok(recovered.includes("raw fixture must remain encrypted"));
 });
 
 test("missing exact confirmation fails before network",async()=>{
