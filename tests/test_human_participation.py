@@ -7,7 +7,7 @@ from runtime.human_participation import (
 )
 
 
-def request(network, participant, trigger_ref="request-1", jurisdiction="BR/SP/3505708"):
+def request(network, participant, trigger_ref="request-1", jurisdiction="BR/STATE/MUNICIPALITY-A"):
     return network.request_investigation(
         jurisdiction=jurisdiction,
         subject_ref="public-entity:synthetic",
@@ -48,10 +48,10 @@ def test_duplicate_request_does_not_create_work_or_agent_demand():
     assert same.worker_demand == 0
 
 
-def test_different_jurisdiction_creates_distinct_mission_without_barueri_default():
+def test_different_jurisdiction_creates_distinct_mission_without_local_default():
     network = AutonomousParticipationNetwork()
-    first, _, _ = request(network, "human-1", jurisdiction="BR/SP/3505708")
-    second, _, _ = request(network, "human-2", jurisdiction="BR/AM/1302603")
+    first, _, _ = request(network, "human-1", jurisdiction="BR/STATE/MUNICIPALITY-A")
+    second, _, _ = request(network, "human-2", jurisdiction="BR/OTHER-STATE/MUNICIPALITY-B")
     assert first.investigation_key != second.investigation_key
     assert len(network.investigations) == 2
 
