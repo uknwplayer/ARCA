@@ -18,8 +18,9 @@ class GitQueueTransport(Protocol):
 class GitQueueAdapter:
     provider_family = "github-git-queue"
 
-    def __init__(self, transport: GitQueueTransport):
+    def __init__(self, transport: GitQueueTransport, provider_family: str = "github-git-queue"):
         self.transport = transport
+        self.provider_family = provider_family
 
     def submit(self, executor: ExecutorDescriptor, job: JobRequest) -> DispatchRef:
         if executor.provider_family != self.provider_family:

@@ -66,7 +66,7 @@ def main() -> int:
         },
     )
     primary_adapter = GitQueueAdapter(transport)
-    satellite_b_adapter = GitQueueAdapter(transport)
+    satellite_b_adapter = GitQueueAdapter(transport, provider_family="github-git-queue-b")
 
     class ControlledTransientAdapter:
         def submit(self, executor, job):
