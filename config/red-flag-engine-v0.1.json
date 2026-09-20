@@ -1,0 +1,1 @@
+{"schema":"arca.red-flag-engine.v0.1","output":"red_flag_matches","forbidden_outputs":["person_risk_score","entity_guilt_score","wrongdoing_probability","politician_ranking","automatic_accusation"],"invariants":{"red_flag_is_not_finding":true,"contradictory_evidence_preserved":true,"verification_question_required":true}}
