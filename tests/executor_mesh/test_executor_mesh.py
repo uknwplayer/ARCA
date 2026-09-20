@@ -13,9 +13,12 @@ from runtime.executor_mesh import (
     ExecutorMeshDispatcher,
     ExecutorRegistry,
     GitQueueAdapter,
+    GitHubContentsQueueTransport,
     JobRequest,
     NoEligibleExecutor,
     ProviderTransientError,
+    ProviderPermanentError,
+    QueueTargetPolicy,
     evaluate_eligibility,
     load_registry,
 )
@@ -204,7 +207,7 @@ class GitQueueTests(unittest.TestCase):
     def setUp(self):
         self.executor = descriptor(
             "github-arca-linux",
-            {"python", "os.linux"},
+            {"python", "os.linux", "profile.smoke"},
             trust_state="VERIFIED",
             admission_state="LAB_ADMITTED",
             metadata={
@@ -242,6 +245,19 @@ class GitQueueTests(unittest.TestCase):
                 ),
             )
 
+    def test_unsafe_job_id_and_unadvertised_profile_are_rejected_before_transport(self):
+        with self.assertRaises(ProviderPermanentError):
+            self.adapter.submit(
+                self.executor,
+                JobRequest("../workflow", "smoke", frozenset({"python"})),
+            )
+        with self.assertRaises(ProviderPermanentError):
+            self.adapter.submit(
+                self.executor,
+                JobRequest("job-profile", "node-test", frozenset({"python"})),
+            )
+        self.assertEqual(self.transport.counter, 0)
+
     def test_dispatch_journal_reuses_same_job(self):
         registry = ExecutorRegistry()
         registry.register(self.executor)
@@ -273,6 +289,103 @@ class GitQueueTests(unittest.TestCase):
         payload["result"]["exit_code"] = 1
         with self.assertRaises(ValueError):
             self.adapter.verify_result(job, ref, payload)
+
+
+class GitHubContentsTransportTests(unittest.TestCase):
+    class FakeTransport(GitHubContentsQueueTransport):
+        def __init__(self):
+            super().__init__(
+                token="control-plane-secret",
+                default_repository="uknwplayer/ARCA",
+                allowed_targets={
+                    "uknwplayer/ARCA": QueueTargetPolicy({
+                        "executor-queue": ("queue/linux/requests",),
+                    }),
+                    "uknwplayer/arca-execution-satellite": QueueTargetPolicy({
+                        "main": ("queue/requests",),
+                    }),
+                },
+            )
+            self.files = {}
+            self.put_body = None
+
+        def _content(self, repository, ref, path):
+            return self.files.get((repository, ref, path))
+
+        def _latest_path_commit(self, repository, ref, path):
+            return "existing-dispatch-sha"
+
+        def _json(self, method, path, body=None):
+            self.put_body = body
+            return {"commit": {"sha": "new-dispatch-sha"}}
+
+    def test_cross_repository_request_is_allowlisted_and_token_is_not_persisted(self):
+        transport = self.FakeTransport()
+        content = '{"public_only":true}\n'
+        sha = transport.create_request(
+            target="uknwplayer/arca-execution-satellite",
+            ref="main",
+            path="queue/requests/mesh-003.json",
+            content=content,
+            message="queue: dispatch mesh-003",
+        )
+        self.assertEqual(sha, "new-dispatch-sha")
+        serialized = json.dumps(transport.put_body, sort_keys=True)
+        self.assertNotIn("control-plane-secret", serialized)
+        self.assertNotIn("Authorization", serialized)
+
+    def test_target_branch_and_path_outside_allowlist_fail_closed(self):
+        transport = self.FakeTransport()
+        cases = (
+            ("someone/other", "main", "queue/requests/x.json"),
+            ("uknwplayer/arca-execution-satellite", "dev", "queue/requests/x.json"),
+            ("uknwplayer/arca-execution-satellite", "main", ".github/workflows/x.yml"),
+            ("uknwplayer/arca-execution-satellite", "main", "queue/requests/../x.json"),
+        )
+        for target, ref, path in cases:
+            with self.subTest(target=target, ref=ref, path=path):
+                with self.assertRaises(ProviderPermanentError):
+                    transport.create_request(
+                        target=target,
+                        ref=ref,
+                        path=path,
+                        content="{}\n",
+                        message="queue: dispatch x",
+                    )
+
+    def test_identical_existing_request_is_idempotent(self):
+        transport = self.FakeTransport()
+        content = '{"public_only":true}\n'
+        transport.files[(
+            "uknwplayer/arca-execution-satellite",
+            "main",
+            "queue/requests/mesh-003.json",
+        )] = {"content": __import__("base64").b64encode(content.encode()).decode()}
+        sha = transport.create_request(
+            target="uknwplayer/arca-execution-satellite",
+            ref="main",
+            path="queue/requests/mesh-003.json",
+            content=content,
+            message="queue: dispatch mesh-003",
+        )
+        self.assertEqual(sha, "existing-dispatch-sha")
+        self.assertIsNone(transport.put_body)
+
+    def test_existing_request_with_other_content_is_conflict(self):
+        transport = self.FakeTransport()
+        transport.files[(
+            "uknwplayer/arca-execution-satellite",
+            "main",
+            "queue/requests/mesh-003.json",
+        )] = {"content": __import__("base64").b64encode(b"different\n").decode()}
+        with self.assertRaises(ProviderPermanentError):
+            transport.create_request(
+                target="uknwplayer/arca-execution-satellite",
+                ref="main",
+                path="queue/requests/mesh-003.json",
+                content="{}\n",
+                message="queue: dispatch mesh-003",
+            )
 
 
 class PublicExecutorContractTests(unittest.TestCase):

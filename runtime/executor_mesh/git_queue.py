@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any, Protocol
 
 from .adapter import DispatchRef, ProviderPermanentError
@@ -25,6 +26,10 @@ class GitQueueAdapter:
             raise ProviderPermanentError("executor belongs to another provider family")
         if job.privacy != "public" or job.secrets_required:
             raise ProviderPermanentError("public git queue cannot accept private or secret-bearing jobs")
+        if len(job.job_id) > 128 or re.fullmatch(r"[A-Za-z0-9_.-]+", job.job_id) is None:
+            raise ProviderPermanentError("job_id is not safe for the public queue")
+        if f"profile.{job.profile}" not in executor.capabilities:
+            raise ProviderPermanentError("executor does not advertise the requested profile")
         prefix = executor.metadata.get("queue_prefix")
         if not prefix:
             raise ProviderPermanentError("executor queue_prefix missing")

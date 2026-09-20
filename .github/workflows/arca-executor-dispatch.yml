@@ -1,0 +1,69 @@
+name: ARCA Executor Mesh Dispatch
+run-name: Dispatch ${{ inputs.job_id }} via Executor Mesh
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: Public request identifier
+        required: true
+        type: string
+      profile:
+        description: Bounded execution profile
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+          - python-unit
+      os:
+        description: Target operating system
+        required: true
+        default: linux
+        type: choice
+        options:
+          - linux
+          - windows
+      disable_local:
+        description: Exercise automatic fallback to the satellite domain
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout control plane
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Dispatch bounded public envelope
+        env:
+          ARCA_GITHUB_DISPATCH_TOKEN: ${{ secrets.ARCA_SATELLITE_DISPATCH_TOKEN }}
+          ARCA_CONTROL_REPOSITORY: ${{ github.repository }}
+          ARCA_JOB_ID: ${{ inputs.job_id }}
+          ARCA_PROFILE: ${{ inputs.profile }}
+          ARCA_TARGET_OS: ${{ inputs.os }}
+          ARCA_DISABLE_LOCAL: ${{ inputs.disable_local }}
+        shell: bash
+        run: |
+          args=(
+            --job-id "$ARCA_JOB_ID"
+            --profile "$ARCA_PROFILE"
+            --os "$ARCA_TARGET_OS"
+          )
+          if [ "$ARCA_DISABLE_LOCAL" = "true" ]; then
+            args+=(--disable-local)
+          fi
+          PYTHONPATH=. python scripts/arca-executor-dispatch.py "${args[@]}"
