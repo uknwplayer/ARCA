@@ -62,3 +62,21 @@ No secret value belongs in source control, logs, proof documents or receipts.
 - anomaly is not irregularity.
 
 Git history provides durable persistence and tamper visibility, but it is not WORM/object-lock storage. A later storage provider may add retention lock without changing the public receipt contract.
+
+
+## Artifact migration
+
+A separate manual workflow can migrate an existing encrypted controlled-live artifact into the durable vault without issuing another PNCP request.
+
+The migration flow:
+
+1. requires the exact confirmation `MIGRATE_ENCRYPTED_CUSTODY_ONLY`;
+2. accepts only a numeric source workflow run id;
+3. downloads the named controlled-live artifact from that prior run;
+4. validates that the source contains a sealed encrypted envelope and sanitized proof;
+5. does not decrypt the envelope and does not require the custody passphrase;
+6. preflights the private vault;
+7. persists the envelope through the same content-addressed backend;
+8. emits only a sanitized migration proof.
+
+The migration script records `pncpNetworkUsed=false`, `decryptionPerformed=false` and `plaintextStored=false`.

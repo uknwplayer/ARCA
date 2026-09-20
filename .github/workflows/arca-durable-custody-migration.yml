@@ -1,0 +1,81 @@
+name: ARCA Durable Custody Artifact Migration
+run-name: Durable custody migration from run ${{ inputs.source_run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type exactly MIGRATE_ENCRYPTED_CUSTODY_ONLY'
+        required: true
+        type: string
+      source_run_id:
+        description: 'Source PNCP controlled-live workflow run id'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  migrate-encrypted-custody:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Preflight authorization and vault secrets
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$CONFIRMATION" = "MIGRATE_ENCRYPTED_CUSTODY_ONLY"
+          [[ "$SOURCE_RUN_ID" =~ ^[1-9][0-9]{0,19}$ ]]
+          test -n "$ARCA_CUSTODY_VAULT_REPOSITORY"
+          test -n "$ARCA_CUSTODY_VAULT_TOKEN"
+          test "${#ARCA_CUSTODY_VAULT_TOKEN}" -ge 20
+
+      - name: Checkout canonical control plane
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Download encrypted custody artifact from source run
+        uses: actions/download-artifact@v5
+        with:
+          name: pncp-controlled-live-proof-${{ inputs.source_run_id }}
+          path: ${{ runner.temp }}/arca-custody-source
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.source_run_id }}
+
+      - name: Persist encrypted custody into private durable vault
+        env:
+          ARCA_CUSTODY_MIGRATION_CONFIRMATION: ${{ inputs.confirmation }}
+          ARCA_CUSTODY_SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          ARCA_CUSTODY_MIGRATION_INPUT_DIR: ${{ runner.temp }}/arca-custody-source
+          ARCA_CUSTODY_MIGRATION_OUTPUT_DIR: ${{ github.workspace }}/artifacts
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: main
+        run: node scripts/arca-custody-migrate-artifact.mjs
+
+      - name: Upload sanitized migration proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: durable-custody-migration-proof-${{ github.run_id }}
+          path: artifacts/durable-custody-migration-proof.json
+          if-no-files-found: warn
+          retention-days: 90
