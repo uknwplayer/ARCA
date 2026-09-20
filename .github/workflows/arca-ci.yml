@@ -29,11 +29,19 @@ jobs:
           node-version: 22.18.0
           cache: npm
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install locked dependencies
         run: npm ci
 
       - name: Run full test suite
         run: npm test
+
+      - name: Run Executor Mesh contract tests
+        run: PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v
 
       - name: Verify repository and approved custody pilot
         shell: bash
