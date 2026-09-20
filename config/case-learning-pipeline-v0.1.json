@@ -1,0 +1,6 @@
+{
+  "schema":"arca.case-learning-pipeline.v0.1",
+  "stages":["SOURCE_LOCATED","CLAIMS_EXTRACTED","EVIDENCE_ASSESSED","PATTERN_ABSTRACTED","CTG_VALIDATED","CORPUS_CANDIDATE","HUMAN_REVIEWED","ADMITTED","REJECTED"],
+  "terminal":["ADMITTED","REJECTED"],
+  "requirements":{"source_locator_required":true,"evidence_assessment_required":true,"ctg_validation_required":true,"human_review_required_for_admission":true,"raw_artifact_persistence":false,"automatic_admission":false}
+}
