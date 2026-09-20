@@ -58,4 +58,5 @@ export * from "./a2a-reference-classification.ts";
 export * from "./a2a-reference-inspection.ts";
 export * from "./a2a-github-repository-resolution.ts";
 export * from "./a2a-runtime-reachability.ts";
+export * from "./a2a-public-message.ts";
 export * from "./arca-federation-introduction-delivery.ts";
