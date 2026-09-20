@@ -1,0 +1,43 @@
+{
+  "schema": "arca.shared-investigation-queue.v0.1",
+  "status": "FOUNDATION",
+  "scope": "BRAZIL_NATIONAL",
+  "storage": {
+    "atomic_replace": true,
+    "fsync_before_replace": true,
+    "record_locking": true,
+    "stale_lock_recovery": true
+  },
+  "deduplication": {
+    "canonical_scope_key": true,
+    "aggregate_subscribers": true,
+    "one_pending_item_per_scope": true
+  },
+  "leases": {
+    "default_ms": 60000,
+    "maximum_ms": 300000,
+    "exclusive_worker_owner": true,
+    "expired_lease_recovery": true
+  },
+  "human_contributions": {
+    "passive": [
+      "WATCH",
+      "COMMENT",
+      "CONFIRMATION"
+    ],
+    "worker_wakeup": [
+      "PUBLIC_SOURCE",
+      "DISPUTE",
+      "DEEPEN_REQUEST"
+    ]
+  },
+  "publication": {
+    "human_review_required": true,
+    "automatic_adverse_publication": false
+  },
+  "forbidden_payloads": [
+    "raw_investigative_artifact",
+    "credential_or_secret",
+    "executable_reference"
+  ]
+}
