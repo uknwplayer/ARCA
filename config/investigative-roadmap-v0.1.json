@@ -1,0 +1,39 @@
+{
+  "schema": "arca.investigative-roadmap.v0.1",
+  "roadmap_steps": 16,
+  "implementation_status": "VALIDATION_CANDIDATE",
+  "components": [
+    {"step":1,"name":"Investigative Boundary","pr":23,"ci_run":35528656519},
+    {"step":2,"name":"Evidence Taxonomy","pr":24,"ci_run":35528853448},
+    {"step":3,"name":"Corruption Typology Graph","pr":25,"ci_run":35529263940},
+    {"step":4,"name":"Defensive Typology Corpus","pr":26,"ci_run":35529605316},
+    {"step":5,"name":"Case Learning Pipeline","pr":27,"ci_run":35529718522},
+    {"step":6,"name":"Anti-Corruption Pattern Analyst","pr":28,"ci_run":35529790848},
+    {"step":7,"name":"Public Data Acquisition Layer","pr":29,"ci_run":35529883961},
+    {"step":8,"name":"Public-Record Watcher","pr":30,"ci_run":35529970187},
+    {"step":9,"name":"Temporal and Relational Analysis","pr":31,"ci_run":35530046854},
+    {"step":10,"name":"Red-Flag Engine","pr":32,"ci_run":35530134786},
+    {"step":11,"name":"Autonomous Case Generation","pr":33,"ci_run":35530230047},
+    {"step":12,"name":"Investigative Mesh006 Integration","pr":34,"ci_run":35530313406},
+    {"step":13,"name":"Adversarial Verification","pr":35,"ci_run":35530392979},
+    {"step":14,"name":"Investigation Record","pr":36,"ci_run":35530473334},
+    {"step":15,"name":"Controlled Investigative Pilot","pr":37,"ci_run":35530562769},
+    {"step":16,"name":"Validation Documentation and Registry Checkpoint","status":"THIS_CHANGE"}
+  ],
+  "validated_invariants": {
+    "public_lawful_acquisition_only": true,
+    "raw_investigative_files_not_committed": true,
+    "derived_knowledge_preserves_source_locators": true,
+    "red_flag_is_not_finding": true,
+    "contradictory_evidence_preserved": true,
+    "person_specific_adverse_publication_not_automatic": true,
+    "real_case_records_private": true,
+    "registry_is_not_investigative_store": true,
+    "public_mesh_jobs_secret_free_and_sanitized": true
+  },
+  "live_scope": {
+    "controlled_ci_pilot": "VERIFIED",
+    "live_real_world_investigation": "NOT_CLAIMED",
+    "live_investigative_satellite_dispatch": "SEPARATE_OPERATIONAL_GATE"
+  }
+}
