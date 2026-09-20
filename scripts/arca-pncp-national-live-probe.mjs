@@ -21,6 +21,9 @@ import {
 import {
   sealCustodyDirectory
 } from "../src/machine-bridge/encrypted-custody-envelope.mjs";
+import {
+  createGitHubPrivateCustodyBackend
+} from "../src/machine-bridge/durable-private-custody.mjs";
 
 export const PNCP_LIVE_PROBE_SCHEMA="arca.pncp-controlled-live-probe.v0.1";
 
@@ -60,10 +63,16 @@ function confirmation(value){
     throw new Error("ARCA_PNCP_LIVE_NETWORK_NOT_AUTHORIZED");
   return value;
 }
+function flag(value,name){
+  if(value===undefined||value===null||value===""||value==="false")return false;
+  if(value==="true")return true;
+  throw new Error(`ARCA_PNCP_LIVE_INVALID_${name}`);
+}
 
 export async function runPncpControlledLiveProbe({
   env=process.env,
-  fetchImpl=globalThis.fetch
+  fetchImpl=globalThis.fetch,
+  durableCustodyBackend=null
 }={}){
   const confirm=confirmation(env.ARCA_PNCP_CONFIRMATION);
   const passphrase=required(env.ARCA_PNCP_CUSTODY_PASSPHRASE,"CUSTODY_SECRET",4096);
@@ -77,6 +86,24 @@ export async function runPncpControlledLiveProbe({
   const codeRevision=revision(env.GITHUB_SHA);
   const outputDir=path.resolve(env.ARCA_PNCP_LIVE_OUTPUT_DIR??path.join(process.cwd(),"artifacts"));
   fs.mkdirSync(outputDir,{recursive:true});
+
+  const durableRequired=flag(env.ARCA_CUSTODY_DURABLE_REQUIRED,"DURABLE_REQUIRED");
+  let custodyBackend=durableCustodyBackend;
+  if(durableRequired){
+    if(!custodyBackend){
+      custodyBackend=createGitHubPrivateCustodyBackend({
+        repository:required(env.ARCA_CUSTODY_VAULT_REPOSITORY,"VAULT_REPOSITORY"),
+        branch:env.ARCA_CUSTODY_VAULT_BRANCH||"main",
+        token:required(env.ARCA_CUSTODY_VAULT_TOKEN,"VAULT_TOKEN",4096),
+        fetchImpl
+      });
+    }
+    if(typeof custodyBackend?.preflight!=="function"||typeof custodyBackend?.persist!=="function")
+      throw new Error("ARCA_PNCP_LIVE_DURABLE_BACKEND_INVALID");
+    const preflight=await custodyBackend.preflight();
+    if(preflight?.ready!==true||preflight?.private!==true)
+      throw new Error("ARCA_PNCP_LIVE_DURABLE_PREFLIGHT_FAILED");
+  }
 
   const root=fs.mkdtempSync(path.join(os.tmpdir(),"arca-pncp-live-"));
   const custodyRoot=path.join(root,"custody");
@@ -155,7 +182,7 @@ export async function runPncpControlledLiveProbe({
     fs.writeFileSync(envelopePath,JSON.stringify(envelope)+"\n",{encoding:"utf8",mode:0o600});
 
     const envelopeHash=sha256(JSON.stringify(envelope));
-    const proof={
+    const baseProof={
       schema:PNCP_LIVE_PROBE_SCHEMA,
       status:"CAPTURED_AND_SEALED",
       repository,
@@ -183,6 +210,28 @@ export async function runPncpControlledLiveProbe({
       humanReviewRequired:true,
       anomalyIsNotIrregularity:true
     };
+
+    let durableCustody={
+      required:durableRequired,
+      status:durableRequired?"PENDING":"NOT_REQUIRED",
+      plaintextStored:false
+    };
+    if(durableRequired){
+      const stored=await custodyBackend.persist({envelope,proof:baseProof});
+      if(!["STORED","ALREADY_STORED"].includes(stored?.status)||
+         !/^[a-f0-9]{64}$/.test(stored?.receiptHash??"")||
+         !/^[a-f0-9]{40}$/.test(stored?.vaultCommitSha??""))
+        throw new Error("ARCA_PNCP_LIVE_DURABLE_PERSIST_FAILED");
+      durableCustody={
+        required:true,
+        status:stored.status==="STORED"?"STORED_PRIVATE":"ALREADY_STORED_PRIVATE",
+        receiptHash:stored.receiptHash,
+        vaultCommitRefHash:sha256(stored.vaultCommitSha),
+        plaintextStored:false
+      };
+    }
+
+    const proof={...baseProof,durableCustody};
     const proofPath=path.join(outputDir,"pncp-live-proof.json");
     fs.writeFileSync(proofPath,JSON.stringify(proof,null,2)+"\n",{encoding:"utf8",mode:0o600});
 
@@ -203,6 +252,8 @@ async function main(){
       resultHash:proof.resultHash,
       targetCount:proof.targetCount,
       envelopeHash:proof.custody.envelopeHash,
+      durableCustodyStatus:proof.durableCustody.status,
+      durableReceiptHash:proof.durableCustody.receiptHash??null,
       humanReviewRequired:true
     })+"\n");
   }catch(error){
