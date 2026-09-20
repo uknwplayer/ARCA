@@ -1,0 +1,41 @@
+{
+  "schema": "arca.investigation-event-backend-runtime.v0.1",
+  "status": "FOUNDATION",
+  "scope": "BRAZIL_NATIONAL",
+  "event_types": [
+    "case.candidate",
+    "investigation.updated"
+  ],
+  "delivery_order": [
+    "persist_queue_work",
+    "persist_wake_event",
+    "claim_worker_lease",
+    "accept_private_work_receipt",
+    "acknowledge_queue_work"
+  ],
+  "event_payload_allowlist": [
+    "schema",
+    "investigationId",
+    "reasonId",
+    "reasonKind",
+    "priority",
+    "humanReviewRequired"
+  ],
+  "event_payload_denylist": [
+    "canonical_scope",
+    "participant_identity",
+    "comment_text",
+    "source_locator",
+    "raw_artifact",
+    "credential_or_secret"
+  ],
+  "recovery": {
+    "persisted_unpublished_work_replay": true,
+    "implicit_failed_delivery_retry": false,
+    "explicit_retry_authorization_required": true
+  },
+  "publication": {
+    "human_review_required": true,
+    "automatic_adverse_publication": false
+  }
+}
