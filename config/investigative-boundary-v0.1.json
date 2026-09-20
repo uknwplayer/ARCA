@@ -1,0 +1,57 @@
+{
+  "schema": "arca.investigative-boundary.v0.1",
+  "default": "deny",
+  "allowed_source_classes": [
+    "official_public_record",
+    "open_government_dataset",
+    "public_procurement_record",
+    "public_spending_record",
+    "public_legislative_record",
+    "public_administrative_record",
+    "public_judicial_record",
+    "public_corporate_registry",
+    "public_sanctions_or_pep_dataset",
+    "public_official_gazette",
+    "public_officeholder_publication",
+    "public_news_or_publication",
+    "user_supplied_material"
+  ],
+  "allowed_access_methods": [
+    "public_http",
+    "official_public_api",
+    "public_feed_or_bulk_download",
+    "user_supplied"
+  ],
+  "forbidden_flags": [
+    "requires_private_auth",
+    "access_control_bypass",
+    "credential_acquisition",
+    "vulnerability_exploitation",
+    "malware_or_spyware",
+    "impersonation_or_social_engineering",
+    "private_system_intrusion",
+    "private_communication_interception",
+    "stolen_private_dataset",
+    "secret_bearing_public_job",
+    "raw_investigative_artifact_repository_storage"
+  ],
+  "requirements": {
+    "public_access_required": true,
+    "provenance_required": true,
+    "personal_data_minimization": true,
+    "red_flag_is_not_finding": true,
+    "worker_cannot_expand_policy": true,
+    "raw_investigative_files_not_committed": true,
+    "persist_derived_knowledge_only": true,
+    "source_locator_required_for_persisted_derived_knowledge": true,
+    "source_locator_may_include": [
+      "canonical_public_url",
+      "source_or_dataset",
+      "public_record_id",
+      "query_or_record_locator",
+      "access_method",
+      "retrieved_at",
+      "content_sha256"
+    ]
+  }
+}
