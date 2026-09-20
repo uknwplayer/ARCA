@@ -41,7 +41,8 @@
     "validate:arca-federation-response": "node scripts/validate-arca-federation-response.mjs",
     "publication:check": "node scripts/arca-publication-boundary.mjs --check",
     "publication:preview": "node scripts/arca-publication-boundary.mjs --preview",
-    "check:public": "node scripts/check-repository.mjs --public && node scripts/check-aie.mjs && node scripts/check-pncp.mjs --public && npm run publication:check"
+    "check:public": "node scripts/check-repository.mjs --public && node scripts/check-aie.mjs && node scripts/check-pncp.mjs --public && npm run publication:check",
+    "work:endpoint": "node scripts/arca-work-endpoint.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"
