@@ -21,58 +21,60 @@ function fixture(){
   return root;
 }
 
-test("custody directory seals and reopens with exact hashes",()=>{
-  const root=fixture();
-  const envelope=sealCustodyDirectory({
-    root,
+function envelope(){
+  return sealCustodyDirectory({
+    root:fixture(),
     passphrase:secret,
     repository:"uknwplayer/ARCA",
     revision,
     scopeHash,
     sealedAt:"2026-09-21T03:00:00.000Z"
   });
-  assert.equal(envelope.status,"SEALED");
-  assert.equal(envelope.algorithm,"AES-256-GCM");
-  assert.equal(envelope.plaintextIncluded,false);
-  assert.equal(envelope.fileCount,2);
-  assert.ok(!JSON.stringify(envelope).includes("private fixture bytes"));
+}
 
-  const payload=openCustodyEnvelope({envelope,passphrase:secret});
+test("custody directory seals and reopens with exact hashes",()=>{
+  const sealed=envelope();
+  assert.equal(sealed.status,"SEALED");
+  assert.equal(sealed.algorithm,"AES-256-GCM");
+  assert.equal(sealed.plaintextIncluded,false);
+  assert.equal(sealed.fileCount,2);
+  assert.ok(!JSON.stringify(sealed).includes("private fixture bytes"));
+
+  const payload=openCustodyEnvelope({envelope:sealed,passphrase:secret});
   assert.equal(payload.fileCount,2);
   assert.equal(payload.scopeHash,scopeHash);
+  assert.equal(payload.sealedAt,sealed.sealedAt);
   assert.ok(payload.files.every(file=>/^[a-f0-9]{64}$/.test(file.sha256)));
 });
 
 test("wrong passphrase fails authentication",()=>{
-  const envelope=sealCustodyDirectory({
-    root:fixture(),
-    passphrase:secret,
-    repository:"uknwplayer/ARCA",
-    revision,
-    scopeHash
-  });
   assert.throws(
-    ()=>openCustodyEnvelope({envelope,passphrase:"this is definitely the wrong passphrase 123"}),
+    ()=>openCustodyEnvelope({envelope:envelope(),passphrase:"this is definitely the wrong passphrase 123"}),
     /AUTH_FAILED/
   );
 });
 
-test("tampering fails authentication",()=>{
-  const envelope=sealCustodyDirectory({
-    root:fixture(),
-    passphrase:secret,
-    repository:"uknwplayer/ARCA",
-    revision,
-    scopeHash
-  });
-  const ciphertext=Buffer.from(envelope.ciphertext,"base64");
+test("ciphertext tampering fails authentication",()=>{
+  const sealed=envelope();
+  const ciphertext=Buffer.from(sealed.ciphertext,"base64");
   ciphertext[0]^=1;
   assert.throws(
     ()=>openCustodyEnvelope({
-      envelope:{...envelope,ciphertext:ciphertext.toString("base64")},
+      envelope:{...sealed,ciphertext:ciphertext.toString("base64")},
       passphrase:secret
     }),
     /AUTH_FAILED/
+  );
+});
+
+test("public metadata tampering fails binding",()=>{
+  const sealed=envelope();
+  assert.throws(
+    ()=>openCustodyEnvelope({
+      envelope:{...sealed,sealedAt:"2026-09-21T04:00:00.000Z"},
+      passphrase:secret
+    }),
+    /BINDING_MISMATCH/
   );
 });
 
