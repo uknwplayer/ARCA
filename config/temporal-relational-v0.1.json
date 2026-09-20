@@ -1,0 +1,1 @@
+{"schema":"arca.temporal-relational.v0.1","relation_status":["OBSERVED","INFERRED_FOR_REVIEW","CONTRADICTED"],"invariants":{"provenance_required":true,"temporal_proximity_is_not_causation":true,"graph_proximity_is_not_wrongdoing":true}}
