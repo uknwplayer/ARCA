@@ -12,6 +12,7 @@ function signerFixture(){
   const keyFingerprint=workDispatchPublicKeyFingerprint(publicKeySpki);
   return {publicKeySpki,keyFingerprint,sign:async bytes=>cryptoSign(null,bytes,privateKey).toString("base64url")};
 }
+function futureIso(ms=0){return new Date(Date.now()+ms).toISOString()}
 function endpointWith(resultValue=null){
   const registry=new ExecutionEndpointRegistry();
   registry.register(createExecutionEndpointDescriptor({endpointId:"chatgpt-work",capabilities:["worker.ping"],operations:{wake:true,result:true},transport:{kind:"test"}}),{
@@ -67,21 +68,21 @@ test("remote worker dispatch persists signed job before bounded wake and never a
     result:async()=>({found:false})
   });
   const worker=new WorkMachineBridgeRemoteWorker({endpointRegistry:registry,endpointId:"chatgpt-work",dispatchTransport:transport,signer,trustedFingerprints:[signer.keyFingerprint],reply:{repository:"example/arca",pullRequest:141}});
-  const first=await worker.dispatch(job(),{createdAt:"2026-09-20T12:00:00Z"});
+  const first=await worker.dispatch(job(),{createdAt:futureIso(0)});
   assert.equal(first.status,"dispatched");assert.equal(wakes,1);
-  const second=await worker.dispatch(job(),{createdAt:"2026-09-20T12:02:00Z"});
+  const second=await worker.dispatch(job(),{createdAt:futureIso(120000)});
   assert.equal(second.status,"pending-or-ambiguous-existing");assert.equal(second.wakeSent,false);assert.equal(wakes,1);
 });
 
 test("remote worker recovers one verified terminal result without another wake",async()=>{
   const signer=signerFixture();
-  const payload=buildWorkDispatchPayload(job(),{createdAt:"2026-09-20T12:00:00Z",reply:{repository:"example/arca",pullRequest:141}});
+  const payload=buildWorkDispatchPayload(job(),{createdAt:futureIso(0),reply:{repository:"example/arca",pullRequest:141}});
   const envelope=await signWorkDispatchPayload(payload,{signer});
   const result={format:"arca-work-result-v1",jobId:payload.jobId,requestId:payload.requestId,workerId:"work:primary",signatureVerified:true,payloadSha256:envelope.signature.payloadSha256,keyFingerprint:envelope.signature.keyFingerprint,lifecycle:[{event:"queued"},{event:"claimed"},{event:"running"},{event:"completed"}],status:"completed",output:{echo:"PING"},safety:{mainMutated:false,merged:false,arbitraryShellExecuted:false}};
   const transport={getEnvelope:async()=>({path:"x",envelope}),publishEnvelope:async()=>{throw new Error("must not republish")}};
   const registry=endpointWith(result);
   const worker=new WorkMachineBridgeRemoteWorker({endpointRegistry:registry,endpointId:"chatgpt-work",dispatchTransport:transport,signer,trustedFingerprints:[signer.keyFingerprint],reply:{repository:"example/arca",pullRequest:141}});
-  const recovered=await worker.dispatch(job(),{createdAt:"2026-09-20T12:02:00Z"});
+  const recovered=await worker.dispatch(job(),{createdAt:futureIso(120000)});
   assert.equal(recovered.status,"terminal-existing");assert.equal(recovered.wakeSent,false);assert.equal(recovered.result.status,"completed");
 });
 
