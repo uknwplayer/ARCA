@@ -60,3 +60,8 @@ export * from "./a2a-github-repository-resolution.ts";
 export * from "./a2a-runtime-reachability.ts";
 export * from "./a2a-public-message.ts";
 export * from "./arca-federation-introduction-delivery.ts";
+
+export * from "./a2a-live-admission-decision.ts";
+export * from "./a2a-live-admission-proposal.ts";
+export * from "./a2a-live-capability-verification.ts";
+export * from "./a2a-live-runtime-binding.ts";
