@@ -9,3 +9,12 @@ def test_all_seed_sources_plan_without_raw_persistence():
 def test_unknown_source_fails_closed():
     with pytest.raises(PublicDataError,match="unknown"): L.plan("unknown")
 def test_sources_are_public(): assert all(s.public_access for s in L.sources.values())
+
+def test_pncp_is_registered_as_bounded_public_procurement_source():
+    s=L.sources["br.pncp.public-api"]
+    assert s.source_class=="public_procurement_record"
+    assert s.access_method=="official_public_api"
+    assert s.public_access is True
+    p=L.plan("br.pncp.public-api")
+    assert p.persist_raw is False
+    assert p.source_locator.startswith("https://pncp.gov.br/")
