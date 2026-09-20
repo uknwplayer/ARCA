@@ -60,12 +60,32 @@ def main() -> int:
             "uknwplayer/arca-execution-satellite": QueueTargetPolicy({
                 "main": ("queue/requests", "queue/windows/requests"),
             }),
+            "uknwplayer/arca-execution-satellite-b": QueueTargetPolicy({
+                "main": ("queue/requests",),
+            }),
         },
     )
+    primary_adapter = GitQueueAdapter(transport)
+    satellite_b_adapter = GitQueueAdapter(transport)
+
+    class ControlledTransientAdapter:
+        def submit(self, executor, job):
+            raise ProviderTransientError("Mesh005 controlled transient failure: Satellite A")
+
+        def status(self, ref):
+            return primary_adapter.status(ref)
+
+        def result(self, ref):
+            return primary_adapter.result(ref)
+
+    journal = DispatchJournal()
     dispatcher = ExecutorMeshDispatcher(
         CostAwareScheduler(registry),
-        {"github-git-queue": GitQueueAdapter(transport)},
-        DispatchJournal(),
+        {
+            "github-git-queue": ControlledTransientAdapter() if args.fail_satellite_a else primary_adapter,
+            "github-git-queue-b": satellite_b_adapter,
+        },
+        journal,
     )
     job = JobRequest(
         args.job_id,
@@ -79,6 +99,16 @@ def main() -> int:
         "dispatch_commit_sha": decision.ref.external_id,
         "attempted_executor_ids": decision.attempted_executor_ids,
         "reused": decision.reused,
+        "attempt_history": [
+            {
+                "executor_id": attempt.executor_id,
+                "provider_family": attempt.provider_family,
+                "outcome": attempt.outcome,
+                "detail": attempt.detail,
+                "external_id": attempt.ref.external_id if attempt.ref else None,
+            }
+            for attempt in journal.attempt_history(job)
+        ],
     }
     print(json.dumps({"dispatch": dispatch_record}, sort_keys=True), flush=True)
 
