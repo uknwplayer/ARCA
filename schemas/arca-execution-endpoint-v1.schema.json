@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:arca:schema:arca-execution-endpoint-v1",
+  "title": "ARCA Execution Endpoint V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "endpointId", "participantKind", "capabilities", "operations", "transport", "authority"],
+  "properties": {
+    "format": {"const": "arca-execution-endpoint-v1"},
+    "version": {"const": 1},
+    "endpointId": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "participantKind": {"enum": ["agent", "worker", "service"]},
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"}
+    },
+    "operations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["discover", "capabilities", "wake", "claim", "heartbeat", "result", "ack", "handoff"],
+      "properties": {
+        "discover": {"const": true},
+        "capabilities": {"const": true},
+        "wake": {"type": "boolean"},
+        "claim": {"type": "boolean"},
+        "heartbeat": {"type": "boolean"},
+        "result": {"type": "boolean"},
+        "ack": {"type": "boolean"},
+        "handoff": {"type": "boolean"}
+      }
+    },
+    "transport": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {"kind": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"}}
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trustGranted", "codeMutation", "canonicalWrite", "executionAuthority"],
+      "properties": {
+        "trustGranted": {"const": false},
+        "codeMutation": {"const": false},
+        "canonicalWrite": {"const": false},
+        "executionAuthority": {"const": false}
+      }
+    }
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:arca:schema:arca-work-job-v1",
+  "title": "ARCA Work Job V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "payload",
+    "signature"
+  ],
+  "properties": {
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "protocolVersion",
+        "jobId",
+        "requestId",
+        "machineBridgeJobHash",
+        "createdAt",
+        "expiresAt",
+        "action",
+        "requires",
+        "params",
+        "target",
+        "reply",
+        "safety"
+      ],
+      "properties": {
+        "format": {
+          "const": "arca-work-job-v1"
+        },
+        "protocolVersion": {
+          "const": 1
+        },
+        "jobId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{1,120}$"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]{1,120}$"
+        },
+        "machineBridgeJobHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "action": {
+          "enum": [
+            "worker.ping",
+            "repository.verify-ref"
+          ]
+        },
+        "requires": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "params": {
+          "type": "object"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "selector",
+            "requiredCapabilities",
+            "preferredWorkerIds",
+            "allowFailover"
+          ],
+          "properties": {
+            "selector": {
+              "const": "capability"
+            },
+            "requiredCapabilities": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "preferredWorkerIds": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowFailover": {
+              "type": "boolean"
+            }
+          }
+        },
+        "reply": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "transport",
+            "repository",
+            "pullRequest"
+          ],
+          "properties": {
+            "transport": {
+              "const": "github-pr-comment"
+            },
+            "repository": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+            },
+            "pullRequest": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "safety": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allowShell",
+            "allowMerge",
+            "allowMainMutation",
+            "allowedPaths"
+          ],
+          "properties": {
+            "allowShell": {
+              "const": false
+            },
+            "allowMerge": {
+              "const": false
+            },
+            "allowMainMutation": {
+              "const": false
+            },
+            "allowedPaths": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "^experiments/work-wakeup/"
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "const": "repository.verify-ref"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "repository",
+                  "pullRequest",
+                  "expectedHeadSha"
+                ],
+                "properties": {
+                  "repository": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+                  },
+                  "pullRequest": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "expectedHeadSha": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{40}$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "canonicalization",
+        "publicKeySpki",
+        "keyFingerprint",
+        "payloadSha256",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "canonicalization": {
+          "const": "recursive-key-sort-json-v1"
+        },
+        "publicKeySpki": {
+          "type": "string",
+          "minLength": 1
+        },
+        "keyFingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "payloadSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
