@@ -18,14 +18,16 @@
     "os.linux",
     "artifact.sha256",
     "profile.smoke",
-    "profile.python-unit"
+    "profile.python-unit",
+    "profile.investigative-public-v0.1"
   ],
   "scarce_capabilities": [],
   "metadata": {
     "transport_target": "uknwplayer/arca-execution-satellite",
     "queue_branch": "main",
     "queue_prefix": "queue/requests",
-    "execution_domain": "arca-execution-satellite"
+    "execution_domain": "arca-execution-satellite",
+    "investigative_public_contract": "arca.public-investigative-executor-request.v0.2"
   },
   "evidence": {
     "proof_id": "arca-mesh-satellite-linux-001",

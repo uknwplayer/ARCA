@@ -216,6 +216,22 @@ class GitHubContentsQueueTransport:
         runs = data.get("workflow_runs", [])
         return runs[0] if runs else None
 
+    def run_metadata_by_head_sha(self, head_sha: str) -> dict[str, Any] | None:
+        for repository in self.allowed_targets:
+            run = self._run_by_head_sha(repository, head_sha)
+            if run is not None:
+                return {
+                    "repository": repository,
+                    "run_id": run["id"],
+                    "status": run["status"],
+                    "conclusion": run.get("conclusion"),
+                    "created_at": run.get("created_at"),
+                    "run_started_at": run.get("run_started_at"),
+                    "updated_at": run.get("updated_at"),
+                    "html_url": run.get("html_url"),
+                }
+        return None
+
     def status_by_head_sha(self, head_sha: str) -> str:
         for repository in self.allowed_targets:
             run = self._run_by_head_sha(repository, head_sha)
