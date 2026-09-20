@@ -1,0 +1,59 @@
+name: ARCA 0.3.0 CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arca-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Node 22.18 — full test suite and repository check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run full test suite
+        run: npm test
+
+      - name: Verify repository and approved custody pilot
+        shell: bash
+        run: |
+          if [ "${{ github.event.repository.private }}" = "true" ]; then
+            npm run check
+          else
+            npm run check:public
+          fi
+
+      - name: Build public repository preview
+        if: github.event_name != 'push'
+        run: npm run publication:preview
+
+      - name: Upload public repository preview
+        if: github.event_name != 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: arca-publication-preview-${{ github.run_id }}
+          path: .arca-publication-preview/
+          if-no-files-found: error
+          retention-days: 3
+          include-hidden-files: true
