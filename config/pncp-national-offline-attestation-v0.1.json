@@ -1,0 +1,29 @@
+{
+  "schema": "arca.pncp-national-offline-attestation.v0.1",
+  "status": "FOUNDATION",
+  "requires": {
+    "federative_units": 27,
+    "scheduler_status": "COMPLETED",
+    "failed_shards": 0,
+    "custody_manifests": 27,
+    "network_used": false
+  },
+  "binds": [
+    "repository",
+    "revision",
+    "plan_fingerprint",
+    "completed_shard_digest",
+    "scheduler_schema",
+    "runner_schema",
+    "checkpoint_format"
+  ],
+  "gates": {
+    "public_network_authorized": false,
+    "real_collection_authorized": false,
+    "execution_authorized": false,
+    "automatic_adverse_publication": false,
+    "human_review_required": true,
+    "anomaly_is_not_irregularity": true
+  },
+  "failure_mode": "FAIL_CLOSED"
+}
