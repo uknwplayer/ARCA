@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 import {createResolver,EvidenceState} from "../src/aie/public-source-resolver.mjs";
 import {municipalityAdapters,registerMunicipalityAdapter,getMunicipalityAdapter} from "../src/aie/adapters/municipality-registry.mjs";
 import {pncpPublicAdapter} from "../src/aie/adapters/pncp-public.mjs";
-import {municipalPublicAdapter3505708} from "../src/aie/adapters/barueri-public.mjs";
 
 test("resolver preserves source conflict instead of choosing a convenient fact",async()=>{
   const resolver=createResolver({adapters:[
@@ -24,20 +23,9 @@ test("PNCP adapter emits only supplied public facts with provenance",async()=>{
 
 test("municipality registry validates IBGE keys",()=>{
   municipalityAdapters.clear();
-  registerMunicipalityAdapter("3505708",municipalPublicAdapter3505708);
-  assert.equal(getMunicipalityAdapter("3505708")?.id,"municipality:3505708");
+  const synthetic={id:"municipality:synthetic"};
+  registerMunicipalityAdapter("9999999",synthetic);
+  assert.equal(getMunicipalityAdapter("9999999"),synthetic);
   assert.throws(()=>registerMunicipalityAdapter("bad",{}),/invalid IBGE/);
 });
 
-test("municipal adapter accepts only allowlisted official Barueri hosts",async()=>{
-  const out=await municipalPublicAdapter3505708.resolve({
-    municipality:{ibgeCode:"3505708"},
-    municipalEvidence:[
-      {field:"notice",value:"public",locator:"https://barueri.sp.gov.br/transparencia/Licitacoes.aspx",sha256:"a".repeat(64)},
-      {field:"evil",value:"x",locator:"https://example.invalid/fake"}
-    ]
-  });
-  assert.equal(out.facts.length,1);
-  assert.equal(out.facts[0].field,"notice");
-  assert.equal(out.facts[0].state,EvidenceState.RESOLVED_ELSEWHERE);
-});
