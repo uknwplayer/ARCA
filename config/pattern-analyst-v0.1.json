@@ -1,0 +1,1 @@
+{"schema":"arca.pattern-analyst.v0.1","output_schema":"arca.pattern-lead.v0.1","required_output":["lead_id","typology_id","matched_traces","verification_questions","provenance_refs","evidence_state"],"forced_evidence_state":"UNRESOLVED","forbidden":["guilt_probability","automatic_accusation","private_data_acquisition","raw_artifact_persistence","automatic_publication"]}
