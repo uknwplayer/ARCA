@@ -62,3 +62,10 @@ def test_rejects_unknown_access_method_fail_closed():
 def test_requires_provenance():
     with pytest.raises(InvestigativeBoundaryError, match="provenance"):
         BOUNDARY.authorize(request(provenance=""))
+
+
+def test_policy_forbids_raw_investigative_repository_storage():
+    assert BOUNDARY.policy["requirements"]["raw_investigative_files_not_committed"] is True
+    assert BOUNDARY.policy["requirements"]["persist_derived_knowledge_only"] is True
+    with pytest.raises(InvestigativeBoundaryError, match="forbidden acquisition flags"):
+        BOUNDARY.authorize(request(flags=frozenset({"raw_investigative_artifact_repository_storage"})))
