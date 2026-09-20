@@ -26,7 +26,8 @@
   "metadata": {
     "transport_target": "self",
     "queue_branch": "executor-queue",
-    "queue_prefix": "queue/windows/requests"
+    "queue_prefix": "queue/windows/requests",
+    "execution_domain": "canonical-arca"
   },
   "evidence": {
     "proof_id": "arca-executor-mesh-001-windows-live",
@@ -42,5 +43,6 @@
     "artifact_digest": "sha256:2c6939d79640aa42498bed72e4af5608cf129b13d680c1b4ad29198a6c321b23",
     "platform": "Windows-2025Server-10.0.26100-SP0",
     "python": "3.12.10"
-  }
+  },
+  "network_hops": 0
 }
