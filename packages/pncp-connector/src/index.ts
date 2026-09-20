@@ -200,3 +200,5 @@ export async function capturePncpSnapshotResponses(snapshot,input){
 
 export * from "./operational.ts";
 export * from "./deepening.ts";
+
+export * from "./blind-corpus.ts";
