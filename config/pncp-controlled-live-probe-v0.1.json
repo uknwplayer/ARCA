@@ -1,0 +1,36 @@
+{
+  "schema": "arca.pncp-controlled-live-probe.v0.1",
+  "status": "PREPARED_NOT_EXECUTED",
+  "network": {
+    "method": "GET",
+    "host_allowlist": ["pncp.gov.br"],
+    "endpoint": "/api/consulta/v1/contratacoes/publicacao",
+    "authentication": false,
+    "confirmation": "PNCP_PUBLIC_GET_ONLY"
+  },
+  "scope": {
+    "uf": "required_runtime_input",
+    "default_uf": null,
+    "single_date_only": true,
+    "modalidade_id": "required_runtime_input"
+  },
+  "budgets": {
+    "shards": 1,
+    "pages": 1,
+    "records": 10,
+    "page_size": 10,
+    "retries": 0
+  },
+  "custody": {
+    "secret_required_before_network": true,
+    "encrypted_envelope_required": true,
+    "plaintext_artifact_forbidden": true
+  },
+  "analysis": {
+    "classifier_enabled": false,
+    "investigation_ingress_enabled": false,
+    "automatic_adverse_publication": false,
+    "human_review_required": true,
+    "anomaly_is_not_irregularity": true
+  }
+}
