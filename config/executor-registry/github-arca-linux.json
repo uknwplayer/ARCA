@@ -26,7 +26,8 @@
   "metadata": {
     "transport_target": "self",
     "queue_branch": "executor-queue",
-    "queue_prefix": "queue/linux/requests"
+    "queue_prefix": "queue/linux/requests",
+    "execution_domain": "canonical-arca"
   },
   "evidence": {
     "proof_id": "arca-executor-mesh-001-linux-live",
@@ -42,5 +43,6 @@
     "artifact_digest": "sha256:d0238b49f89088f6bcb0ac21bab6d25e895ed328088dcc3e3e7046601d5bbed2",
     "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
     "python": "3.12.14"
-  }
+  },
+  "network_hops": 0
 }

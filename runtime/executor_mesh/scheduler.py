@@ -11,6 +11,7 @@ class RoutingPolicy:
     time_weight: int = 10
     reliability_weight: int = 1_000_000
     unused_scarcity_weight: int = 500_000
+    network_hop_weight: int = 1_000
 
 
 @dataclass(frozen=True)
@@ -74,7 +75,8 @@ class CostAwareScheduler:
             reliability_penalty = round((1.0 - executor.reliability) * self.policy.reliability_weight)
             unused_scarce = tuple(sorted(executor.scarce_capabilities - job.required_capabilities))
             scarcity_penalty = len(unused_scarce) * self.policy.unused_scarcity_weight
-            score = cost + elapsed * self.policy.time_weight + reliability_penalty + scarcity_penalty
+            network_penalty = executor.network_hops * self.policy.network_hop_weight
+            score = cost + elapsed * self.policy.time_weight + reliability_penalty + scarcity_penalty + network_penalty
             ranked.append(RankedExecutor(executor, score, cost, elapsed, unused_scarce))
         ranked.sort(key=lambda item: (item.score, item.descriptor.executor_id))
         return tuple(ranked)
