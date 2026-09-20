@@ -2,8 +2,8 @@
   "schema": "arca.executor-descriptor.v0.1",
   "executor_id": "github-arca-windows",
   "provider_family": "github-git-queue",
-  "trust_state": "DECLARED",
-  "admission_state": "CANDIDATE",
+  "trust_state": "VERIFIED",
+  "admission_state": "LAB_ADMITTED",
   "available": true,
   "accepts_private": false,
   "accepts_secrets": false,
@@ -28,5 +28,19 @@
     "queue_branch": "executor-queue",
     "queue_prefix": "queue/windows/requests"
   },
-  "evidence": null
+  "evidence": {
+    "proof_id": "arca-executor-mesh-001-windows-live",
+    "source_main_sha": "0b58bf4949cb2fb9e538e82dd5b4b85cadfb246a",
+    "request_id": "arca-windows-smoke-001",
+    "dispatch_commit_sha": "a50a3d2a3ece9b64047e4c5d1dd933cb5368a9ac",
+    "run_id": "35517392251",
+    "conclusion": "success",
+    "request_sha256": "a1164aff7d82ac85ff1945eda1d8a74df8432fea726efcc8d5b549069e06bdce",
+    "result_sha256": "2bb87be529a611d051acb1e6e9924c723eb60d1849d4664688748fa5f457275e",
+    "result_file_sha256": "c141e445afb4a38c89fbff5b1f8833ef79f1c569c6ad07aa53c882d724a405a2",
+    "artifact_id": "10606753323",
+    "artifact_digest": "sha256:2c6939d79640aa42498bed72e4af5608cf129b13d680c1b4ad29198a6c321b23",
+    "platform": "Windows-2025Server-10.0.26100-SP0",
+    "python": "3.12.10"
+  }
 }

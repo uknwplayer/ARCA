@@ -60,25 +60,33 @@ class FakeGitQueueTransport:
 
 
 class RegistryAndSchedulerTests(unittest.TestCase):
-    def test_public_descriptors_load_but_are_not_admitted_before_live_proof(self):
+    def test_live_proven_public_descriptors_are_lab_admitted(self):
         registry = load_registry(REGISTRY_ROOT)
         self.assertEqual(
             {item.executor_id for item in registry.all()},
             {"github-arca-linux", "github-arca-windows"},
         )
         for item in registry.all():
-            self.assertEqual(item.admission_state, "CANDIDATE")
-            self.assertEqual(item.trust_state, "DECLARED")
-            eligibility = evaluate_eligibility(
-                JobRequest(
-                    "candidate-check",
-                    "smoke",
-                    frozenset({"python"}),
-                    min_trust="DECLARED",
-                ),
-                item,
-            )
-            self.assertIn("not-admitted", eligibility.reasons)
+            self.assertEqual(item.admission_state, "LAB_ADMITTED")
+            self.assertEqual(item.trust_state, "VERIFIED")
+
+        linux = registry.get("github-arca-linux")
+        windows = registry.get("github-arca-windows")
+        self.assertEqual(
+            CostAwareScheduler(registry)
+            .select(JobRequest("real-linux", "smoke", frozenset({"python", "os.linux"})))
+            .descriptor.executor_id,
+            linux.executor_id,
+        )
+        self.assertEqual(
+            CostAwareScheduler(registry)
+            .select(JobRequest("real-windows", "smoke", frozenset({"python", "os.windows"})))
+            .descriptor.executor_id,
+            windows.executor_id,
+        )
+
+        self.assertEqual(linux.metadata["queue_branch"], "executor-queue")
+        self.assertEqual(windows.metadata["queue_branch"], "executor-queue")
 
     def test_admitted_linux_job_selects_linux(self):
         registry = ExecutorRegistry()

@@ -2,8 +2,8 @@
   "schema": "arca.executor-descriptor.v0.1",
   "executor_id": "github-arca-linux",
   "provider_family": "github-git-queue",
-  "trust_state": "DECLARED",
-  "admission_state": "CANDIDATE",
+  "trust_state": "VERIFIED",
+  "admission_state": "LAB_ADMITTED",
   "available": true,
   "accepts_private": false,
   "accepts_secrets": false,
@@ -28,5 +28,19 @@
     "queue_branch": "executor-queue",
     "queue_prefix": "queue/linux/requests"
   },
-  "evidence": null
+  "evidence": {
+    "proof_id": "arca-executor-mesh-001-linux-live",
+    "source_main_sha": "0b58bf4949cb2fb9e538e82dd5b4b85cadfb246a",
+    "request_id": "arca-linux-smoke-001",
+    "dispatch_commit_sha": "aefdd6b44220e17f5fa80a0c4361e750dbff5945",
+    "run_id": "35517312302",
+    "conclusion": "success",
+    "request_sha256": "c86814746690fd8e1d3e8d2bbe36c29d2888058da78bc2294138b59aca583b66",
+    "result_sha256": "e0af8c9dbbd6d2a335e2d2d58c48647ed48e38d3a02e53be1baa612810482b43",
+    "result_file_sha256": "a3dd370d0a105bf15186ee0a66ca84c27326eaa3459fb55fd1dfe5e9ca2b78d0",
+    "artifact_id": "10606874398",
+    "artifact_digest": "sha256:d0238b49f89088f6bcb0ac21bab6d25e895ed328088dcc3e3e7046601d5bbed2",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "python": "3.12.14"
+  }
 }
