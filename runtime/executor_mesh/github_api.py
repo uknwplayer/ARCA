@@ -110,6 +110,68 @@ class GitHubContentsQueueTransport:
         _, raw = self._request(method, path, body=body)
         return json.loads(raw)
 
+    def _download_artifact(self, repository: str, artifact_id: int) -> bytes:
+        """Download an Actions artifact without forwarding GitHub auth off-host."""
+        path = f"/repos/{repository}/actions/artifacts/{artifact_id}/zip"
+        request = urllib.request.Request(
+            f"{self.api_url}{path}",
+            method="GET",
+            headers={
+                "Accept": "application/vnd.github+json",
+                "Authorization": f"Bearer {self._token}",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "User-Agent": "arca-executor-mesh/0.3",
+            },
+        )
+
+        class _NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, req, fp, code, msg, headers, newurl):
+                return None
+
+        try:
+            urllib.request.build_opener(_NoRedirect).open(
+                request, timeout=self.timeout_seconds
+            )
+        except urllib.error.HTTPError as exc:
+            if exc.code != 302:
+                if exc.code == 429 or exc.code >= 500:
+                    raise ProviderTransientError(
+                        f"GitHub API temporary failure: HTTP {exc.code}"
+                    ) from exc
+                raise ProviderPermanentError(
+                    f"GitHub artifact request rejected: HTTP {exc.code}"
+                ) from exc
+            location = exc.headers.get("Location")
+            if not location:
+                raise ProviderPermanentError(
+                    "GitHub artifact redirect is missing Location"
+                ) from exc
+        else:
+            raise ProviderPermanentError(
+                "GitHub artifact endpoint did not return a redirect"
+            )
+
+        redirected = urllib.request.Request(
+            location,
+            method="GET",
+            headers={"User-Agent": "arca-executor-mesh/0.3"},
+        )
+        try:
+            with urllib.request.urlopen(
+                redirected, timeout=self.timeout_seconds
+            ) as response:
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429 or exc.code >= 500:
+                raise ProviderTransientError(
+                    f"artifact storage temporary failure: HTTP {exc.code}"
+                ) from exc
+            raise ProviderPermanentError(
+                f"artifact storage rejected download: HTTP {exc.code}"
+            ) from exc
+        except (urllib.error.URLError, TimeoutError) as exc:
+            raise ProviderTransientError("artifact storage unavailable") from exc
+
     def _content(self, repository: str, ref: str, path: str) -> dict[str, Any] | None:
         encoded_path = urllib.parse.quote(path, safe="/")
         query = urllib.parse.urlencode({"ref": ref})
