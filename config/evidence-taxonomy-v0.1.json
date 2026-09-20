@@ -1,0 +1,38 @@
+{
+  "schema": "arca.evidence-taxonomy.v0.1",
+  "states": [
+    "ALLEGATION",
+    "ANOMALY",
+    "CORRELATION",
+    "DOCUMENTARY_EVIDENCE",
+    "INDEPENDENTLY_CORROBORATED",
+    "OFFICIALLY_CONFIRMED",
+    "ADJUDICATED_FACT",
+    "CONTESTED",
+    "REFUTED",
+    "UNRESOLVED"
+  ],
+  "invariants": {
+    "states_are_not_guilt_scores": true,
+    "automatic_promotion_forbidden": true,
+    "provenance_required": true,
+    "contradictory_evidence_preserved": true,
+    "raw_artifacts_not_repository_content": true,
+    "person_specific_adverse_publication_requires_separate_review": true
+  },
+  "source_locator_fields": [
+    "canonical_public_url",
+    "source_or_dataset",
+    "public_record_id",
+    "query_or_record_locator",
+    "access_method",
+    "retrieved_at",
+    "content_sha256",
+    "availability"
+  ],
+  "availability_states": [
+    "AVAILABLE",
+    "NO_LONGER_RETRIEVABLE",
+    "UNKNOWN"
+  ]
+}
