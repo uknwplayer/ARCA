@@ -50,6 +50,35 @@ test("UF constants and scheduler execution order are lexicographic",async()=>{
   assert.equal(result.succeeded,3);
   assert.equal(result.totals.completed,3);
   assert.equal(result.totals.remaining,24);
+  assert.deepEqual(result.selectedShardIds,[]);
+});
+
+test("explicit shard selection runs only requested UFs without changing national plan",async()=>{
+  const calls=[];
+  const scheduler=createPncpNationalScheduler({root:baseRoot(),clock});
+  const result=await scheduler.runCycle({
+    plan:plan(),discoveryRunner:offlineRunner(calls),classifier:emptyClassifier,
+    ingress:emptyIngress,shardIds:["BR-UF-SP"],maxShardsPerRun:1
+  });
+  assert.deepEqual(calls,["SP"]);
+  assert.deepEqual(result.selectedShardIds,["BR-UF-SP"]);
+  assert.equal(result.processed,1);
+  assert.equal(result.succeeded,1);
+  assert.equal(result.status,"IN_PROGRESS");
+  const checkpoint=scheduler.getCheckpoint(plan());
+  assert.deepEqual(Object.keys(checkpoint.completed),["BR-UF-SP"]);
+});
+
+test("invalid or duplicate shard selection fails before discovery",async()=>{
+  const calls=[];
+  const scheduler=createPncpNationalScheduler({root:baseRoot(),clock});
+  const input={
+    plan:plan(),discoveryRunner:offlineRunner(calls),classifier:emptyClassifier,
+    ingress:emptyIngress,maxShardsPerRun:1
+  };
+  await assert.rejects(()=>scheduler.runCycle({...input,shardIds:["BR-UF-ZZ"]}),/SELECTION_INVALID/);
+  await assert.rejects(()=>scheduler.runCycle({...input,shardIds:["BR-UF-SP","BR-UF-SP"]}),/SELECTION_INVALID/);
+  assert.deepEqual(calls,[]);
 });
 
 test("checkpoint survives restart and completed shards are not repeated",async()=>{
