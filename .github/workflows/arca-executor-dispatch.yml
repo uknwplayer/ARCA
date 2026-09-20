@@ -66,4 +66,5 @@ jobs:
           if [ "$ARCA_DISABLE_LOCAL" = "true" ]; then
             args+=(--disable-local)
           fi
-          args+=(--collect --collect-timeout 240 --poll-seconds 3)\n          PYTHONPATH=. python scripts/arca-executor-dispatch.py "${args[@]}"
+          args+=(--collect --collect-timeout 240 --poll-seconds 3)
+          PYTHONPATH=. python scripts/arca-executor-dispatch.py "${args[@]}"
