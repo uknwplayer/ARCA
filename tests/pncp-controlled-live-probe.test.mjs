@@ -106,3 +106,55 @@ test("invalid UF fails before network",async()=>{
   }),/INVALID_UF/);
   assert.equal(counter.calls,0);
 });
+
+
+test("durable custody preflight happens before PNCP network and receipt is recorded",async()=>{
+  const output=fs.mkdtempSync(path.join(os.tmpdir(),"arca-pncp-live-output-"));
+  const counter={calls:0};
+  const durable={preflightCalls:0,persistCalls:0};
+  const backend={
+    async preflight(){
+      durable.preflightCalls+=1;
+      return {ready:true,private:true};
+    },
+    async persist({envelope,proof}){
+      durable.persistCalls+=1;
+      assert.equal(counter.calls,1);
+      assert.equal(envelope.plaintextIncluded,false);
+      assert.equal(proof.custody.plaintextPublished,false);
+      return {
+        status:"STORED",
+        receiptHash:"5".repeat(64),
+        vaultCommitSha:"6".repeat(40)
+      };
+    }
+  };
+  const result=await runPncpControlledLiveProbe({
+    env:env(output,{ARCA_CUSTODY_DURABLE_REQUIRED:"true"}),
+    fetchImpl:fakeFetch(counter),
+    durableCustodyBackend:backend
+  });
+  assert.equal(durable.preflightCalls,1);
+  assert.equal(durable.persistCalls,1);
+  assert.equal(counter.calls,1);
+  assert.equal(result.proof.durableCustody.required,true);
+  assert.equal(result.proof.durableCustody.status,"STORED_PRIVATE");
+  assert.equal(result.proof.durableCustody.receiptHash,"5".repeat(64));
+  assert.match(result.proof.durableCustody.vaultCommitRefHash,/^[a-f0-9]{64}$/);
+  assert.equal(result.proof.durableCustody.plaintextStored,false);
+});
+
+test("durable custody preflight failure blocks PNCP network",async()=>{
+  const output=fs.mkdtempSync(path.join(os.tmpdir(),"arca-pncp-live-output-"));
+  const counter={calls:0};
+  const backend={
+    async preflight(){return {ready:false,private:false}},
+    async persist(){throw new Error("must not persist")}
+  };
+  await assert.rejects(()=>runPncpControlledLiveProbe({
+    env:env(output,{ARCA_CUSTODY_DURABLE_REQUIRED:"true"}),
+    fetchImpl:fakeFetch(counter),
+    durableCustodyBackend:backend
+  }),/DURABLE_PREFLIGHT_FAILED/);
+  assert.equal(counter.calls,0);
+});

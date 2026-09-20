@@ -29,16 +29,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - name: Preflight authorization and custody secret
+      - name: Preflight authorization and custody secrets
         env:
           CONFIRMATION: ${{ inputs.confirmation }}
           ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
           test "$CONFIRMATION" = "PNCP_PUBLIC_GET_ONLY"
           test -n "$ARCA_PNCP_CUSTODY_PASSPHRASE"
           test "${#ARCA_PNCP_CUSTODY_PASSPHRASE}" -ge 24
+          test -n "$ARCA_CUSTODY_VAULT_REPOSITORY"
+          test -n "$ARCA_CUSTODY_VAULT_TOKEN"
+          test "${#ARCA_CUSTODY_VAULT_TOKEN}" -ge 20
       - name: Checkout canonical control plane
         uses: actions/checkout@v4
         with:
@@ -58,8 +63,12 @@ jobs:
           ARCA_PNCP_LIVE_DATE: ${{ inputs.date }}
           ARCA_PNCP_LIVE_MODALITY_ID: ${{ inputs.modalidade_id }}
           ARCA_PNCP_LIVE_OUTPUT_DIR: ${{ github.workspace }}/artifacts
+          ARCA_CUSTODY_DURABLE_REQUIRED: 'true'
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: main
         run: node scripts/arca-pncp-national-live-probe.mjs
-      - name: Upload encrypted custody and sanitized proof
+      - name: Upload encrypted custody fallback and sanitized proof
         if: always()
         uses: actions/upload-artifact@v4
         with:

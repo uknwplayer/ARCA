@@ -1,9 +1,11 @@
 {
   "schema": "arca.pncp-controlled-live-probe.v0.1",
-  "status": "PREPARED_NOT_EXECUTED",
+  "status": "CONTROLLED_LIVE_PROOF_COMPLETED",
   "network": {
     "method": "GET",
-    "host_allowlist": ["pncp.gov.br"],
+    "host_allowlist": [
+      "pncp.gov.br"
+    ],
     "endpoint": "/api/consulta/v1/contratacoes/publicacao",
     "authentication": false,
     "confirmation": "PNCP_PUBLIC_GET_ONLY"
@@ -24,7 +26,11 @@
   "custody": {
     "secret_required_before_network": true,
     "encrypted_envelope_required": true,
-    "plaintext_artifact_forbidden": true
+    "plaintext_artifact_forbidden": true,
+    "durable_private_storage_required": true,
+    "github_actions_artifact_fallback_only": true,
+    "private_target_preflight_required_before_pncp_get": true,
+    "cross_repository_credential_required": true
   },
   "analysis": {
     "classifier_enabled": false,
