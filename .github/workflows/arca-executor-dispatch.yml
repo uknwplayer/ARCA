@@ -55,7 +55,7 @@ jobs:
           ARCA_JOB_ID: ${{ inputs.job_id }}
           ARCA_PROFILE: ${{ inputs.profile }}
           ARCA_TARGET_OS: ${{ inputs.os }}
-          ARCA_DISABLE_LOCAL: ${{ inputs.disable_local }}
+          ARCA_DISABLE_LOCAL: ${{ inputs.disable_local }}\n          ARCA_FAIL_SATELLITE_A: ${{ inputs.fail_satellite_a }}
         shell: bash
         run: |
           args=(
