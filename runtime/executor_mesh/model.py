@@ -59,6 +59,7 @@ class ExecutorDescriptor:
     reliability: float = 1.0
     scarce_capabilities: frozenset[str] = field(default_factory=frozenset)
     region: str | None = None
+    network_hops: int = 0
     metadata: Mapping[str, str] = field(default_factory=dict)
 
     def validate(self) -> None:
@@ -76,6 +77,8 @@ class ExecutorDescriptor:
             raise ValueError("speed_factor must be > 0")
         if not 0.0 <= self.reliability <= 1.0:
             raise ValueError("reliability must be in [0,1]")
+        if self.network_hops < 0:
+            raise ValueError("network_hops must be >= 0")
 
     def estimated_runtime_seconds(self, job: JobRequest) -> int:
         return int(ceil(job.expected_seconds / self.speed_factor))
