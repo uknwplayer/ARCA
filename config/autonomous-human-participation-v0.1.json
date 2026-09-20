@@ -5,8 +5,8 @@
   "geographic_scope": {
     "default": "BRAZIL_NATIONAL",
     "supported_levels": ["NATIONAL", "FEDERAL", "STATE", "MUNICIPAL"],
-    "barueri_is_test_origin_only": true,
-    "barueri_is_default_scope": false,
+    "initial_municipal_profile_is_test_origin_only": true,
+    "initial_municipal_profile_is_default_scope": false,
     "jurisdiction_profiles_are_parameterized": true
   },
   "activation": {
