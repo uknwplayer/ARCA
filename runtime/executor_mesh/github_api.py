@@ -173,11 +173,7 @@ class GitHubContentsQueueTransport:
             candidates = [item for item in artifacts.get("artifacts", []) if not item.get("expired")]
             if len(candidates) != 1:
                 raise ProviderPermanentError("expected exactly one non-expired result artifact")
-            _, archive = self._request(
-                "GET",
-                f"/repos/{repository}/actions/artifacts/{candidates[0]['id']}/zip",
-                accept="application/vnd.github+json",
-            )
+            archive = self._download_artifact(repository, candidates[0]["id"])
             with zipfile.ZipFile(io.BytesIO(archive)) as zipped:
                 names = [name for name in zipped.namelist() if name.endswith("execution-result.json")]
                 if len(names) != 1:
