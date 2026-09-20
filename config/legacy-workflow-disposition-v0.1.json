@@ -1,0 +1,31 @@
+{
+  "schema": "arca.legacy-workflow-disposition.v0.1",
+  "count": 18,
+  "workflows": [
+    {"id":"federation-response-validation","disposition":"RETIRED_WRAPPER","replacement":"canonical-ci-tests"},
+    {"id":"a2a-live-discovery","disposition":"REFACTOR_BOUNDED_PUBLIC_NETWORK","replacement":"future-network-execution-profile"},
+    {"id":"a2a-github-reference-resolution","disposition":"REFACTOR_BOUNDED_PUBLIC_NETWORK","replacement":"future-network-execution-profile"},
+    {"id":"a2a-reference-inspection","disposition":"REFACTOR_BOUNDED_PUBLIC_NETWORK","replacement":"future-network-execution-profile"},
+    {"id":"a2a-registry-resolution","disposition":"REFACTOR_BOUNDED_PUBLIC_NETWORK","replacement":"future-network-execution-profile"},
+    {"id":"a2a-registry-search","disposition":"REFACTOR_BOUNDED_PUBLIC_NETWORK","replacement":"future-network-execution-profile"},
+    {"id":"a2a-runtime-reachability","disposition":"REFACTOR_BOUNDED_PUBLIC_NETWORK","replacement":"future-network-execution-profile"},
+    {"id":"federation-introduction-delivery","disposition":"REHOME_PRIVATE_OPERATIONS","replacement":"private-federation-operations"},
+    {"id":"gemini-live-validation","disposition":"REHOME_PROVIDER_INTEGRATION","replacement":"provider-specific-operations"},
+    {"id":"machine-bridge-controller","disposition":"REFRACTOR_CURRENT_EXECUTION_PLANE","replacement":"executor-mesh-control-plane"},
+    {"id":"machine-bridge-mesh-controller","disposition":"REFRACTOR_CURRENT_EXECUTION_PLANE","replacement":"executor-mesh-control-plane"},
+    {"id":"machine-bridge-mesh-worker","disposition":"REFRACTOR_CURRENT_EXECUTION_PLANE","replacement":"executor-mesh-provider"},
+    {"id":"machine-bridge-worker","disposition":"REFRACTOR_CURRENT_EXECUTION_PLANE","replacement":"executor-mesh-provider"},
+    {"id":"node-introduction-validation","disposition":"RETIRED_WRAPPER","replacement":"canonical-ci-tests"},
+    {"id":"status-email","disposition":"REHOME_OUTSIDE_CORE","replacement":"operations-notification-layer"},
+    {"id":"signed-federation-a-probe","disposition":"REHOME_PRIVATE_OPERATIONS","replacement":"private-federation-operations"},
+    {"id":"signed-federation-b-reconciliation","disposition":"REHOME_PRIVATE_OPERATIONS","replacement":"private-federation-operations"},
+    {"id":"mega-brain-dispatch-validation","disposition":"RETIRED_WRAPPER","replacement":"canonical-ci-tests"}
+  ],
+  "rules": {
+    "legacy_workflow_bulk_restore": false,
+    "legacy_secrets_migrated": false,
+    "legacy_operational_state_reactivated": false,
+    "public_network_requires_bounded_profile": true,
+    "private_federation_identity_required_for_signed_operations": true
+  }
+}
