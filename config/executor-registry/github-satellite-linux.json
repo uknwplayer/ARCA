@@ -1,0 +1,45 @@
+{
+  "schema": "arca.executor-descriptor.v0.1",
+  "executor_id": "github-satellite-linux",
+  "provider_family": "github-git-queue",
+  "trust_state": "VERIFIED",
+  "admission_state": "LAB_ADMITTED",
+  "available": true,
+  "accepts_private": false,
+  "accepts_secrets": false,
+  "fixed_cost_microunits": 0,
+  "cost_per_second_microunits": 0,
+  "queue_seconds": 0,
+  "speed_factor": 1,
+  "reliability": 0.99,
+  "network_hops": 1,
+  "capabilities": [
+    "python",
+    "os.linux",
+    "artifact.sha256",
+    "profile.smoke",
+    "profile.python-unit"
+  ],
+  "scarce_capabilities": [],
+  "metadata": {
+    "transport_target": "uknwplayer/arca-execution-satellite",
+    "queue_branch": "main",
+    "queue_prefix": "queue/requests",
+    "execution_domain": "arca-execution-satellite"
+  },
+  "evidence": {
+    "proof_id": "arca-mesh-satellite-linux-001",
+    "request_id": "arca-mesh-satellite-linux-001",
+    "dispatch_commit_sha": "282367be5fc9a510493b5c0416551cf1b7c1aec7",
+    "run_id": "35517780183",
+    "conclusion": "success",
+    "request_sha256": "4f2332d12b20633039316342fc963c6572b5d0fdb7a72431496db76a1e137b01",
+    "result_sha256": "7f2ca5fd394f877ffff3c75507a720d5195703eb5e3e27c9c030a001a95a1d5a",
+    "result_file_sha256": "2b17b52e24943c24adf5cad857cebc737d8ab026887d4be3c6f6690d02f8b1cd",
+    "artifact_id": "10607601177",
+    "artifact_digest": "sha256:6c8eb6df3009e5d424cbd23c91c69210d4dfc47582b591b06c437202541afd7c",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "python": "3.12.14",
+    "semantic_hash_recomputed": true
+  }
+}
