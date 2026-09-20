@@ -2,6 +2,7 @@ from .adapter import DispatchRef, ProviderPermanentError, ProviderTransientError
 from .catalog import load_descriptor, load_registry
 from .dispatcher import DispatchDecision, ExecutorMeshDispatcher
 from .git_queue import GitQueueAdapter, GitQueueTransport
+from .github_api import GitHubContentsQueueTransport, QueueTargetPolicy
 from .journal import DispatchJournal, job_fingerprint
 from .model import ExecutorDescriptor, JobRequest
 from .registry import ExecutorRegistry
@@ -17,10 +18,12 @@ __all__ = [
     "ExecutorRegistry",
     "GitQueueAdapter",
     "GitQueueTransport",
+    "GitHubContentsQueueTransport",
     "JobRequest",
     "NoEligibleExecutor",
     "ProviderPermanentError",
     "ProviderTransientError",
+    "QueueTargetPolicy",
     "RankedExecutor",
     "RoutingPolicy",
     "evaluate_eligibility",
