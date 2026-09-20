@@ -1,0 +1,1 @@
+{"schema":"arca.autonomous-case-generation.v0.1","initial_evidence_state":"UNRESOLVED","initial_visibility":"PRIVATE_REVIEW","requirements":["red_flag_refs","provenance_refs","verification_questions","public_interest_scope"],"forbidden":["automatic_publication","automatic_accusation","private_data_acquisition","evidence_state_auto_promotion"]}
