@@ -1,0 +1,71 @@
+name: ARCA PNCP Controlled Live Probe
+run-name: PNCP controlled live probe ${{ github.run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type exactly PNCP_PUBLIC_GET_ONLY'
+        required: true
+        type: string
+      uf:
+        description: 'Brazilian UF code, e.g. SP'
+        required: true
+        type: string
+      date:
+        description: 'Single observation date in YYYYMMDD'
+        required: true
+        type: string
+      modalidade_id:
+        description: 'PNCP modalidade id'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  controlled-live-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Preflight authorization and custody secret
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$CONFIRMATION" = "PNCP_PUBLIC_GET_ONLY"
+          test -n "$ARCA_PNCP_CUSTODY_PASSPHRASE"
+          test "${#ARCA_PNCP_CUSTODY_PASSPHRASE}" -ge 24
+      - name: Checkout canonical control plane
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Execute one-shard bounded public GET probe
+        env:
+          ARCA_PNCP_CONFIRMATION: ${{ inputs.confirmation }}
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+          ARCA_PNCP_LIVE_UF: ${{ inputs.uf }}
+          ARCA_PNCP_LIVE_DATE: ${{ inputs.date }}
+          ARCA_PNCP_LIVE_MODALITY_ID: ${{ inputs.modalidade_id }}
+          ARCA_PNCP_LIVE_OUTPUT_DIR: ${{ github.workspace }}/artifacts
+        run: node scripts/arca-pncp-national-live-probe.mjs
+      - name: Upload encrypted custody and sanitized proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pncp-controlled-live-proof-${{ github.run_id }}
+          path: |
+            artifacts/pncp-live-custody.envelope.json
+            artifacts/pncp-live-proof.json
+          if-no-files-found: warn
+          retention-days: 90

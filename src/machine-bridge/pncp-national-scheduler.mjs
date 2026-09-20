@@ -32,6 +32,20 @@ function validatePlan(plan){
     ids.add(shard.shardId);
   }
 }
+function selectedShards(plan,shardIds){
+  if(shardIds===undefined||shardIds===null)return null;
+  if(!Array.isArray(shardIds)||shardIds.length<1||shardIds.length>27)
+    throw new Error("ARCA_PNCP_SCHEDULER_SELECTION_INVALID");
+  const available=new Set(plan.shards.map(shard=>shard.shardId));
+  const selected=new Set();
+  for(const value of shardIds){
+    const id=String(value??"").trim().toUpperCase();
+    if(!/^BR-UF-[A-Z]{2}$/.test(id)||!available.has(id)||selected.has(id))
+      throw new Error("ARCA_PNCP_SCHEDULER_SELECTION_INVALID");
+    selected.add(id);
+  }
+  return selected;
+}
 function planFingerprint(plan){
   return digest({
     format:plan.format,
@@ -124,6 +138,7 @@ export function createPncpNationalScheduler({
       discoveryRunner,
       classifier,
       ingress,
+      shardIds=null,
       maxShardsPerRun=3,
       maxFailuresPerRun=1,
       maxObservationsPerShard=100,
@@ -132,6 +147,7 @@ export function createPncpNationalScheduler({
       confirmation=null
     }={}){
       validatePlan(plan);
+      const selection=selectedShards(plan,shardIds);
       if(!discoveryRunner||typeof discoveryRunner.run!=="function"||
          typeof discoveryRunner.networkEnabled!=="boolean")
         throw new Error("ARCA_PNCP_SCHEDULER_RUNNER_INVALID");
@@ -155,7 +171,8 @@ export function createPncpNationalScheduler({
 
       const pending=[...plan.shards]
         .sort((a,b)=>a.shardId.localeCompare(b.shardId))
-        .filter(shard=>!checkpoint.completed[shard.shardId]&&
+        .filter(shard=>(selection===null||selection.has(shard.shardId))&&
+          !checkpoint.completed[shard.shardId]&&
           (retryFailed||!checkpoint.failed[shard.shardId]))
         .slice(0,shardBudget);
 
@@ -223,6 +240,7 @@ export function createPncpNationalScheduler({
         observations,
         investigationsCreated:created,
         investigationsAwakened:awakened,
+        selectedShardIds:Object.freeze(selection===null?[]:[...selection].sort()),
         totals:Object.freeze({
           shards:plan.shards.length,
           completed:completeCount,
