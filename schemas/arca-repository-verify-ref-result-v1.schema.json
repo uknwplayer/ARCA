@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:arca:schema:arca-repository-verify-ref-result-v1",
+  "title": "ARCA Repository Verify Ref Result V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format","target","checkout","environment","commands","allCommandsPassed","arbitraryCommandExecuted","repositoryMutationObserved"],
+  "properties": {
+    "format": {"const": "arca-repository-verify-ref-result-v1"},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository","pullRequest","expectedHeadSha","observedHeadSha"],
+      "properties": {
+        "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+        "pullRequest": {"type": "integer", "minimum": 1},
+        "expectedHeadSha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "observedHeadSha": {"type": "string", "pattern": "^[a-f0-9]{40}$"}
+      }
+    },
+    "checkout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detached","targetMutated"],
+      "properties": {
+        "detached": {"const": true},
+        "targetMutated": {"const": false}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeVersion","npmVersion"],
+      "properties": {
+        "nodeVersion": {"type": "string", "pattern": "^v?[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+].*)?$"},
+        "npmVersion": {"type": "string", "minLength": 1}
+      }
+    },
+    "commands": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        {"$ref": "#/$defs/install"},
+        {"$ref": "#/$defs/test"},
+        {"$ref": "#/$defs/check"}
+      ],
+      "items": false
+    },
+    "allCommandsPassed": {"type": "boolean"},
+    "arbitraryCommandExecuted": {"const": false},
+    "repositoryMutationObserved": {"const": false}
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id","argv","exitCode","stdoutSha256","stderrSha256"],
+      "properties": {
+        "id": {"type": "string"},
+        "argv": {"type": "array", "items": {"type": "string"}},
+        "exitCode": {"type": "integer"},
+        "stdoutSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "stderrSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "install": {
+      "allOf": [
+        {"$ref": "#/$defs/evidence"},
+        {"properties": {"id": {"const": "install"}, "argv": {"const": ["npm","ci","--ignore-scripts","--no-audit","--no-fund"]}}}
+      ]
+    },
+    "test": {
+      "allOf": [
+        {"$ref": "#/$defs/evidence"},
+        {"properties": {"id": {"const": "test"}, "argv": {"const": ["npm","test"]}}}
+      ]
+    },
+    "check": {
+      "allOf": [
+        {"$ref": "#/$defs/evidence"},
+        {"properties": {"id": {"const": "check"}, "argv": {"const": ["npm","run","check"]}}}
+      ]
+    }
+  }
+}
