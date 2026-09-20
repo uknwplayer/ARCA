@@ -30,7 +30,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--job-id", required=True)
     result.add_argument("--profile", required=True, choices=("smoke", "python-unit", "node-test", "node-check-public"))
     result.add_argument("--os", required=True, choices=("linux", "windows"))
-    result.add_argument("--disable-local", action="store_true", help="Model the canonical execution domain as unavailable")
+    result.add_argument("--disable-local", action="store_true", help="Model the canonical execution domain as unavailable")\n    result.add_argument("--fail-satellite-a", action="store_true", help="Inject a controlled transient failure into Satellite A transport for Mesh 005 proof")
     result.add_argument("--collect", action="store_true", help="Wait for and canonically verify the remote result")
     result.add_argument("--collect-timeout", type=int, default=180)
     result.add_argument("--poll-seconds", type=int, default=3)
