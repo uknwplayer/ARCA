@@ -463,6 +463,18 @@ class FallbackTests(unittest.TestCase):
         def result(self, ref):
             return {"ok": True}
 
+    class PermanentFailingAdapter:
+        provider_family = "first"
+
+        def submit(self, executor, job):
+            raise ProviderPermanentError("integrity/policy failure")
+
+        def status(self, ref):
+            return "failed"
+
+        def result(self, ref):
+            return {}
+
     def test_transient_failure_falls_back_to_next_executor(self):
         registry = ExecutorRegistry()
         registry.register(
