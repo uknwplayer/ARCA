@@ -48,3 +48,23 @@ class DispatchJournal:
         if existing is not None and existing != ref:
             raise ValueError("job already recorded with different dispatch reference")
         self.entries[job.job_id] = DispatchJournalEntry(job.job_id, job_fingerprint(job), ref)
+
+    def record_attempt(
+        self,
+        job: JobRequest,
+        *,
+        executor_id: str,
+        provider_family: str,
+        outcome: str,
+        detail: str | None = None,
+        ref: DispatchRef | None = None,
+    ) -> None:
+        # Validate reuse before adding provenance when a canonical dispatch exists.
+        self.get(job)
+        self.attempts.setdefault(job.job_id, []).append(
+            DispatchAttempt(executor_id, provider_family, outcome, detail, ref)
+        )
+
+    def attempt_history(self, job: JobRequest) -> tuple[DispatchAttempt, ...]:
+        self.get(job)
+        return tuple(self.attempts.get(job.job_id, ()))
