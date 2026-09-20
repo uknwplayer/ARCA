@@ -73,6 +73,12 @@ def main():
     learning=CaseLearningPolicy.load(ROOT/"config"/"case-learning-pipeline-v0.1.json")
     learning.validate(LearningRecord("synthetic-case","ADMITTED",1,1,True,True))
 
+    roadmap=load_json(ROOT/"config"/"investigative-roadmap-v0.1.json")
+    assert roadmap["roadmap_steps"]==16
+    assert len(roadmap["components"])==16
+    assert all(roadmap["validated_invariants"].values())
+    assert roadmap["live_scope"]["live_real_world_investigation"]=="NOT_CLAIMED"
+
     print("ARCA investigative roadmap controlled pilot: PASS")
     print("raw_artifacts_persisted=false")
     print("case_visibility=PRIVATE_INVESTIGATION")
