@@ -72,6 +72,7 @@ class RegistryAndSchedulerTests(unittest.TestCase):
                 "github-arca-windows",
                 "github-satellite-linux",
                 "github-satellite-windows",
+                "github-satellite-b-linux",
             },
         )
         for item in registry.all():
