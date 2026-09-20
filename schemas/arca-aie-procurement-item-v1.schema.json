@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-aie-procurement-item-v1.schema.json",
+  "title": "ARCA AIE Procurement Item v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "itemId",
+    "format",
+    "procurementId",
+    "itemNumber",
+    "description",
+    "objectClass",
+    "quantity",
+    "unit",
+    "unitPrice",
+    "totalPrice",
+    "comparabilityKey",
+    "sourceRefs",
+    "normalization"
+  ],
+  "properties": {
+    "itemId": { "type": "string", "pattern": "^PITEM-[A-F0-9]{12}$" },
+    "format": { "const": "arca-aie-procurement-item-v1" },
+    "procurementId": { "type": ["string", "null"] },
+    "itemNumber": { "type": ["string", "null"] },
+    "description": { "type": ["string", "null"] },
+    "objectClass": { "type": ["string", "null"] },
+    "quantity": { "type": ["number", "null"] },
+    "unit": { "type": ["string", "null"] },
+    "unitPrice": { "type": ["number", "null"] },
+    "totalPrice": { "type": ["number", "null"] },
+    "comparabilityKey": { "type": ["string", "null"] },
+    "sourceRefs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "warnings", "originalShapeHash"],
+      "properties": {
+        "method": { "const": "public-procurement-item-normalizer-v1" },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "originalShapeHash": { "type": "string", "pattern": "^RAWITEM-[A-F0-9]{12}$" }
+      }
+    }
+  }
+}

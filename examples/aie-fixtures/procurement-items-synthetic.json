@@ -1,0 +1,28 @@
+{
+  "risk": [
+    { "procurementId": "PROC-R1", "itemNumber": 1, "description": "Arroz tipo 1", "objectClass": "arroz tipo 1", "quantity": 100, "unit": "kg", "totalPrice": 500 },
+    { "procurementId": "PROC-R2", "itemNumber": 1, "description": "Arroz Tipo 1", "objectClass": "arroz tipo 1", "quantity": 200, "unit": "quilograma", "totalPrice": 1020 },
+    { "procurementId": "PROC-R3", "itemNumber": 1, "description": "ARROZ TIPO 1", "objectClass": "arroz tipo 1", "quantity": 50, "unit": "quilos", "totalPrice": 245 },
+    { "procurementId": "PROC-R4", "itemNumber": 1, "description": "Arroz tipo 1", "objectClass": "arroz tipo 1", "quantity": 80, "unit": "KG", "totalPrice": 400 },
+    { "procurementId": "PROC-R5", "itemNumber": 1, "description": "Arroz tipo 1", "objectClass": "arroz tipo 1", "quantity": 100, "unit": "kg", "totalPrice": 520 },
+    { "procurementId": "PROC-R6", "itemNumber": 1, "description": "Arroz tipo 1", "objectClass": "arroz tipo 1", "quantity": 100, "unit": "kg", "totalPrice": 1200 },
+    { "procurementId": "PROC-X1", "itemNumber": 2, "description": "Feijao carioca", "objectClass": "feijao carioca", "quantity": 100, "unit": "kg", "totalPrice": 1200 }
+  ],
+  "normal": [
+    { "procurementId": "PROC-N1", "itemNumber": 1, "description": "Acucar refinado", "objectClass": "acucar refinado", "quantity": 100, "unit": "kg", "totalPrice": 400 },
+    { "procurementId": "PROC-N2", "itemNumber": 1, "description": "Acucar refinado", "objectClass": "acucar refinado", "quantity": 100, "unit": "quilogramas", "totalPrice": 405 },
+    { "procurementId": "PROC-N3", "itemNumber": 1, "description": "Acucar refinado", "objectClass": "acucar refinado", "quantity": 100, "unit": "kg", "totalPrice": 395 },
+    { "procurementId": "PROC-N4", "itemNumber": 1, "description": "Acucar refinado", "objectClass": "acucar refinado", "quantity": 100, "unit": "kg", "totalPrice": 410 },
+    { "procurementId": "PROC-N5", "itemNumber": 1, "description": "Acucar refinado", "objectClass": "acucar refinado", "quantity": 100, "unit": "kg", "totalPrice": 390 },
+    { "procurementId": "PROC-N6", "itemNumber": 1, "description": "Acucar refinado", "objectClass": "acucar refinado", "quantity": 100, "unit": "kg", "totalPrice": 402 }
+  ],
+  "pncpBundle": {
+    "contratacao": {
+      "numeroControlePNCP": "99999999000199-1-000001/2026"
+    },
+    "itens": [
+      { "numeroItem": 1, "descricao": "Leite integral", "quantidade": 250, "unidadeMedida": "litro", "valorUnitarioEstimado": 5.4, "valorTotalEstimado": 1350, "classe": "leite integral" },
+      { "numeroItem": 2, "descricao": "Copos descartaveis", "quantidade": 1000, "unidadeMedida": "unidade", "valorTotalEstimado": 180, "classe": "copo descartavel" }
+    ]
+  }
+}
