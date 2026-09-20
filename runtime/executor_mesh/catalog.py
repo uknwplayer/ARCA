@@ -27,6 +27,7 @@ def load_descriptor(path: str | Path) -> ExecutorDescriptor:
         reliability=float(data.get("reliability", 1.0)),
         scarce_capabilities=frozenset(data.get("scarce_capabilities", [])),
         region=data.get("region"),
+        network_hops=int(data.get("network_hops", 0)),
         metadata=data.get("metadata", {}),
     )
     descriptor.validate()
