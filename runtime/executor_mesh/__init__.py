@@ -6,9 +6,11 @@ from .github_api import GitHubContentsQueueTransport, QueueTargetPolicy
 from .journal import DispatchJournal, job_fingerprint
 from .model import ExecutorDescriptor, JobRequest
 from .registry import ExecutorRegistry
+from .result import AcceptedExecutionReceipt, verify_public_result
 from .scheduler import CostAwareScheduler, NoEligibleExecutor, RankedExecutor, RoutingPolicy, evaluate_eligibility
 
 __all__ = [
+    "AcceptedExecutionReceipt",
     "CostAwareScheduler",
     "DispatchDecision",
     "DispatchJournal",
@@ -30,4 +32,5 @@ __all__ = [
     "job_fingerprint",
     "load_descriptor",
     "load_registry",
+    "verify_public_result",
 ]
