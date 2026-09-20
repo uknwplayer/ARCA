@@ -7,7 +7,7 @@ export const PNCP_WATCH_OBSERVATION_SCHEMA="arca.pncp-watch-observation.v0.1";
 export const BRAZIL_UF_CODES=Object.freeze([
   "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG",
   "PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
-]);
+].sort());
 
 const UF_SET=new Set(BRAZIL_UF_CODES);
 const ACTIONABLE=new Map([
