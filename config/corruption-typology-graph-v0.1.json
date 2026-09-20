@@ -1,0 +1,40 @@
+{
+  "schema": "arca.corruption-typology-graph.v0.1",
+  "node_kinds": [
+    "TYPOLOGY",
+    "ACTOR_ROLE",
+    "ENTITY_ROLE",
+    "RELATIONSHIP",
+    "EVENT",
+    "RESOURCE_FLOW",
+    "TRACE",
+    "RED_FLAG",
+    "SOURCE_CLASS",
+    "VERIFICATION_QUESTION",
+    "DOCUMENTED_CASE_PATTERN"
+  ],
+  "edge_kinds": [
+    "HAS_ROLE",
+    "INVOLVES_ENTITY_ROLE",
+    "MAY_CREATE_RELATIONSHIP",
+    "MAY_PRODUCE_EVENT",
+    "MAY_AFFECT_RESOURCE_FLOW",
+    "MAY_LEAVE_TRACE",
+    "MAY_INDICATE",
+    "TESTABLE_WITH",
+    "ASK",
+    "ABSTRACTED_FROM"
+  ],
+  "red_flag_requirements": [
+    "TRACE",
+    "SOURCE_CLASS",
+    "VERIFICATION_QUESTION"
+  ],
+  "invariants": {
+    "red_flag_is_not_finding": true,
+    "case_specific_named_targets_not_public_pattern_content": true,
+    "evidence_taxonomy_required_for_real_case_claims": true,
+    "operational_evasion_instructions_forbidden": true,
+    "raw_artifacts_not_repository_content": true
+  }
+}
