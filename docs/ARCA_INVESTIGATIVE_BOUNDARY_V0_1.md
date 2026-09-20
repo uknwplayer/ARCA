@@ -59,6 +59,18 @@ ARCA must reject investigative tasks that require or propose:
 
 This restriction applies even when the intended investigation concerns corruption or another serious allegation.
 
+## Repository retention boundary
+
+Raw investigative inputs are processing material, not repository content.
+
+ARCA repositories must not be used as media/document stores for uploaded videos, audio, images, PDFs, archives, scraped page dumps, or equivalent raw investigative files. This applies to both public and private project repositories.
+
+A worker may process an input transiently, then persist only the minimum derived knowledge needed by the investigation: structured observations, extracted claims, normalized entities/relations, hashes or source references needed for provenance, and later evidence classifications. Derived data must still obey privacy, evidence, and public/private publication rules.
+
+A source URL or cryptographic digest may identify an external/input artifact without copying that artifact into a repository. Temporary executor artifacts must follow their existing bounded retention policy and are not an investigative archive.
+
+Public ARCA stores generic code, schemas, abstract typologies, tests, and non-case-specific documentation. Case-specific derived investigative knowledge remains in the designated private investigative store when one is introduced. The private Registry remains a project checkpoint/archive and is not the investigative corpus.
+
 ## Sensitive and private information
 
 Public availability does not automatically make every personal detail relevant.
