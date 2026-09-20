@@ -1,0 +1,70 @@
+{
+  "schema": "arca.defensive-typology-corpus.v0.1",
+  "entries": [
+    {
+      "id": "procurement.suspicious-bidding-patterns.v0.1",
+      "title": "Suspicious bidding patterns",
+      "scope": "Public procurement competition-integrity detection",
+      "traces": [
+        "repeated or rotating winner patterns across comparable tenders",
+        "unexpected withdrawal or non-participation patterns among regular bidders",
+        "winning bidder later subcontracting to an unsuccessful bidder",
+        "material similarities across nominally competing bid documents or metadata"
+      ],
+      "red_flags": [
+        "bidding pattern warrants independent competition-integrity review",
+        "bid-document similarity warrants provenance and authorship checks"
+      ],
+      "source_classes": ["public_procurement_record", "official_public_record"],
+      "verification_questions": [
+        "Does the pattern persist across comparable tenders after accounting for geography, capacity and market structure?",
+        "Can the apparent bid-document similarity be independently verified from lawfully public records or official data?"
+      ],
+      "sources": ["oecd.bid-rigging-guidelines-2025"],
+      "match_is_finding": false
+    },
+    {
+      "id": "procurement.lifecycle-integrity-risks.v0.1",
+      "title": "Procurement lifecycle integrity risks",
+      "scope": "Public procurement integrity detection",
+      "traces": [
+        "tender requirements unusually narrow relative to the stated need",
+        "non-competitive procedure or single-bid outcome requiring contextual review",
+        "material post-award contract modifications",
+        "documented delivery or invoicing mismatch"
+      ],
+      "red_flags": [
+        "procurement design or outcome warrants contextual integrity review",
+        "post-award change or delivery record warrants comparison with contract terms"
+      ],
+      "source_classes": ["public_procurement_record", "public_spending_record", "official_public_record"],
+      "verification_questions": [
+        "Is there a documented lawful and operational justification for the procurement design or non-competitive outcome?",
+        "Do amendments, delivery records and payments remain consistent with the awarded contract and documented performance?"
+      ],
+      "sources": ["oecd.integrity-public-procurement-2026"],
+      "match_is_finding": false
+    },
+    {
+      "id": "ownership.beneficial-ownership-opacity.v0.1",
+      "title": "Beneficial ownership opacity",
+      "scope": "Lawful public-record ownership/control verification",
+      "traces": [
+        "public ownership records do not clearly identify the natural persons exercising ownership or control",
+        "material ownership/control information conflicts across authoritative public sources",
+        "multi-entity structure requires additional public-record tracing to establish control"
+      ],
+      "red_flags": [
+        "ownership or control cannot yet be resolved from available public records",
+        "material public-record ownership inconsistency requires corroboration"
+      ],
+      "source_classes": ["public_corporate_registry", "official_public_record"],
+      "verification_questions": [
+        "Which natural persons can be established as exercising ownership or control from lawful authoritative records?",
+        "Can conflicting ownership information be resolved through independent public sources and dated provenance?"
+      ],
+      "sources": ["fatf.beneficial-ownership-topic", "fatf.concealment-beneficial-ownership"],
+      "match_is_finding": false
+    }
+  ]
+}
