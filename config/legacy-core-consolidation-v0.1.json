@@ -1,0 +1,28 @@
+{
+  "schema": "arca.legacy-core-consolidation.v0.1",
+  "canonical": "public-arca",
+  "strategy": "selective-consolidation",
+  "legacy_snapshot": {
+    "files": 661,
+    "shared_paths": 568,
+    "byte_identical": 546,
+    "shared_divergent": 22,
+    "legacy_only": 93
+  },
+  "legacy_only_classes": {
+    "operational_workflows_refactor_or_rehome": 18,
+    "project_history_archive": 29,
+    "remote_job_state_archive": 37,
+    "remote_mesh_state_archive": 7,
+    "private_trust_identity": 1,
+    "obsolete_environment_metadata": 1
+  },
+  "rules": {
+    "bulk_copy_forbidden": true,
+    "canonical_divergent_files_win_by_default": true,
+    "private_identity_never_public": true,
+    "operational_state_not_core_source": true,
+    "legacy_deletion_planned": false,
+    "freeze_requires_explicit_workflow_disposition": true
+  }
+}
