@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";import {codecFor} from "../../src/machine-bridge/provider-codecs.mjs";
+test("codecs encode five providers",()=>{for(const p of ["openai","anthropic","gemini","meta","grok"]){const c=codecFor(p,"m");const body=c.encode({context:{phase:"independent"}});assert.equal(body.model,"m");assert.equal(JSON.stringify(body).includes("untrusted evidence"),true);}});
+test("OpenAI and Anthropic decode ARCA steps",()=>{assert.equal(codecFor("openai","m").decode({output_text:'{"kind":"final","body":"ok"}'}).body,"ok");assert.equal(codecFor("anthropic","m").decode({content:[{type:"text",text:'{"kind":"tool","name":"audit_get_commit","args":{}}'}]}).name,"audit_get_commit");});
+test("OpenAI-compatible codecs decode steps",()=>{for(const p of ["gemini","meta","grok"])assert.equal(codecFor(p,"m").decode({choices:[{message:{content:'{"kind":"final","body":"ok"}'}}]}).body,"ok");});
+test("codec fails closed on prose",()=>{assert.throws(()=>codecFor("grok","m").decode({choices:[{message:{content:"sure"}}]}),/INVALID_JSON/);});

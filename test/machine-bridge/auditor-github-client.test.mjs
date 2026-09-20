@@ -1,0 +1,6 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {createGitHubReadOnlyAuditClient} from "../../src/machine-bridge/auditor-github-client.mjs";
+const response=(body,status=200,ct="application/json")=>({status,ok:status>=200&&status<300,headers:{get:()=>ct},json:async()=>body,text:async()=>String(body)});
+test("client performs GET only and does not expose token in result",async()=>{const calls=[];const c=createGitHubReadOnlyAuditClient({token:"secret-test",fetchImpl:async(u,o)=>{calls.push([u,o]);return response({sha:"x"})}});assert.deepEqual(await c.fetchResource({repo:"o/r",kind:"commit",sha:"abc"}),{sha:"x"});assert.equal(calls[0][1].method,"GET");assert.match(calls[0][1].headers.Authorization,/Bearer/);assert.equal(JSON.stringify(await c.fetchResource({repo:"o/r",kind:"commit",sha:"def"})).includes("secret-test"),false);});
+test("404 is observational null",async()=>{const c=createGitHubReadOnlyAuditClient({fetchImpl:async()=>response({},404)});assert.equal(await c.fetchResource({repo:"o/r",kind:"pull",number:1}),null);});
+test("unsupported kind fails closed",async()=>{const c=createGitHubReadOnlyAuditClient({fetchImpl:async()=>response({})});await assert.rejects(()=>c.fetchResource({repo:"o/r",kind:"delete"}),/UNSUPPORTED/);});

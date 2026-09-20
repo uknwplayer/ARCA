@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-redaction-export-receipt-v1.schema.json",
+  "title":"ARCA Redaction Export Receipt v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","exportId","publicationId","decisionHash","classificationHash","inputArtifactSha256","outputArtifactSha256","appliedRedactions","removedValueHashesStored","removedValuesStored","requiredRedactionsSatisfied","exportPerformedBy","exportedAt","receiptHash"],
+  "properties":{
+    "format":{"const":"arca-redaction-export-receipt-v1"},
+    "exportId":{"type":"string"},"publicationId":{"type":"string"},
+    "decisionHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},"classificationHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "inputArtifactSha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"outputArtifactSha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "appliedRedactions":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason","replacement"],"properties":{"field":{"type":"string"},"reason":{"type":"string"},"replacement":{"type":"string"}}}},
+    "removedValueHashesStored":{"const":false},"removedValuesStored":{"const":false},"requiredRedactionsSatisfied":{"const":true},
+    "exportPerformedBy":{"type":"string"},"exportedAt":{"type":"string","format":"date-time"},"receiptHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

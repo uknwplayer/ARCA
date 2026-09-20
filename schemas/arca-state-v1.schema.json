@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-state-v1.schema.json",
+  "title": "ARCA Canonical Investigation State v1",
+  "type": "object",
+  "required": [
+    "protocolVersion",
+    "schemaVersion",
+    "investigation",
+    "objects",
+    "relations",
+    "projection"
+  ],
+  "properties": {
+    "protocolVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "arca-state-v1" },
+    "investigation": { "$ref": "#/$defs/investigation" },
+    "objects": {
+      "type": "object",
+      "required": [
+        "questions",
+        "sources",
+        "documents",
+        "information",
+        "propositions",
+        "entities",
+        "events",
+        "hypotheses",
+        "conclusions",
+        "frames",
+        "gaps",
+        "searches"
+      ],
+      "properties": {
+        "questions": { "$ref": "#/$defs/questions" },
+        "sources": { "$ref": "#/$defs/sources" },
+        "documents": { "$ref": "#/$defs/documents" },
+        "information": { "$ref": "#/$defs/information" },
+        "propositions": { "$ref": "#/$defs/propositions" },
+        "entities": { "$ref": "#/$defs/entities" },
+        "events": { "$ref": "#/$defs/domainEvents" },
+        "hypotheses": { "$ref": "#/$defs/hypotheses" },
+        "conclusions": { "$ref": "#/$defs/conclusions" },
+        "frames": { "$ref": "#/$defs/frames" },
+        "gaps": { "$ref": "#/$defs/gaps" },
+        "searches": { "$ref": "#/$defs/searches" }
+      },
+      "additionalProperties": false
+    },
+    "relations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/relation" }
+    },
+    "projection": {
+      "type": "object",
+      "required": ["sequence", "eventHead", "createdAt", "updatedAt"],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 1 },
+        "eventHead": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": true
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["eventId", "sequence", "operation", "timestamp", "actor"],
+        "additionalProperties": true
+      }
+    },
+    "legacyHistory": { "type": "array" },
+    "extensions": { "type": "object" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "isoDateTime": { "type": "string", "format": "date-time" },
+    "validity": {
+      "enum": ["active", "invalidated", "archived"]
+    },
+    "epistemicStatus": {
+      "enum": [
+        "Confirmado",
+        "Provável",
+        "Possível",
+        "Não verificado",
+        "Contradito",
+        "Desconhecido"
+      ]
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "type", "createdAt", "validity"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "createdAt": { "$ref": "#/$defs/isoDateTime" },
+        "updatedAt": { "$ref": "#/$defs/isoDateTime" },
+        "validity": { "$ref": "#/$defs/validity" },
+        "invalidatedAt": { "$ref": "#/$defs/isoDateTime" },
+        "invalidationReason": { "type": "string", "minLength": 1 },
+        "needsReevaluation": { "type": "boolean" },
+        "pendingSemanticReview": { "type": "boolean" },
+        "simulation": { "type": "boolean" },
+        "extensions": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "investigation": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "questionIds",
+        "objective",
+        "scope",
+        "limits",
+        "lifecycleStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^INV-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "type": { "const": "INV" },
+        "questionIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^Q-[A-Za-z0-9][A-Za-z0-9._-]*$" }
+        },
+        "objective": { "type": "string", "minLength": 1 },
+        "scope": { "type": "string", "minLength": 1 },
+        "limits": { "type": "string", "minLength": 1 },
+        "lifecycleStatus": { "enum": ["active", "closed", "reopened", "archived"] },
+        "createdAt": { "$ref": "#/$defs/isoDateTime" },
+        "updatedAt": { "$ref": "#/$defs/isoDateTime" },
+        "simulation": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["text"],
+            "properties": {
+              "id": { "pattern": "^Q-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+              "type": { "const": "Q" },
+              "text": { "type": "string", "minLength": 1 }
+            }
+          }
+        ]
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["name"],
+            "properties": {
+              "id": { "pattern": "^SRC-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+              "type": { "const": "SRC" },
+              "name": { "type": "string", "minLength": 1 },
+              "independenceGroup": { "type": ["string", "null"] }
+            }
+          }
+        ]
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["title", "sourceId", "acquiredAt", "acquisitionMethod"],
+            "properties": {
+              "id": { "pattern": "^DOC-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+              "type": { "const": "DOC" },
+              "title": { "type": "string", "minLength": 1 },
+              "sourceId": { "type": "string", "pattern": "^SRC-" },
+              "acquiredAt": { "$ref": "#/$defs/isoDateTime" },
+              "acquisitionMethod": { "type": "string", "minLength": 1 },
+              "hashSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+              "hashStatus": { "enum": ["computed", "verified", "not_computed", "unavailable", "simulated"] }
+            }
+          }
+        ]
+      }
+    },
+    "information": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["documentId", "content"],
+            "properties": {
+              "id": { "pattern": "^INF-" },
+              "type": { "const": "INF" },
+              "documentId": { "type": "string", "pattern": "^DOC-" },
+              "content": { "type": "string", "minLength": 1 },
+              "locator": { "type": ["string", "null"] },
+              "derivedFrom": { "type": ["string", "null"] },
+              "transformation": { "type": ["object", "null"] }
+            }
+          }
+        ]
+      }
+    },
+    "propositions": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["text", "epistemicStatus"],
+            "properties": {
+              "id": { "pattern": "^PRO-" },
+              "type": { "const": "PRO" },
+              "text": { "type": "string", "minLength": 1 },
+              "epistemicStatus": { "$ref": "#/$defs/epistemicStatus" },
+              "classificationJustification": { "type": ["string", "null"] }
+            }
+          }
+        ]
+      }
+    },
+    "entities": { "type": "array", "items": { "allOf": [{ "$ref": "#/$defs/node" }, { "properties": { "id": { "pattern": "^ENT-" }, "type": { "const": "ENT" } } }] } },
+    "domainEvents": { "type": "array", "items": { "allOf": [{ "$ref": "#/$defs/node" }, { "properties": { "id": { "pattern": "^EVT-" }, "type": { "const": "EVT" } } }] } },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["statement", "tests", "alternatives", "devilsAdvocateCompleted"],
+            "properties": {
+              "id": { "pattern": "^HIP-" },
+              "type": { "const": "HIP" },
+              "statement": { "type": "string", "minLength": 1 },
+              "tests": { "type": "array" },
+              "alternatives": { "type": "array" },
+              "devilsAdvocateCompleted": { "type": "boolean" }
+            }
+          }
+        ]
+      }
+    },
+    "conclusions": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["questionId", "statement", "scope", "limitations", "reopeningConditions"],
+            "properties": {
+              "id": { "pattern": "^CON-" },
+              "type": { "const": "CON" },
+              "questionId": { "type": "string", "pattern": "^Q-" },
+              "statement": { "type": "string", "minLength": 1 },
+              "scope": { "type": "string", "minLength": 1 },
+              "limitations": { "type": "array" },
+              "favorableBases": { "type": "array" },
+              "contraryBases": { "type": "array" },
+              "materialGaps": { "type": "array" },
+              "reopeningConditions": { "type": "array", "minItems": 1 },
+              "limitJustification": { "type": ["string", "null"] },
+              "lifecycleStatus": { "enum": ["draft", "provisional", "closed", "reopened"] }
+            }
+          }
+        ]
+      }
+    },
+    "frames": { "type": "array", "items": { "allOf": [{ "$ref": "#/$defs/node" }, { "properties": { "id": { "pattern": "^FRM-" }, "type": { "const": "FRM" } } }] } },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/node" },
+          {
+            "required": ["gapState", "description", "materiality"],
+            "properties": {
+              "id": { "pattern": "^GAP-" },
+              "type": { "const": "GAP" },
+              "gapState": { "enum": ["L0", "L1", "L2", "L3", "L4", "L5", "L6"] },
+              "gapType": { "type": ["string", "null"] },
+              "description": { "type": "string", "minLength": 1 },
+              "materiality": { "enum": ["low", "medium", "high", "critical", "baixa", "média", "alta", "crítica"] },
+              "likelyToChangeResult": { "type": ["boolean", "null"] },
+              "nextAction": { "type": ["string", "null"] }
+            }
+          }
+        ]
+      }
+    },
+    "searches": { "type": "array", "items": { "allOf": [{ "$ref": "#/$defs/node" }, { "properties": { "id": { "pattern": "^SEA-" }, "type": { "const": "SEARCH" } } }] } },
+    "relation": {
+      "type": "object",
+      "required": ["id", "type", "from", "to", "relationType", "category", "createdAt", "validity"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^REL-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "type": { "const": "REL" },
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "relationType": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["investigation", "provenance", "evidence", "epistemic", "semantic", "temporal", "identity", "frame", "operational"] },
+        "effect": { "enum": ["supports", "weakens", "contradicts", "inconclusive", "compatible"] },
+        "justification": { "type": ["string", "null"] },
+        "materiality": { "type": ["string", "null"] },
+        "createdAt": { "$ref": "#/$defs/isoDateTime" },
+        "validity": { "$ref": "#/$defs/validity" },
+        "needsReevaluation": { "type": "boolean" },
+        "extensions": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

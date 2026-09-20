@@ -1,0 +1,28 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-security-incident-v1.schema.json",
+  "title":"ARCA Security Incident v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","incidentId","discoveredAt","controllerKnowledgeAt","personalDataAffected","summary","affectedDataCategories","affectedSubjectsEstimate","mitigation","communicationStatus","notificationWindow","smallAgentWindowMayDiffer","registeredAt","retentionNotBefore","legalAdviceProvided","automatedLegalConclusion","notificationPerformed","incidentHash"],
+  "properties":{
+    "format":{"const":"arca-security-incident-v1"},
+    "incidentId":{"type":"string"},
+    "discoveredAt":{"type":"string","format":"date-time"},
+    "controllerKnowledgeAt":{"type":["string","null"],"format":"date-time"},
+    "personalDataAffected":{"type":["boolean","null"]},
+    "summary":{"type":"string","minLength":1,"maxLength":2000},
+    "affectedDataCategories":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "affectedSubjectsEstimate":{"type":["integer","null"],"minimum":0},
+    "mitigation":{"type":"string","maxLength":3000},
+    "communicationStatus":{"const":"undetermined"},
+    "notificationWindow":{"const":"3-business-days-from-controller-knowledge-of-personal-data-impact"},
+    "smallAgentWindowMayDiffer":{"const":true},
+    "registeredAt":{"type":"string","format":"date-time"},
+    "retentionNotBefore":{"type":"string","format":"date-time"},
+    "legalAdviceProvided":{"const":false},
+    "automatedLegalConclusion":{"const":false},
+    "notificationPerformed":{"const":false},
+    "incidentHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

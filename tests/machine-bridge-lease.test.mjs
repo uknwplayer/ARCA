@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import {capabilitiesMatch,createClaim,leaseExpired,renewClaim} from "../src/machine-bridge/lease.mjs";
+const job={jobId:"j1",requires:["node","repository"]};
+const a={workerId:"a",capabilities:["node","repository"]},b={workerId:"b",capabilities:["node"]};
+assert.equal(capabilitiesMatch(job,a),true);assert.equal(capabilitiesMatch(job,b),false);
+const c=createClaim(job,a,{now:1000,leaseMs:15000});
+assert.equal(c.workerId,"a");assert.equal(leaseExpired(c,15999),false);assert.equal(leaseExpired(c,16000),true);
+assert.throws(()=>renewClaim(c,"b",{now:2000,leaseMs:15000}),/another worker/);
+assert.equal(renewClaim(c,"a",{now:2000,leaseMs:15000}).leaseExpiresAt,new Date(17000).toISOString());
+console.log("machine-bridge lease tests: ok");

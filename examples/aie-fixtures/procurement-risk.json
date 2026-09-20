@@ -1,0 +1,8 @@
+[
+  {"id":"R1","numeroProcesso":"PROC-001","supplier":{"cnpj":"11.111.111/0001-11","name":"Fornecedor Alfa"},"amount":"R$ 100,00","participantCount":1,"additivePercent":0,"modality":"pregao","objectDescription":"Item comparavel A"},
+  {"id":"R2","numeroProcesso":"PROC-002","supplier":{"cnpj":"11.111.111/0001-11","name":"Fornecedor Alfa Ltda"},"amount":"R$ 101,00","participantCount":1,"additivePercent":0,"modality":"pregao","objectDescription":"Item comparavel A"},
+  {"id":"R3","numeroProcesso":"PROC-003","supplier":{"cnpj":"11.111.111/0001-11","name":"Fornecedor Alfa"},"amount":"R$ 99,00","participantCount":1,"additivePercent":35,"modality":"pregao","objectDescription":"Item comparavel A"},
+  {"id":"R4","numeroProcesso":"PROC-004","supplier":{"cnpj":"11.111.111/0001-11","name":"Fornecedor Alfa"},"amount":"R$ 100,00","participantCount":2,"additivePercent":0,"modality":"pregao","objectDescription":"Item comparavel A"},
+  {"id":"R5","numeroProcesso":"PROC-005","supplier":{"cnpj":"11.111.111/0001-11","name":"Fornecedor Alfa"},"amount":"R$ 1.000,00","participantCount":2,"additivePercent":0,"modality":"pregao","objectDescription":"Item comparavel A"},
+  {"id":"R6","numeroProcesso":"PROC-006","supplier":{"cnpj":"22.222.222/0001-22","name":"Fornecedor Beta"},"amount":"R$ 100,00","participantCount":5,"additivePercent":0,"modality":"pregao","objectDescription":"Item comparavel A"}
+]

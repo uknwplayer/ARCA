@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-reconciled-failover-receipt-v1.schema.json",
+  "title": "ARCA Reconciled Failover Receipt v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "format",
+    "version",
+    "executionId",
+    "executionHash",
+    "logicalRequestId",
+    "roleId",
+    "roleContractHash",
+    "requestHash",
+    "policyBindingHash",
+    "idempotencyClass",
+    "fromAttemptId",
+    "fromAttemptHash",
+    "fromParticipantId",
+    "fromParticipantDescriptorHash",
+    "fromRuntimeBindingHash",
+    "fromRoleConformanceEvidenceHash",
+    "remoteRequestId",
+    "remoteJobId",
+    "remoteSelectedNodeId",
+    "ownerBindingHash",
+    "reconciliationState",
+    "remoteEvidenceState",
+    "rejectionCategory",
+    "decisionStatementHash",
+    "eligibilityReason",
+    "authorizedAt",
+    "nextAttemptMustExcludeParticipant",
+    "automaticDispatchPerformed",
+    "uncertainExecutionAuthorized",
+    "completedExecutionAuthorized",
+    "issuerNodeId",
+    "receiptHash",
+    "signedReceipt"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-reconciled-failover-receipt-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "executionId": {
+      "type": "string",
+      "pattern": "^exec-[a-f0-9]{40}$"
+    },
+    "executionHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "logicalRequestId": {
+      "type": "string"
+    },
+    "roleId": {
+      "type": "string"
+    },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policyBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "idempotencyClass": {
+      "type": "string"
+    },
+    "fromAttemptId": {
+      "type": "string"
+    },
+    "fromAttemptHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "fromParticipantId": {
+      "type": "string"
+    },
+    "fromParticipantDescriptorHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "fromRuntimeBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "fromRoleConformanceEvidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "remoteRequestId": {
+      "type": "string"
+    },
+    "remoteJobId": {
+      "type": "string"
+    },
+    "remoteSelectedNodeId": {
+      "type": "string"
+    },
+    "ownerBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "reconciliationState": {
+      "type": "string"
+    },
+    "remoteEvidenceState": {
+      "const": "rejected"
+    },
+    "rejectionCategory": {
+      "enum": [
+        "capability",
+        "unavailable",
+        "not-accepted"
+      ]
+    },
+    "decisionStatementHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "completionStatementHash": {
+      "type": "null"
+    },
+    "eligibilityReason": {
+      "const": "signed-pre-execution-rejection"
+    },
+    "authorizedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nextAttemptMustExcludeParticipant": {
+      "const": true
+    },
+    "automaticDispatchPerformed": {
+      "const": false
+    },
+    "uncertainExecutionAuthorized": {
+      "const": false
+    },
+    "completedExecutionAuthorized": {
+      "const": false
+    },
+    "issuerNodeId": {
+      "type": "string"
+    },
+    "receiptHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "signedReceipt": {
+      "type": "object"
+    },
+    "roleContractHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

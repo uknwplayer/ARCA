@@ -1,0 +1,31 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"urn:arca:schema:arca-federation-response-v1",
+  "title":"ARCA Federation Response V1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":[
+    "format","version","responseId","issuedAt","introductionId","introductionSha256",
+    "responderNodeId","responderIdentity","decision","evaluationConsent",
+    "trustGranted","admissionGranted","dispatchGranted","executionGranted","responseHash"
+  ],
+  "properties":{
+    "format":{"const":"arca-federation-response-v1"},
+    "version":{"const":1},
+    "responseId":{"type":"string","pattern":"^[A-Za-z0-9._:-]{1,160}$"},
+    "issuedAt":{"type":"string","format":"date-time"},
+    "introductionId":{"type":"string","pattern":"^[A-Za-z0-9._:-]{1,160}$"},
+    "introductionSha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "responderNodeId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"},
+    "responderIdentity":{"type":["object","null"]},
+    "decision":{
+      "enum":["accept-evaluation","decline","request-info","offer-endpoint","offer-auth-method","limit-scope"]
+    },
+    "evaluationConsent":{"type":"boolean"},
+    "trustGranted":{"const":false},
+    "admissionGranted":{"const":false},
+    "dispatchGranted":{"const":false},
+    "executionGranted":{"const":false},
+    "responseHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

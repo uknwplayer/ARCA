@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-legal-basis-record-v1.schema.json",
+  "title":"ARCA Legal Basis Record v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","basisId","processingActivityId","purpose","basisCode","sensitiveBasisCode","legalReference","rationale","publicInterestRationale","sourceRefs","status","reviewedBy","reviewedAt","reviewNotes","previousRecordHash","createdAt","updatedAt","legalAdviceProvided","automatedLegalConclusion","recordHash"],
+  "properties":{
+    "format":{"const":"arca-legal-basis-record-v1"},
+    "basisId":{"type":"string"},"processingActivityId":{"type":"string"},"purpose":{"type":"string"},
+    "basisCode":{"type":"string"},"sensitiveBasisCode":{"type":"string"},"legalReference":{"type":"string"},"rationale":{"type":"string"},"publicInterestRationale":{"type":"string"},
+    "sourceRefs":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "status":{"enum":["draft","active","rejected","superseded","withdrawn"]},
+    "reviewedBy":{"type":["string","null"]},"reviewedAt":{"type":["string","null"]},"reviewNotes":{"type":"string"},
+    "previousRecordHash":{"type":["string","null"],"pattern":"^[a-f0-9]{64}$"},
+    "createdAt":{"type":"string","format":"date-time"},"updatedAt":{"type":"string","format":"date-time"},
+    "legalAdviceProvided":{"const":false},"automatedLegalConclusion":{"const":false},"recordHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

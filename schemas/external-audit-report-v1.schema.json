@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/external-audit-report-v1.json",
+  "title": "ARCA External Audit Report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format","version","auditId","auditor","evidenceSetHash","observations","verifiedClaims","unverifiedClaims","contradictions","verdict","auditedAt"],
+  "properties": {
+    "format": {"const":"arca-external-audit-report-v1"},
+    "version": {"const":1},
+    "auditId": {"type":"string","minLength":1,"maxLength":160},
+    "auditor": {
+      "type":"object","additionalProperties":false,"required":["provider","model"],
+      "properties":{"provider":{"type":"string","minLength":1,"maxLength":80},"model":{"type":"string","minLength":1,"maxLength":120}}
+    },
+    "evidenceSetHash": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "observations": {"type":"array","items":{"type":"string","maxLength":2000},"maxItems":100},
+    "verifiedClaims": {"type":"array","items":{"type":"string","maxLength":2000},"maxItems":100},
+    "unverifiedClaims": {"type":"array","items":{"type":"string","maxLength":2000},"maxItems":100},
+    "contradictions": {"type":"array","items":{"type":"string","maxLength":2000},"maxItems":100},
+    "verdict": {"enum":["consistent","inconsistent","insufficient-evidence"]},
+    "auditedAt": {"type":"string","format":"date-time"}
+  }
+}

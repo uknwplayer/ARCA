@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-execution-replacement-preparation-v1.schema.json",
+  "title": "ARCA Execution Replacement Preparation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "executionId",
+    "nextAttemptId",
+    "nextAttemptHash",
+    "previousAttemptId",
+    "previousParticipantId",
+    "selectedParticipantId",
+    "selectedParticipantDescriptorHash",
+    "runtimeKind",
+    "runtimeId",
+    "runtimeBindingHash",
+    "roleConformanceEvidenceHash",
+    "ownerBindingHash",
+    "failoverReceiptHash",
+    "requestHash",
+    "roleContractHash",
+    "authorizationDecisionHash",
+    "selectionEvidenceHash",
+    "preparedAt",
+    "recordHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-execution-replacement-preparation-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "executionId": {
+      "type": "string",
+      "pattern": "^exec-[a-f0-9]{40}$"
+    },
+    "nextAttemptId": {
+      "type": "string"
+    },
+    "nextAttemptHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "previousAttemptId": {
+      "type": "string"
+    },
+    "previousParticipantId": {
+      "type": "string"
+    },
+    "selectedParticipantId": {
+      "type": "string"
+    },
+    "selectedParticipantDescriptorHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runtimeKind": {
+      "type": "string"
+    },
+    "runtimeId": {
+      "type": "string"
+    },
+    "runtimeBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "roleConformanceEvidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "ownerBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "failoverReceiptHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "roleContractHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authorizationDecisionHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "selectionEvidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "preparedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recordHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "excludedParticipantIds": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      }
+    }
+  }
+}

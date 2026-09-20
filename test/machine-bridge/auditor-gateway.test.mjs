@@ -1,0 +1,6 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {AuditorGateway,createReadOnlySource} from "../../src/machine-bridge/auditor-gateway.mjs";
+import {createGitHubAuditSource} from "../../src/machine-bridge/auditor-github-source.mjs";
+test("gateway exposes read only source and records safe audit event",async()=>{const g=new AuditorGateway({sources:{x:createReadOnlySource({read:async()=>({ok:true})})}});assert.deepEqual(await g.read({agentId:"claude",source:"x",resource:"r"}),{ok:true});const [e]=g.events();assert.equal(e.agentId,"claude");assert.match(e.resultHash,/^[a-f0-9]{64}$/);assert.equal("result" in e,false);});
+test("github source allowlists repos and resource kinds",async()=>{const s=createGitHubAuditSource({fetchResource:async q=>q,allowedRepos:["example/arca"]});const ok=await s.read({resource:JSON.stringify({repo:"example/arca",kind:"commit",sha:"abc"})});assert.equal(ok.kind,"commit");await assert.rejects(()=>s.read({resource:JSON.stringify({repo:"example/not-allowed",kind:"commit"})}),/SCOPE_DENIED/);});
+test("github source blocks obvious sensitive paths",async()=>{const s=createGitHubAuditSource({fetchResource:async q=>q,allowedRepos:["example/arca"]});await assert.rejects(()=>s.read({resource:JSON.stringify({repo:"example/arca",kind:"file",path:".env"})}),/SENSITIVE_PATH/);});

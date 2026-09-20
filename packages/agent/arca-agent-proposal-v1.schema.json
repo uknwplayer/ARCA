@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-agent-proposal-v1.schema.json",
+  "title": "ARCA Agent Proposal v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "investigationId",
+    "expectedEventHead",
+    "agent",
+    "intent",
+    "operation",
+    "assumptions",
+    "uncertainties",
+    "requiresHumanReview"
+  ],
+  "properties": {
+    "format": { "const": "arca-agent-proposal-v1" },
+    "investigationId": { "type": "string", "pattern": "^INV-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "expectedEventHead": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "provider": { "type": ["string", "null"], "maxLength": 160 },
+        "model": { "type": ["string", "null"], "maxLength": 160 }
+      }
+    },
+    "intent": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "operation": { "$ref": "#/$defs/operation" },
+    "assumptions": { "type": "array", "items": { "type": "string", "maxLength": 2000 }, "maxItems": 100 },
+    "uncertainties": { "type": "array", "items": { "type": "string", "maxLength": 2000 }, "maxItems": 100 },
+    "requiresHumanReview": { "const": true }
+  },
+  "$defs": {
+    "operation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "objectType", "data"],
+          "properties": {
+            "kind": { "const": "create_object" },
+            "objectType": { "enum": ["Q", "SRC", "DOC", "INF", "PRO", "ENT", "EVT", "HIP", "CON", "FRM", "GAP", "SEARCH"] },
+            "id": { "type": "string" },
+            "data": { "type": "object" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id", "patch", "reason"],
+          "properties": {
+            "kind": { "const": "update_object" },
+            "id": { "type": "string" },
+            "patch": { "type": "object" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "from", "to", "relationType", "category", "justification"],
+          "properties": {
+            "kind": { "const": "create_relation" },
+            "id": { "type": "string" },
+            "from": { "type": "string" },
+            "to": { "type": "string" },
+            "relationType": { "type": "string", "minLength": 1 },
+            "category": { "type": "string", "minLength": 1 },
+            "effect": { "type": "string" },
+            "justification": { "type": "string", "minLength": 1 },
+            "materiality": { "type": "string" },
+            "extensions": { "type": "object" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id", "reason"],
+          "properties": {
+            "kind": { "const": "invalidate_object" },
+            "id": { "type": "string" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id"],
+          "properties": {
+            "kind": { "const": "reevaluate_object" },
+            "id": { "type": "string" },
+            "justification": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id"],
+          "properties": {
+            "kind": { "const": "close_conclusion" },
+            "id": { "type": "string" },
+            "limitJustification": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "id", "reason"],
+          "properties": {
+            "kind": { "const": "reopen_conclusion" },
+            "id": { "type": "string" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  }
+}

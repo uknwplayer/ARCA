@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#101512">
+  <title>ARCA · Revisão humana</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div><strong>ARCA</strong><small>Human Review <span id="review-version">0.1.0</span></small></div>
+      </div>
+      <nav class="primary-nav">
+        <a class="nav-item" href="/"><span class="nav-glyph">←</span><span>Workbench</span></a>
+        <a class="nav-item is-active" href="/reviews.html"><span class="nav-glyph">◇</span><span>Inbox de revisão</span><span id="pending-count" class="nav-count is-hidden">0</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="local-badge"><span class="status-dot"></span><span>Decisão humana local</span></div>
+        <p>A ponte entrega o trabalho.<br>Você mantém a autoridade da decisão.</p>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="investigation-switcher">
+          <label>Machine Bridge → Workbench</label>
+          <strong>Human Review Queue</strong>
+        </div>
+        <div class="topbar-actions">
+          <span id="sync-status" class="sync-status"><span class="status-dot"></span>Íntegro</span>
+          <button id="refresh-button" class="button button-ghost">Atualizar</button>
+        </div>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <div id="review-root" class="view-root" aria-live="polite"></div>
+      </main>
+    </div>
+  </div>
+  <div id="toast-region" class="toast-region" aria-live="assertive"></div>
+
+  <dialog id="review-dialog" class="modal modal-large">
+    <form id="review-form" class="modal-card">
+      <div class="modal-header">
+        <div><p class="eyebrow">Crivo humano</p><h2 id="review-dialog-title">Resolver revisão</h2></div>
+        <button type="button" class="icon-button" data-close-dialog aria-label="Fechar">×</button>
+      </div>
+      <div id="review-dialog-body" class="modal-body form-grid"></div>
+      <div class="modal-footer">
+        <button type="button" class="button button-ghost" data-close-dialog>Cancelar</button>
+        <button class="button button-primary" type="submit">Registrar decisão</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/reviews.js" type="module"></script>
+</body>
+</html>

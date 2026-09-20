@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-data-subject-request-v1.schema.json",
+  "title":"ARCA Data Subject Request v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","requestId","requestType","subjectRef","recordIds","requestedAction","claimSummary","evidenceRefs","contactRef","identityVerification","state","openedAt","updatedAt","rawIdentityDocumentStored","publicDisclosureAllowed","requestHash"],
+  "properties":{
+    "format":{"const":"arca-data-subject-request-v1"},
+    "requestId":{"type":"string"},
+    "requestType":{"enum":["correction","dispute","access","restriction","deletion","opposition","automated-decision-review"]},
+    "subjectRef":{"type":"string"},
+    "recordIds":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "requestedAction":{"type":"string"},"claimSummary":{"type":"string"},
+    "evidenceRefs":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "contactRef":{"type":["string","null"]},
+    "identityVerification":{"enum":["not-requested","pending","verified","failed"]},
+    "state":{"enum":["open","reviewing","resolved","rejected","withdrawn"]},
+    "openedAt":{"type":"string","format":"date-time"},"updatedAt":{"type":"string","format":"date-time"},
+    "rawIdentityDocumentStored":{"const":false},"publicDisclosureAllowed":{"const":false},
+    "requestHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

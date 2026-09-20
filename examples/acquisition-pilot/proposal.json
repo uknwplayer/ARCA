@@ -1,0 +1,30 @@
+{
+  "format": "arca-agent-proposal-v1",
+  "investigationId": "INV-ARCA-RELEASE-VALIDATION",
+  "expectedEventHead": null,
+  "agent": {
+    "id": "arca-acquisition-adapter",
+    "version": "0.3.0"
+  },
+  "intent": "Registrar documento adquirido com proveniencia e revisao humana",
+  "operation": {
+    "kind": "create_object",
+    "objectType": "DOC",
+    "data": {
+      "title": "ARCA Documento Mestre v1.3.0 - edicao publica higienizada",
+      "sourceId": "SRC-ARCA-MASTER-PUBLIC",
+      "location": "arca://release/document-master/v1.3.0-public",
+      "acquisitionMethod": "manual-import",
+      "acquiredAt": "2026-09-15T05:07:23Z",
+      "hashAlgorithm": "sha256",
+      "contentHash": "d70f38e450a63ab73c05a3b933d21c9aef22942922bc39d3ce6a8484304c592b",
+      "hashStatus": "computed",
+      "custodyManifest": "acquisitions/INV-ARCA-RELEASE-VALIDATION/ACQ-PILOT-MASTER-1-3-PUBLIC/manifest.json"
+    }
+  },
+  "assumptions": [
+    "A declaracao de acesso foi fornecida pela pessoa operadora."
+  ],
+  "uncertainties": [],
+  "humanReviewRequired": true
+}

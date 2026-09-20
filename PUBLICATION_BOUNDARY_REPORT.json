@@ -1,0 +1,16 @@
+{
+  "format": "arca-publication-boundary-report-v1",
+  "ok": true,
+  "generatedAt": "2026-09-20T14:07:27.671Z",
+  "sourceSha": "7bdf8b399f107e2b7c36f46bb6147f80e51d3d3f",
+  "includedFiles": 573,
+  "excludedFiles": 2,
+  "exclusionReasons": {
+    "default-deny": 2
+  },
+  "violations": [],
+  "creatorApprovalRequired": true,
+  "creatorApprovalRecorded": false,
+  "publicationPerformed": false,
+  "repositoryCreated": false
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-event-v1.schema.json",
+  "title": "ARCA Append-only Event v1",
+  "type": "object",
+  "required": [
+    "eventId",
+    "protocolVersion",
+    "investigationId",
+    "sequence",
+    "operation",
+    "timestamp",
+    "actor",
+    "payload",
+    "previousEventHash",
+    "hashAlgorithm",
+    "eventHash"
+  ],
+  "properties": {
+    "eventId": { "type": "string", "pattern": "^EVLOG-[0-9]{8}$" },
+    "protocolVersion": { "const": "1.0.0" },
+    "investigationId": { "type": "string", "pattern": "^INV-[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "operation": {
+      "enum": [
+        "INVESTIGATION_CREATE",
+        "OBJECT_CREATE",
+        "OBJECT_UPDATE",
+        "RELATION_CREATE",
+        "OBJECT_ARCHIVE",
+        "OBJECT_INVALIDATE",
+        "OBJECT_REEVALUATE",
+        "CONCLUSION_CLOSE",
+        "CONCLUSION_REOPEN",
+        "LEGACY_IMPORT"
+      ]
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "actor": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["human", "system", "agent", "migration"] },
+        "method": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "payload": { "type": "object" },
+    "previousEventHash": {
+      "anyOf": [
+        { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        { "type": "null" }
+      ]
+    },
+    "hashAlgorithm": { "const": "sha256" },
+    "eventHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-execution-identity-v1.schema.json",
+  "title": "ARCA Execution Identity v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "executionId",
+    "logicalRequestId",
+    "roleId",
+    "roleContractHash",
+    "requestHash",
+    "authorizationBindingHash",
+    "idempotencyClass",
+    "createdAt",
+    "recordHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-execution-identity-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "executionId": {
+      "type": "string",
+      "pattern": "^exec-[a-f0-9]{40}$"
+    },
+    "logicalRequestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "roleId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authorizationBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "idempotencyClass": {
+      "enum": [
+        "unknown",
+        "read-only",
+        "pure-compute",
+        "synthetic",
+        "no-side-effect",
+        "external-idempotent",
+        "side-effecting"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recordHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "roleContractHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-custody-manifest-v1.schema.json",
+  "title": "ARCA Custody Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "adapterVersion",
+    "acquisitionId",
+    "investigationId",
+    "original",
+    "transformations",
+    "reviews",
+    "eventCount",
+    "eventHead"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-custody-manifest-v1"
+    },
+    "adapterVersion": {
+      "const": "0.3.0"
+    },
+    "acquisitionId": {
+      "type": "string"
+    },
+    "investigationId": {
+      "type": "string"
+    },
+    "original": {
+      "type": "object"
+    },
+    "transformations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "eventCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "eventHead": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

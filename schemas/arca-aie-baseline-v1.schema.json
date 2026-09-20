@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.invalid/schemas/arca-aie-baseline-v1.schema.json",
+  "title": "ARCA AIE Baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "baselineId", "field", "method", "universe", "sampleSize", "statistics", "limitations"],
+  "properties": {
+    "format": { "const": "arca-aie-baseline-v1" },
+    "baselineId": { "type": "string", "pattern": "^BLN-[A-F0-9]{12}$" },
+    "field": { "type": "string", "minLength": 1 },
+    "method": { "const": "robust-descriptive-v1" },
+    "universe": {
+      "type": "object",
+      "required": ["recordCount", "numericCount", "excludedCount", "filters", "group"],
+      "properties": {
+        "recordCount": { "type": "integer", "minimum": 0 },
+        "numericCount": { "type": "integer", "minimum": 0 },
+        "excludedCount": { "type": "integer", "minimum": 0 },
+        "filters": { "type": "object" },
+        "group": {}
+      },
+      "additionalProperties": false
+    },
+    "sampleSize": { "type": "integer", "minimum": 0 },
+    "statistics": {
+      "type": "object",
+      "required": ["min", "max", "mean", "median", "mad", "q1", "q3", "iqr", "standardDeviation"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": ["number", "null"] },
+        "max": { "type": ["number", "null"] },
+        "mean": { "type": ["number", "null"] },
+        "median": { "type": ["number", "null"] },
+        "mad": { "type": ["number", "null"] },
+        "q1": { "type": ["number", "null"] },
+        "q3": { "type": ["number", "null"] },
+        "iqr": { "type": ["number", "null"] },
+        "standardDeviation": { "type": ["number", "null"] }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "format": "arca-test-report-v1",
+  "projectVersion": "0.3.0",
+  "protocolVersion": "1.0.0",
+  "distributionProfile": "public-sanitized",
+  "verifiedAt": "2026-09-15T05:16:50Z",
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "platform": "Linux 6.18.44 x86_64 GNU/Linux"
+  },
+  "fullNpmTest": {
+    "status": "passed",
+    "command": "npm test",
+    "tests": 42,
+    "passed": 42,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "durationMs": 3351.433702
+  },
+  "repositoryCheck": {
+    "status": "passed",
+    "command": "npm run check",
+    "requiredFiles": 31,
+    "adrs": 9,
+    "testFiles": 6,
+    "declaredTests": 42
+  },
+  "coverageByMilestone": {
+    "baseline": {
+      "version": "0.2.0",
+      "tests": 30,
+      "passed": 30,
+      "failed": 0
+    },
+    "acquisitionAndCustody": {
+      "version": "0.3.0",
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "numbers": "31-42"
+    }
+  },
+  "compatibilityFixtures": {
+    "profile": "synthetic-in-memory",
+    "fileBackedInvestigationData": false,
+    "tests": 3,
+    "status": "passed"
+  },
+  "privacySanitization": {
+    "profile": "public-sanitized",
+    "personalNamesRemoved": true,
+    "developmentInvestigationArtifactsRemoved": true,
+    "privateLocatorsRemoved": true,
+    "pdfTextScan": "passed",
+    "repositoryTextScan": "passed",
+    "scannedTextFiles": 79,
+    "prohibitedArtifactPaths": 0,
+    "prohibitedContentHits": 0
+  },
+  "approvedPilotCapture": {
+    "acquisitionId": "ACQ-PILOT-MASTER-1-3-PUBLIC",
+    "investigationId": "INV-ARCA-RELEASE-VALIDATION",
+    "status": "human_review_accepted",
+    "reviewedAt": "2026-09-15T05:08:00Z",
+    "reviewer": {
+      "id": "owner-reviewer",
+      "role": "owner-reviewer"
+    },
+    "originalBytes": 99148,
+    "originalSha256": "d70f38e450a63ab73c05a3b933d21c9aef22942922bc39d3ce6a8484304c592b",
+    "eventCount": 2,
+    "eventHead": "5a3adab5b043b1a27908debaa490c65c34dc05276b017b9526147f36e39ada2c",
+    "proposalAppliedToCore": false,
+    "nodeReplay": {
+      "status": "passed",
+      "commandSurface": "arca-acquire capture + review + verify",
+      "bytes": 99148,
+      "sha256": "d70f38e450a63ab73c05a3b933d21c9aef22942922bc39d3ce6a8484304c592b",
+      "errors": []
+    }
+  },
+  "githubActions": {
+    "workflow": ".github/workflows/arca-ci.yml",
+    "node": "22.18.0",
+    "status": "configured-pending-first-remote-run"
+  },
+  "claims": {
+    "functionalLocalMilestone": "verified",
+    "publicDistributionSanitized": true,
+    "productionReady": false,
+    "arcaCompatibleSeal": false,
+    "semanticAuditCompleted": false,
+    "externalSecurityAuditCompleted": false
+  }
+}

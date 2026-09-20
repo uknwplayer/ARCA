@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-privacy-classification-v1.schema.json",
+  "title": "ARCA Privacy Classification v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format","recordId","subjectType","sourceType","privacyClass","purpose","sourceRefs","indicators","reasons","legalReviewState","classifiedAt","classificationHash"],
+  "properties": {
+    "format": {"const": "arca-privacy-classification-v1"},
+    "recordId": {"type":"string","minLength":1,"maxLength":120},
+    "subjectType": {"enum":["none","natural-person","legal-entity","mixed"]},
+    "sourceType": {"enum":["official-public","public-lawful","user-provided","internal-derived","unknown"]},
+    "privacyClass": {"enum":["public","personal","sensitive","high-risk","restricted","redact-before-publication"]},
+    "purpose": {"type":"string","maxLength":500},
+    "sourceRefs": {"type":"array","items":{"type":"string","maxLength":500},"uniqueItems":true},
+    "indicators": {
+      "type":"object",
+      "additionalProperties": false,
+      "required":["directIdentifier","financialIdentifier","precisePrivateLocation","healthOrBiometric","politicalReligiousUnionSexualSensitive","childOrAdolescent","privateCommunication","secretOrCredential","accusationOrAdverseInference","sourcePubliclyAccessible","sourceOfficial","publicInterestNecessary","canMinimize","disputedOrOutdated"],
+      "properties": {
+        "directIdentifier":{"type":"boolean"},
+        "financialIdentifier":{"type":"boolean"},
+        "precisePrivateLocation":{"type":"boolean"},
+        "healthOrBiometric":{"type":"boolean"},
+        "politicalReligiousUnionSexualSensitive":{"type":"boolean"},
+        "childOrAdolescent":{"type":"boolean"},
+        "privateCommunication":{"type":"boolean"},
+        "secretOrCredential":{"type":"boolean"},
+        "accusationOrAdverseInference":{"type":"boolean"},
+        "sourcePubliclyAccessible":{"type":"boolean"},
+        "sourceOfficial":{"type":"boolean"},
+        "publicInterestNecessary":{"type":"boolean"},
+        "canMinimize":{"type":"boolean"},
+        "disputedOrOutdated":{"type":"boolean"}
+      }
+    },
+    "reasons":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "legalReviewState":{"enum":["not-assessed","not-required","required","completed"]},
+    "classifiedAt":{"type":"string","format":"date-time"},
+    "classificationHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

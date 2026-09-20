@@ -1,0 +1,39 @@
+{
+  "format": "arca-test-report-v1",
+  "projectVersion": "0.2.0",
+  "protocolVersion": "1.0.0",
+  "executedAt": "2026-09-14T00:00:00Z",
+  "environment": {
+    "runtime": "Node.js 24.19.0",
+    "networkRequired": false,
+    "externalRuntimeDependencies": 0
+  },
+  "command": "npm test",
+  "result": {
+    "tests": 30,
+    "passed": 30,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "coverageGroups": {
+    "foundationCoreAndCli": 15,
+    "agentAndConcurrency": 7,
+    "workbenchApiAndSecurity": 6,
+    "propertyAndIdSafety": 2,
+    "pseudoRandomDagsExercised": 40
+  },
+  "claims": {
+    "functionalLocalMilestone": true,
+    "productionReady": false,
+    "arcaCompatibleSeal": false,
+    "semanticAuditCompleted": false,
+    "externalSecurityAuditCompleted": false
+  },
+  "visualQa": {
+    "remoteBrowserAccessToLoopback": "blocked_by_execution_environment",
+    "persistentRemoteExposureCreated": false,
+    "formalWcagAuditCompleted": false
+  }
+}

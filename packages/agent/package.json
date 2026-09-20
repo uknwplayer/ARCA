@@ -1,0 +1,11 @@
+{
+  "name": "@arca/agent",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Contrato portátil de propostas do agente ARCA",
+  "exports": "./src/index.ts",
+  "engines": {
+    "node": ">=22.18"
+  }
+}

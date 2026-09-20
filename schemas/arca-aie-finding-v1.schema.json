@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.invalid/schemas/arca-aie-finding-v1.schema.json",
+  "title": "ARCA AIE Finding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["findingId", "format", "domain", "detectorId", "detectorVersion", "summary", "inputs", "baseline", "observed", "alternativeExplanations", "supportingEvidence", "counterEvidence", "gaps", "triage", "humanReviewRequired"],
+  "properties": {
+    "findingId": { "type": "string", "pattern": "^FND-[A-F0-9]{12}$" },
+    "format": { "const": "arca-aie-finding-v1" },
+    "domain": { "type": "string", "minLength": 1 },
+    "detectorId": { "type": "string", "minLength": 3 },
+    "detectorVersion": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "inputs": { "type": "array" },
+    "baseline": { "type": "object" },
+    "observed": { "type": "object" },
+    "alternativeExplanations": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+    "supportingEvidence": { "type": "array" },
+    "counterEvidence": { "type": "array" },
+    "gaps": { "type": "array", "items": { "type": "string" } },
+    "triage": { "enum": ["discarded", "weak", "review", "investigate", "blocked", "data-error"] },
+    "humanReviewRequired": { "const": true }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-security-self-audit-v1.schema.json",
+  "title":"ARCA Security Self Audit v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","deploymentProfile","counts","blockingIssues","controls","legalComplianceConclusion","automatedLegalConclusion","complianceScoreProduced","auditedAt","auditHash"],
+  "properties":{
+    "format":{"const":"arca-security-self-audit-v1"},
+    "deploymentProfile":{"enum":["local-offline","self-hosted","public-hosted"]},
+    "counts":{"type":"object","additionalProperties":{"type":"integer","minimum":0}},
+    "blockingIssues":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "controls":{"type":"array","items":{"type":"object"}},
+    "legalComplianceConclusion":{"const":false},
+    "automatedLegalConclusion":{"const":false},
+    "complianceScoreProduced":{"const":false},
+    "auditedAt":{"type":"string","format":"date-time"},
+    "auditHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

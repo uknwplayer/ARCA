@@ -1,0 +1,7 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {createProviderReasoner} from "../../src/machine-bridge/provider-reasoner.mjs";
+import {readProviderConfig,publicProviderConfig} from "../../src/machine-bridge/provider-config.mjs";
+test("provider contract accepts audit tool and final only",async()=>{let n=0;const p=createProviderReasoner({provider:"x",model:"m",invoke:async()=>++n===1?{kind:"tool",name:"audit_get_commit",args:{sha:"x"}}:{kind:"final",body:"ok"}});assert.equal((await p.reason({})).kind,"tool");assert.equal((await p.reason({})).body,"ok");});
+test("provider cannot request arbitrary operation",async()=>{const p=createProviderReasoner({provider:"x",model:"m",invoke:async()=>({kind:"tool",name:"git_push"})});await assert.rejects(()=>p.reason({}),/TOOL_DENIED/);});
+test("secret config is never projected publicly",()=>{const c=readProviderConfig({ARCA_OPENAI_API_KEY:"secret",ARCA_OPENAI_MODEL:"model"});assert.equal(c.length,1);assert.deepEqual(publicProviderConfig(c),[{id:"openai",model:"model"}]);assert.equal(JSON.stringify(publicProviderConfig(c)).includes("secret"),false);});
+test("Meta AI and Grok are first-class optional providers",()=>{const c=readProviderConfig({ARCA_META_API_KEY:"m-secret",ARCA_META_MODEL:"llama-model",ARCA_GROK_API_KEY:"g-secret",ARCA_GROK_MODEL:"grok-model"});assert.deepEqual(publicProviderConfig(c),[{id:"meta",model:"llama-model"},{id:"grok",model:"grok-model"}]);assert.equal(JSON.stringify(publicProviderConfig(c)).includes("secret"),false);});

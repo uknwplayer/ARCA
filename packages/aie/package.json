@@ -1,0 +1,11 @@
+{
+  "name": "@arca/aie",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "description": "Motor analítico determinístico para investigação exploratória do ARCA",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "license": "UNLICENSED"
+}

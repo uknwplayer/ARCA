@@ -1,0 +1,14 @@
+{
+  "name": "@arca/acquisition",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Aquisição local e cadeia de custódia verificável para ARCA",
+  "bin": {
+    "arca-acquire": "bin/arca-acquire.mjs"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "license": "UNLICENSED"
+}

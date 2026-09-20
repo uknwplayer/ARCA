@@ -1,0 +1,28 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-security-incident-review-v1.schema.json",
+  "title":"ARCA Security Incident Review v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","reviewId","incidentId","incidentHash","reviewerId","significantImpactConfirmed","qualifyingCriteria","communicationRequired","communicationStatus","notificationWindow","decisionReason","communicationDueAt","deadlineCalendarResolutionRequired","humanReviewCompleted","legalAdviceProvided","automatedLegalConclusion","reviewedAt","reviewHash"],
+  "properties":{
+    "format":{"const":"arca-security-incident-review-v1"},
+    "reviewId":{"type":"string"},
+    "incidentId":{"type":"string"},
+    "incidentHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "reviewerId":{"type":"string"},
+    "significantImpactConfirmed":{"type":"boolean"},
+    "qualifyingCriteria":{"type":"array","uniqueItems":true,"items":{"enum":["sensitive-personal-data","child-adolescent-elderly","financial-data","authentication-data","legal-judicial-professional-secrecy","large-scale"]}},
+    "communicationRequired":{"type":"boolean"},
+    "communicationStatus":{"enum":["required","not-required"]},
+    "notificationWindow":{"type":["string","null"]},
+    "decisionReason":{"type":"string","minLength":1,"maxLength":3000},
+    "communicationDueAt":{"type":"null"},
+    "deadlineCalendarResolutionRequired":{"type":"boolean"},
+    "humanReviewCompleted":{"const":true},
+    "legalAdviceProvided":{"const":false},
+    "automatedLegalConclusion":{"const":false},
+    "reviewedAt":{"type":"string","format":"date-time"},
+    "reviewHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

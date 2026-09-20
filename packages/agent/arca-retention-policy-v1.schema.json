@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-retention-policy-v1.schema.json",
+  "title":"ARCA Retention Policy v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","policyId","dataClass","purpose","maxRetentionDays","reviewIntervalDays","legalBasisRef","conservationGrounds","notes","legalAdviceProvided","automatedLegalConclusion","createdAt","policyHash"],
+  "properties":{
+    "format":{"const":"arca-retention-policy-v1"},
+    "policyId":{"type":"string","minLength":1,"maxLength":120},
+    "dataClass":{"enum":["operational-log","temporary-artifact","user-provided","investigation-evidence","public-export","credential-audit","subject-request","incident-record","other"]},
+    "purpose":{"type":"string","minLength":1,"maxLength":1000},
+    "maxRetentionDays":{"type":["integer","null"],"minimum":1,"maximum":36500},
+    "reviewIntervalDays":{"type":["integer","null"],"minimum":1,"maximum":3650},
+    "legalBasisRef":{"type":["string","null"]},
+    "conservationGrounds":{"type":"array","uniqueItems":true,"items":{"enum":["legal-regulatory-obligation","research","lawful-third-party-transfer","exclusive-controller-anonymized-use","other-documented"]}},
+    "notes":{"type":"string","maxLength":2000},
+    "legalAdviceProvided":{"const":false},
+    "automatedLegalConclusion":{"const":false},
+    "createdAt":{"type":"string","format":"date-time"},
+    "policyHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

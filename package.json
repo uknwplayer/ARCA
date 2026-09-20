@@ -1,0 +1,48 @@
+{
+  "name": "arca-core-v1-foundation",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "ARCA Core, Workbench, Agent Bundle, Acquisition Adapter, AIE e conector PNCP publico controlado",
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "arca": "node packages/cli/bin/arca.mjs",
+    "workbench": "node packages/workbench/bin/arca-workbench.mjs",
+    "creator": "node packages/workbench/bin/arca-creator.mjs",
+    "acquire": "node packages/acquisition/bin/arca-acquire.mjs",
+    "demo": "node packages/cli/bin/arca.mjs demo --home .arca-demo",
+    "remote:submit": "node scripts/arca-remote-submit.mjs",
+    "remote:call": "node scripts/arca-remote-call.mjs",
+    "review:sync": "node scripts/arca-review-sync.mjs",
+    "review:wake": "node scripts/arca-review-wake.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:core": "node --test tests/core.test.mjs",
+    "test:cli": "node --test tests/cli.test.mjs",
+    "test:agent": "node --test tests/agent.test.mjs tests/agent-gateway.test.mjs tests/agent-connection-tutorials.test.mjs tests/creator-control.test.mjs tests/creator-session-store.test.mjs tests/creator-chat-gateway.test.mjs tests/creator-reasoning-adapter.test.mjs tests/creator-durable-reasoning-adapter.test.mjs tests/creator-workflow-proposal.test.mjs tests/creator-workflow-reasoning.test.mjs tests/creator-passkeys.test.mjs tests/review-continuation.test.mjs tests/review-continuation-wakeup.test.mjs tests/review-continuation-dispatcher.test.mjs tests/review-autonomy-runtime.test.mjs tests/machine-bridge-continuation-handler.test.mjs tests/autonomy-workflow.test.mjs tests/capability-workflow-planner.test.mjs tests/autonomy-workflow-guardrails.test.mjs tests/reasoning-transport-gate.test.mjs tests/reasoning-opaque-transport-attestation.test.mjs tests/reasoning-durable-opaque-provider.test.mjs tests/reasoning-output-review.test.mjs tests/reasoning-approved-autonomy.test.mjs tests/reasoning-capability.test.mjs tests/credential-vault.test.mjs tests/connection-security-catalog.test.mjs tests/capability-registry.test.mjs tests/capability-probes-planner.test.mjs tests/privacy-publication-gate.test.mjs tests/legal-basis-dispute-receipt.test.mjs tests/retention-incident-ripd.test.mjs tests/security-control-dashboard.test.mjs tests/cognitive-substitution.test.mjs tests/role-conformance.test.mjs tests/reconciled-substitution.test.mjs tests/controlled-replacement-dispatch.test.mjs tests/reconciled-failover-chain.test.mjs tests/live-aap-runtime-integration.test.mjs tests/gemini-aap-runtime.test.mjs tests/agent-discovery-fabric.test.mjs tests/a2a-discovery-adapter.test.mjs tests/a2a-registry-search.test.mjs tests/a2a-registry-resolution.test.mjs tests/a2a-reference-inspection.test.mjs tests/a2a-github-repository-resolution.test.mjs tests/a2a-runtime-reachability.test.mjs tests/arca-node-manifest.test.mjs tests/arca-federation-response.test.mjs tests/arca-federation-introduction-delivery.test.mjs",
+    "test:workbench": "node --test tests/workbench.test.mjs tests/creator-console.test.mjs tests/creator-async-chat.test.mjs tests/creator-gateway-console.test.mjs tests/creator-reasoning-console.test.mjs tests/creator-passkey-console.test.mjs tests/creator-browser-assets.test.mjs tests/creator-integrated-runtime.test.mjs",
+    "test:acquisition": "node --test tests/acquisition.test.mjs",
+    "test:aie": "node --test tests/aie.test.mjs tests/aie-machine-bridge.test.mjs tests/aie-procurement.test.mjs tests/aie-procurement-machine-bridge.test.mjs",
+    "test:pncp": "node --test tests/pncp-connector-c1.test.mjs tests/pncp-machine-bridge.test.mjs tests/pncp-network-custody.test.mjs tests/pncp-discovery-v2.test.mjs tests/pncp-discovery-machine-bridge.test.mjs",
+    "check": "node scripts/check-repository.mjs && node scripts/check-aie.mjs && node scripts/check-pncp.mjs && npm run publication:check",
+    "live:gemini": "node scripts/validate-live-gemini-aap.mjs",
+    "live:a2a-discovery": "node scripts/validate-live-a2a-discovery.mjs",
+    "live:a2a-registry-search": "node scripts/validate-live-a2a-registry-search.mjs",
+    "live:a2a-registry-resolution": "node scripts/validate-live-a2a-registry-resolution.mjs",
+    "live:a2a-reference-inspection": "node scripts/validate-live-a2a-reference-inspection.mjs",
+    "live:a2a-github-repository-resolution": "node scripts/validate-live-a2a-github-repository-resolution.mjs",
+    "live:a2a-runtime-reachability": "node scripts/validate-live-a2a-runtime-reachability.mjs",
+    "live:arca-federation-introduction-delivery": "node scripts/validate-live-arca-federation-introduction-delivery.mjs",
+    "validate:arca-node-introduction": "node scripts/validate-arca-node-introduction.mjs",
+    "validate:arca-federation-response": "node scripts/validate-arca-federation-response.mjs",
+    "publication:check": "node scripts/arca-publication-boundary.mjs --check",
+    "publication:preview": "node scripts/arca-publication-boundary.mjs --preview",
+    "check:public": "node scripts/check-repository.mjs --public && node scripts/check-aie.mjs && node scripts/check-pncp.mjs --public && npm run publication:check"
+  },
+  "license": "Apache-2.0",
+  "author": "ARCA Project"
+}

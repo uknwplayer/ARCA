@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-export-v1.schema.json",
+  "title": "ARCA Portable Export v1",
+  "type": "object",
+  "required": [
+    "format",
+    "protocolVersion",
+    "exportedAt",
+    "state",
+    "events",
+    "validation",
+    "integrity"
+  ],
+  "properties": {
+    "format": { "const": "arca-export-v1" },
+    "protocolVersion": { "const": "1.0.0" },
+    "exportedAt": { "type": "string", "format": "date-time" },
+    "state": { "$ref": "arca-state-v1.schema.json" },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "arca-event-v1.schema.json" }
+    },
+    "validation": { "type": "object" },
+    "integrity": {
+      "type": "object",
+      "required": ["algorithm", "canonicalContentHash"],
+      "properties": {
+        "algorithm": { "const": "sha256" },
+        "canonicalContentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "eventHead": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

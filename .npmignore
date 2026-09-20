@@ -1,0 +1,8 @@
+build/
+.arca/
+.arca-demo/
+node_modules/
+coverage/
+*.log
+*.tmp
+*.lock

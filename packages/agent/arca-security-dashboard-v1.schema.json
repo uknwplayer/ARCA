@@ -1,0 +1,21 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-security-dashboard-v1.schema.json",
+  "title":"ARCA Security Dashboard v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","sourceAuditHash","deploymentProfile","summaryCards","sections","filters","disclaimers","legalComplianceConclusion","complianceScoreProduced","generatedAt","dashboardHash"],
+  "properties":{
+    "format":{"const":"arca-security-dashboard-v1"},
+    "sourceAuditHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "deploymentProfile":{"enum":["local-offline","self-hosted","public-hosted"]},
+    "summaryCards":{"type":"array","items":{"type":"object"}},
+    "sections":{"type":"array","items":{"type":"object"}},
+    "filters":{"type":"object"},
+    "disclaimers":{"type":"array","items":{"type":"string"}},
+    "legalComplianceConclusion":{"const":false},
+    "complianceScoreProduced":{"const":false},
+    "generatedAt":{"type":"string","format":"date-time"},
+    "dashboardHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

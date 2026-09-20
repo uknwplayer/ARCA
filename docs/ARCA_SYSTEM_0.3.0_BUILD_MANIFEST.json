@@ -1,0 +1,454 @@
+{
+  "format": "arca-build-manifest-v1",
+  "projectVersion": "0.3.0",
+  "protocolVersion": "1.0.0",
+  "generatedAt": "2026-09-15T05:16:50Z",
+  "distributionProfile": "public-sanitized",
+  "releaseSource": {
+    "files": 80,
+    "totalBytes": 586390,
+    "contentSetSha256": "c24e15f152c9c2bdf3c2210aa08addc07ef88e0567ac1db9c045a183976028f6",
+    "manifestSelfExcluded": true,
+    "entries": [
+      {
+        "path": ".gitattributes",
+        "bytes": 13,
+        "sha256": "547f59603028195ff9f8a87d04c4651551e8bd0d68f075257dfd549cd846b25b"
+      },
+      {
+        "path": ".github/workflows/arca-ci.yml",
+        "bytes": 735,
+        "sha256": "860d1486f5ff701c6f8d81c4fbf77b770ffd59d07efa89cf26d71a8f91727a80"
+      },
+      {
+        "path": ".gitignore",
+        "bytes": 88,
+        "sha256": "374dcb9cdeeac1671a3769f6be83ae486b03631421f5eeeb0e31c62824322768"
+      },
+      {
+        "path": ".npmignore",
+        "bytes": 69,
+        "sha256": "c78bad7d383c545b9b2b3e6361bf202311d2c1749011ceac5603ca9c91387d7f"
+      },
+      {
+        "path": ".replit",
+        "bytes": 205,
+        "sha256": "2d4bf0521e30d044c3969f973f761843bb1475874387660ce85f1d8fa594f77e"
+      },
+      {
+        "path": "CHANGELOG.md",
+        "bytes": 3894,
+        "sha256": "52c8c50225bc35a7e1895a7592041dc142f6a937de31ab67ff74c930497e26c6"
+      },
+      {
+        "path": "README.md",
+        "bytes": 8139,
+        "sha256": "fac82c376081411c46ac375e28446dee47b7649781e8761a38ed7f70caf3aa15"
+      },
+      {
+        "path": "docs/ARCA_ACQUISITION_CUSTODY_0.3.0_RELEASE_REPORT.md",
+        "bytes": 3777,
+        "sha256": "0e6a59f75374175975e8cb0b9e0d9b990124d74a96f6716bf2ac14b6a13267ca"
+      },
+      {
+        "path": "docs/ARCA_ACQUISITION_CUSTODY_SPEC_v0.3.0.md",
+        "bytes": 6315,
+        "sha256": "54027200f71e0bd4fb625b616041de586106f051945ef853ed06655a7cdcdcc6"
+      },
+      {
+        "path": "docs/ARCA_AGENT_PROTOCOL_v0.2.0.md",
+        "bytes": 6736,
+        "sha256": "ce6dd1ea3d9d35f48f3d67d6cceea750bd8ddcf61db971fbf3bb1414a622718f"
+      },
+      {
+        "path": "docs/ARCA_CORE_SPEC_v1.0.0.md",
+        "bytes": 11815,
+        "sha256": "8d91c4fd2f7595113c019a85f3551a1f48b75bdf11ed75b3a6a648fa144d73ac"
+      },
+      {
+        "path": "docs/ARCA_CORE_v1_FOUNDATION_0.1.0_RELEASE_REPORT.md",
+        "bytes": 8564,
+        "sha256": "e165b1addee720bc8c3fb0d8b4b514a435aaf2662afc8a85f8b8510e450c60c3"
+      },
+      {
+        "path": "docs/ARCA_DOCUMENTO_MESTRE_v1.3.0_PUBLICO.md",
+        "bytes": 18195,
+        "sha256": "708d029cf62cf44b10f2ed4157f70df7c3b8967a669d4855c304efb4f6fa05e5"
+      },
+      {
+        "path": "docs/ARCA_SYSTEM_0.2.0_TEST_REPORT.json",
+        "bytes": 978,
+        "sha256": "1ef5ea643b8e71f8094a6ce4e6d949b1b6bbbfc4ad9616f027b4c613da33c46d"
+      },
+      {
+        "path": "docs/ARCA_SYSTEM_0.3.0_TEST_REPORT.json",
+        "bytes": 2673,
+        "sha256": "3243de76365a7f2ac101d0d46dfaa2700008c73737e0a09d53e12040d8f27cf3"
+      },
+      {
+        "path": "docs/ARCA_WORKBENCH_AGENT_BUNDLE_0.2.0_RELEASE_REPORT.md",
+        "bytes": 5905,
+        "sha256": "bcb0337b747ffc83d79a0aa22c216e716abed5001ea9d17ac7d6e8424b087501"
+      },
+      {
+        "path": "docs/ARCA_WORKBENCH_SPEC_v0.2.0.md",
+        "bytes": 10079,
+        "sha256": "0b8829dafb0532d5c26cdbaeffa8b51206c0fd652e6b7a2d7a25e88ec1709712"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0001-core-local-cli-first.md",
+        "bytes": 675,
+        "sha256": "9937ece0e640c45854288ce461b838203115a2a7610704a1ac849a232891c1d1"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0002-question-first-class.md",
+        "bytes": 547,
+        "sha256": "10d1dbbcdde77a46eb8a6a7828a84b3faf7e5f41091c7a9693b1f65ced0ed1d0"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0003-evidence-as-relation.md",
+        "bytes": 544,
+        "sha256": "32164290a828ce41596bc1e4803cf53db6f3a0cc20a6cfc2d7c4dc4d41da3117"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0004-event-log-source-of-truth.md",
+        "bytes": 578,
+        "sha256": "35cbfbd7686f097ca333772e137b3bf4b73e94724010fd962a2298b58c4a0530"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0005-qualitative-epistemic-states.md",
+        "bytes": 474,
+        "sha256": "522f466f1c2592c92266b4911430078b0b2fdd83650a2f31ee532c1ba6712d8f"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0006-workbench-core-boundary.md",
+        "bytes": 1475,
+        "sha256": "2b3b5173b990d73beae71ddae7c73e2355de688d982e663dcfb6db0ec2954beb"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0007-agent-proposal-human-review.md",
+        "bytes": 1582,
+        "sha256": "debdc1f5cf31787ea92b733173b1cbab2fea69bb51bd8d17256bf4d3f14b9300"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0008-acquisition-core-boundary.md",
+        "bytes": 839,
+        "sha256": "3d7570ec5a80ef0e5c9e3bb9a6d9e56e91e8dcaf00da5c61f7d09437a284e65b"
+      },
+      {
+        "path": "docs/adr/ADR-ARCA-0009-original-bytes-and-custody-events.md",
+        "bytes": 969,
+        "sha256": "95e52d24ab6dbe264611a023a05cdfe3e767f69c6283d69cdf80b011485babc8"
+      },
+      {
+        "path": "examples/acquisition-fixtures/README.md",
+        "bytes": 133,
+        "sha256": "827016ba35b37e242b64a95cd1e4584fae5b04ad6b70bf11576eae3176109151"
+      },
+      {
+        "path": "examples/acquisition-fixtures/authorized-sample.bin",
+        "bytes": 7,
+        "sha256": "7e63e50a71895731b9055265ecd3e0f48337ab40117d06512129d0dfc5308004"
+      },
+      {
+        "path": "examples/acquisition-pilot/README.md",
+        "bytes": 946,
+        "sha256": "f0bd4d3bc1327ce0dc725605e1718f1619da6b88a2b689e411b4313fcf2c1563"
+      },
+      {
+        "path": "examples/acquisition-pilot/arca-home/acquisitions/INV-ARCA-RELEASE-VALIDATION/ACQ-PILOT-MASTER-1-3-PUBLIC/custody.ndjson",
+        "bytes": 1598,
+        "sha256": "041618c647790d1aefeb8c6997e3632ca8f0f373b1bda49a2da22b896912a7d5"
+      },
+      {
+        "path": "examples/acquisition-pilot/arca-home/acquisitions/INV-ARCA-RELEASE-VALIDATION/ACQ-PILOT-MASTER-1-3-PUBLIC/manifest.json",
+        "bytes": 1431,
+        "sha256": "ae949738abf0032c7f30749c2a876ff2368f9b7aab5f6ab5eee70fd64591850d"
+      },
+      {
+        "path": "examples/acquisition-pilot/arca-home/acquisitions/INV-ARCA-RELEASE-VALIDATION/ACQ-PILOT-MASTER-1-3-PUBLIC/original/ARCA_DOCUMENTO_MESTRE_v1.3.0_PUBLICO.pdf",
+        "bytes": 99148,
+        "sha256": "d70f38e450a63ab73c05a3b933d21c9aef22942922bc39d3ce6a8484304c592b"
+      },
+      {
+        "path": "examples/acquisition-pilot/proposal.json",
+        "bytes": 1058,
+        "sha256": "dff883f0501428d616056702af74d1863cd5b53b7cd430dca462447382fcbf64"
+      },
+      {
+        "path": "examples/acquisition-pilot/validation.json",
+        "bytes": 2327,
+        "sha256": "e5943c302b93916d7ecee9de61915a23b88c8194dc9c4021252404f3ceb260c9"
+      },
+      {
+        "path": "package-lock.json",
+        "bytes": 1750,
+        "sha256": "c096348f003b86dfdf668a65598ab970c3815e9b69970ee5ddcaa9bf16b3914d"
+      },
+      {
+        "path": "package.json",
+        "bytes": 955,
+        "sha256": "4299939d33e1cb782dc1fa542cdfa2d9f6d511572dba1bc0e8983d121180bf9d"
+      },
+      {
+        "path": "packages/acquisition/README.md",
+        "bytes": 1089,
+        "sha256": "a12c013f76788b882386bcdfae6758b3db621f1d9188c4381befa9e802b47de7"
+      },
+      {
+        "path": "packages/acquisition/bin/arca-acquire.mjs",
+        "bytes": 4249,
+        "sha256": "615b17b29ebf8a0e98253849809ab5c706676d400ec75c6d0b176ad2cd274ff0"
+      },
+      {
+        "path": "packages/acquisition/package.json",
+        "bytes": 306,
+        "sha256": "27b6befad1d86246baafd0f78a46176fdb98283958cf5458bd1a86563a7dce60"
+      },
+      {
+        "path": "packages/acquisition/src/index.ts",
+        "bytes": 23525,
+        "sha256": "1087e18df748c47af61c2ad0632998fc79aee0473fb911d9f35d297ed6e6fad6"
+      },
+      {
+        "path": "packages/agent/ARCA_AGENT_SYSTEM_PROMPT_v0.2.0.md",
+        "bytes": 3299,
+        "sha256": "48f916709230ff74a8aa0b08726ff731e34ab97faff2c41653e948d078c45b54"
+      },
+      {
+        "path": "packages/agent/README.md",
+        "bytes": 1141,
+        "sha256": "8a953ebaca00a21487a2d09f72e412b467165fc60a119cb96dd154a92ac0a79c"
+      },
+      {
+        "path": "packages/agent/arca-agent-proposal-v1.schema.json",
+        "bytes": 4294,
+        "sha256": "f728d01c9ddebb5a00c4b179504ca5d088c3402b5a8b30039f2b2427ef4dc9cf"
+      },
+      {
+        "path": "packages/agent/package.json",
+        "bytes": 229,
+        "sha256": "1673edac39746aeecdbd903346d9ea431a61a0a3d867adcdc098425f0c0b7356"
+      },
+      {
+        "path": "packages/agent/src/index.ts",
+        "bytes": 32,
+        "sha256": "686658f3a3fc49b0d402eefbb58c8832b0a033df5488dbbe99de52f89a02956f"
+      },
+      {
+        "path": "packages/agent/src/proposals.ts",
+        "bytes": 25274,
+        "sha256": "673fdb05d71dacdc605d0bdd2c966cb300db79e10b6a81f3a89c97629be7b414"
+      },
+      {
+        "path": "packages/cli/bin/arca.mjs",
+        "bytes": 272,
+        "sha256": "fd0147cd44cdf756f268f28049112a7dc2758902d6d6d7cf6bfb26205bbde96a"
+      },
+      {
+        "path": "packages/cli/package.json",
+        "bytes": 174,
+        "sha256": "557927223ce4de17a4d8b1877011e3597c2f9197bef4ef1588816b337c07fa50"
+      },
+      {
+        "path": "packages/cli/src/cli.ts",
+        "bytes": 14649,
+        "sha256": "74eda878abe9de0121adeeb3504668e5449225b5403f457a7777f83920abc713"
+      },
+      {
+        "path": "packages/core/package.json",
+        "bytes": 161,
+        "sha256": "71b31a8a27ecc04a895dde0513014dfcd7175327dc8e0c383168c005f076b034"
+      },
+      {
+        "path": "packages/core/src/canonical.ts",
+        "bytes": 2379,
+        "sha256": "73b9dc32c71247639e54659d520ea1bdcfba254e5113ece9e37428e903b952a7"
+      },
+      {
+        "path": "packages/core/src/constants.ts",
+        "bytes": 2640,
+        "sha256": "69f85edfa722739424cbf8284497fba9fb192301b98a9cd7d685a553ea15c32d"
+      },
+      {
+        "path": "packages/core/src/events.ts",
+        "bytes": 2568,
+        "sha256": "dd9bf93b514f68b80d91c9da21085b839feedd565f28b2632ce7fa5422e680f1"
+      },
+      {
+        "path": "packages/core/src/ids.ts",
+        "bytes": 2119,
+        "sha256": "ca7608810c89965bb0b949efc10bb8653eb1b5278e4e64a87d43be5b5a98138e"
+      },
+      {
+        "path": "packages/core/src/index.ts",
+        "bytes": 329,
+        "sha256": "978ed900909ca014669709e3cd15219292465a8c79836d6f00e360d37bafc98f"
+      },
+      {
+        "path": "packages/core/src/migration.ts",
+        "bytes": 29452,
+        "sha256": "8a2fa18dd38223e8483765b77122956f820f2213129d5ed664a0b5ee048c5213"
+      },
+      {
+        "path": "packages/core/src/model.ts",
+        "bytes": 3177,
+        "sha256": "549447ea9fab41e028f1c581fdafb8720fa196eede47eaacfef56767afa8f742"
+      },
+      {
+        "path": "packages/core/src/operations.ts",
+        "bytes": 20044,
+        "sha256": "63771426530f98f181afbf13640f794e0b51fbeba5f46535c86bae92ba29b9e8"
+      },
+      {
+        "path": "packages/core/src/reducer.ts",
+        "bytes": 5343,
+        "sha256": "1fc45dfeb92bfcfdacfd96c3f8f747f6296050ada0f7f00f42229f2123d341e1"
+      },
+      {
+        "path": "packages/core/src/store.ts",
+        "bytes": 7066,
+        "sha256": "0a64cc6579f34f4a0c5bfa295f74dcd8aea7a38d31cfc7e26d6f7ed2eae10abd"
+      },
+      {
+        "path": "packages/core/src/trace.ts",
+        "bytes": 4058,
+        "sha256": "79ea9e75c5cc6fad70fabfa9045ecb5da17d3149f0733c881ee943dcd903546e"
+      },
+      {
+        "path": "packages/core/src/validate.ts",
+        "bytes": 26395,
+        "sha256": "d12664c8e4526f480232335e5d77b0da086ff4daec80eaae2701c0afd9bb2676"
+      },
+      {
+        "path": "packages/workbench/bin/arca-workbench.mjs",
+        "bytes": 1791,
+        "sha256": "2106263773ed8f0dfc61d1aa43c2a0551c73446c6012fabd0f0f69faddbefeca"
+      },
+      {
+        "path": "packages/workbench/package.json",
+        "bytes": 298,
+        "sha256": "5a4ca0912ebc9408e9595e8b9da3eb21e497752d6d21d54804c100643c5f6247"
+      },
+      {
+        "path": "packages/workbench/public/app.js",
+        "bytes": 62430,
+        "sha256": "b44528cb7105b6bd96a4d7bb321b720d8acd640a0221865fe36f2f5c2d17b4a3"
+      },
+      {
+        "path": "packages/workbench/public/index.html",
+        "bytes": 10620,
+        "sha256": "dec32ba7293d4a513e21e392401c11c317d0095f05686e3984f593df698502ff"
+      },
+      {
+        "path": "packages/workbench/public/styles.css",
+        "bytes": 26244,
+        "sha256": "83420436732fc1754a0c636762133fec8985f15d476a31b1d9c0c0355cf20110"
+      },
+      {
+        "path": "packages/workbench/src/server.ts",
+        "bytes": 20917,
+        "sha256": "d08af2f76e8abd79bf952ba5dde8cc6ce649e2f26ef0b6d30c2e1d1539e27d87"
+      },
+      {
+        "path": "schemas/arca-acquisition-request-v1.schema.json",
+        "bytes": 2381,
+        "sha256": "a2f1c26da5e2ffe59a2bb12bbe23e1f112049b4cd23dd0b0d6b8f015c4f02a4f"
+      },
+      {
+        "path": "schemas/arca-custody-manifest-v1.schema.json",
+        "bytes": 1075,
+        "sha256": "bd8ae9a56b2e791d819a4c793feb6b2594ad5e67923b042f05ff4e6a537df33e"
+      },
+      {
+        "path": "schemas/arca-event-v1.schema.json",
+        "bytes": 1723,
+        "sha256": "0c93e6e7a546c4b3f5ee3d24b6ab624341ddaf8fdc13c72eeb4003b04aa58ec6"
+      },
+      {
+        "path": "schemas/arca-export-v1.schema.json",
+        "bytes": 1121,
+        "sha256": "cc3f57ab136dbc4fb16f436a42e63559253ea216a1b429b14d86c1695d63da1c"
+      },
+      {
+        "path": "schemas/arca-state-v1.schema.json",
+        "bytes": 11776,
+        "sha256": "588e05b6c80cee089494e299fea2fc336459a8c807171c0b3eb0d29554484518"
+      },
+      {
+        "path": "scripts/check-repository.mjs",
+        "bytes": 8458,
+        "sha256": "17951b35bf31db25b24c4a3e7df591f5be8ff5aba9bf73a6c1c03faef56c4d37"
+      },
+      {
+        "path": "tests/acquisition.test.mjs",
+        "bytes": 8639,
+        "sha256": "b54c6b9358ea7f0e09f551eac9039e7441d36722ec16f4a866de4302608cb7bb"
+      },
+      {
+        "path": "tests/agent.test.mjs",
+        "bytes": 6507,
+        "sha256": "f70a7e5c8189a4625e4a3ea56626f9c550b1f75be61aa4e219b0bf3119126bc2"
+      },
+      {
+        "path": "tests/cli.test.mjs",
+        "bytes": 3179,
+        "sha256": "5644379ef17b44f21c87c93f4312fef2e0ed901effc79e2d9c3b5854d518cbb4"
+      },
+      {
+        "path": "tests/core.test.mjs",
+        "bytes": 20584,
+        "sha256": "5217443d49fbfeb5766a75b3cf8d6f7e0e1bc3896710cb1eb7a72291b6ceec71"
+      },
+      {
+        "path": "tests/property.test.mjs",
+        "bytes": 3088,
+        "sha256": "7688de480f525ffd7f89470a214e67b2193c9db78b96c6e7f700e3e631a58438"
+      },
+      {
+        "path": "tests/workbench.test.mjs",
+        "bytes": 6079,
+        "sha256": "e3519875916dfaa95bc842e4bb2ce3c98a3a2bd0927abccf56ddd3adefbefe66"
+      }
+    ]
+  },
+  "verification": {
+    "testReport": "docs/ARCA_SYSTEM_0.3.0_TEST_REPORT.json",
+    "testCommand": "npm test",
+    "tests": 42,
+    "passed": 42,
+    "failed": 0,
+    "repositoryCheck": "passed",
+    "githubActionsWorkflow": ".github/workflows/arca-ci.yml"
+  },
+  "privacy": {
+    "profile": "public-sanitized",
+    "personalDataArtifactsIncluded": false,
+    "developmentInvestigationArtifactsIncluded": false,
+    "privateLocatorsIncluded": false,
+    "compatibilityFixtures": "synthetic-in-memory",
+    "repositoryTextScan": "passed",
+    "scannedTextFiles": 79,
+    "prohibitedArtifactPaths": 0,
+    "prohibitedContentHits": 0,
+    "pdfTextScan": "passed"
+  },
+  "documentMaster": {
+    "version": "1.3.0",
+    "source": "docs/ARCA_DOCUMENTO_MESTRE_v1.3.0_PUBLICO.md",
+    "pdf": "examples/acquisition-pilot/arca-home/acquisitions/INV-ARCA-RELEASE-VALIDATION/ACQ-PILOT-MASTER-1-3-PUBLIC/original/ARCA_DOCUMENTO_MESTRE_v1.3.0_PUBLICO.pdf",
+    "pdfBytes": 99148,
+    "pdfSha256": "d70f38e450a63ab73c05a3b933d21c9aef22942922bc39d3ce6a8484304c592b"
+  },
+  "approvedPilotCapture": {
+    "acquisitionId": "ACQ-PILOT-MASTER-1-3-PUBLIC",
+    "investigationId": "INV-ARCA-RELEASE-VALIDATION",
+    "eventCount": 2,
+    "eventHead": "5a3adab5b043b1a27908debaa490c65c34dc05276b017b9526147f36e39ada2c",
+    "outcome": "accepted"
+  },
+  "archive": {
+    "fileName": "ARCA_SYSTEM_0.3.0_ACQUISITION_CUSTODY_PUBLIC_SANITIZED.zip",
+    "hashLocation": "companion .sha256 file outside the self-contained archive"
+  }
+}

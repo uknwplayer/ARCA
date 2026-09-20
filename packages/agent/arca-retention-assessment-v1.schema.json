@@ -1,0 +1,27 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schema/arca-retention-assessment-v1.schema.json",
+  "title":"ARCA Retention Assessment v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","assessmentId","recordId","policyId","policyHash","action","reasons","purposeStillActive","conservationGrounds","minimumRetentionUntil","policyExpiry","automaticDeletionPerformed","humanReviewRequired","legalAdviceProvided","automatedLegalConclusion","assessedAt","assessmentHash"],
+  "properties":{
+    "format":{"const":"arca-retention-assessment-v1"},
+    "assessmentId":{"type":"string"},
+    "recordId":{"type":"string"},
+    "policyId":{"type":"string"},
+    "policyHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "action":{"enum":["retain","review","anonymize","delete-eligible","legal-hold"]},
+    "reasons":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "purposeStillActive":{"type":"boolean"},
+    "conservationGrounds":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "minimumRetentionUntil":{"type":["string","null"],"format":"date-time"},
+    "policyExpiry":{"type":["string","null"],"format":"date-time"},
+    "automaticDeletionPerformed":{"const":false},
+    "humanReviewRequired":{"type":"boolean"},
+    "legalAdviceProvided":{"const":false},
+    "automatedLegalConclusion":{"const":false},
+    "assessedAt":{"type":"string","format":"date-time"},
+    "assessmentHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}

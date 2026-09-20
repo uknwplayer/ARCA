@@ -1,0 +1,25 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schemas/machine-bridge-result-v1.schema.json",
+  "title":"ARCA Machine Bridge Result V1",
+  "type":"object",
+  "required":["format","protocolVersion","jobId","workerId","attempt","status","startedAt","completedAt"],
+  "properties":{
+    "format":{"const":"arca-result-v1"},
+    "protocolVersion":{"const":3},
+    "jobId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"},
+    "requestId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"},
+    "workerId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"},
+    "attempt":{"type":"integer","minimum":1},
+    "status":{"enum":["completed","failed"]},
+    "startedAt":{"type":"string","format":"date-time"},
+    "completedAt":{"type":"string","format":"date-time"},
+    "output":{},
+    "error":{"type":"object","required":["name","message"],"properties":{"name":{"type":"string"},"message":{"type":"string","maxLength":12000}},"additionalProperties":false}
+  },
+  "allOf":[
+    {"if":{"properties":{"status":{"const":"completed"}}},"then":{"required":["output"]}},
+    {"if":{"properties":{"status":{"const":"failed"}}},"then":{"required":["error"]}}
+  ],
+  "additionalProperties":false
+}

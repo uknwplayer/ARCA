@@ -1,0 +1,12 @@
+.arca/
+.arca-demo/
+node_modules/
+coverage/
+dist/
+build/
+output/
+tmp/
+*.log
+*.tmp
+*.lock
+.arca-publication-preview/

@@ -1,0 +1,66 @@
+{
+  "format": "arca-acquisition-pilot-validation-v1",
+  "generatedAt": "2026-09-15T05:08:00Z",
+  "status": "HUMAN_REVIEW_ACCEPTED",
+  "valid": true,
+  "checks": [
+    { "id": "PILOT-001", "name": "bytes_received_complete", "pass": true },
+    { "id": "PILOT-002", "name": "pdf_signature", "pass": true },
+    { "id": "PILOT-003", "name": "pdf_eof_marker", "pass": true },
+    { "id": "PILOT-004", "name": "sha256_computed", "pass": true },
+    { "id": "PILOT-005", "name": "event_hash_recomputes", "pass": true },
+    { "id": "PILOT-006", "name": "manifest_projects_event", "pass": true },
+    { "id": "PILOT-007", "name": "human_review_required", "pass": true },
+    { "id": "PILOT-008", "name": "public_distribution_hygiene", "pass": true }
+  ],
+  "source": {
+    "title": "ARCA_DOCUMENTO_MESTRE_v1.3.0_PUBLICO.pdf",
+    "byteLength": 99148,
+    "mimeType": "application/pdf",
+    "pdfSignatureValid": true,
+    "pdfEofPresent": true,
+    "sha256": "d70f38e450a63ab73c05a3b933d21c9aef22942922bc39d3ce6a8484304c592b"
+  },
+  "custody": {
+    "acquisitionId": "ACQ-PILOT-MASTER-1-3-PUBLIC",
+    "investigationId": "INV-ARCA-RELEASE-VALIDATION",
+    "eventCount": 2,
+    "eventHead": "5a3adab5b043b1a27908debaa490c65c34dc05276b017b9526147f36e39ada2c"
+  },
+  "humanReview": {
+    "outcome": "accepted",
+    "reviewedAt": "2026-09-15T05:08:00Z",
+    "actor": {
+      "id": "owner-reviewer",
+      "role": "owner-reviewer"
+    },
+    "approvalBasis": "Publicacao higienizada autorizada; casos pessoais e investigacoes de desenvolvimento removidos.",
+    "eventHash": "5a3adab5b043b1a27908debaa490c65c34dc05276b017b9526147f36e39ada2c"
+  },
+  "privacy": {
+    "profile": "public-sanitized",
+    "personalNamesRemoved": true,
+    "developmentInvestigationsRemoved": true,
+    "privateLocatorsRemoved": true,
+    "textAndPdfScan": "passed"
+  },
+  "releaseVerification": {
+    "status": "passed",
+    "verifiedAt": "2026-09-15T05:16:50Z",
+    "npmTest": {
+      "tests": 42,
+      "passed": 42,
+      "failed": 0,
+      "durationMs": 3351.433702
+    },
+    "repositoryCheck": "passed",
+    "privacyScan": {
+      "scannedTextFiles": 79,
+      "prohibitedArtifactPaths": 0,
+      "prohibitedContentHits": 0
+    }
+  },
+  "limitations": [
+    "A captura valida integridade e proveniencia declarada; nao prova veracidade do conteudo."
+  ]
+}

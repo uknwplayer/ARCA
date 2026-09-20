@@ -1,0 +1,11 @@
+const defs=Object.freeze([
+ ["audit_get_file",{repo:{type:"string"},path:{type:"string"},ref:{type:"string",optional:true}},"file"],
+ ["audit_get_commit",{repo:{type:"string"},sha:{type:"string"}},"commit"],
+ ["audit_get_pull",{repo:{type:"string"},number:{type:"number"}},"pull"],
+ ["audit_get_workflow_run",{repo:{type:"string"},runId:{type:"number"}},"workflow-run"],
+ ["audit_get_workflow_job_log",{repo:{type:"string"},jobId:{type:"number"}},"workflow-job-log"]
+]);
+function validString(v,max=300){return typeof v==="string"&&v.length>0&&v.length<=max&&!v.includes("\0")}
+function validate(schema,args){if(!args||typeof args!=="object"||Array.isArray(args))throw new Error("ARCA_AUDITOR_TOOL_INVALID_ARGS");for(const k of Object.keys(args))if(!schema[k])throw new Error("ARCA_AUDITOR_TOOL_UNKNOWN_ARG");for(const [k,s] of Object.entries(schema)){const v=args[k];if(v==null){if(!s.optional)throw new Error("ARCA_AUDITOR_TOOL_REQUIRED_ARG");continue}if(s.type==="string"&&!validString(v))throw new Error("ARCA_AUDITOR_TOOL_INVALID_STRING");if(s.type==="number"&&(!Number.isSafeInteger(v)||v<=0))throw new Error("ARCA_AUDITOR_TOOL_INVALID_NUMBER");}if(args.repo&&!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(args.repo))throw new Error("ARCA_AUDITOR_TOOL_INVALID_REPO");if(args.sha&&!/^[0-9a-fA-F]{7,64}$/.test(args.sha))throw new Error("ARCA_AUDITOR_TOOL_INVALID_SHA");if(args.path&&(args.path.startsWith("/")||args.path.includes("..")))throw new Error("ARCA_AUDITOR_TOOL_INVALID_PATH");}
+export function createAuditorToolInterface({gateway,agentId}){if(!gateway||!agentId)throw new Error("ARCA_AUDITOR_TOOL_INVALID_CONFIG");const tools={};for(const [name,schema,kind] of defs){tools[name]=Object.freeze({name,inputSchema:schema,readOnly:true,async invoke(args={}){validate(schema,args);const resource=JSON.stringify({repo:args.repo,kind,...(kind==="file"?{path:args.path,...(args.ref?{ref:args.ref}:{})}:{}),...(kind==="commit"?{sha:args.sha}:{}),...(kind==="pull"?{number:args.number}:{}),...(kind==="workflow-run"?{runId:args.runId}:{}),...(kind==="workflow-job-log"?{jobId:args.jobId}:{})});return gateway.read({agentId,source:"github",resource});}})}return Object.freeze(tools)}
+export function describeAuditorTools(){return defs.map(([name,inputSchema])=>({name,inputSchema,readOnly:true}))}

@@ -1,0 +1,22 @@
+{
+  "name": "@arca/workbench",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Interface local e auditável para o ARCA Core",
+  "bin": {
+    "arca-workbench": "./bin/arca-workbench.mjs",
+    "arca-creator": "./bin/arca-creator.mjs"
+  },
+  "exports": {
+    ".": "./src/server.ts",
+    "./creator": "./src/creator-server.ts",
+    "./creator-gateway": "./src/creator-gateway.ts",
+    "./creator-reasoning": "./src/creator-reasoning.ts",
+    "./creator-durable-reasoning": "./src/creator-durable-reasoning.ts",
+    "./creator-integrated-runtime": "./src/creator-integrated-runtime.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

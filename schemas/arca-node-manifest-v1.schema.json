@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:arca:schema:arca-node-manifest-v1",
+  "title": "ARCA Node Manifest V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "arcaVersion",
+    "nodeId",
+    "identity",
+    "about",
+    "trustModel",
+    "protocols",
+    "capabilities",
+    "responseOptions",
+    "documentation",
+    "manifestUrl",
+    "manifestHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-node-manifest-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "arcaVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,120}$"
+    },
+    "identity": {
+      "type": "object"
+    },
+    "about": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "description",
+        "principles"
+      ],
+      "properties": {
+        "name": {
+          "const": "ARCA"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "principles": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "trustModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "discoveryCreatesTrust",
+        "capabilityGrantsPermission",
+        "admissionRequiredBeforeDispatch",
+        "arbitraryRemoteExecution",
+        "consentRequiredForFederation"
+      ],
+      "properties": {
+        "discoveryCreatesTrust": {
+          "const": false
+        },
+        "capabilityGrantsPermission": {
+          "const": false
+        },
+        "admissionRequiredBeforeDispatch": {
+          "const": true
+        },
+        "arbitraryRemoteExecution": {
+          "const": false
+        },
+        "consentRequiredForFederation": {
+          "const": true
+        }
+      }
+    },
+    "protocols": {
+      "type": "object"
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120
+      }
+    },
+    "responseOptions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "accept-evaluation",
+          "decline",
+          "request-info",
+          "offer-endpoint",
+          "offer-auth-method",
+          "limit-scope"
+        ]
+      }
+    },
+    "documentation": {
+      "type": "object"
+    },
+    "manifestUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manifestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

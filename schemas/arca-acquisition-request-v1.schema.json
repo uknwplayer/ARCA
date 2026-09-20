@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schemas/arca-acquisition-request-v1.schema.json",
+  "title": "ARCA Acquisition Request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "acquisitionId",
+    "investigationId",
+    "sourceId",
+    "title",
+    "sourcePath",
+    "locator",
+    "accessedAt",
+    "acquisitionMethod",
+    "access",
+    "actor"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-acquisition-request-v1"
+    },
+    "acquisitionId": {
+      "type": "string",
+      "pattern": "^ACQ-[A-Z0-9][A-Z0-9-]{0,63}$"
+    },
+    "investigationId": {
+      "type": "string",
+      "pattern": "^INV-[A-Z0-9][A-Z0-9-]{0,63}$"
+    },
+    "sourceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 72
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "sourcePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "locator": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "accessedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acquisitionMethod": {
+      "enum": [
+        "local-file",
+        "authorized-download",
+        "manual-import"
+      ]
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "declaration"
+      ],
+      "properties": {
+        "basis": {
+          "enum": [
+            "public",
+            "owner-provided",
+            "authorized"
+          ]
+        },
+        "declaration": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      }
+    },
+    "mediaType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "expectedEventHead": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      }
+    }
+  }
+}

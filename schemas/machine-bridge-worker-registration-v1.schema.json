@@ -1,0 +1,36 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schemas/machine-bridge-worker-registration-v1.schema.json",
+  "title":"ARCA Machine Bridge Worker Registration V1",
+  "type":"object",
+  "required":["format","protocolVersion","worker","transport","registeredAt"],
+  "properties":{
+    "format":{"const":"arca-worker-registration-v1"},
+    "protocolVersion":{"const":3},
+    "worker":{
+      "type":"object",
+      "required":["format","workerId","capabilities","heartbeatAt"],
+      "properties":{
+        "format":{"const":"arca-worker-v1"},
+        "workerId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"},
+        "capabilities":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+        "heartbeatAt":{"type":"string","format":"date-time"},
+        "startedAt":{"type":"string","format":"date-time"}
+      },
+      "additionalProperties":false
+    },
+    "transport":{
+      "type":"object",
+      "required":["kind","repository","ref","authentication"],
+      "properties":{
+        "kind":{"const":"github"},
+        "repository":{"type":"string","pattern":"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+        "ref":{"type":"string","minLength":1},
+        "authentication":{"const":"repository-bearer-token"}
+      },
+      "additionalProperties":false
+    },
+    "registeredAt":{"type":"string","format":"date-time"}
+  },
+  "additionalProperties":false
+}

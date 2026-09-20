@@ -1,0 +1,22 @@
+import {createHash,createPrivateKey,createPublicKey,randomBytes} from "node:crypto";
+import {writeFile} from "node:fs/promises";
+import {createMeshNodeIdentity,signMeshStatement,MESH_REQUEST_EVIDENCE_DOMAIN} from "../../src/machine-bridge/mesh-identity.mjs";
+
+const stable=v=>JSON.stringify(Array.isArray(v)?v.map(x=>JSON.parse(stable(x))):v&&typeof v==="object"?Object.fromEntries(Object.keys(v).sort().map(k=>[k,JSON.parse(stable(v[k]))])):v);
+const sha=v=>createHash("sha256").update(typeof v==="string"?v:stable(v)).digest("hex");
+const pem=process.env.ARCA_FEDERATION_A_PRIVATE_KEY_PEM;
+const out=process.argv[2];
+const ownerBindingHash=process.env.ARCA_FEDERATION_OWNER_BINDING_HASH;
+if(!pem||!out)throw new Error("ARCA_FEDERATION_A_PRIVATE_KEY_PEM e arquivo de saída são obrigatórios");
+if(!/^[a-f0-9]{64}$/.test(ownerBindingHash||""))throw new Error("ARCA_FEDERATION_OWNER_BINDING_HASH inválido");
+const privateKey=createPrivateKey(pem),publicKey=createPublicKey(privateKey);
+const identity=createMeshNodeIdentity({nodeId:"arca-federation-operator-a",publicKey});
+const expected="2782565b8ef8aae6461f1de746d7869fde83a2ae0998695a5ec7e6c3ed13ffff";
+if(identity.keyFingerprint!==expected)throw new Error("ARCA_FEDERATION_A_SIGNER_IDENTITY_MISMATCH");
+const requestId=process.env.ARCA_FEDERATION_REQUEST_ID||("fed-"+Date.now());
+const jobId=requestId+"-job",params={echo:"ARCA A -> B"};
+const payloadHash=sha({requestId,jobId,action:"worker.ping",params});
+const payload={format:"arca-federation-probe-v1",protocolVersion:3,requestId,jobId,originOperatorId:"arca-federation-operator-a",targetOperatorId:"arca-federation-operator-b",action:"worker.ping",params,payloadHash,ownerBindingHash};
+const statement=signMeshStatement(payload,{identity,privateKey,domain:MESH_REQUEST_EVIDENCE_DOMAIN,nonce:randomBytes(18).toString("base64url"),ttlMs:5*60*1000});
+await writeFile(out,JSON.stringify(statement,null,2)+"\n",{flag:"wx"});
+console.log(JSON.stringify({requestId,jobId,payloadHash,ownerBindingHash,statementHash:statement.statementHash,keyFingerprint:identity.keyFingerprint,out}));

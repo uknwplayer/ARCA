@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-execution-attempt-v1.schema.json",
+  "title": "ARCA Execution Attempt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "executionId",
+    "executionHash",
+    "attemptNumber",
+    "attemptId",
+    "participantId",
+    "participantDescriptorHash",
+    "runtimeBindingHash",
+    "roleConformanceEvidenceHash",
+    "requestId",
+    "jobId",
+    "payloadHash",
+    "selectedNodeId",
+    "ownerBindingHash",
+    "plannedAt",
+    "recordHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-execution-attempt-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "executionId": {
+      "type": "string",
+      "pattern": "^exec-[a-f0-9]{40}$"
+    },
+    "executionHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "attemptNumber": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "attemptId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "participantId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "participantDescriptorHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runtimeBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "roleConformanceEvidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "jobId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "payloadHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "selectedNodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "ownerBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "plannedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recordHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

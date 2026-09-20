@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-agent-discovery-candidate-v1.schema.json",
+  "title": "ARCA Agent Discovery Candidate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format","version","candidateKey","advertisedId","kind","protocol","endpoint",
+    "provider","name","declaredCapabilities","capabilityState","trustState",
+    "admissionState","firstSeenAt","lastSeenAt","observations"
+  ],
+  "properties": {
+    "format": {"const": "arca-agent-discovery-candidate-v1"},
+    "version": {"const": 1},
+    "candidateKey": {"type": "string","pattern": "^[a-f0-9]{64}$"},
+    "advertisedId": {"type": "string","pattern": "^[A-Za-z0-9._:-]{1,120}$"},
+    "kind": {"enum": ["agent","tool-server","arca-node"]},
+    "protocol": {"enum": ["aap","a2a","mcp","arca-federation","custom"]},
+    "endpoint": {"type": "string","minLength": 1,"maxLength": 2048},
+    "provider": {"type": "string","minLength": 1,"maxLength": 120},
+    "name": {"type": "string","minLength": 1,"maxLength": 200},
+    "declaredCapabilities": {
+      "type":"array","uniqueItems":true,
+      "items":{"type":"string","pattern":"^[A-Za-z0-9._:-]{1,120}$"}
+    },
+    "capabilityState": {"const": "declared"},
+    "trustState": {"const": "untrusted"},
+    "admissionState": {"const": "not-admitted"},
+    "firstSeenAt": {"type":"string","format":"date-time"},
+    "lastSeenAt": {"type":"string","format":"date-time"},
+    "observations": {
+      "type":"array","minItems":1,
+      "items":{
+        "type":"object",
+        "additionalProperties":false,
+        "required":["sourceId","sourceKind","sourceUri","discoveredAt","declaredCapabilities","provider","name"],
+        "properties":{
+          "sourceId":{"type":"string","pattern":"^[A-Za-z0-9._:-]{1,120}$"},
+          "sourceKind":{"type":"string","minLength":1,"maxLength":80},
+          "sourceUri":{"type":["string","null"]},
+          "discoveredAt":{"type":"string","format":"date-time"},
+          "declaredCapabilities":{
+            "type":"array","uniqueItems":true,
+            "items":{"type":"string","pattern":"^[A-Za-z0-9._:-]{1,120}$"}
+          },
+          "provider":{"type":"string","minLength":1,"maxLength":120},
+          "name":{"type":"string","minLength":1,"maxLength":200}
+        }
+      }
+    }
+  }
+}

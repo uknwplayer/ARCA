@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-execution-dispatch-gate-v1.schema.json",
+  "title": "ARCA Execution Dispatch Gate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "executionId",
+    "attemptId",
+    "attemptHash",
+    "preparationHash",
+    "participantId",
+    "participantDescriptorHash",
+    "runtimeBindingHash",
+    "roleConformanceEvidenceHash",
+    "authorizationDecisionHash",
+    "authorizedAt",
+    "recordHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-execution-dispatch-gate-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "executionId": {
+      "type": "string",
+      "pattern": "^exec-[a-f0-9]{40}$"
+    },
+    "attemptId": {
+      "type": "string"
+    },
+    "attemptHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "preparationHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "participantId": {
+      "type": "string"
+    },
+    "participantDescriptorHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runtimeBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "roleConformanceEvidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authorizationDecisionHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authorizedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recordHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

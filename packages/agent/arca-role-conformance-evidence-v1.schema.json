@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-role-conformance-evidence-v1.schema.json",
+  "title": "ARCA Role Conformance Evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format","version","roleId","roleContractHash","profileId","profileHash",
+    "participantId","participantDescriptorHash","verifierId","passed","testedAt","validUntil",
+    "fixtureResults","rawOutputPersisted","syntheticOnly","sideEffectsPerformed","evidenceHash"
+  ],
+  "properties": {
+    "format": {"const": "arca-role-conformance-evidence-v1"},
+    "version": {"const": 1},
+    "roleId": {"type": "string"},
+    "roleContractHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "profileId": {"type": "string"},
+    "profileHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "participantId": {"type": "string"},
+    "participantDescriptorHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "verifierId": {"type": "string"},
+    "passed": {"type": "boolean"},
+    "testedAt": {"type": "string", "format": "date-time"},
+    "validUntil": {"type": "string", "format": "date-time"},
+    "fixtureResults": {"type": "array", "minItems": 1, "maxItems": 20},
+    "rawOutputPersisted": {"const": false},
+    "syntheticOnly": {"const": true},
+    "sideEffectsPerformed": {"const": false},
+    "evidenceHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

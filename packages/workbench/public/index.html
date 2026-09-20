@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#101512">
+  <title>ARCA Workbench</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <strong>ARCA</strong>
+          <small>Workbench <span id="version-label">0.2.0</span></small>
+        </div>
+      </div>
+
+      <nav class="primary-nav">
+        <button class="nav-item is-active" data-view="overview"><span class="nav-glyph">⌂</span><span>Visão geral</span></button>
+        <button class="nav-item" data-view="graph"><span class="nav-glyph">⌘</span><span>Mapa probatório</span></button>
+        <button class="nav-item" data-view="objects"><span class="nav-glyph">▦</span><span>Artefatos</span></button>
+        <button class="nav-item" data-view="trace"><span class="nav-glyph">↯</span><span>TRACE</span></button>
+        <button class="nav-item" data-view="validation"><span class="nav-glyph">✓</span><span>Conformidade</span></button>
+        <button class="nav-item" data-view="proposals"><span class="nav-glyph">◇</span><span>Propostas de agentes</span><span id="proposal-count" class="nav-count is-hidden">0</span></button>
+        <a class="nav-item" href="/reviews.html"><span class="nav-glyph">✦</span><span>Inbox de revisão</span></a>
+        <button class="nav-item" data-view="history"><span class="nav-glyph">◷</span><span>Histórico</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="local-badge"><span class="status-dot"></span><span>Core local</span></div>
+        <p>Privado por padrão.<br>Sem inferência automática.</p>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button id="menu-button" class="icon-button mobile-only" aria-label="Abrir menu">☰</button>
+        <div class="investigation-switcher">
+          <label for="investigation-select">Investigação ativa</label>
+          <select id="investigation-select" aria-label="Investigação ativa">
+            <option value="">Nenhuma investigação</option>
+          </select>
+        </div>
+        <div class="topbar-actions">
+          <span id="sync-status" class="sync-status"><span class="status-dot"></span>Íntegro</span>
+          <button id="export-button" class="button button-ghost" disabled>Exportar</button>
+          <button id="new-investigation-button" class="button button-primary">Nova investigação</button>
+        </div>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <section id="empty-state" class="empty-state is-hidden">
+          <div class="empty-constellation" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <p class="eyebrow">ARCA Core pronto</p>
+          <h1>Comece pela questão,<br>não pela conclusão.</h1>
+          <p>Crie uma investigação para estruturar fontes, documentos, informações, proposições, hipóteses, lacunas e conclusões em um grafo auditável.</p>
+          <button class="button button-primary" data-action="new-investigation">Criar primeira investigação</button>
+        </section>
+
+        <div id="view-root" class="view-root is-hidden" aria-live="polite"></div>
+      </main>
+    </div>
+  </div>
+
+  <div id="sidebar-scrim" class="sidebar-scrim is-hidden"></div>
+  <div id="toast-region" class="toast-region" aria-live="assertive"></div>
+
+  <dialog id="investigation-dialog" class="modal">
+    <form id="investigation-form" class="modal-card">
+      <div class="modal-header">
+        <div><p class="eyebrow">Novo dossiê</p><h2>Criar investigação</h2></div>
+        <button type="button" class="icon-button" data-close-dialog aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body form-grid">
+        <label class="field field-wide"><span>Questão verificável</span><textarea name="question" rows="3" required maxlength="2000" placeholder="O que exatamente precisa ser verificado?"></textarea></label>
+        <label class="field field-wide"><span>Objetivo</span><textarea name="objective" rows="2" required maxlength="2000" placeholder="Qual decisão ou compreensão esta investigação deve apoiar?"></textarea></label>
+        <label class="field"><span>Escopo</span><textarea name="scope" rows="4" required maxlength="3000" placeholder="Período, pessoas, lugares e dimensões incluídas."></textarea></label>
+        <label class="field"><span>Limites iniciais</span><textarea name="limits" rows="4" required maxlength="3000" placeholder="Restrições conhecidas, acessos ausentes e exclusões."></textarea></label>
+        <label class="check-field field-wide"><input type="checkbox" name="simulation"><span><strong>Modo de simulação</strong><small>Marca o material criado como demonstração, sem alegação factual.</small></span></label>
+      </div>
+      <div class="modal-footer"><button type="button" class="button button-ghost" data-close-dialog>Cancelar</button><button class="button button-primary" type="submit">Criar investigação</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="object-dialog" class="modal modal-large">
+    <form id="object-form" class="modal-card">
+      <div class="modal-header">
+        <div><p class="eyebrow" id="object-dialog-eyebrow">Novo artefato</p><h2 id="object-dialog-title">Adicionar ao grafo</h2></div>
+        <button type="button" class="icon-button" data-close-dialog aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="editId">
+        <label class="field"><span>Tipo de artefato</span><select name="type" id="object-type" required></select></label>
+        <div id="object-fields" class="form-grid object-fields"></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="button button-ghost" data-close-dialog>Cancelar</button><button id="object-submit" class="button button-primary" type="submit">Adicionar artefato</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="relation-dialog" class="modal modal-large">
+    <form id="relation-form" class="modal-card">
+      <div class="modal-header">
+        <div><p class="eyebrow">Nova aresta</p><h2>Relacionar artefatos</h2></div>
+        <button type="button" class="icon-button" data-close-dialog aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body form-grid">
+        <label class="field"><span>Origem</span><select name="from" required></select></label>
+        <label class="field"><span>Destino</span><select name="to" required></select></label>
+        <label class="field"><span>Categoria</span><select name="category" required>
+          <option value="provenance">Proveniência</option><option value="evidence">Evidência</option><option value="epistemic">Epistêmica</option><option value="investigation">Investigação</option><option value="semantic">Semântica</option><option value="temporal">Temporal</option><option value="identity">Identidade</option><option value="frame">Enquadramento</option><option value="operational">Operacional</option>
+        </select></label>
+        <label class="field"><span>Tipo da relação</span><input name="relationType" required maxlength="160" placeholder="ex.: extracted_from, supports, limits"></label>
+        <label class="field"><span>Efeito probatório</span><select name="effect"><option value="">Não aplicável</option><option value="supports">Sustenta</option><option value="weakens">Enfraquece</option><option value="contradicts">Contradiz</option><option value="inconclusive">Inconclusivo</option><option value="compatible">Compatível</option></select></label>
+        <label class="field"><span>Materialidade</span><select name="materiality"><option value="">Não informada</option><option value="low">Baixa</option><option value="medium">Média</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+        <label class="field field-wide"><span>Justificativa explícita</span><textarea name="justification" required rows="4" maxlength="2000" placeholder="Por que esta relação é válida e quais são seus limites?"></textarea></label>
+        <div id="relation-rule" class="rule-callout field-wide"><strong>Regra do grafo</strong><span>Evidência só existe como relação explícita de uma informação (INF) para uma proposição (PRO).</span></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="button button-ghost" data-close-dialog>Cancelar</button><button class="button button-primary" type="submit">Criar relação</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="action-dialog" class="modal">
+    <form id="action-form" class="modal-card">
+      <div class="modal-header"><div><p class="eyebrow" id="action-eyebrow">Ação auditável</p><h2 id="action-title">Confirmar ação</h2></div><button type="button" class="icon-button" data-close-dialog aria-label="Fechar">×</button></div>
+      <div id="action-body" class="modal-body form-grid"></div>
+      <div class="modal-footer"><button type="button" class="button button-ghost" data-close-dialog>Cancelar</button><button id="action-submit" class="button button-danger" type="submit">Confirmar</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="proposal-dialog" class="modal modal-large">
+    <form id="proposal-form" class="modal-card">
+      <div class="modal-header"><div><p class="eyebrow">Intercâmbio avançado</p><h2>Importar proposta de agente</h2></div><button type="button" class="icon-button" data-close-dialog aria-label="Fechar">×</button></div>
+      <div class="modal-body">
+        <div class="warning-callout"><strong>Proposta não é fato nem ação.</strong><span>O conteúdo será validado, vinculado ao estado atual e aguardará sua decisão. Nenhuma operação é aplicada nesta etapa.</span></div>
+        <label class="field"><span>Objeto JSON conforme arca-agent-proposal-v1</span><textarea name="proposalJson" class="code-input" rows="16" required spellcheck="false" placeholder="{&#10;  &quot;format&quot;: &quot;arca-agent-proposal-v1&quot;,&#10;  ...&#10;}"></textarea></label>
+      </div>
+      <div class="modal-footer"><button type="button" class="button button-ghost" data-close-dialog>Cancelar</button><button class="button button-primary" type="submit">Validar e registrar</button></div>
+    </form>
+  </dialog>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

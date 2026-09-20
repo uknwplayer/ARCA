@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-participant-runtime-binding-v1.schema.json",
+  "title": "ARCA Participant Runtime Binding v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "participantId",
+    "participantDescriptorHash",
+    "runtimeKind",
+    "runtimeId",
+    "boundAt",
+    "bindingHash"
+  ],
+  "properties": {
+    "format": {"const": "arca-participant-runtime-binding-v1"},
+    "version": {"const": 1},
+    "participantId": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,120}$"},
+    "participantDescriptorHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "runtimeKind": {"enum": ["agent-gateway", "machine-bridge-worker", "endpoint", "custom"]},
+    "runtimeId": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,120}$"},
+    "boundAt": {"type": "string", "format": "date-time"},
+    "bindingHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

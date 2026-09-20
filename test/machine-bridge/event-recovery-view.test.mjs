@@ -1,0 +1,3 @@
+import test from "node:test";import assert from "node:assert/strict";import {createEventRecoveryView} from "../../src/machine-bridge/event-recovery-view.mjs";
+test("recovery view never converts uncertainty into retry authorization",()=>{const rows={a:null,b:{status:"acked"},c:{status:"claimed"},d:{status:"failed",errorCode:"TIMEOUT"}};const v=createEventRecoveryView({deliveryLedger:{get:(_,h)=>rows[h]}});assert.deepEqual(v.inspect("e",["a","b","c","d"]).map(x=>x.action),["eligible-for-first-claim","none","human-or-policy-review","human-or-idempotency-policy-review"])});
+test("unknown delivery status fails closed",()=>{const v=createEventRecoveryView({deliveryLedger:{get:()=>({status:"mystery"})}});assert.equal(v.inspect("e",["x"])[0].action,"fail-closed")});

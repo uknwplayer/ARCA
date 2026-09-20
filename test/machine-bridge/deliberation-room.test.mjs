@@ -1,0 +1,6 @@
+import test from "node:test"; import assert from "node:assert/strict";
+import {DeliberationRoom} from "../../src/machine-bridge/deliberation-room.mjs";
+const H="a".repeat(64), P=[{agentId:"gpt",provider:"openai",model:"test",role:"auditor"},{agentId:"claude",provider:"anthropic",model:"test",role:"auditor"}];
+test("blind first round hides peer messages",()=>{const r=new DeliberationRoom({roomId:"r1",evidenceSetHash:H,participants:P});r.submit({agentId:"gpt",body:"A"});r.submit({agentId:"claude",body:"B"});assert.equal(r.visibleMessages("gpt").length,1);r.advance();assert.equal(r.visibleMessages("gpt").length,2);});
+test("messages are append-only hash chained",()=>{const r=new DeliberationRoom({roomId:"r2",evidenceSetHash:H,participants:P});const a=r.submit({agentId:"gpt",body:"A"});const b=r.submit({agentId:"claude",body:"B"});assert.equal(b.previousHash,a.messageHash);assert.match(b.messageHash,/^[a-f0-9]{64}$/);});
+test("unknown agent and closed room fail closed",()=>{const r=new DeliberationRoom({roomId:"r3",evidenceSetHash:H,participants:P});assert.throws(()=>r.submit({agentId:"x",body:"x"}),/NOT_ALLOWED/);r.advance();r.advance();r.advance();r.advance();assert.throws(()=>r.submit({agentId:"gpt",body:"x"}),/ROOM_CLOSED/);});

@@ -1,0 +1,11 @@
+{
+  "name": "@arca/pncp-connector",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "description": "Conector publico controlado do PNCP para planos GET, captura limitada e cadeia de custodia",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "license": "UNLICENSED"
+}

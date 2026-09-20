@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {canRun,makeClaim,claimExpired,renewClaim} from "../src/machine-bridge/lease.mjs";
+const worker={workerId:"worker-a",capabilities:["node","repository"]};
+const job={jobId:"job-1",requires:["node"]};
+test("capability routing accepts compatible worker",()=>assert.equal(canRun(job,worker),true));
+test("capability routing rejects missing capability",()=>assert.equal(canRun({...job,requires:["browser"]},worker),false));
+test("workerTarget is respected",()=>assert.equal(canRun({...job,workerTarget:"worker-b"},worker),false));
+test("claim creates finite lease",()=>{const now=new Date("2026-01-01T00:00:00Z");const c=makeClaim(job,worker,{now,leaseMs:1000});assert.equal(c.workerId,"worker-a");assert.equal(c.leaseExpiresAt,"2026-01-01T00:00:01.000Z")});
+test("expired claim can be detected",()=>assert.equal(claimExpired({leaseExpiresAt:"2026-01-01T00:00:00Z"},new Date("2026-01-01T00:00:01Z")),true));
+test("live claim renews",()=>{const c={format:"arca-claim-v1",jobId:"j",workerId:"w",claimedAt:"2026-01-01T00:00:00Z",leaseExpiresAt:"2026-01-01T00:01:00Z",attempt:1};assert.equal(renewClaim(c,{now:new Date("2026-01-01T00:00:30Z"),leaseMs:60000}).leaseExpiresAt,"2026-01-01T00:01:30.000Z")});
+test("expired claim cannot renew",()=>assert.throws(()=>renewClaim({leaseExpiresAt:"2026-01-01T00:00:00Z"},{now:new Date("2026-01-01T00:00:01Z")})));

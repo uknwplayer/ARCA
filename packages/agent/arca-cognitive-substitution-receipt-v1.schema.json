@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-cognitive-substitution-receipt-v1.schema.json",
+  "title": "ARCA Cognitive Substitution Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "roleId",
+    "roleContractHash",
+    "preferredParticipantId",
+    "selectedParticipantId",
+    "participantDescriptorHash",
+    "roleConformanceProfileHash",
+    "roleConformanceEvidenceHash",
+    "conformanceVerifiedAt",
+    "conformanceValidUntil",
+    "runtimeBindingHash",
+    "runtimeKind",
+    "runtimeId",
+    "substituted",
+    "selectionReason",
+    "unavailableParticipants",
+    "bindingRejectedParticipants",
+    "conformanceRejectedParticipants",
+    "substitutionPolicy",
+    "dispatchAttempts",
+    "policyDecisionId",
+    "requestHash",
+    "outputHash",
+    "outputBytes",
+    "completedAt",
+    "policyMaterialIncluded",
+    "capabilityPolicyConflated",
+    "postFailureFailoverPerformed",
+    "issuerNodeId",
+    "receiptHash",
+    "signedReceipt"
+  ],
+  "properties": {
+    "format": {
+      "const": "arca-cognitive-substitution-receipt-v1"
+    },
+    "version": {
+      "const": 1
+    },
+    "roleId": {
+      "type": "string"
+    },
+    "roleContractHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "preferredParticipantId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "selectedParticipantId": {
+      "type": "string"
+    },
+    "participantDescriptorHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runtimeBindingHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "runtimeKind": {
+      "enum": [
+        "agent-gateway",
+        "machine-bridge-worker",
+        "endpoint",
+        "custom"
+      ]
+    },
+    "runtimeId": {
+      "type": "string"
+    },
+    "substituted": {
+      "type": "boolean"
+    },
+    "selectionReason": {
+      "enum": [
+        "role-match",
+        "preferred",
+        "preflight-substitute"
+      ]
+    },
+    "unavailableParticipants": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "bindingRejectedParticipants": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "substitutionPolicy": {
+      "const": "preflight-only"
+    },
+    "dispatchAttempts": {
+      "const": 1
+    },
+    "policyDecisionId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "outputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "outputBytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policyMaterialIncluded": {
+      "const": false
+    },
+    "capabilityPolicyConflated": {
+      "const": false
+    },
+    "postFailureFailoverPerformed": {
+      "const": false
+    },
+    "issuerNodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,120}$"
+    },
+    "receiptHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "signedReceipt": {
+      "type": "object",
+      "required": [
+        "format",
+        "version",
+        "domain",
+        "signer",
+        "payloadHash",
+        "payload",
+        "signature",
+        "statementHash"
+      ],
+      "properties": {
+        "format": {
+          "const": "arca-mesh-signed-statement-v1"
+        },
+        "version": {
+          "const": 1
+        },
+        "domain": {
+          "const": "arca.mesh.cognitive-substitution-receipt.v1"
+        },
+        "signer": {
+          "type": "object"
+        },
+        "payloadHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "signature": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statementHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "roleConformanceProfileHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "roleConformanceEvidenceHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "conformanceVerifiedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "conformanceValidUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "conformanceRejectedParticipants": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

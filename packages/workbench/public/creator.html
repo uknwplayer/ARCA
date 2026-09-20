@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARCA Creator Console</title>
+  <link rel="stylesheet" href="/creator.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">ARCA · Creator Control Plane</p>
+        <h1>Creator Console</h1>
+      </div>
+      <span id="connection" class="badge">bloqueado</span>
+    </header>
+
+    <section id="unlock-panel" class="card">
+      <h2>Identidade do Criador</h2>
+      <p>Use a passkey cadastrada para uma sessão forte ou o código efêmero exibido pelo processo local para abrir somente chat/leitura.</p>
+      <div class="stack-actions">
+        <button id="passkey-login" type="button">Entrar com passkey</button>
+        <span id="passkey-login-status" class="muted" aria-live="polite"></span>
+      </div>
+      <div class="separator"><span>ou bootstrap local</span></div>
+      <form id="unlock-form">
+        <label for="unlock-code">Código temporário</label>
+        <div class="row"><input id="unlock-code" autocomplete="off" spellcheck="false" required><button>Desbloquear</button></div>
+      </form>
+      <p id="unlock-error" class="error" aria-live="polite"></p>
+      <p class="muted">Para WebAuthn, abra esta interface em <strong>localhost</strong>. A URL não é tratada como segredo.</p>
+    </section>
+
+    <section id="console" class="hidden">
+      <div class="grid">
+        <article class="card"><span class="label">Agent</span><strong>arca-primary</strong><small id="agent-state">verificando…</small></article>
+        <article class="card"><span class="label">Investigações</span><strong id="investigations">—</strong><small>estado canônico local</small></article>
+        <article class="card"><span class="label">Revisões</span><strong id="reviews">—</strong><small>pendentes</small></article>
+        <article class="card"><span class="label">Identidade</span><strong id="auth-state">—</strong><small id="passkey-count">passkeys: —</small></article>
+      </div>
+
+      <section id="security-card" class="card security-card">
+        <div class="chat-head"><div><h2>Segurança do Criador</h2><p id="security-summary">verificando sessão…</p></div><span id="step-up-state" class="badge">sem step-up</span></div>
+        <div id="first-passkey" class="hidden">
+          <p>Não existe passkey cadastrada. O bootstrap local pode cadastrar somente a <strong>primeira</strong> credencial e não ganha novos scopes por isso.</p>
+          <label for="passkey-label">Nome deste dispositivo</label>
+          <input id="passkey-label" maxlength="160" placeholder="Ex.: celular principal">
+          <label class="check-row"><input id="passkey-confirm" type="checkbox"> Estou neste dispositivo local e quero cadastrar a primeira passkey.</label>
+          <div class="actions"><span id="enroll-status"></span><button id="passkey-enroll" type="button">Cadastrar passkey</button></div>
+        </div>
+        <div id="passkey-upgrade" class="hidden">
+          <p>Existe passkey ativa, mas esta sessão veio do bootstrap local e continua limitada a chat/leitura.</p>
+          <div class="actions"><span id="upgrade-status"></span><button id="passkey-upgrade-button" type="button">Trocar para sessão forte</button></div>
+        </div>
+        <div id="strong-actions" class="hidden">
+          <p>Esta sessão foi autenticada com credencial forte. Operações high-risk continuam exigindo confirmação explícita e step-up recente.</p>
+          <div class="actions"><span id="step-up-status"></span><button id="passkey-step-up" type="button">Fazer step-up</button></div>
+        </div>
+      </section>
+
+      <section class="card chat-card">
+        <div class="chat-head"><div><h2>Canal do Criador</h2><p>Chat local, sessão curta, sem autoridade de mutação direta.</p></div><button id="refresh" class="secondary" type="button">Atualizar</button></div>
+        <div id="messages" class="messages" aria-live="polite"></div>
+        <form id="chat-form">
+          <label for="message">Mensagem para o ARCA</label>
+          <textarea id="message" rows="4" maxlength="16000" placeholder="Ex.: recupere o estado atual e diga o que está pendente."></textarea>
+          <div class="actions"><span id="chat-status"></span><button>Enviar</button></div>
+        </form>
+      </section>
+
+      <section id="workflow-panel" class="card workflow-card hidden">
+        <div class="chat-head"><div><h2>Workflows Estruturados</h2><p>Planeje por capability verificada. O formulário não aceita action, recipe ou shell arbitrários.</p></div><button id="workflow-refresh" class="secondary" type="button">Atualizar propostas</button></div>
+        <p id="workflow-capabilities" class="muted"></p>
+        <form id="workflow-form">
+          <div class="workflow-grid">
+            <label>Request ID<input id="workflow-request-id" maxlength="160" placeholder="req-workflow-..."></label>
+            <label>Objective ID<input id="workflow-objective-id" maxlength="120" placeholder="repository-validation"></label>
+          </div>
+          <label for="workflow-steps">Steps estruturados (JSON)</label>
+          <textarea id="workflow-steps" rows="6" maxlength="32000" spellcheck="false">[{"stepId":"check","capabilityId":"repository","params":{}}]</textarea>
+          <div class="workflow-grid">
+            <label>Máx. tentativas/job<input id="workflow-job-attempts" type="number" min="1" max="20" value="3"></label>
+            <label>Máx. tentativas/request<input id="workflow-total-attempts" type="number" min="1" max="500" value="20"></label>
+            <label>Deadline opcional<input id="workflow-deadline" type="datetime-local"></label>
+          </div>
+          <div class="actions"><span id="workflow-status"></span><button type="submit">Gerar proposta fechada</button></div>
+        </form>
+        <div id="workflow-list" class="workflow-list" aria-live="polite"></div>
+      </section>
+
+      <section id="review-panel" class="card review-card hidden">
+        <div class="chat-head"><div><h2>Revisão Humana</h2><p>Resultados semânticos ficam bloqueados até uma decisão explícita do Criador.</p></div><button id="review-refresh" class="secondary" type="button">Atualizar revisões</button></div>
+        <div id="review-list" class="review-list" aria-live="polite"></div>
+        <p id="review-status" class="muted"></p>
+      </section>
+
+      <section class="card audit-card"><span class="label">Auditoria Creator</span><strong id="audit-count">— eventos</strong><small id="audit-head">sem head</small></section>
+      <div class="footer-actions"><button id="logout" class="secondary" type="button">Encerrar sessão</button></div>
+    </section>
+  </main>
+  <script src="/creator.js" defer></script>
+</body>
+</html>

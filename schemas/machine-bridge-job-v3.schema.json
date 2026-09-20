@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://arca.local/schemas/machine-bridge-job-v3.schema.json",
+  "title":"ARCA Machine Bridge Job V3",
+  "type":"object",
+  "required":["format","protocolVersion","jobId","action","requires"],
+  "properties":{
+    "format":{"const":"arca-remote-job-v3"},
+    "protocolVersion":{"const":3},
+    "jobId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,80}$"},
+    "requestId":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"},
+    "action":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,80}$"},
+    "requires":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "workerTarget":{"type":"string"},
+    "params":{"type":"object"},
+    "timeoutMs":{"type":"integer","minimum":1000,"maximum":300000}
+  },
+  "additionalProperties":false
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.local/schema/arca-publication-decision-v1.schema.json",
+  "title": "ARCA Publication Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format","publicationId","recordId","classificationHash","action","reasons","redactions","purposeConfirmed","necessityConfirmed","sourceVerified","humanReviewCompleted","legalReviewCompleted","activeSubjectRequest","publicInterestRationale","legalAdviceProvided","automatedLegalConclusion","publicationPerformed","humanReviewRequired","decidedAt","decisionHash"],
+  "properties": {
+    "format":{"const":"arca-publication-decision-v1"},
+    "publicationId":{"type":"string","minLength":1,"maxLength":120},
+    "recordId":{"type":"string","minLength":1,"maxLength":120},
+    "classificationHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "action":{"enum":["publish","publish-with-redaction","hold","reject"]},
+    "reasons":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "redactions":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["field","reason","replacement"],"properties":{"field":{"type":"string","minLength":1,"maxLength":240},"reason":{"type":"string","minLength":1,"maxLength":240},"replacement":{"type":"string","maxLength":120}}}},
+    "purposeConfirmed":{"type":"boolean"},
+    "necessityConfirmed":{"type":"boolean"},
+    "sourceVerified":{"type":"boolean"},
+    "humanReviewCompleted":{"type":"boolean"},
+    "legalReviewCompleted":{"type":"boolean"},
+    "activeSubjectRequest":{"type":"boolean"},
+    "publicInterestRationale":{"type":"string","maxLength":1000},
+    "legalAdviceProvided":{"const":false},
+    "automatedLegalConclusion":{"const":false},
+    "publicationPerformed":{"const":false},
+    "humanReviewRequired":{"type":"boolean"},
+    "decidedAt":{"type":"string","format":"date-time"},
+    "decisionHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  }
+}
