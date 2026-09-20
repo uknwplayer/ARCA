@@ -1,0 +1,32 @@
+{
+  "schema": "arca.executor-descriptor.v0.1",
+  "executor_id": "github-arca-linux",
+  "provider_family": "github-git-queue",
+  "trust_state": "DECLARED",
+  "admission_state": "CANDIDATE",
+  "available": true,
+  "accepts_private": false,
+  "accepts_secrets": false,
+  "fixed_cost_microunits": 0,
+  "cost_per_second_microunits": 0,
+  "queue_seconds": 0,
+  "speed_factor": 1,
+  "reliability": 0.99,
+  "capabilities": [
+    "python",
+    "node",
+    "os.linux",
+    "artifact.sha256",
+    "profile.smoke",
+    "profile.python-unit",
+    "profile.node-test",
+    "profile.node-check-public"
+  ],
+  "scarce_capabilities": [],
+  "metadata": {
+    "transport_target": "self",
+    "queue_branch": "executor-queue",
+    "queue_prefix": "queue/linux/requests"
+  },
+  "evidence": null
+}
