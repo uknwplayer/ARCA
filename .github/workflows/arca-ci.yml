@@ -43,6 +43,9 @@ jobs:
       - name: Run Executor Mesh contract tests
         run: PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v
 
+      - name: Run investigative roadmap controlled pilot
+        run: PYTHONPATH=. python scripts/validate-investigative-roadmap.py
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |
