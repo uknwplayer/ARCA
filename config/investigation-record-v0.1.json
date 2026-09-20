@@ -1,0 +1,1 @@
+{"schema":"arca.investigation-record.v0.1","visibility":"PRIVATE_INVESTIGATION","backend":"PRIVATE_INVESTIGATIVE_STORE","forbidden_backends":["PUBLIC_GITHUB_REPOSITORY","PRIVATE_REGISTRY_ARCHIVE"],"raw_artifacts_persisted":false,"append_only_revision_chain":true,"public_components":["schema","validator","synthetic_tests"]}
