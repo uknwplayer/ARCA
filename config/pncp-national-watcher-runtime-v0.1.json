@@ -1,0 +1,32 @@
+{
+  "schema": "arca.pncp-national-watcher-runtime.v0.1",
+  "status": "FOUNDATION",
+  "coverage": {
+    "country": "BR",
+    "strategy": "all_27_federative_units",
+    "municipality_default": null,
+    "municipalities_supported_by_generic_contract": true
+  },
+  "actionable_categories": [
+    "POTENTIAL_INTEGRITY_RELEVANCE",
+    "MATERIAL_PUBLIC_RECORD_CHANGE",
+    "PROVENANCE_CHANGE",
+    "SOURCE_UNAVAILABLE"
+  ],
+  "non_actionable_by_default": [
+    "NEW_PUBLICATION"
+  ],
+  "network": {
+    "default": "blocked",
+    "required_authorization": "PNCP_PUBLIC_GET_ONLY",
+    "public_get_only": true
+  },
+  "invariants": {
+    "custody_before_classification": true,
+    "anomaly_is_not_irregularity": true,
+    "shared_canonical_investigation": true,
+    "private_backend_receipt_before_ack": true,
+    "human_review_required": true,
+    "automatic_adverse_publication": false
+  }
+}
