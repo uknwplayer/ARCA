@@ -3,9 +3,31 @@ import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
 import {
   CapabilityRegistry,
-  registerCreatorApprovedLiveA2aDeclaredParticipants,
   verifyLiveA2aCapability
 } from "../packages/agent/src/index.ts";
+
+function registerSyntheticParticipant(registry){
+  return registry.registerParticipant({
+    participantId:"a2a.synthetic.public-agent",
+    kind:"agent",
+    provider:"a2a-public",
+    model:null,
+    labels:{
+      liveA2a:true,
+      protocolProfile:"JSONRPC|1.0|SendMessage",
+      sourceCardHash:"e8c9b61546ac68403b39f80c314a9b3ac9482f734292c64368733d0402adee8b"
+    },
+    capabilities:[{
+      id:"research.discovery-plan",
+      version:"1",
+      input:["text/plain"],
+      output:["application/json"],
+      networkRequired:true,
+      humanReviewRequired:true,
+      riskClass:"medium"
+    }]
+  },{source:"synthetic-test",updatedAt:"2026-09-20T05:05:55.123Z"});
+}
 
 function canonicalize(value){
   if(Array.isArray(value))return value.map(canonicalize);
@@ -61,7 +83,7 @@ function behavior(overrides={}){
 
 test("declared Synthetic agent capability can become verified from matching live behavior evidence",()=>{
   const registry=new CapabilityRegistry();
-  registerCreatorApprovedLiveA2aDeclaredParticipants(registry);
+  registerSyntheticParticipant(registry);
   const result=verifyLiveA2aCapability({
     registry,
     participantId:"a2a.synthetic.public-agent",
@@ -91,7 +113,7 @@ test("declared Synthetic agent capability can become verified from matching live
 
 test("behavior evidence for another Agent Card cannot verify declared participant",()=>{
   const registry=new CapabilityRegistry();
-  registerCreatorApprovedLiveA2aDeclaredParticipants(registry);
+  registerSyntheticParticipant(registry);
   const mismatched=behavior({cardHash:"f".repeat(64)});
   const body={...mismatched};delete body.conformanceHash;mismatched.conformanceHash=hashJson(body);
 
@@ -109,7 +131,7 @@ test("behavior evidence for another Agent Card cannot verify declared participan
 
 test("one live observation is insufficient for capability verification",()=>{
   const registry=new CapabilityRegistry();
-  registerCreatorApprovedLiveA2aDeclaredParticipants(registry);
+  registerSyntheticParticipant(registry);
   const insufficient=behavior({observationCount:1,distinctResponseCount:1});
   const body={...insufficient};delete body.conformanceHash;insufficient.conformanceHash=hashJson(body);
 
@@ -126,7 +148,7 @@ test("one live observation is insufficient for capability verification",()=>{
 
 test("tampered behavior conformance hash is rejected",()=>{
   const registry=new CapabilityRegistry();
-  registerCreatorApprovedLiveA2aDeclaredParticipants(registry);
+  registerSyntheticParticipant(registry);
   const tampered=behavior();
   tampered.matchedItemCounts=[1,1];
 
@@ -143,7 +165,7 @@ test("tampered behavior conformance hash is rejected",()=>{
 
 test("verification cannot run twice without a new reverification state",()=>{
   const registry=new CapabilityRegistry();
-  registerCreatorApprovedLiveA2aDeclaredParticipants(registry);
+  registerSyntheticParticipant(registry);
   const live=behavior();
   verifyLiveA2aCapability({
     registry,
