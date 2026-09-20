@@ -13,13 +13,21 @@
   "speed_factor": 1,
   "reliability": 0.98,
   "network_hops": 2,
-  "capabilities": ["python","os.linux","artifact.sha256","profile.smoke","profile.python-unit"],
+  "capabilities": [
+    "python",
+    "os.linux",
+    "artifact.sha256",
+    "profile.smoke",
+    "profile.python-unit",
+    "profile.investigative-public-v0.1"
+  ],
   "scarce_capabilities": [],
   "metadata": {
     "transport_target": "uknwplayer/arca-execution-satellite-b",
     "queue_branch": "main",
     "queue_prefix": "queue/requests",
-    "execution_domain": "arca-execution-satellite-b"
+    "execution_domain": "arca-execution-satellite-b",
+    "investigative_public_contract": "arca.public-investigative-executor-request.v0.2"
   },
   "evidence": {
     "proof_id": "satellite-b-first-live-001",
