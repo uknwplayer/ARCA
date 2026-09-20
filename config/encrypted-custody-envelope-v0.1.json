@@ -1,0 +1,33 @@
+{
+  "schema": "arca.encrypted-custody-envelope.v0.1",
+  "status": "FOUNDATION",
+  "purpose": "durable encrypted transport for raw custody material from ephemeral runners",
+  "cryptography": {
+    "cipher": "AES-256-GCM",
+    "kdf": "scrypt",
+    "salt_bytes": 16,
+    "iv_bytes": 12,
+    "auth_tag_bytes": 16,
+    "minimum_passphrase_characters": 24
+  },
+  "budgets": {
+    "maximum_files": 1000,
+    "maximum_total_bytes": 52428800
+  },
+  "binds": [
+    "repository",
+    "revision",
+    "scope_hash",
+    "content_root_hash",
+    "payload_hash",
+    "file_count",
+    "total_bytes"
+  ],
+  "forbidden": [
+    "plaintext_outside_ciphertext",
+    "symbolic_links",
+    "weak_passphrase",
+    "unbounded_payload"
+  ],
+  "failure_mode": "FAIL_CLOSED"
+}
