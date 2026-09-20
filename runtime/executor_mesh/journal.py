@@ -25,6 +25,15 @@ def job_fingerprint(job: JobRequest) -> str:
 
 
 @dataclass(frozen=True)
+class DispatchAttempt:
+    executor_id: str
+    provider_family: str
+    outcome: str
+    detail: str | None = None
+    ref: DispatchRef | None = None
+
+
+@dataclass(frozen=True)
 class DispatchJournalEntry:
     job_id: str
     fingerprint: str
@@ -34,6 +43,7 @@ class DispatchJournalEntry:
 @dataclass
 class DispatchJournal:
     entries: dict[str, DispatchJournalEntry] = field(default_factory=dict)
+    attempts: dict[str, list[DispatchAttempt]] = field(default_factory=dict)
 
     def get(self, job: JobRequest) -> DispatchRef | None:
         entry = self.entries.get(job.job_id)

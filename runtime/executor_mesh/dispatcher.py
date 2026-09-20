@@ -40,12 +40,18 @@ class ExecutorMeshDispatcher:
             attempts.append(executor.executor_id)
             adapter = self.adapters.get(executor.provider_family)
             if adapter is None:
+                self.journal.record_attempt(job, executor_id=executor.executor_id, provider_family=executor.provider_family, outcome="NO_ADAPTER")
                 continue
             try:
                 ref = adapter.submit(executor, job)
             except ProviderTransientError as exc:
+                self.journal.record_attempt(job, executor_id=executor.executor_id, provider_family=executor.provider_family, outcome="TRANSIENT_FAILURE", detail=str(exc))
                 last_transient = exc
                 continue
+            except ProviderPermanentError as exc:
+                self.journal.record_attempt(job, executor_id=executor.executor_id, provider_family=executor.provider_family, outcome="PERMANENT_FAILURE", detail=str(exc))
+                raise
+            self.journal.record_attempt(job, executor_id=executor.executor_id, provider_family=executor.provider_family, outcome="DISPATCHED", ref=ref)
             self.journal.record(job, ref)
             return DispatchDecision(ref, candidate, False, tuple(attempts))
         if last_transient is not None:

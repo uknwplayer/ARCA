@@ -508,6 +508,10 @@ class FallbackTests(unittest.TestCase):
         )
         self.assertEqual(decision.ref.executor_id, "b-second")
         self.assertEqual(decision.attempted_executor_ids, ("a-first", "b-second"))
+        self.assertEqual(
+            [attempt.outcome for attempt in dispatcher.journal.attempt_history(JobRequest("j-fallback", "smoke", frozenset({"python"})))],
+            ["TRANSIENT_FAILURE", "DISPATCHED"],
+        )
         self.assertEqual(working.calls, 1)
 
 
