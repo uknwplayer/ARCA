@@ -38,6 +38,8 @@ def main():
     layer=PublicDataLayer.load(ROOT/"config"/"investigative-boundary-v0.1.json",ROOT/"investigation"/"sources"/"public-data-sources-v0.1.json")
     plan=layer.plan("br.tcu.webservices")
     assert plan.persist_raw is False
+    pncp_plan=layer.plan("br.pncp.public-api")
+    assert pncp_plan.persist_raw is False and pncp_plan.source_locator.startswith("https://pncp.gov.br/")
 
     watcher=PublicRecordWatcherPolicy.load(ROOT/"config"/"public-record-watcher-v0.1.json")
     watcher.validate(WatchObservation("watch-1","FACTUAL_CLAIM_VERIFICATION","https://example.invalid/publication","2026-09-20T18:02:00Z","public-context"))
