@@ -37,7 +37,7 @@ Hard budgets:
 - page size: `10`
 - retries: `0`
 
-The national plan remains generic across all 27 UFs. This live proof does not establish SP, Barueri, or any municipality as a default jurisdiction.
+The national plan remains generic across all 27 UFs. This live proof does not establish SP or any municipality as a default jurisdiction.
 
 ## Sanitized result
 
