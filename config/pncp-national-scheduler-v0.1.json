@@ -1,0 +1,32 @@
+{
+  "schema": "arca.pncp-national-scheduler.v0.1",
+  "status": "FOUNDATION",
+  "cycle": {
+    "default_shards_per_run": 3,
+    "maximum_shards_per_run": 27,
+    "default_failures_per_run": 1,
+    "default_observations_per_shard": 100,
+    "order": "uf_code_lexicographic"
+  },
+  "checkpoint": {
+    "atomic_replace": true,
+    "completed_shards_not_repeated": true,
+    "failed_shards_not_retried_implicitly": true,
+    "raw_errors_forbidden": true
+  },
+  "network": {
+    "offline_runners_allowed_for_validation": true,
+    "live_runner_requires_explicit_authorization": true,
+    "confirmation": "PNCP_PUBLIC_GET_ONLY"
+  },
+  "handoff": {
+    "classifier_required": true,
+    "shared_investigation_ingress_required": true,
+    "private_backend_receipt_before_queue_ack": true
+  },
+  "invariants": {
+    "anomaly_is_not_irregularity": true,
+    "human_review_required": true,
+    "automatic_adverse_publication": false
+  }
+}
