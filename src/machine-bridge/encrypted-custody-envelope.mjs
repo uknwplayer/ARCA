@@ -97,6 +97,7 @@ export function sealCustodyDirectory({
   const scope=requiredText(scopeHash,"SCOPE_HASH",64).toLowerCase();
   if(!/^[a-f0-9]{64}$/.test(scope))
     throw new Error("ARCA_CUSTODY_ENVELOPE_INVALID_SCOPE_HASH");
+  const sealedTime=instant(sealedAt);
 
   const {files,totalBytes}=walk(root);
   const contentRootHash=sha256(stableStringify(files.map(file=>({
@@ -108,6 +109,7 @@ export function sealCustodyDirectory({
     repository:repo,
     revision:rev,
     scopeHash:scope,
+    sealedAt:sealedTime,
     contentRootHash,
     fileCount:files.length,
     totalBytes,
@@ -131,7 +133,7 @@ export function sealCustodyDirectory({
     repository:repo,
     revision:rev,
     scopeHash:scope,
-    sealedAt:instant(sealedAt),
+    sealedAt:sealedTime,
     fileCount:files.length,
     totalBytes,
     contentRootHash,
@@ -149,7 +151,8 @@ export function openCustodyEnvelope({envelope,passphrase}={}){
   if(envelope?.schema!==ENCRYPTED_CUSTODY_ENVELOPE_SCHEMA||
      envelope?.status!=="SEALED"||
      envelope?.algorithm!=="AES-256-GCM"||
-     envelope?.kdf?.name!=="scrypt")
+     envelope?.kdf?.name!=="scrypt"||
+     envelope?.plaintextIncluded!==false)
     throw new Error("ARCA_CUSTODY_ENVELOPE_FORMAT_INVALID");
 
   const salt=Buffer.from(requiredText(envelope.salt,"SALT",256),"base64");
@@ -178,6 +181,7 @@ export function openCustodyEnvelope({envelope,passphrase}={}){
      payload.repository!==envelope.repository||
      payload.revision!==envelope.revision||
      payload.scopeHash!==envelope.scopeHash||
+     payload.sealedAt!==envelope.sealedAt||
      payload.contentRootHash!==envelope.contentRootHash||
      payload.fileCount!==envelope.fileCount||
      payload.totalBytes!==envelope.totalBytes)
