@@ -1,0 +1,83 @@
+name: ARCA Public Executor Linux
+run-name: ARCA Linux Queue ${{ github.sha }}
+
+on:
+  push:
+    branches:
+      - executor-queue
+    paths:
+      - 'queue/linux/requests/*.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arca-public-linux-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout queue state
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          path: queue-state
+
+      - name: Resolve exactly one queued request
+        id: request
+        shell: bash
+        working-directory: queue-state
+        run: |
+          mapfile -t files < <(
+            git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" -- 'queue/linux/requests/*.json'
+          )
+          if [ "${#files[@]}" -ne 1 ]; then
+            echo "Expected exactly one queued Linux request in the dispatch commit." >&2
+            exit 1
+          fi
+          echo "path=${files[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout admitted ARCA source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+          path: source
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Validate executor contract
+        working-directory: source
+        run: PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v
+
+      - name: Execute bounded public profile
+        working-directory: source
+        env:
+          REQUEST_FILE: ${{ github.workspace }}/queue-state/${{ steps.request.outputs.path }}
+          ARCA_EXECUTOR_ID: github-arca-linux
+        run: |
+          PYTHONPATH=. python -m executor.queue             --request-file "$REQUEST_FILE"             --output execution-result.json
+
+      - name: Hash result
+        working-directory: source
+        run: sha256sum execution-result.json
+
+      - name: Upload result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: arca-linux-executor-result-${{ github.run_id }}
+          path: source/execution-result.json
+          if-no-files-found: error
+          retention-days: 7

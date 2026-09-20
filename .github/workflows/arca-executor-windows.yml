@@ -1,0 +1,84 @@
+name: ARCA Public Executor Windows
+run-name: ARCA Windows Queue ${{ github.sha }}
+
+on:
+  push:
+    branches:
+      - executor-queue
+    paths:
+      - 'queue/windows/requests/*.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arca-public-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  execute:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout queue state
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          path: queue-state
+
+      - name: Resolve exactly one queued request
+        id: request
+        shell: pwsh
+        working-directory: queue-state
+        run: |
+          $files = @(git diff-tree --no-commit-id --name-only -r $env:GITHUB_SHA -- 'queue/windows/requests/*.json')
+          if ($files.Count -ne 1) {
+            Write-Error "Expected exactly one queued Windows request in the dispatch commit."
+            exit 1
+          }
+          "path=$($files[0])" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Checkout admitted ARCA source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+          path: source
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Validate executor contract
+        shell: pwsh
+        working-directory: source
+        run: python -m unittest discover -s tests/executor_mesh -v
+
+      - name: Execute bounded public profile
+        shell: pwsh
+        working-directory: source
+        env:
+          REQUEST_FILE: ${{ github.workspace }}\queue-state\${{ steps.request.outputs.path }}
+          ARCA_EXECUTOR_ID: github-arca-windows
+        run: |
+          python -m executor.queue --request-file "$env:REQUEST_FILE" --output execution-result.json
+
+      - name: Hash result
+        shell: pwsh
+        working-directory: source
+        run: (Get-FileHash execution-result.json -Algorithm SHA256).Hash.ToLower()
+
+      - name: Upload result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: arca-windows-executor-result-${{ github.run_id }}
+          path: source/execution-result.json
+          if-no-files-found: error
+          retention-days: 7

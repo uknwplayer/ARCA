@@ -32,7 +32,12 @@
     "examples/acquisition-pilot/**",
     "examples/aie-fixtures/**",
     "examples/cognitive-substitution-v0.1.mjs",
-    "examples/cognitive-substitution-v0.2.mjs"
+    "examples/cognitive-substitution-v0.2.mjs",
+    "config/executor-registry/**",
+    ".github/workflows/arca-executor-linux.yml",
+    ".github/workflows/arca-executor-windows.yml",
+    "runtime/executor_mesh/**",
+    "executor/**"
   ],
   "deny": [
     ".git/**",
@@ -68,7 +73,8 @@
     "**/id_rsa",
     "**/id_ed25519",
     "**/credentials.json",
-    "**/secrets.json"
+    "**/secrets.json",
+    "queue/**"
   ],
   "prohibitedTokenFingerprints": [
     "89862648d255b4eb78dbc71ecbed6f8a389a6fcb80533c86ec03b8330e26f43a",
