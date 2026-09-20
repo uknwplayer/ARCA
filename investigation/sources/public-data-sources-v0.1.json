@@ -1,0 +1,6 @@
+{"schema":"arca.public-data-sources.v0.1","sources":[
+{"id":"br.portal-transparencia.downloads","publisher":"CGU / Portal da Transparência","source_class":"open_government_dataset","access_method":"public_feed_or_bulk_download","canonical_public_url":"https://portaldatransparencia.gov.br/download-de-dados/","format":"CSV","public_access":true},
+{"id":"br.portal-transparencia.api","publisher":"CGU / Portal da Transparência","source_class":"open_government_dataset","access_method":"official_public_api","canonical_public_url":"https://api.portaldatransparencia.gov.br/swagger-ui/index.html","format":"JSON","public_access":true},
+{"id":"br.cgu.open-data","publisher":"Controladoria-Geral da União","source_class":"open_government_dataset","access_method":"public_http","canonical_public_url":"https://www.gov.br/cgu/pt-br/acesso-a-informacao/dados-abertos","format":"CATALOG","public_access":true},
+{"id":"br.tcu.webservices","publisher":"Tribunal de Contas da União","source_class":"official_public_record","access_method":"official_public_api","canonical_public_url":"https://sites.tcu.gov.br/dados-abertos/webservices-tcu/","format":"JSON","public_access":true}
+]}
