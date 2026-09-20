@@ -1,6 +1,7 @@
 import {createHash} from "node:crypto";
 import {chmod,copyFile,lstat,mkdir,readFile,readdir,rm,writeFile} from "node:fs/promises";
 import {dirname,relative,resolve,sep} from "node:path";
+import {scanStaticPublicDependencyClosure} from "./publication-self-containment.mjs";
 
 export const ARCA_PUBLICATION_BOUNDARY_FORMAT="arca-publication-boundary-v1";
 export const ARCA_PUBLICATION_MANIFEST_FORMAT="arca-publication-manifest-v1";
@@ -215,6 +216,7 @@ export async function createPublicationPlan({root,policy:policyInput,sourceSha="
     }
     included.push(Object.freeze({path:file.path,bytes:bytes.byteLength,sha256:sha256Bytes(bytes),absolutePath:file.absolutePath}));
   }
+  violations.push(...await scanStaticPublicDependencyClosure(included));
   const publicFiles=included.map(({path,bytes,sha256})=>({path,bytes,sha256}));
   const policyHash=sha256Json(policy);
   const contentRootHash=sha256Json(publicFiles);
