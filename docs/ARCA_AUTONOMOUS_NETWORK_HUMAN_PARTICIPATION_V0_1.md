@@ -12,7 +12,7 @@ Durable autonomy belongs to the event queue, investigation state and custody rec
 
 ## National scope
 
-The operating scope is Brazil. Barueri remains the first test origin and an optional local enrichment profile, not the default or permanent limit.
+The operating scope is Brazil. The first municipal test origin remains an optional local enrichment profile, not the default or permanent limit.
 
 The same jurisdiction contract applies to:
 
