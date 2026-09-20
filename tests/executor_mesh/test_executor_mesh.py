@@ -64,7 +64,12 @@ class RegistryAndSchedulerTests(unittest.TestCase):
         registry = load_registry(REGISTRY_ROOT)
         self.assertEqual(
             {item.executor_id for item in registry.all()},
-            {"github-arca-linux", "github-arca-windows"},
+            {
+                "github-arca-linux",
+                "github-arca-windows",
+                "github-satellite-linux",
+                "github-satellite-windows",
+            },
         )
         for item in registry.all():
             self.assertEqual(item.admission_state, "LAB_ADMITTED")
@@ -87,6 +92,65 @@ class RegistryAndSchedulerTests(unittest.TestCase):
 
         self.assertEqual(linux.metadata["queue_branch"], "executor-queue")
         self.assertEqual(windows.metadata["queue_branch"], "executor-queue")
+
+    def test_local_domain_is_preferred_over_equivalent_satellite(self):
+        registry = load_registry(REGISTRY_ROOT)
+        linux_job = JobRequest(
+            "prefer-local-linux",
+            "smoke",
+            frozenset({"python", "os.linux"}),
+        )
+        windows_job = JobRequest(
+            "prefer-local-windows",
+            "smoke",
+            frozenset({"python", "os.windows"}),
+        )
+        self.assertEqual(
+            CostAwareScheduler(registry).select(linux_job).descriptor.executor_id,
+            "github-arca-linux",
+        )
+        self.assertEqual(
+            CostAwareScheduler(registry).select(windows_job).descriptor.executor_id,
+            "github-arca-windows",
+        )
+
+    def test_satellite_is_selected_when_local_domain_is_unavailable(self):
+        source = load_registry(REGISTRY_ROOT)
+        registry = ExecutorRegistry()
+        for item in source.all():
+            if item.executor_id == "github-arca-linux":
+                item = ExecutorDescriptor(
+                    **{**item.__dict__, "available": False}
+                )
+            registry.register(item)
+        decision = CostAwareScheduler(registry).select(
+            JobRequest(
+                "fallback-satellite-linux",
+                "smoke",
+                frozenset({"python", "os.linux"}),
+            )
+        )
+        self.assertEqual(decision.descriptor.executor_id, "github-satellite-linux")
+        self.assertEqual(decision.descriptor.network_hops, 1)
+        self.assertEqual(
+            decision.descriptor.metadata["execution_domain"],
+            "arca-execution-satellite",
+        )
+
+    def test_satellite_does_not_claim_node_profiles(self):
+        registry = load_registry(REGISTRY_ROOT)
+        ranked = CostAwareScheduler(registry).rank(
+            JobRequest(
+                "node-capability",
+                "node-test",
+                frozenset({"node", "os.linux"}),
+            )
+        )
+        self.assertEqual(ranked[0].descriptor.executor_id, "github-arca-linux")
+        self.assertNotIn(
+            "github-satellite-linux",
+            {item.descriptor.executor_id for item in ranked},
+        )
 
     def test_admitted_linux_job_selects_linux(self):
         registry = ExecutorRegistry()
