@@ -69,3 +69,10 @@ def test_policy_forbids_raw_investigative_repository_storage():
     assert BOUNDARY.policy["requirements"]["persist_derived_knowledge_only"] is True
     with pytest.raises(InvestigativeBoundaryError, match="forbidden acquisition flags"):
         BOUNDARY.authorize(request(flags=frozenset({"raw_investigative_artifact_repository_storage"})))
+
+
+def test_policy_requires_reproducible_source_locator():
+    requirements = BOUNDARY.policy["requirements"]
+    assert requirements["source_locator_required_for_persisted_derived_knowledge"] is True
+    fields = set(requirements["source_locator_may_include"])
+    assert {"canonical_public_url", "public_record_id", "retrieved_at", "content_sha256"} <= fields
