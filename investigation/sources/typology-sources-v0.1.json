@@ -1,0 +1,37 @@
+{
+  "schema": "arca.typology-source-registry.v0.1",
+  "sources": [
+    {
+      "id": "oecd.bid-rigging-guidelines-2025",
+      "publisher": "OECD",
+      "title": "OECD Guidelines for Fighting Bid Rigging in Public Procurement (2025 Update)",
+      "canonical_public_url": "https://www.oecd.org/en/publications/oecd-guidelines-for-fighting-bid-rigging-in-public-procurement-2025-update_cbe05a56-en.html",
+      "retrieved_at": "2026-09-20",
+      "availability": "AVAILABLE"
+    },
+    {
+      "id": "oecd.integrity-public-procurement-2026",
+      "publisher": "OECD",
+      "title": "Anti-Corruption and Integrity Outlook 2026 — Integrity in public procurement",
+      "canonical_public_url": "https://www.oecd.org/en/publications/anti-corruption-and-integrity-outlook-2026_16708b78-en/full-report/component-14.html",
+      "retrieved_at": "2026-09-20",
+      "availability": "AVAILABLE"
+    },
+    {
+      "id": "fatf.beneficial-ownership-topic",
+      "publisher": "FATF",
+      "title": "Beneficial Ownership",
+      "canonical_public_url": "https://www.fatf-gafi.org/en/topics/beneficial-ownership.html",
+      "retrieved_at": "2026-09-20",
+      "availability": "AVAILABLE"
+    },
+    {
+      "id": "fatf.concealment-beneficial-ownership",
+      "publisher": "FATF / Egmont Group",
+      "title": "Concealment of Beneficial Ownership",
+      "canonical_public_url": "https://www.fatf-gafi.org/content/dam/fatf-gafi/reports/FATF-Egmont-Concealment-beneficial-ownership.pdf.coredownload.pdf",
+      "retrieved_at": "2026-09-20",
+      "availability": "AVAILABLE"
+    }
+  ]
+}
