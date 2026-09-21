@@ -1,6 +1,6 @@
 # ARCA — Handoff checkpoint 2026-09-21 / 003
 
-Estado: **Gate Offline Multifonte V1 implementado; CI da PR verde; merge pendente**
+Estado: **Gate Offline Multifonte V1 integrado à `main`; CI pós-merge verde**
 
 Base canônica de entrada: `54be3952d211ec3c5ae49e4ad3e8677189d3d19c`
 
@@ -11,6 +11,12 @@ PR: [#74](https://github.com/uknwplayer/ARCA/pull/74)
 Commit remoto da implementação: `092ebc838c3cd849d553276d19cebaae6a8b80ec`
 
 CI da PR: [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) — `success`.
+
+Commit canônico na `main`: [`9182249bffbc7d4dbf96e314720e77b840f22933`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933)
+
+CI final da PR: [35647210669](https://github.com/uknwplayer/ARCA/actions/runs/35647210669) — `success`.
+
+CI pós-merge: [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) — `success`.
 
 ## Solicitação atendida
 
@@ -71,7 +77,6 @@ O Node 24 disponível no ambiente de trabalho fez um teste Passkey antigo falhar
 
 ## O que ainda não foi feito
 
-- merge desta branch e CI pós-merge;
 - adaptador do Portal da Transparência;
 - correlação real contratação/pagamento;
 - execução live multifonte;
@@ -82,13 +87,13 @@ O Node 24 disponível no ambiente de trabalho fez um teste Passkey antigo falhar
 
 ## Próximo passo exato
 
-Concluir CI/merge do M0. Depois iniciar M1: adaptador **offline** do Portal da Transparência, ainda sem rede, usando o mesmo envelope e promovendo a fonte de `DECLARED_ONLY` para `ACTIVE/OFFLINE_FIXTURE` somente junto com testes.
+Iniciar M1: adaptador **offline** do Portal da Transparência, ainda sem rede, usando o mesmo envelope e promovendo a fonte de `DECLARED_ONLY` para `ACTIVE/OFFLINE_FIXTURE` somente junto com testes.
 
 ## Retomada por chat comum
 
 1. Ler `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md`.
 2. Ler `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`.
-3. Verificar se esta branch/PR foi integrada; consultar `main` e Actions posteriores à âncora.
+3. Confirmar que `main` contém `9182249bffbc7d4dbf96e314720e77b840f22933` ou sucessor e consultar Actions posteriores ao run `35647349010`.
 4. Executar:
 
 ```bash
@@ -102,7 +107,7 @@ npm run check:public
 ```
 
 5. Não ativar rede, Portal da Transparência, classificador live, ingresso live ou publicação para “completar” o teste.
-6. Se M0 estiver verde e integrado, seguir M1 do roadmap.
+6. M0 está verde e integrado; seguir M1 do roadmap.
 
 ## Condições de parada
 
