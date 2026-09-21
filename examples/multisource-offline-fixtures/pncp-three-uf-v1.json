@@ -1,0 +1,60 @@
+{
+  "schema": "arca.multisource-offline-fixture.v1",
+  "pilotId": "pncp-multisource-offline-001",
+  "timeWindow": "2026-09",
+  "shards": [
+    {
+      "sourceId": "br.pncp.public-api",
+      "uf": "AC",
+      "status": "AVAILABLE",
+      "records": [
+        {
+          "recordKey": "pncp:fixture:ac:2026:1",
+          "orgaoRef": "synthetic-public-body-ac",
+          "year": 2026,
+          "sequential": 1,
+          "modalityId": 6,
+          "estimatedValue": 125000,
+          "municipalityCode": null,
+          "sourceUrl": "https://pncp.gov.br/app/editais/fixture-ac-2026-1",
+          "retrievedAt": "2026-09-21T12:00:00.000Z"
+        },
+        {
+          "recordKey": "pncp:fixture:ac:2026:1",
+          "orgaoRef": "synthetic-public-body-ac",
+          "year": 2026,
+          "sequential": 1,
+          "modalityId": 6,
+          "estimatedValue": 125000,
+          "municipalityCode": null,
+          "sourceUrl": "https://pncp.gov.br/app/editais/fixture-ac-2026-1",
+          "retrievedAt": "2026-09-21T12:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId": "br.pncp.public-api",
+      "uf": "AL",
+      "status": "SOURCE_UNAVAILABLE",
+      "reason": "synthetic-timeout-for-failure-isolation-proof"
+    },
+    {
+      "sourceId": "br.pncp.public-api",
+      "uf": "AM",
+      "status": "AVAILABLE",
+      "records": [
+        {
+          "recordKey": "pncp:fixture:am:2026:2",
+          "orgaoRef": "synthetic-public-body-am",
+          "year": 2026,
+          "sequential": 2,
+          "modalityId": 8,
+          "estimatedValue": 98000,
+          "municipalityCode": null,
+          "sourceUrl": "https://pncp.gov.br/app/editais/fixture-am-2026-2",
+          "retrievedAt": "2026-09-21T12:05:00.000Z"
+        }
+      ]
+    }
+  ]
+}

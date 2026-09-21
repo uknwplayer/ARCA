@@ -9,6 +9,7 @@ Documentos de entrada:
 - [Documento Mestre v1.4.0](docs/ARCA_DOCUMENTO_MESTRE_v1.4.0_PUBLICO.md)
 - [Matriz de estado 0.4.0-rc.1](docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md)
 - [Checkpoint atual para retomada](docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md)
+- [Roadmap detalhado atual](docs/ARCA_ROADMAP_DETALHADO_CURRENT.md)
 - [Política de checkpoint](docs/ARCA_CHECKPOINT_HANDOFF_POLICY_V0_1.md)
 
 ## Modelo operacional
@@ -31,6 +32,7 @@ Documentos de entrada:
 | Fila investigativa | trabalho compartilhado, deduplicação e backend durável | implementado |
 | Malha executora | despacho limitado e reconciliação entre executores | prova ao vivo controlada |
 | Observador PNCP | agenda nacional, 27 UFs, aquisição limitada e disponibilidade de fonte | implementado; provas ao vivo de um shard |
+| Gate multifonte | contrato de fonte, envelopes com hash, deduplicação, dois agentes e revisão | V1 offline implementada; PNCP é o único adaptador executável |
 | Custódia | envelope AES-256-GCM/scrypt e backend privado endereçado por conteúdo | prova durável controlada |
 | Publicação | fronteira sanitizada e revisão humana | portão implementado; publicação autônoma proibida |
 
@@ -53,6 +55,7 @@ npm ci
 npm test
 PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v
 PYTHONPATH=. python scripts/validate-investigative-roadmap.py
+npm run validate:multisource
 npm run check:public
 ```
 

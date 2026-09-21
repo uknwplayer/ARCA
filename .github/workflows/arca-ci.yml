@@ -46,6 +46,9 @@ jobs:
       - name: Run investigative roadmap controlled pilot
         run: PYTHONPATH=. python scripts/validate-investigative-roadmap.py
 
+      - name: Run offline multisource gate
+        run: npm run validate:multisource
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |

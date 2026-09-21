@@ -1,0 +1,30 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import {
+  defaultMultisourcePaths,
+  loadOfflineFixture,
+  loadPublicSourceRegistry,
+  runMultisourceOfflineGate
+} from "../src/investigation/multisource-offline-gate.mjs";
+
+const paths=defaultMultisourcePaths();
+const queueRoot=fs.mkdtempSync(path.join(os.tmpdir(),"arca-multisource-validation-"));
+try{
+  const report=await runMultisourceOfflineGate({
+    registry:loadPublicSourceRegistry(paths.registry),
+    fixture:loadOfflineFixture(paths.fixture),
+    queueRoot,
+    clock:()=>new Date("2026-09-21T13:00:00.000Z")
+  });
+  process.stdout.write(JSON.stringify({
+    ok:true,schema:report.schema,pilotId:report.pilotId,reportSha256:report.reportSha256,
+    requestedUfs:report.coverage.requestedUfs,availableUfs:report.coverage.availableUfs,
+    unavailableUfs:report.coverage.unavailableUfs,evidenceCount:report.evidence.deduplicatedCount,
+    agentCount:report.reports.length,verificationOutcome:report.verification.outcome,
+    investigationState:report.investigation.state,networkUsed:report.network.used,
+    publicationAttempted:report.publication.attempted,humanReviewRequired:report.safety.humanReviewRequired
+  })+"\n");
+}finally{
+  fs.rmSync(queueRoot,{recursive:true,force:true});
+}
