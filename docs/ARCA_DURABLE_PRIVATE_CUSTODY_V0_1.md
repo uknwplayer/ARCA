@@ -1,8 +1,8 @@
 # ARCA Durable Private Custody V0.1
 
-State: **IMPLEMENTED, LIVE CREDENTIAL NOT YET CONFIGURED**
+State: **IMPLEMENTED; CONTROLLED LIVE DURABLE PROOF RECORDED**
 
-This contract removes successful live custody from dependence on ephemeral runner storage.
+This contract removes successful live custody from dependence on ephemeral runner storage. The controlled durable proof is recorded in `ARCA_PNCP_DURABLE_LIVE_PROOF_002.md`; this status does not imply production readiness.
 
 ## Boundary
 
