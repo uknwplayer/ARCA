@@ -247,7 +247,9 @@ export function createPncpNationalScheduler({
             checkpoint.failed[shard.shardId]={
               attempts:(previous?.attempts??0)+1,
               failedAt:instant(clock),
-              errorRef:errorReference(error)
+              errorRef:error?.code==="ARCA_PNCP_SOURCE_UNAVAILABLE"
+                ?safeReference(error?.sourceFailureRef)??errorReference(error)
+                :errorReference(error)
             };
             delete checkpoint.unavailable[shard.shardId];
             failed+=1;
