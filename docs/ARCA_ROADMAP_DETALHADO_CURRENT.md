@@ -2,7 +2,7 @@
 
 Atualizado em: **2026-09-21**
 
-Base canônica de entrada no M1: `0.4.0-rc.1` / `5f83ef1e31734429cef26a5840181a2fc4606d7e`
+Base canônica após M1: `0.4.0-rc.1` / `68f2a0e86f60400b0a208c0b2c06599a1601f177`
 
 Regra: este arquivo descreve a sequência vigente. Não substituir gates por ativação direta.
 
@@ -28,7 +28,7 @@ Aceite: concluído.
 
 ## Marco M1 — Segundo adaptador offline
 
-Estado: **IMPLEMENTADO LOCALMENTE; CI E INTEGRAÇÃO PENDENTES**
+Estado: **CONCLUÍDO E INTEGRADO À `main`**
 
 Objetivo: implementar a variante oficial de download `br.portal-transparencia.download-despesas` sem realizar rede.
 
@@ -42,15 +42,15 @@ Passos:
 6. provar origem oficial, hashes e lacunas;
 7. manter material bruto fora do relatório e publicação off.
 
-Resultado local: adaptador executa uma fixture de linhas sintéticas com colunas documentadas de pagamento; recusa origem divergente, valor ou data inválidos, campos extras e fonte declarada sem permissão. Emite envelopes hash-only; a UF do ensaio não representa localização comprovada da despesa. A leitura de CSV real e as relações pagamento ↔ empenho ainda não foram implementadas.
+Resultado: adaptador executa uma fixture de linhas sintéticas com colunas documentadas de pagamento; recusa origem divergente, valor ou data inválidos, campos extras e fonte declarada sem permissão. Emite envelopes hash-only; a UF do ensaio não representa localização comprovada da despesa. A leitura de CSV real e as relações pagamento ↔ empenho ainda não foram implementadas.
 
-Aceite restante: CI na PR, merge e CI pós-merge. Ver `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md`.
+Aceite: [PR #76](https://github.com/uknwplayer/ARCA/pull/76), commit [`68f2a0e`](https://github.com/uknwplayer/ARCA/commit/68f2a0e86f60400b0a208c0b2c06599a1601f177), CI da PR [35649925658](https://github.com/uknwplayer/ARCA/actions/runs/35649925658) e CI pós-merge [35650058116](https://github.com/uknwplayer/ARCA/actions/runs/35650058116) verdes. Ver `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md`.
 
 ## Marco M2 — Correlação PNCP ↔ execução financeira
 
 Objetivo: relacionar registros sem declarar equivalência apenas por nome ou valor.
 
-Estado: **PRÓXIMO MARCO APÓS INTEGRAÇÃO M1**.
+Estado: **PRÓXIMO MARCO ATIVO**.
 
 Passos:
 

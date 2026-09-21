@@ -1,6 +1,6 @@
 # ARCA — M1: despesas do Portal da Transparência em fixture offline
 
-Estado: **IMPLEMENTADO LOCALMENTE; integração remota pendente**
+Estado: **INTEGRADO À `main`; CI PÓS-MERGE VERDE** — [PR #76](https://github.com/uknwplayer/ARCA/pull/76), [CI pós-merge](https://github.com/uknwplayer/ARCA/actions/runs/35650058116).
 
 Fonte oficial de referência: [downloads de despesas](https://portaldatransparencia.gov.br/download-de-dados/despesas) e [dicionário do documento de pagamento](https://portaldatransparencia.gov.br/dicionario-de-dados/pagamentos).
 
