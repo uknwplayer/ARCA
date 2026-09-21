@@ -69,6 +69,10 @@ function errorReference(error){
   }
   return "sha256:"+createHash("sha256").update(String(error?.message??error??"unknown")).digest("hex");
 }
+function safeReference(value){
+  const ref=String(value??"").trim();
+  return /^(?:code:[A-Z][A-Z0-9_]{2,96}|sha256:[a-f0-9]{64})$/.test(ref)?ref:null;
+}
 
 export function createPncpNationalScheduler({
   root,
@@ -110,6 +114,11 @@ export function createPncpNationalScheduler({
     if(existing){
       if(existing.format!==PNCP_NATIONAL_CHECKPOINT_FORMAT||existing.planFingerprint!==fingerprint)
         throw new Error("ARCA_PNCP_SCHEDULER_CHECKPOINT_INVALID");
+      if(existing.completed===null||typeof existing.completed!=="object"||
+         existing.failed===null||typeof existing.failed!=="object"||
+         (existing.unavailable!==undefined&&(existing.unavailable===null||typeof existing.unavailable!=="object")))
+        throw new Error("ARCA_PNCP_SCHEDULER_CHECKPOINT_INVALID");
+      existing.unavailable??={};
       return {checkpoint:existing,file,fingerprint};
     }
     const at=instant(clock);
@@ -122,6 +131,7 @@ export function createPncpNationalScheduler({
         status:"READY",
         completed:{},
         failed:{},
+        unavailable:{},
         createdAt:at,
         updatedAt:at
       }
@@ -144,8 +154,11 @@ export function createPncpNationalScheduler({
       shardIds=null,
       maxShardsPerRun=3,
       maxFailuresPerRun=1,
+      maxUnavailablePerRun=3,
       maxObservationsPerShard=100,
       retryFailed=false,
+      retryUnavailable=false,
+      continueOnSourceUnavailable=false,
       authorizePublicNetwork=false,
       confirmation=null
     }={}){
@@ -164,8 +177,11 @@ export function createPncpNationalScheduler({
 
       const shardBudget=positive(maxShardsPerRun,3,27,"maxShardsPerRun");
       const failureBudget=positive(maxFailuresPerRun,1,27,"maxFailuresPerRun");
+      const unavailableBudget=positive(maxUnavailablePerRun,3,27,"maxUnavailablePerRun");
       const observationBudget=positive(maxObservationsPerShard,100,1000,"maxObservationsPerShard");
-      if(typeof retryFailed!=="boolean")throw new Error("ARCA_PNCP_SCHEDULER_RETRY_POLICY_INVALID");
+      if(typeof retryFailed!=="boolean"||typeof retryUnavailable!=="boolean"||
+         typeof continueOnSourceUnavailable!=="boolean")
+        throw new Error("ARCA_PNCP_SCHEDULER_RETRY_POLICY_INVALID");
 
       const {checkpoint,file,fingerprint}=checkpointFor(plan);
       checkpoint.status="RUNNING";
@@ -176,12 +192,13 @@ export function createPncpNationalScheduler({
         .sort((a,b)=>a.shardId.localeCompare(b.shardId))
         .filter(shard=>(selection===null||selection.has(shard.shardId))&&
           !checkpoint.completed[shard.shardId]&&
-          (retryFailed||!checkpoint.failed[shard.shardId]))
+          (retryFailed||!checkpoint.failed[shard.shardId])&&
+          (retryUnavailable||!checkpoint.unavailable[shard.shardId]))
         .slice(0,shardBudget);
 
-      let processed=0,succeeded=0,failed=0,observations=0,created=0,awakened=0;
+      let processed=0,succeeded=0,failed=0,unavailable=0,observations=0,created=0,awakened=0;
       for(const shard of pending){
-        if(failed>=failureBudget)break;
+        if(failed>=failureBudget||unavailable>=unavailableBudget)break;
         processed+=1;
         try{
           const discovery=await discoveryRunner.run(shard);
@@ -207,18 +224,36 @@ export function createPncpNationalScheduler({
             awakenedCount:shardAwakened
           };
           delete checkpoint.failed[shard.shardId];
+          delete checkpoint.unavailable[shard.shardId];
           succeeded+=1;
           observations+=classified.length;
           created+=shardCreated;
           awakened+=shardAwakened;
         }catch(error){
-          const previous=checkpoint.failed[shard.shardId];
-          checkpoint.failed[shard.shardId]={
-            attempts:(previous?.attempts??0)+1,
-            failedAt:instant(clock),
-            errorRef:errorReference(error)
-          };
-          failed+=1;
+          if(continueOnSourceUnavailable===true&&error?.code==="ARCA_PNCP_SOURCE_UNAVAILABLE"){
+            const previous=checkpoint.unavailable[shard.shardId];
+            checkpoint.unavailable[shard.shardId]={
+              category:"SOURCE_UNAVAILABLE",
+              attempts:(previous?.attempts??0)+1,
+              observedAt:instant(clock),
+              errorRef:safeReference(error?.sourceFailureRef)??errorReference(error),
+              humanReviewRequired:true,
+              anomalyIsNotIrregularity:true
+            };
+            delete checkpoint.failed[shard.shardId];
+            unavailable+=1;
+          }else{
+            const previous=checkpoint.failed[shard.shardId];
+            checkpoint.failed[shard.shardId]={
+              attempts:(previous?.attempts??0)+1,
+              failedAt:instant(clock),
+              errorRef:error?.code==="ARCA_PNCP_SOURCE_UNAVAILABLE"
+                ?safeReference(error?.sourceFailureRef)??errorReference(error)
+                :errorReference(error)
+            };
+            delete checkpoint.unavailable[shard.shardId];
+            failed+=1;
+          }
         }
         checkpoint.updatedAt=instant(clock);
         atomicWrite(file,checkpoint);
@@ -226,10 +261,15 @@ export function createPncpNationalScheduler({
 
       const completeCount=Object.keys(checkpoint.completed).length;
       const failedCount=Object.keys(checkpoint.failed).length;
-      const remaining=plan.shards.length-completeCount-failedCount;
+      const unavailableCount=Object.keys(checkpoint.unavailable).length;
+      const remaining=plan.shards.length-completeCount-failedCount-unavailableCount;
       checkpoint.status=completeCount===plan.shards.length
         ?"COMPLETED"
-        :remaining===0&&failedCount>0?"ATTENTION_REQUIRED":"IN_PROGRESS";
+        :remaining===0&&failedCount>0
+          ?"ATTENTION_REQUIRED"
+          :remaining===0&&unavailableCount>0
+            ?"COMPLETED_WITH_AVAILABILITY_GAPS"
+            :"IN_PROGRESS";
       checkpoint.updatedAt=instant(clock);
       atomicWrite(file,checkpoint);
 
@@ -240,6 +280,7 @@ export function createPncpNationalScheduler({
         processed,
         succeeded,
         failed,
+        unavailable,
         observations,
         investigationsCreated:created,
         investigationsAwakened:awakened,
@@ -248,6 +289,7 @@ export function createPncpNationalScheduler({
           shards:plan.shards.length,
           completed:completeCount,
           failed:failedCount,
+          unavailable:unavailableCount,
           remaining
         }),
         humanReviewRequired:true,

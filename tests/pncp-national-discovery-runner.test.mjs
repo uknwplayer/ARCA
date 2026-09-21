@@ -146,3 +146,64 @@ test("transport mode mismatch fails before acquisition",async()=>{
   await assert.rejects(()=>runner.run(plan().shards[0]),/TRANSPORT_MODE_MISMATCH/);
   assert.equal(countFiles(path.join(root,"custody"),"manifest.json"),0);
 });
+
+
+test("network transport failures are typed as source unavailable without raw detail",async()=>{
+  const root=temp();
+  const runner=createPncpNationalDiscoveryRunner({
+    custodyRoot:path.join(root,"custody"),
+    stagingRoot:path.join(root,"staging"),
+    transportFactory:()=>({
+      networkEnabled:true,
+      async get(){
+        const error=new TypeError("fetch failed");
+        error.cause={code:"UND_ERR_SOCKET",message:"private socket detail"};
+        throw error;
+      }
+    }),
+    networkEnabled:true,
+    authorizePublicNetwork:true,
+    confirmation:PNCP_NATIONAL_NETWORK_CONFIRMATION
+  });
+  let caught=null;
+  try{await runner.run(plan().shards[0])}catch(error){caught=error}
+  assert.ok(caught);
+  assert.equal(caught.code,"ARCA_PNCP_SOURCE_UNAVAILABLE");
+  assert.equal(caught.sourceFailureRef,"code:UND_ERR_SOCKET");
+  assert.equal(String(caught.message),"ARCA_PNCP_SOURCE_UNAVAILABLE");
+  assert.equal(JSON.stringify(caught).includes("private socket detail"),false);
+  assert.equal(countFiles(path.join(root,"custody"),"manifest.json"),0);
+});
+
+test("custody or parsing failures are not misclassified as source unavailable",async()=>{
+  const root=temp();
+  const runner=createPncpNationalDiscoveryRunner({
+    custodyRoot:path.join(root,"custody"),
+    stagingRoot:path.join(root,"staging"),
+    transportFactory:()=>({
+      networkEnabled:true,
+      async get(){
+        const body=new TextEncoder().encode("{not-json");
+        return {
+          resourceKind:"discovery-modality-6-page-1",
+          url:"https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao",
+          method:"GET",
+          status:200,
+          ok:true,
+          contentType:"application/json",
+          accessedAt:"2026-09-21T02:00:00.000Z",
+          bytes:body,
+          sha256:"0".repeat(64),
+          attemptCount:1
+        };
+      }
+    }),
+    networkEnabled:true,
+    authorizePublicNetwork:true,
+    confirmation:PNCP_NATIONAL_NETWORK_CONFIRMATION
+  });
+  await assert.rejects(()=>runner.run(plan().shards[0]),error=>{
+    assert.notEqual(error?.code,"ARCA_PNCP_SOURCE_UNAVAILABLE");
+    return true;
+  });
+});
