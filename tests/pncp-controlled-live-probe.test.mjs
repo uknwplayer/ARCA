@@ -62,7 +62,7 @@ test("controlled live probe uses one selected shard and seals custody",async()=>
   assert.equal(result.proof.status,"CAPTURED_AND_SEALED");
   assert.equal(result.proof.shardId,"BR-UF-SP");
   assert.equal(result.proof.scope.uf,"SP");
-  assert.deepEqual(result.proof.budgets,{maxShards:1,maxPages:1,maxRecords:10,pageSize:10});
+  assert.deepEqual(result.proof.budgets,{maxShards:1,maxPages:1,maxRecords:10,pageSize:10,retries:0,networkTimeoutMs:30000});
   assert.equal(result.proof.networkUsed,true);
   assert.equal(result.proof.classifierEmittedSignals,false);
   assert.equal(result.proof.investigationIngressUsed,false);
@@ -157,4 +157,25 @@ test("durable custody preflight failure blocks PNCP network",async()=>{
     durableCustodyBackend:backend
   }),/DURABLE_PREFLIGHT_FAILED/);
   assert.equal(counter.calls,0);
+});
+
+
+test("failed shard exposes only a sanitized failure reference",async()=>{
+  const output=fs.mkdtempSync(path.join(os.tmpdir(),"arca-pncp-live-output-"));
+  const backend={
+    async preflight(){return {ready:true,private:true}},
+    async persist(){throw new Error("must not persist")}
+  };
+  let caught=null;
+  try{
+    await runPncpControlledLiveProbe({
+      env:env(output,{ARCA_CUSTODY_DURABLE_REQUIRED:"true"}),
+      fetchImpl:async()=>{throw Object.assign(new Error("synthetic network failure detail must stay private"),{code:"UND_ERR_CONNECT_TIMEOUT"})},
+      durableCustodyBackend:backend
+    });
+  }catch(error){caught=error}
+  assert.ok(caught);
+  assert.equal(caught.message,"ARCA_PNCP_LIVE_CYCLE_FAILED");
+  assert.equal(caught.failureRef,"code:UND_ERR_CONNECT_TIMEOUT");
+  assert.ok(!JSON.stringify(caught).includes("synthetic network failure detail must stay private"));
 });
