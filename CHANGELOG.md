@@ -18,6 +18,16 @@ Todas as mudanças normativas seguem SemVer e exigem ADR e teste correspondente.
 
 O RC1 não declara produção, cobertura nacional contínua nem investigação PNCP ponta a ponta. Classificador e ingresso ficaram desligados nas provas ao vivo.
 
+### Gate Offline Multifonte V1
+
+- contrato público de adaptadores de fonte independente do PNCP;
+- registro inicial com oito fontes oficiais e somente PNCP offline executável;
+- envelope de evidência com hashes bruto/normalizado, transformação, cobertura e lacunas;
+- fixture sintética limitada a AC, AL e AM, incluindo indisponibilidade isolada sem geração de suspeita;
+- deduplicação determinística, dois papéis analíticos independentes e verificação adversarial;
+- encaminhamento apenas à revisão humana, com rede e publicação bloqueadas;
+- roadmap detalhado e checkpoint de continuidade obrigatórios.
+
 ## 0.3.0 — Acquisition Adapter e cadeia de custódia
 
 - pacote externo ao Core para captura de arquivos autorizados;

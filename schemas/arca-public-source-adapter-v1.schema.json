@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arca.invalid/schemas/arca-public-source-adapter-v1.schema.json",
+  "title": "ARCA Public Source Adapter V1",
+  "type": "object",
+  "required": ["schema", "id", "publisher", "sourceClass", "accessMethod", "canonicalPublicUrl", "allowedOrigins", "formats", "publicAccess", "coverage", "adapterStatus", "executableModes", "limitations"],
+  "properties": {
+    "schema": {"const": "arca.public-source-adapter.v1"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]*$"},
+    "publisher": {"type": "string", "minLength": 1},
+    "sourceClass": {"type": "string", "minLength": 1},
+    "accessMethod": {"type": "string", "minLength": 1},
+    "canonicalPublicUrl": {"type": "string", "format": "uri", "pattern": "^https://"},
+    "allowedOrigins": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^https://"}},
+    "formats": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "publicAccess": {"const": true},
+    "coverage": {"type": "object", "required": ["country", "levels", "municipalityDefault"], "properties": {"country": {"const": "BR"}, "levels": {"type": "array", "minItems": 1}, "municipalityDefault": {"type": "null"}}},
+    "adapterStatus": {"enum": ["ACTIVE", "DECLARED_ONLY", "SUSPENDED"]},
+    "executableModes": {"type": "array", "uniqueItems": true, "items": {"enum": ["OFFLINE_FIXTURE", "PUBLIC_GET", "BULK_DOWNLOAD"]}},
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

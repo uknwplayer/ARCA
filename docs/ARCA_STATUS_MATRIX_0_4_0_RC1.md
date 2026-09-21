@@ -12,6 +12,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Fila investigativa compartilhada | sim | sim | não | não | PRs #56–#57 | operação contínua e telemetria |
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
+| Gate Offline Multifonte V1 | sim | sim | não | não | contrato, envelopes, AC/AL/AM, 2 agentes | segundo adaptador real e correlação cruzada |
 | Aquisição PNCP controlada | sim | sim | sim | não | runs 35544888070 e 35547609136 | expansão gradual e orçamento operacional |
 | Disponibilidade da fonte | sim | sim | parcial | não | PR #71 | política de retentativa/alerta em serviço |
 | Classificador de sinais | parcial | sim, sintético | não | não | fixtures e testes | precisão/recall e calibração em dados reais |
