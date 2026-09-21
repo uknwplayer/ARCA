@@ -13,7 +13,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
 | Gate Offline Multifonte V1 | sim | sim | não | não | contrato, envelopes, AC/AL/AM, 2 agentes | correlação cruzada |
-| Portal da Transparência offline M1 | sim, fixture sintética | sim | não | não | colunas oficiais de pagamento, envelopes e teste sem rede | parser CSV/captura oficial; relação com empenhos e PNCP |
+| Portal da Transparência offline M1 | sim, fixture sintética | sim | não | não | PR #76; CI 35650058116; colunas oficiais de pagamento, envelopes | parser CSV/captura oficial; relação com empenhos e PNCP |
 | Aquisição PNCP controlada | sim | sim | sim | não | runs 35544888070 e 35547609136 | expansão gradual e orçamento operacional |
 | Disponibilidade da fonte | sim | sim | parcial | não | PR #71 | política de retentativa/alerta em serviço |
 | Classificador de sinais | parcial | sim, sintético | não | não | fixtures e testes | precisão/recall e calibração em dados reais |

@@ -2,16 +2,16 @@
 
 Checkpoint: **2026-09-21 / Portal da Transparência offline M1**
 
-Estado: **M1 implementado localmente; PR/CI pendentes. M0 integrado e verde**
-Âncora canônica de entrada no M1: `5f83ef1e31734429cef26a5840181a2fc4606d7e`
+Estado: **M1 integrado à `main`; CI pós-merge verde. M2 é o próximo marco**
+Âncora canônica após M1: `68f2a0e86f60400b0a208c0b2c06599a1601f177`
 
-CI pós-merge M0: [35648022980](https://github.com/uknwplayer/ARCA/actions/runs/35648022980)
+CI pós-merge M1: [35650058116](https://github.com/uknwplayer/ARCA/actions/runs/35650058116)
 
 ## Retomada imediata
 
-O M1 adiciona o adaptador de **download de despesas do Portal da Transparência em fixture offline**. Leia o checkpoint detalhado `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_004.md`, a especificação `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md` e o roadmap `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. Confira o CI e a integração de M1 antes de iniciar M2.
+O M1 adicionou o adaptador de **download de despesas do Portal da Transparência em fixture offline**. Leia o checkpoint final `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_005.md`, a especificação `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md` e o roadmap `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. Iniciar M2 pelos vínculos pagamento ↔ empenhos impactados e por fixtures PNCP, sem rede.
 
-Validação local de M1: testes focais 14/14, validador dos dois pilotos PASS, Python 27/27, piloto controlado PASS e fronteira pública sem violações. A suíte completa local em Node 24 marcou 866/867 devido ao teste Passkey antigo `UND_ERR_SOCKET`; a prova integral exige CI Node 22.18. Digest do ensaio Portal: `d33af20d7382df409032ecac0d94e24f97bd1ab6e04b02d55d05856182281bf9`.
+Validação de M1: [PR #76](https://github.com/uknwplayer/ARCA/pull/76), [CI da PR](https://github.com/uknwplayer/ARCA/actions/runs/35649925658) e [CI pós-merge](https://github.com/uknwplayer/ARCA/actions/runs/35650058116) verdes no Node 22.18. Testes focais locais 14/14, validador dos dois pilotos PASS, Python 27/27, piloto controlado PASS e fronteira pública sem violações. A suíte local em Node 24 marcou 866/867 devido ao teste Passkey antigo `UND_ERR_SOCKET`. Digest do ensaio Portal: `d33af20d7382df409032ecac0d94e24f97bd1ab6e04b02d55d05856182281bf9`.
 
 O segundo adaptador cobre **somente dados sintéticos com colunas documentadas de pagamento**. Não há CSV oficial capturado, localização real do gasto por UF, ligação pagamento ↔ empenho ↔ PNCP, consulta live ou publicação. O marco seguinte M2 define relações e chaves verificáveis, incluindo pagamento que afeta vários empenhos; M3 executa o piloto conjunto offline.
 
@@ -23,7 +23,7 @@ Validação local do ciclo: 862/862 testes Node no runtime exigido `22.18.0`, 27
 
 Validação remota: PR [#74](https://github.com/uknwplayer/ARCA/pull/74) integrada no commit canônico [`9182249`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933); CI final da PR [35647210669](https://github.com/uknwplayer/ARCA/actions/runs/35647210669) e CI pós-merge [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) verdes.
 
-O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint histórico deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_004.md`; o 003 documenta M0.
+O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint final deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_005.md`; o 004 preserva o estado local pré-merge e o 003 documenta M0.
 
 ## Base RC1 preservada
 
@@ -72,6 +72,8 @@ A PR [#72](https://github.com/uknwplayer/ARCA/pull/72) foi integrada após CI ve
 | Pós-merge RC1 | [run 35604244525](https://github.com/uknwplayer/ARCA/actions/runs/35604244525) | verde |
 | Gate Offline Multifonte V1 | [PR #74](https://github.com/uknwplayer/ARCA/pull/74) | integrado, 862 Node + 27 Python |
 | Pós-merge multifonte | [run 35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) | verde |
+| Portal offline M1 | [PR #76](https://github.com/uknwplayer/ARCA/pull/76) | integrado; duas evidências sintéticas |
+| Pós-merge M1 | [run 35650058116](https://github.com/uknwplayer/ARCA/actions/runs/35650058116) | verde |
 
 ## O que não foi provado
 
@@ -81,7 +83,7 @@ Não alegar cobertura nacional contínua, consulta ao vivo de todos os municípi
 
 ## Próximo trabalho recomendado
 
-Concluir CI e integração do **M1**. Em seguida, executar **M2** do roadmap: relações estruturais PNCP ↔ execução financeira ainda sintéticas, sem rede nem publicação. Não inferir equivalência contratual de mero nome/valor.
+Executar **M2** do roadmap: relações estruturais PNCP ↔ execução financeira ainda sintéticas, começando pela relação um-para-muitos entre pagamento e empenhos impactados, sem rede nem publicação. Não inferir equivalência contratual de mero nome/valor.
 
 O roteiro histórico abaixo continua válido para o futuro piloto PNCP ao vivo, mas não deve anteceder os gates multifonte offline.
 
@@ -104,7 +106,7 @@ Critérios de parada: qualquer vazamento, divergência de escopo, cadeia inváli
 ## Instruções de retomada para um chat com contexto limitado
 
 1. Abrir este arquivo, o Documento Mestre v1.4.0 e a matriz de estado.
-2. Confirmar que `main` contém o commit `5f83ef1e31734429cef26a5840181a2fc4606d7e` ou sucessor; consultar PRs posteriores à #75 e Actions posteriores ao run 35648022980.
+2. Confirmar que `main` contém o commit `68f2a0e86f60400b0a208c0b2c06599a1601f177` ou sucessor; consultar PRs posteriores à #76 e Actions posteriores ao run 35650058116.
 3. Rodar:
    - `npm ci`
    - `npm test`
