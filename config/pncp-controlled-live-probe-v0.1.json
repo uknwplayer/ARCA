@@ -21,7 +21,8 @@
     "pages": 1,
     "records": 10,
     "page_size": 10,
-    "retries": 0
+    "retries": 0,
+    "network_timeout_ms": 30000
   },
   "custody": {
     "secret_required_before_network": true,
@@ -38,5 +39,9 @@
     "automatic_adverse_publication": false,
     "human_review_required": true,
     "anomaly_is_not_irregularity": true
+  },
+  "diagnostics": {
+    "shard_failure_ref": "safe code:... or sha256:...",
+    "raw_error_message_published": false
   }
 }
