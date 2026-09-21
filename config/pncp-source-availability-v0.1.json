@@ -1,0 +1,46 @@
+{
+  "schema": "arca.pncp-source-availability.v0.1",
+  "status": "OFFLINE_GATE",
+  "source_unavailable": {
+    "category": "SOURCE_UNAVAILABLE",
+    "hard_failure": false,
+    "raw_error_persisted": false,
+    "safe_error_ref_only": true,
+    "human_review_required": true,
+    "anomaly_is_not_irregularity": true
+  },
+  "scheduler": {
+    "continue_on_source_unavailable_default": false,
+    "max_unavailable_per_run_default": 3,
+    "retry_unavailable_default": false,
+    "explicit_retry_required": true,
+    "hard_failures_keep_failure_budget": true
+  },
+  "network_classification": {
+    "transport_codes": [
+      "UND_ERR_CONNECT_TIMEOUT",
+      "UND_ERR_HEADERS_TIMEOUT",
+      "UND_ERR_BODY_TIMEOUT",
+      "UND_ERR_SOCKET",
+      "ECONNRESET",
+      "ETIMEDOUT",
+      "ECONNREFUSED",
+      "EHOSTUNREACH",
+      "ENETUNREACH",
+      "EAI_AGAIN",
+      "ENOTFOUND"
+    ],
+    "timeout_names": [
+      "TimeoutError",
+      "AbortError"
+    ],
+    "http_statuses": [
+      429,
+      "5xx"
+    ]
+  },
+  "publication": {
+    "automatic_adverse_publication": false,
+    "source_unavailable_is_not_procurement_irregularity": true
+  }
+}
