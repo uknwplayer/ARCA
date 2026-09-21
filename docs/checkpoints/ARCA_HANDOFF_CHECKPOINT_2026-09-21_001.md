@@ -15,7 +15,7 @@ O ARCA é um protótipo avançado orientado a eventos, com fila compartilhada, m
 - workers escalam por trabalho acionável, não por usuários conectados;
 - uma investigação canônica é compartilhada e deduplicada;
 - PNCP cobre arquitetura nacional em 27 UFs; nenhum município é padrão;
-- Barueri é somente origem histórica de teste;
+- o município do primeiro teste é somente origem histórica de teste;
 - indisponibilidade da fonte é lacuna operacional, não indício;
 - publicação exige revisão humana.
 

@@ -25,7 +25,7 @@ Dez pessoas assistindo ao mesmo caso não exigem dez agentes. O sistema escala p
 
 ## 3. Escopo territorial
 
-O PNCP é tratado em todo o território nacional. A unidade técnica de distribuição atual é a UF, com 27 shards equivalentes e capacidade de filtros adicionais. Nenhum município é default. Barueri é somente referência histórica do primeiro teste.
+O PNCP é tratado em todo o território nacional. A unidade técnica de distribuição atual é a UF, com 27 shards equivalentes e capacidade de filtros adicionais. Nenhum município é default. o município do primeiro teste é somente referência histórica do primeiro teste.
 
 A cobertura nacional offline foi atestada sem rede. As provas ao vivo foram deliberadamente limitadas a um shard e uma página; portanto não demonstram varredura contínua de todos os municípios.
 

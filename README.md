@@ -1,6 +1,6 @@
 # ARCA 0.4.0-rc.1 — rede investigativa autônoma auditável
 
-O ARCA estrutura investigações como grafos auditáveis e opera uma rede de agentes com autoridade limitada, fila compartilhada, custódia verificável e revisão humana. O escopo PNCP é nacional: todas as 27 unidades federativas são tratadas como partições equivalentes. Barueri permanece apenas como origem histórica do primeiro teste, nunca como limite territorial ou padrão operacional.
+O ARCA estrutura investigações como grafos auditáveis e opera uma rede de agentes com autoridade limitada, fila compartilhada, custódia verificável e revisão humana. O escopo PNCP é nacional: todas as 27 unidades federativas são tratadas como partições equivalentes. o município do primeiro teste permanece apenas como origem histórica do primeiro teste, nunca como limite territorial ou padrão operacional.
 
 > **Estado real:** release candidate de engenharia e piloto controlado. A base atual passou em 853 testes Node e 27 testes Python da malha executora. Há provas controladas de aquisição PNCP ao vivo, custódia criptografada e persistência durável privada. Ainda não há prova ponta a ponta de produção, serviço 24/7, métricas de qualidade do classificador em tráfego real nem publicação autônoma. Toda publicação exige revisão humana.
 
