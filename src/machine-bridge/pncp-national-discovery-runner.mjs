@@ -1,4 +1,5 @@
 import path from "node:path";
+import {createHash} from "node:crypto";
 import {runPncpBoundedDiscovery} from "../../packages/pncp-connector/src/discovery.ts";
 
 export const PNCP_NATIONAL_RUNNER_SCHEMA="arca.pncp-national-discovery-runner.v0.1";
@@ -17,6 +18,47 @@ function validateShard(shard){
      shard.discovery.format!=="arca-pncp-discovery-plan-v2")
     throw new Error("ARCA_PNCP_NATIONAL_RUNNER_SHARD_INVALID");
   return shard;
+}
+
+const SOURCE_UNAVAILABLE_CODES=new Set([
+  "UND_ERR_CONNECT_TIMEOUT","UND_ERR_HEADERS_TIMEOUT","UND_ERR_BODY_TIMEOUT",
+  "UND_ERR_SOCKET","ECONNRESET","ETIMEDOUT","ECONNREFUSED","EHOSTUNREACH",
+  "ENETUNREACH","EAI_AGAIN","ENOTFOUND"
+]);
+
+function nestedCode(error){
+  for(const value of [error?.code,error?.cause?.code,error?.cause?.cause?.code]){
+    const code=String(value??"").trim().toUpperCase();
+    if(/^[A-Z][A-Z0-9_]{2,96}$/.test(code))return code;
+  }
+  return null;
+}
+function safeErrorRef(error){
+  const code=nestedCode(error);
+  if(code)return `code:${code}`;
+  return "sha256:"+createHash("sha256")
+    .update(String(error?.message??error??"unknown"))
+    .digest("hex");
+}
+function isSourceUnavailable(error){
+  const code=nestedCode(error);
+  if(code&&SOURCE_UNAVAILABLE_CODES.has(code))return true;
+  const name=String(error?.name??"");
+  if(name==="TimeoutError"||name==="AbortError")return true;
+  const message=String(error?.message??"").toLowerCase();
+  if(message==="fetch failed"||message.includes("aborted due to timeout"))return true;
+  const http=/\bhttp\s+(\d{3})\b/i.exec(message);
+  if(http){
+    const status=Number(http[1]);
+    if(status===429||(status>=500&&status<=599))return true;
+  }
+  return false;
+}
+function sourceUnavailableError(error){
+  const wrapped=new Error("ARCA_PNCP_SOURCE_UNAVAILABLE");
+  wrapped.code="ARCA_PNCP_SOURCE_UNAVAILABLE";
+  wrapped.sourceFailureRef=safeErrorRef(error);
+  return wrapped;
 }
 
 export function createPncpNationalDiscoveryRunner({
@@ -56,20 +98,27 @@ export function createPncpNationalDiscoveryRunner({
       const start=shard.discovery.scope.dataInicial;
       const investigationId=`INV-PNCP-NATIONAL-${start}-${shard.uf}`;
       const sourceId=`SRC-PNCP-DISCOVERY-${shard.uf}`;
-      const result=await runPncpBoundedDiscovery({
-        ...shard.discovery.scope,
-        modalidadeIds:shard.discovery.modalidadeIds,
-        investigationId,
-        sourceId,
-        authorizePublicNetwork:networkEnabled&&authorizePublicNetwork
-      },{
-        ...shard.discovery.budgets,
-        modalidadeIds:shard.discovery.modalidadeIds,
-        transport,
-        custodyHome:path.join(custody,shard.shardId),
-        stagingRoot:path.join(staging,shard.shardId),
-        actor:safeActor
-      });
+      let result;
+      try{
+        result=await runPncpBoundedDiscovery({
+          ...shard.discovery.scope,
+          modalidadeIds:shard.discovery.modalidadeIds,
+          investigationId,
+          sourceId,
+          authorizePublicNetwork:networkEnabled&&authorizePublicNetwork
+        },{
+          ...shard.discovery.budgets,
+          modalidadeIds:shard.discovery.modalidadeIds,
+          transport,
+          custodyHome:path.join(custody,shard.shardId),
+          stagingRoot:path.join(staging,shard.shardId),
+          actor:safeActor
+        });
+      }catch(error){
+        if(networkEnabled&&isSourceUnavailable(error))
+          throw sourceUnavailableError(error);
+        throw error;
+      }
       if(result.scope?.uf!==shard.uf)
         throw new Error("ARCA_PNCP_NATIONAL_RUNNER_RESULT_SCOPE_MISMATCH");
       return Object.freeze({
