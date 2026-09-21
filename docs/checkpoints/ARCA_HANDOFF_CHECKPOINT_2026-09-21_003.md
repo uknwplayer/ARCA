@@ -1,12 +1,16 @@
 # ARCA — Handoff checkpoint 2026-09-21 / 003
 
-Estado: **Gate Offline Multifonte V1 implementado em branch; integração pendente**
+Estado: **Gate Offline Multifonte V1 implementado; CI da PR verde; merge pendente**
 
 Base canônica de entrada: `54be3952d211ec3c5ae49e4ad3e8677189d3d19c`
 
 Branch: `feat/multisource-offline-gate-v1`
 
-PR/CI: preencher após publicação da branch.
+PR: [#74](https://github.com/uknwplayer/ARCA/pull/74)
+
+Commit remoto da implementação: `092ebc838c3cd849d553276d19cebaae6a8b80ec`
+
+CI da PR: [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) — `success`.
 
 ## Solicitação atendida
 
@@ -67,7 +71,7 @@ O Node 24 disponível no ambiente de trabalho fez um teste Passkey antigo falhar
 
 ## O que ainda não foi feito
 
-- CI remoto e merge desta branch;
+- merge desta branch e CI pós-merge;
 - adaptador do Portal da Transparência;
 - correlação real contratação/pagamento;
 - execução live multifonte;

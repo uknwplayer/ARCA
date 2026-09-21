@@ -1,8 +1,12 @@
 # ARCA — Gate Offline Multifonte V1
 
-Estado: **IMPLEMENTADO EM BRANCH; VALIDAÇÃO DE CI PENDENTE**
+Estado: **IMPLEMENTADO; CI DA PR VERDE; MERGE PENDENTE**
 
 Escopo: **offline, sintético, sem rede e sem publicação**
+
+PR: [#74](https://github.com/uknwplayer/ARCA/pull/74)
+
+CI: [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) — `success`
 
 ## Objetivo
 

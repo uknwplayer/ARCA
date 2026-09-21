@@ -8,7 +8,7 @@ Regra: este arquivo descreve a sequência vigente. Não substituir gates por ati
 
 ## Marco M0 — Fundação multifonte offline
 
-Estado: **IMPLEMENTADO LOCALMENTE; CI/INTEGRAÇÃO PENDENTES**
+Estado: **IMPLEMENTADO; PR #74 COM CI VERDE; MERGE PENDENTE**
 
 Entregas:
 
@@ -22,7 +22,9 @@ Entregas:
 - fila em `HUMAN_REVIEW`;
 - rede/publicação desligadas.
 
-Aceite restante: CI verde, revisão da PR, merge e CI pós-merge.
+Prova atual: PR [#74](https://github.com/uknwplayer/ARCA/pull/74), CI [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) verde.
+
+Aceite restante: merge e CI pós-merge.
 
 ## Marco M1 — Segundo adaptador offline
 

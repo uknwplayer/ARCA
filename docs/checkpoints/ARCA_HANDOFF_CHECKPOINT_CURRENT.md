@@ -2,7 +2,7 @@
 
 Checkpoint: **2026-09-21 / Gate Offline Multifonte V1**
 
-Estado: **implementado em branch; integração pendente**
+Estado: **PR #74 com CI verde; merge pendente**
 Âncora canônica da consolidação: `7ad09159d486e4616263e1e7a4830b8c4db0d820`  
 CI pós-merge: [35604244525](https://github.com/uknwplayer/ARCA/actions/runs/35604244525)
 
@@ -11,6 +11,8 @@ CI pós-merge: [35604244525](https://github.com/uknwplayer/ARCA/actions/runs/356
 Foi implementada a fundação multifonte independente do PNCP: contrato de adaptadores, registro com oito famílias oficiais, envelope de evidência, fixture limitada a `AC/AL/AM`, deduplicação, dois agentes independentes, verificação adversarial e encaminhamento à revisão humana. Rede e publicação permanecem bloqueadas. O relatório controlado local tem digest `5668cc7c4cc4c9adbd5911a6ca917b42a5611802bab1fa2b34baa17856ca2c88`.
 
 Validação local do ciclo: 862/862 testes Node no runtime exigido `22.18.0`, 27/27 testes Python, piloto investigativo `PASS`, validador multifonte `PASS` e `check:public` sem violações.
+
+Validação remota: PR [#74](https://github.com/uknwplayer/ARCA/pull/74), commit `092ebc838c3cd849d553276d19cebaae6a8b80ec`, CI [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) verde. Falta apenas merge e verificação pós-merge.
 
 O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint histórico deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_003.md`.
 
