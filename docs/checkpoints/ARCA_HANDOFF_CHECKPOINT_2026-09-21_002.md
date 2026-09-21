@@ -1,4 +1,4 @@
-# ARCA — Handoff checkpoint atual
+# ARCA — Handoff checkpoint 2026-09-21 / 002
 
 Checkpoint: **2026-09-21 / RC1 consolidado**  
 Estado: **PR #72 integrada; CI pós-merge verde**  
