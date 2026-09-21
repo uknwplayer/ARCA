@@ -1,4 +1,4 @@
-name: ARCA 0.3.0 CI
+name: ARCA 0.4.0 RC1 CI
 
 on:
   push:
