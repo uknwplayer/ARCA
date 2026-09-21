@@ -1,0 +1,53 @@
+{
+  "schema": "arca.multisource-offline-fixture.v1",
+  "pilotId": "portal-expenses-offline-m1-001",
+  "timeWindow": "2026-09",
+  "shards": [
+    {
+      "sourceId": "br.portal-transparencia.download-despesas",
+      "uf": "AC",
+      "status": "AVAILABLE",
+      "records": [
+        {
+          "row": {
+            "Código Pagamento": "00000100001000000000001",
+            "Código Órgão": "00001",
+            "Órgão": "ORGAO FICTICIO AC",
+            "Código Favorecido": "PJ-FICTICIA-AC",
+            "Favorecido": "FORNECEDOR FICTICIO AC",
+            "Data Emissão": "02/09/2026",
+            "Valor do Pagamento Convertido pra R$": "1250,50"
+          },
+          "sourceUrl": "https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt": "2026-09-21T12:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId": "br.portal-transparencia.download-despesas",
+      "uf": "AL",
+      "status": "SOURCE_UNAVAILABLE",
+      "reason": "synthetic-download-unavailable"
+    },
+    {
+      "sourceId": "br.portal-transparencia.download-despesas",
+      "uf": "AM",
+      "status": "AVAILABLE",
+      "records": [
+        {
+          "row": {
+            "Código Pagamento": "00000200001000000000002",
+            "Código Órgão": "00002",
+            "Órgão": "ORGAO FICTICIO AM",
+            "Código Favorecido": "PJ-FICTICIA-AM",
+            "Favorecido": "FORNECEDOR FICTICIO AM",
+            "Data Emissão": "03/09/2026",
+            "Valor do Pagamento Convertido pra R$": "980,00"
+          },
+          "sourceUrl": "https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt": "2026-09-21T12:05:00.000Z"
+        }
+      ]
+    }
+  ]
+}

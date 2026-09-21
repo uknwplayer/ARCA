@@ -20,10 +20,12 @@ const queueRoot=()=>fs.mkdtempSync(path.join(os.tmpdir(),"arca-multisource-gate-
 const clock=()=>new Date("2026-09-21T13:00:00.000Z");
 const run=(extra={})=>runMultisourceOfflineGate({registry:registry(),fixture:fixture(),queueRoot:queueRoot(),clock,...extra});
 
-test("registry declares multiple national sources while only PNCP offline is executable",()=>{
+test("registry declares multiple national sources with two offline adapters",()=>{
   const sources=registry();
   assert.ok(sources.sources.length>=8);
-  assert.deepEqual(sources.executable().map(source=>source.id),["br.pncp.public-api"]);
+  assert.deepEqual(sources.executable().map(source=>source.id),[
+    "br.pncp.public-api","br.portal-transparencia.download-despesas"
+  ]);
   assert.ok(sources.sources.every(source=>source.coverage.country==="BR"&&source.coverage.municipalityDefault===null));
   assert.ok(sources.sources.filter(source=>source.adapterStatus==="DECLARED_ONLY").every(source=>source.executableModes.length===0));
 });
@@ -90,7 +92,7 @@ test("network and publication are fail-closed",async()=>{
 
 test("non-implemented declared source cannot be executed",async()=>{
   const changed=fixture();
-  changed.shards[0].sourceId="br.portal-transparencia.api";
+  changed.shards[0].sourceId="br.transferegov.public";
   await assert.rejects(()=>runMultisourceOfflineGate({registry:registry(),fixture:changed,queueRoot:queueRoot(),clock}),/ADAPTER_NOT_IMPLEMENTED/);
 });
 

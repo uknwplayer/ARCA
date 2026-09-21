@@ -7,6 +7,7 @@ import {
   sha256
 } from "./public-source-contract.mjs";
 import {createDurableInvestigationQueue} from "../machine-bridge/investigation-queue.mjs";
+import {createOfflinePortalExpensesAdapter} from "./portal-expenses-offline-adapter.mjs";
 
 export const MULTISOURCE_OFFLINE_GATE_SCHEMA="arca.multisource-offline-gate.v1";
 export const MULTISOURCE_FIXTURE_SCHEMA="arca.multisource-offline-fixture.v1";
@@ -112,7 +113,9 @@ function comparabilityAgent(context){
     assessment:context.sourceIds.length<2?"SECOND_SOURCE_REQUIRED":"MULTISOURCE_COMPARISON_AVAILABLE",
     evidenceRefs:Object.freeze(context.envelopes.map(item=>item.envelopeSha256)),
     observations:Object.freeze([
-      "PNCP describes procurement records but does not prove payment or physical delivery",
+      context.sourceIds.includes("br.pncp.public-api")
+        ?"PNCP describes procurement records but does not prove payment or physical delivery"
+        :"Portal payment fixture does not prove a procurement link or physical delivery",
       "No automated adverse conclusion is permitted from this offline gate"
     ]),
     adverseFinding:false,humanReviewRequired:true
@@ -139,7 +142,7 @@ function adversarialVerify({reports,envelopes,gaps}){
   const provenanceComplete=reports.every(report=>report.evidenceRefs.every(ref=>envelopes.some(item=>item.envelopeSha256===ref)));
   const challenges=[
     {kind:"MISSING_PROVENANCE",critical:true,resolved:provenanceComplete,provenanceRefs:envelopes.map(item=>item.envelopeSha256)},
-    {kind:"SOURCE_NOT_INDEPENDENT",critical:false,resolved:false,provenanceRefs:[],note:"PNCP-only pilot requires a second live source before cross-source conclusions"},
+    {kind:"SOURCE_NOT_INDEPENDENT",critical:false,resolved:false,provenanceRefs:[],note:"Offline fixture does not prove cross-source correlation or a live finding"},
     ...gaps.map(gap=>({kind:"SOURCE_UNAVAILABLE_OR_STALE",critical:false,resolved:false,provenanceRefs:[],note:`${gap.uf}:${gap.reason}`}))
   ];
   const blocking=challenges.some(challenge=>challenge.critical&&!challenge.resolved);
@@ -152,7 +155,7 @@ function adversarialVerify({reports,envelopes,gaps}){
   });
 }
 
-export async function runMultisourceOfflineGate({registry,fixture,queueRoot,adapters=[createOfflinePncpAdapter()],agents=createIndependentOfflineAgents(),networkEnabled=false,publicationEnabled=false,clock=()=>new Date()}={}){
+export async function runMultisourceOfflineGate({registry,fixture,queueRoot,adapters=[createOfflinePncpAdapter(),createOfflinePortalExpensesAdapter()],agents=createIndependentOfflineAgents(),networkEnabled=false,publicationEnabled=false,clock=()=>new Date()}={}){
   if(networkEnabled!==false)throw new Error("ARCA_MULTISOURCE_NETWORK_FORBIDDEN");
   if(publicationEnabled!==false)throw new Error("ARCA_MULTISOURCE_PUBLICATION_FORBIDDEN");
   if(!registry||registry.schema!=="arca.public-source-registry.v1")throw new Error("ARCA_MULTISOURCE_REGISTRY_REQUIRED");

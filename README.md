@@ -32,7 +32,7 @@ Documentos de entrada:
 | Fila investigativa | trabalho compartilhado, deduplicação e backend durável | implementado |
 | Malha executora | despacho limitado e reconciliação entre executores | prova ao vivo controlada |
 | Observador PNCP | agenda nacional, 27 UFs, aquisição limitada e disponibilidade de fonte | implementado; provas ao vivo de um shard |
-| Gate multifonte | contrato de fonte, envelopes com hash, deduplicação, dois agentes e revisão | V1 offline implementada; PNCP é o único adaptador executável |
+| Gate multifonte | contrato de fonte, envelopes com hash, deduplicação, dois agentes e revisão | V1 offline; PNCP e Portal da Transparência executam fixtures separadas |
 | Custódia | envelope AES-256-GCM/scrypt e backend privado endereçado por conteúdo | prova durável controlada |
 | Publicação | fronteira sanitizada e revisão humana | portão implementado; publicação autônoma proibida |
 
