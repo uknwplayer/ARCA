@@ -1,12 +1,16 @@
 # ARCA — Gate Offline Multifonte V1
 
-Estado: **IMPLEMENTADO; CI DA PR VERDE; MERGE PENDENTE**
+Estado: **INTEGRADO À `main`; CI PÓS-MERGE VERDE**
 
 Escopo: **offline, sintético, sem rede e sem publicação**
 
 PR: [#74](https://github.com/uknwplayer/ARCA/pull/74)
 
-CI: [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) — `success`
+Commit canônico: [`9182249bffbc7d4dbf96e314720e77b840f22933`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933)
+
+CI da PR: [35647210669](https://github.com/uknwplayer/ARCA/actions/runs/35647210669) — `success`
+
+CI pós-merge: [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) — `success`
 
 ## Objetivo
 

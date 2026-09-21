@@ -2,13 +2,13 @@
 
 Atualizado em: **2026-09-21**
 
-Base de entrada: `0.4.0-rc.1` / `54be3952d211ec3c5ae49e4ad3e8677189d3d19c`
+Base canônica atual: `0.4.0-rc.1` / `9182249bffbc7d4dbf96e314720e77b840f22933`
 
 Regra: este arquivo descreve a sequência vigente. Não substituir gates por ativação direta.
 
 ## Marco M0 — Fundação multifonte offline
 
-Estado: **IMPLEMENTADO; PR #74 COM CI VERDE; MERGE PENDENTE**
+Estado: **CONCLUÍDO E INTEGRADO À `main`**
 
 Entregas:
 
@@ -22,11 +22,13 @@ Entregas:
 - fila em `HUMAN_REVIEW`;
 - rede/publicação desligadas.
 
-Prova atual: PR [#74](https://github.com/uknwplayer/ARCA/pull/74), CI [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) verde.
+Prova final: PR [#74](https://github.com/uknwplayer/ARCA/pull/74), commit canônico [`9182249`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933) e CI pós-merge [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) verde.
 
-Aceite restante: merge e CI pós-merge.
+Aceite: concluído. O marco ativo seguinte é M1.
 
 ## Marco M1 — Segundo adaptador offline
+
+Estado: **PRÓXIMO MARCO ATIVO**
 
 Objetivo: implementar `br.portal-transparencia.api` ou uma variante oficial de download sem realizar rede.
 

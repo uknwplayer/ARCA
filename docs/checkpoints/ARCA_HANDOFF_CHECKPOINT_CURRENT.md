@@ -2,9 +2,10 @@
 
 Checkpoint: **2026-09-21 / Gate Offline Multifonte V1**
 
-Estado: **PR #74 com CI verde; merge pendente**
-Âncora canônica da consolidação: `7ad09159d486e4616263e1e7a4830b8c4db0d820`  
-CI pós-merge: [35604244525](https://github.com/uknwplayer/ARCA/actions/runs/35604244525)
+Estado: **Gate Offline Multifonte V1 integrado; CI pós-merge verde**
+Âncora canônica atual: `9182249bffbc7d4dbf96e314720e77b840f22933`
+
+CI pós-merge atual: [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010)
 
 ## Resultado entregue
 
@@ -12,7 +13,7 @@ Foi implementada a fundação multifonte independente do PNCP: contrato de adapt
 
 Validação local do ciclo: 862/862 testes Node no runtime exigido `22.18.0`, 27/27 testes Python, piloto investigativo `PASS`, validador multifonte `PASS` e `check:public` sem violações.
 
-Validação remota: PR [#74](https://github.com/uknwplayer/ARCA/pull/74), commit `092ebc838c3cd849d553276d19cebaae6a8b80ec`, CI [35646902549](https://github.com/uknwplayer/ARCA/actions/runs/35646902549) verde. Falta apenas merge e verificação pós-merge.
+Validação remota: PR [#74](https://github.com/uknwplayer/ARCA/pull/74) integrada no commit canônico [`9182249`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933); CI final da PR [35647210669](https://github.com/uknwplayer/ARCA/actions/runs/35647210669) e CI pós-merge [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) verdes.
 
 O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint histórico deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_003.md`.
 
@@ -61,6 +62,8 @@ A PR [#72](https://github.com/uknwplayer/ARCA/pull/72) foi integrada após CI ve
 | Base pré-RC1 | [run 35548063705](https://github.com/uknwplayer/ARCA/actions/runs/35548063705) | 853 Node + 27 Python |
 | Consolidação RC1 | [run 35604102042](https://github.com/uknwplayer/ARCA/actions/runs/35604102042) | PR e preview público verdes |
 | Pós-merge RC1 | [run 35604244525](https://github.com/uknwplayer/ARCA/actions/runs/35604244525) | verde |
+| Gate Offline Multifonte V1 | [PR #74](https://github.com/uknwplayer/ARCA/pull/74) | integrado, 862 Node + 27 Python |
+| Pós-merge multifonte | [run 35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) | verde |
 
 ## O que não foi provado
 
@@ -70,7 +73,7 @@ Não alegar cobertura nacional contínua, consulta ao vivo de todos os municípi
 
 ## Próximo trabalho recomendado
 
-Primeiro, concluir CI e integração do Gate Offline Multifonte V1. Em seguida, executar o **M1** do roadmap: adaptador offline do Portal da Transparência e correlação estrutural ainda sintética, sem rede e sem publicação.
+Executar o **M1** do roadmap: adaptador offline do Portal da Transparência e correlação estrutural ainda sintética, sem rede e sem publicação. O M0 já está integrado e não deve ser refeito.
 
 O roteiro histórico abaixo continua válido para o futuro piloto PNCP ao vivo, mas não deve anteceder os gates multifonte offline.
 
@@ -93,7 +96,7 @@ Critérios de parada: qualquer vazamento, divergência de escopo, cadeia inváli
 ## Instruções de retomada para um chat com contexto limitado
 
 1. Abrir este arquivo, o Documento Mestre v1.4.0 e a matriz de estado.
-2. Consultar `main`, PRs posteriores à #72 e Actions posteriores ao run 35604244525; não assumir que esta âncora ainda é HEAD.
+2. Confirmar que `main` contém o commit `9182249bffbc7d4dbf96e314720e77b840f22933` ou sucessor; consultar PRs posteriores à #74 e Actions posteriores ao run 35647349010.
 3. Rodar:
    - `npm ci`
    - `npm test`
