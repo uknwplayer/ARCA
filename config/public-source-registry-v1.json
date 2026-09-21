@@ -18,20 +18,20 @@
       "limitations": ["does-not-prove-payment", "does-not-prove-physical-delivery", "publisher-data-quality-dependent"]
     },
     {
-      "id": "br.portal-transparencia.api",
+      "id": "br.portal-transparencia.download-despesas",
       "publisher": "CGU / Portal da Transparência",
       "sourceClass": "federal_financial_execution",
-      "accessMethod": "official_public_api",
-      "canonicalPublicUrl": "https://api.portaldatransparencia.gov.br/swagger-ui/index.html",
-      "allowedOrigins": ["https://api.portaldatransparencia.gov.br"],
-      "formats": ["JSON"],
+      "accessMethod": "official_public_dataset",
+      "canonicalPublicUrl": "https://portaldatransparencia.gov.br/download-de-dados/despesas",
+      "allowedOrigins": ["https://portaldatransparencia.gov.br"],
+      "formats": ["CSV"],
       "publicAccess": true,
       "coverage": {"levels": ["federal"]},
-      "temporalCoverage": {"kind": "endpoint-dependent"},
-      "adapterStatus": "DECLARED_ONLY",
-      "executableModes": [],
-      "updateProfile": "endpoint-dependent",
-      "limitations": ["api-credential-may-be-required", "not-a-complete-state-or-municipal-ledger"]
+      "temporalCoverage": {"kind": "daily-dataset-snapshot"},
+      "adapterStatus": "ACTIVE",
+      "executableModes": ["OFFLINE_FIXTURE"],
+      "updateProfile": "daily-dataset-snapshot",
+      "limitations": ["download-not-automated", "not-a-complete-state-or-municipal-ledger", "payment-may-affect-multiple-commitments", "uf-attribution-requires-separate-proof"]
     },
     {
       "id": "br.transferegov.public",

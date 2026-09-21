@@ -1,11 +1,19 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-21 / Gate Offline Multifonte V1**
+Checkpoint: **2026-09-21 / Portal da Transparência offline M1**
 
-Estado: **Gate Offline Multifonte V1 integrado; CI pós-merge verde**
-Âncora canônica atual: `9182249bffbc7d4dbf96e314720e77b840f22933`
+Estado: **M1 implementado localmente; PR/CI pendentes. M0 integrado e verde**
+Âncora canônica de entrada no M1: `5f83ef1e31734429cef26a5840181a2fc4606d7e`
 
-CI pós-merge atual: [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010)
+CI pós-merge M0: [35648022980](https://github.com/uknwplayer/ARCA/actions/runs/35648022980)
+
+## Retomada imediata
+
+O M1 adiciona o adaptador de **download de despesas do Portal da Transparência em fixture offline**. Leia o checkpoint detalhado `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_004.md`, a especificação `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md` e o roadmap `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. Confira o CI e a integração de M1 antes de iniciar M2.
+
+Validação local de M1: testes focais 14/14, validador dos dois pilotos PASS, Python 27/27, piloto controlado PASS e fronteira pública sem violações. A suíte completa local em Node 24 marcou 866/867 devido ao teste Passkey antigo `UND_ERR_SOCKET`; a prova integral exige CI Node 22.18. Digest do ensaio Portal: `d33af20d7382df409032ecac0d94e24f97bd1ab6e04b02d55d05856182281bf9`.
+
+O segundo adaptador cobre **somente dados sintéticos com colunas documentadas de pagamento**. Não há CSV oficial capturado, localização real do gasto por UF, ligação pagamento ↔ empenho ↔ PNCP, consulta live ou publicação. O marco seguinte M2 define relações e chaves verificáveis, incluindo pagamento que afeta vários empenhos; M3 executa o piloto conjunto offline.
 
 ## Resultado entregue
 
@@ -15,7 +23,7 @@ Validação local do ciclo: 862/862 testes Node no runtime exigido `22.18.0`, 27
 
 Validação remota: PR [#74](https://github.com/uknwplayer/ARCA/pull/74) integrada no commit canônico [`9182249`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933); CI final da PR [35647210669](https://github.com/uknwplayer/ARCA/actions/runs/35647210669) e CI pós-merge [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) verdes.
 
-O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint histórico deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_003.md`.
+O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint histórico deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_004.md`; o 003 documenta M0.
 
 ## Base RC1 preservada
 
@@ -73,7 +81,7 @@ Não alegar cobertura nacional contínua, consulta ao vivo de todos os municípi
 
 ## Próximo trabalho recomendado
 
-Executar o **M1** do roadmap: adaptador offline do Portal da Transparência e correlação estrutural ainda sintética, sem rede e sem publicação. O M0 já está integrado e não deve ser refeito.
+Concluir CI e integração do **M1**. Em seguida, executar **M2** do roadmap: relações estruturais PNCP ↔ execução financeira ainda sintéticas, sem rede nem publicação. Não inferir equivalência contratual de mero nome/valor.
 
 O roteiro histórico abaixo continua válido para o futuro piloto PNCP ao vivo, mas não deve anteceder os gates multifonte offline.
 
@@ -96,10 +104,12 @@ Critérios de parada: qualquer vazamento, divergência de escopo, cadeia inváli
 ## Instruções de retomada para um chat com contexto limitado
 
 1. Abrir este arquivo, o Documento Mestre v1.4.0 e a matriz de estado.
-2. Confirmar que `main` contém o commit `9182249bffbc7d4dbf96e314720e77b840f22933` ou sucessor; consultar PRs posteriores à #74 e Actions posteriores ao run 35647349010.
+2. Confirmar que `main` contém o commit `5f83ef1e31734429cef26a5840181a2fc4606d7e` ou sucessor; consultar PRs posteriores à #75 e Actions posteriores ao run 35648022980.
 3. Rodar:
    - `npm ci`
    - `npm test`
+   - `node --test tests/multisource-offline-gate.test.mjs tests/portal-expenses-offline-adapter.test.mjs`
+   - `npm run validate:multisource`
    - `PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v`
    - `PYTHONPATH=. python scripts/validate-investigative-roadmap.py`
    - `npm run check:public`

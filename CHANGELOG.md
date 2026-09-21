@@ -28,6 +28,13 @@ O RC1 não declara produção, cobertura nacional contínua nem investigação P
 - encaminhamento apenas à revisão humana, com rede e publicação bloqueadas;
 - roadmap detalhado e checkpoint de continuidade obrigatórios.
 
+### M1 — despesas do Portal da Transparência offline
+
+- segundo adaptador executável somente em fixture sintética, com colunas oficiais de pagamento;
+- normalização de órgão, favorecido, período, documento e valor em centavos;
+- envelopes V1, lacunas de atribuição da UF e de ligação com PNCP, revisão humana obrigatória;
+- validação de origem, datas, valores, campos extras e permissão do registro; rede e publicação bloqueadas.
+
 ## 0.3.0 — Acquisition Adapter e cadeia de custódia
 
 - pacote externo ao Core para captura de arquivos autorizados;

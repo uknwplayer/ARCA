@@ -2,7 +2,7 @@
 
 Atualizado em: **2026-09-21**
 
-Base canônica atual: `0.4.0-rc.1` / `9182249bffbc7d4dbf96e314720e77b840f22933`
+Base canônica de entrada no M1: `0.4.0-rc.1` / `5f83ef1e31734429cef26a5840181a2fc4606d7e`
 
 Regra: este arquivo descreve a sequência vigente. Não substituir gates por ativação direta.
 
@@ -15,7 +15,7 @@ Entregas:
 - contrato `Public Source Adapter V1`;
 - `Evidence Envelope V1`;
 - registro com PNCP, Portal da Transparência, Transferegov, CEIS/CNEP, Siconfi, TCU, DOU e FNDE;
-- somente PNCP offline executável;
+- PNCP offline executável ao fechar M0; o Portal é acrescentado no M1;
 - fixture `AC/AL/AM` com deduplicação e indisponibilidade isolada;
 - dois agentes independentes;
 - verificação adversarial;
@@ -24,13 +24,13 @@ Entregas:
 
 Prova final: PR [#74](https://github.com/uknwplayer/ARCA/pull/74), commit canônico [`9182249`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933) e CI pós-merge [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) verde.
 
-Aceite: concluído. O marco ativo seguinte é M1.
+Aceite: concluído.
 
 ## Marco M1 — Segundo adaptador offline
 
-Estado: **PRÓXIMO MARCO ATIVO**
+Estado: **IMPLEMENTADO LOCALMENTE; CI E INTEGRAÇÃO PENDENTES**
 
-Objetivo: implementar `br.portal-transparencia.api` ou uma variante oficial de download sem realizar rede.
+Objetivo: implementar a variante oficial de download `br.portal-transparencia.download-despesas` sem realizar rede.
 
 Passos:
 
@@ -42,21 +42,26 @@ Passos:
 6. provar origem oficial, hashes e lacunas;
 7. manter material bruto fora do relatório e publicação off.
 
-Aceite: adaptador executa offline, recusa origem divergente, não exige segredo e não altera o núcleo.
+Resultado local: adaptador executa uma fixture de linhas sintéticas com colunas documentadas de pagamento; recusa origem divergente, valor ou data inválidos, campos extras e fonte declarada sem permissão. Emite envelopes hash-only; a UF do ensaio não representa localização comprovada da despesa. A leitura de CSV real e as relações pagamento ↔ empenho ainda não foram implementadas.
+
+Aceite restante: CI na PR, merge e CI pós-merge. Ver `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md`.
 
 ## Marco M2 — Correlação PNCP ↔ execução financeira
 
 Objetivo: relacionar registros sem declarar equivalência apenas por nome ou valor.
 
+Estado: **PRÓXIMO MARCO APÓS INTEGRAÇÃO M1**.
+
 Passos:
 
-1. criar identificadores canônicos de órgão e fornecedor;
-2. preservar CNPJ/identificadores somente conforme política pública e minimização;
-3. correlacionar por chaves fortes quando existentes;
-4. classificar relações como `CONFIRMED`, `CANDIDATE`, `CONFLICTING` ou `NOT_OBSERVED`;
-5. registrar explicações alternativas e diferença temporal;
-6. impedir que `NOT_OBSERVED` seja convertido em desaparecimento ou irregularidade;
-7. exigir proveniência por campo.
+1. congelar fixtures sintéticas para PNCP, documento de pagamento e empenhos impactados, preservando relações um-para-muitos;
+2. criar identificadores canônicos de órgão e fornecedor;
+3. preservar CNPJ/identificadores somente conforme política pública e minimização;
+4. correlacionar por chaves fortes quando existentes; se não houver, conservar candidato sem afirmar identidade;
+5. classificar relações como `CONFIRMED`, `CANDIDATE`, `CONFLICTING` ou `NOT_OBSERVED`;
+6. registrar explicações alternativas e diferença temporal;
+7. impedir que `NOT_OBSERVED` seja convertido em desaparecimento ou irregularidade;
+8. exigir proveniência por campo e de cada vínculo.
 
 Aceite: teste positivo, ambíguo, conflitante e ausente; nenhum falso achado automático.
 
