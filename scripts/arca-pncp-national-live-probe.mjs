@@ -68,6 +68,10 @@ function flag(value,name){
   if(value==="true")return true;
   throw new Error(`ARCA_PNCP_LIVE_INVALID_${name}`);
 }
+function safeFailureRef(value){
+  const text=String(value??"").trim();
+  return /^(?:code:[A-Z][A-Z0-9_]{2,96}|sha256:[a-f0-9]{64})$/.test(text)?text:null;
+}
 
 export async function runPncpControlledLiveProbe({
   env=process.env,
@@ -131,7 +135,7 @@ export async function runPncpControlledLiveProbe({
         allowNetwork:true,
         fetchImpl,
         maxRetries:0,
-        timeoutMs:15000
+        timeoutMs:30000
       }),
       networkEnabled:true,
       authorizePublicNetwork:true,
@@ -153,11 +157,15 @@ export async function runPncpControlledLiveProbe({
       confirmation:confirm
     });
 
-    if(cycle.processed!==1||cycle.succeeded!==1||cycle.failed!==0||
-       cycle.selectedShardIds?.length!==1||cycle.selectedShardIds[0]!==shardId)
-      throw new Error("ARCA_PNCP_LIVE_CYCLE_FAILED");
-
     const checkpoint=scheduler.getCheckpoint(plan);
+    if(cycle.processed!==1||cycle.succeeded!==1||cycle.failed!==0||
+       cycle.selectedShardIds?.length!==1||cycle.selectedShardIds[0]!==shardId){
+      const failureRef=safeFailureRef(checkpoint.failed?.[shardId]?.errorRef);
+      const error=new Error("ARCA_PNCP_LIVE_CYCLE_FAILED");
+      if(failureRef)error.failureRef=failureRef;
+      throw error;
+    }
+
     const completed=checkpoint.completed?.[shardId];
     if(!completed||!/^[a-f0-9]{64}$/.test(completed.resultHash))
       throw new Error("ARCA_PNCP_LIVE_CHECKPOINT_INVALID");
@@ -194,7 +202,7 @@ export async function runPncpControlledLiveProbe({
       targetCount:completed.targetCount,
       observationCount:completed.observationCount,
       networkUsed:true,
-      budgets:{maxShards:1,maxPages:1,maxRecords:10,pageSize:10},
+      budgets:{maxShards:1,maxPages:1,maxRecords:10,pageSize:10,retries:0,networkTimeoutMs:30000},
       custody:{
         encrypted:true,
         envelopeHash,
@@ -261,7 +269,8 @@ async function main(){
     process.stderr.write(JSON.stringify({
       schema:PNCP_LIVE_PROBE_SCHEMA,
       status:"FAILED",
-      errorRef:`sha256:${errorRef}`
+      errorRef:`sha256:${errorRef}`,
+      failureRef:safeFailureRef(error?.failureRef)??null
     })+"\n");
     process.exitCode=1;
   }
