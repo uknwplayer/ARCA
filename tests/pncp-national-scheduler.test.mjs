@@ -151,6 +151,149 @@ test("nested transport cause code is preserved without raw fetch error text",asy
   assert.equal(serialized.includes("private low-level socket detail"),false);
 });
 
+
+
+test("source-unavailable shards become bounded observer outcomes and later shards continue",async()=>{
+  const root=baseRoot();
+  const calls=[];
+  const ordered=[...BRAZIL_UF_CODES].sort();
+  const unavailableSet=new Set(ordered.slice(0,2));
+  const runner={
+    networkEnabled:false,
+    async run(shard){
+      calls.push(shard.uf);
+      if(unavailableSet.has(shard.uf)){
+        const error=new Error("ARCA_PNCP_SOURCE_UNAVAILABLE");
+        error.code="ARCA_PNCP_SOURCE_UNAVAILABLE";
+        error.sourceFailureRef="code:UND_ERR_SOCKET";
+        throw error;
+      }
+      return discovery(shard);
+    }
+  };
+  const scheduler=createPncpNationalScheduler({root,clock});
+  const first=await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,ingress:emptyIngress,
+    maxShardsPerRun:3,maxFailuresPerRun:1,maxUnavailablePerRun:3,
+    continueOnSourceUnavailable:true
+  });
+  assert.deepEqual(calls,ordered.slice(0,3));
+  assert.equal(first.processed,3);
+  assert.equal(first.succeeded,1);
+  assert.equal(first.failed,0);
+  assert.equal(first.unavailable,2);
+  assert.equal(first.totals.completed,1);
+  assert.equal(first.totals.unavailable,2);
+  const checkpoint=scheduler.getCheckpoint(plan());
+  for(const uf of ordered.slice(0,2)){
+    const item=checkpoint.unavailable[`BR-UF-${uf}`];
+    assert.equal(item.category,"SOURCE_UNAVAILABLE");
+    assert.equal(item.errorRef,"code:UND_ERR_SOCKET");
+    assert.equal(item.humanReviewRequired,true);
+    assert.equal(item.anomalyIsNotIrregularity,true);
+  }
+  assert.equal(JSON.stringify(checkpoint).includes("ARCA_PNCP_SOURCE_UNAVAILABLE"),false);
+
+  const before=calls.length;
+  await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,ingress:emptyIngress,
+    maxShardsPerRun:1,maxUnavailablePerRun:1,continueOnSourceUnavailable:true
+  });
+  assert.equal(calls.length,before+1);
+  assert.equal(calls.at(-1),ordered[3]);
+});
+
+test("source-unavailable retry is explicit and success clears availability gap",async()=>{
+  const root=baseRoot();
+  const firstUf=[...BRAZIL_UF_CODES].sort()[0];
+  let unavailable=true;
+  const calls=[];
+  const runner={
+    networkEnabled:false,
+    async run(shard){
+      calls.push(shard.uf);
+      if(shard.uf===firstUf&&unavailable){
+        const error=new Error("ARCA_PNCP_SOURCE_UNAVAILABLE");
+        error.code="ARCA_PNCP_SOURCE_UNAVAILABLE";
+        error.sourceFailureRef="sha256:"+"a".repeat(64);
+        throw error;
+      }
+      return discovery(shard);
+    }
+  };
+  const scheduler=createPncpNationalScheduler({root,clock});
+  await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,ingress:emptyIngress,
+    shardIds:[`BR-UF-${firstUf}`],maxShardsPerRun:1,maxUnavailablePerRun:1,
+    continueOnSourceUnavailable:true
+  });
+  assert.ok(scheduler.getCheckpoint(plan()).unavailable[`BR-UF-${firstUf}`]);
+
+  unavailable=false;
+  const skipped=await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,ingress:emptyIngress,
+    shardIds:[`BR-UF-${firstUf}`],maxShardsPerRun:1,maxUnavailablePerRun:1,
+    continueOnSourceUnavailable:true
+  });
+  assert.equal(skipped.processed,0);
+
+  const retried=await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,ingress:emptyIngress,
+    shardIds:[`BR-UF-${firstUf}`],maxShardsPerRun:1,maxUnavailablePerRun:1,
+    continueOnSourceUnavailable:true,retryUnavailable:true
+  });
+  assert.equal(retried.succeeded,1);
+  const checkpoint=scheduler.getCheckpoint(plan());
+  assert.equal(checkpoint.unavailable[`BR-UF-${firstUf}`],undefined);
+  assert.ok(checkpoint.completed[`BR-UF-${firstUf}`]);
+});
+
+test("hard internal failures remain failed even when availability continuation is enabled",async()=>{
+  const root=baseRoot();
+  const firstUf=[...BRAZIL_UF_CODES].sort()[0];
+  const scheduler=createPncpNationalScheduler({root,clock});
+  const result=await scheduler.runCycle({
+    plan:plan(),
+    discoveryRunner:{
+      networkEnabled:false,
+      async run(){throw Object.assign(new Error("invalid internal state"),{code:"ARCA_INTERNAL_TEST_FAILURE"})}
+    },
+    classifier:emptyClassifier,ingress:emptyIngress,maxShardsPerRun:3,maxFailuresPerRun:1,
+    maxUnavailablePerRun:3,continueOnSourceUnavailable:true
+  });
+  assert.equal(result.processed,1);
+  assert.equal(result.failed,1);
+  assert.equal(result.unavailable,0);
+  assert.equal(scheduler.getCheckpoint(plan()).failed[`BR-UF-${firstUf}`].errorRef,"code:ARCA_INTERNAL_TEST_FAILURE");
+});
+
+test("a full cycle can complete with availability gaps without calling them irregularities",async()=>{
+  const root=baseRoot();
+  const scheduler=createPncpNationalScheduler({root,clock});
+  const runner={
+    networkEnabled:false,
+    async run(shard){
+      if(shard.uf==="TO")return discovery(shard);
+      const error=new Error("ARCA_PNCP_SOURCE_UNAVAILABLE");
+      error.code="ARCA_PNCP_SOURCE_UNAVAILABLE";
+      error.sourceFailureRef="code:ETIMEDOUT";
+      throw error;
+    }
+  };
+  const result=await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,ingress:emptyIngress,
+    maxShardsPerRun:27,maxFailuresPerRun:1,maxUnavailablePerRun:27,
+    continueOnSourceUnavailable:true
+  });
+  assert.equal(result.status,"COMPLETED_WITH_AVAILABILITY_GAPS");
+  assert.equal(result.failed,0);
+  assert.equal(result.unavailable,26);
+  assert.equal(result.succeeded,1);
+  assert.equal(result.totals.remaining,0);
+  assert.equal(result.humanReviewRequired,true);
+  assert.equal(result.anomalyIsNotIrregularity,true);
+});
+
 test("network-enabled runner requires exact explicit authorization",async()=>{
   const runner={...offlineRunner(),networkEnabled:true};
   const scheduler=createPncpNationalScheduler({root:baseRoot(),clock});
