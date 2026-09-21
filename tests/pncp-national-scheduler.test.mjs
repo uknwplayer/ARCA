@@ -125,6 +125,32 @@ test("failed shard is checkpointed without raw error and needs explicit retry",a
   assert.equal(calls.filter(uf=>uf===firstUf).length,2);
 });
 
+
+
+test("nested transport cause code is preserved without raw fetch error text",async()=>{
+  const root=baseRoot();
+  const firstUf=[...BRAZIL_UF_CODES].sort()[0];
+  const runner={
+    networkEnabled:false,
+    async run(){
+      const error=new TypeError("fetch failed");
+      error.cause={code:"UND_ERR_SOCKET",message:"private low-level socket detail"};
+      throw error;
+    }
+  };
+  const scheduler=createPncpNationalScheduler({root,clock});
+  const result=await scheduler.runCycle({
+    plan:plan(),discoveryRunner:runner,classifier:emptyClassifier,
+    ingress:emptyIngress,maxShardsPerRun:1,maxFailuresPerRun:1
+  });
+  assert.equal(result.failed,1);
+  const failure=scheduler.getCheckpoint(plan()).failed[`BR-UF-${firstUf}`];
+  assert.equal(failure.errorRef,"code:UND_ERR_SOCKET");
+  const serialized=JSON.stringify(scheduler.getCheckpoint(plan()));
+  assert.equal(serialized.includes("fetch failed"),false);
+  assert.equal(serialized.includes("private low-level socket detail"),false);
+});
+
 test("network-enabled runner requires exact explicit authorization",async()=>{
   const runner={...offlineRunner(),networkEnabled:true};
   const scheduler=createPncpNationalScheduler({root:baseRoot(),clock});

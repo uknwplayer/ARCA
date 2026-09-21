@@ -62,8 +62,11 @@ function planFingerprint(plan){
   });
 }
 function errorReference(error){
-  const code=String(error?.code??"").trim();
-  if(/^[A-Z][A-Z0-9_]{2,96}$/.test(code))return `code:${code}`;
+  const candidates=[error?.code,error?.cause?.code,error?.cause?.cause?.code];
+  for(const value of candidates){
+    const code=String(value??"").trim().toUpperCase();
+    if(/^[A-Z][A-Z0-9_]{2,96}$/.test(code))return `code:${code}`;
+  }
   return "sha256:"+createHash("sha256").update(String(error?.message??error??"unknown")).digest("hex");
 }
 
