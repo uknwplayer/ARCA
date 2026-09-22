@@ -87,7 +87,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **DESENHO APROVADO; PREFLIGHT E CONTRATO DE CUSTÓDIA M4a IMPLEMENTADOS LOCALMENTE; PR/CI PENDENTES; NENHUM NOVO GET AUTORIZADO OU EXECUTADO**. Ver `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`, plano de implementação e checkpoint 010.
+Estado: **DESENHO APROVADO; M4a OFFLINE INTEGRADO EM `main`; M4b PENDENTE; NENHUM NOVO GET AUTORIZADO OU EXECUTADO**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. Ver `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
 
 Pré-condições:
 
@@ -105,7 +105,7 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Próxima entrega concreta: confirmar o contrato oficial do endpoint de empenhos impactados e implementar fake fetch e transporte Portal de consulta pontual com teto de bytes e token privado; integrar captura criptografada ao backend durável e workflow manual. O manifesto M4a já é hash-only para o código do documento e não concede rede. O primeiro acesso live só vem após código e CI revisados, parâmetros reais preenchidos e autorização explícita específica. A prova PNCP durável 002 não deve ser confundida com consulta live Portal. Para dados estaduais/municipais, criar conectores próprios; a API do Portal cobre execução federal.
+Próxima entrega concreta M4b: confirmar em documentação oficial o endpoint, parâmetros, autenticação, paginação e forma da resposta de empenhos impactados; registrar evidência do contrato; implementar fake fetch e transporte Portal pontual com teto de bytes e token privado; integrar captura criptografada ao backend durável e workflow manual, mantendo teste sem rede. O manifesto M4a já é hash-only para o código do documento e não concede rede. O primeiro acesso live só vem após código e CI revisados, parâmetros reais preenchidos e autorização explícita específica. A prova PNCP durável 002 não demonstra consulta live Portal. Para dados estaduais/municipais, criar conectores próprios; a API do Portal cobre execução federal.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 

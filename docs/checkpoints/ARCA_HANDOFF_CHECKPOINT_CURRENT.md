@@ -1,9 +1,14 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / M4a preflight e custódia offline; M3 integrado**
+Checkpoint: **2026-09-22 / M4a integrado; M4b condicionado ao contrato oficial**
 
-Estado: **M3 integrado à `main`; preparação M4a implementada localmente; PR/CI pendentes; sem execução live**
-Âncora canônica após M3: `d10d8516ec05c8e1c8378159ed6459da966a61fb`
+Estado: **M4a integrado à `main`; preparação offline, sem execução live**
+Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
+
+PR M4a: [#84](https://github.com/uknwplayer/ARCA/pull/84)
+CI da PR: [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122)
+CI pós-merge: [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987)
+Handoff detalhado: [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md). O checkpoint 010 registra o estado anterior à integração.
 
 PR M3: [#81](https://github.com/uknwplayer/ARCA/pull/81)
 CI da PR: [35695562784](https://github.com/uknwplayer/ARCA/actions/runs/35695562784)
@@ -15,9 +20,9 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M4a após aprovação do desenho: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada agora aceita o esquema de prova Portal **somente como contrato**, com as mesmas restrições de segurança e `proofSchema` exclusivo no recibo Portal; o recibo PNCP mantém formato antigo. Há 10/10 testes focais e validadores M0–M3/verificação pública verdes localmente. A suíte local Node 24: 891/892 por falha conhecida Passkey `UND_ERR_SOCKET`; CI Node 22.18 pendente. Não há transporte Portal, workflow live, prova Portal real ou autorização de GET. Ler [checkpoint 010](ARCA_HANDOFF_CHECKPOINT_2026-09-22_010.md), desenho M4 e plano `docs/superpowers/plans/2026-09-22-m4-preflight-and-custody.md`. Não marcar M4 concluído; próximo gate é confirmar contrato oficial da API, implementar captura limitada e testar sem rede real.
+M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal **somente como contrato**, com restrições de segurança e `proofSchema` exclusivo no recibo Portal; o recibo PNCP mantém formato antigo. Testes focais 10/10 e CI Node 22.18 da PR e pós-merge verdes. O `npm test` local em Node 24 apresentou 891/892 com `UND_ERR_SOCKET` em teste Passkey; não confundir com falha da CI. Não há transporte Portal, workflow live, prova Portal real ou autorização de GET. Ler o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md), desenho M4 e roadmap. Próximo gate: confirmar contrato oficial da API, implementar captura limitada e testar sem rede real.
 
-Preparação M4: ler `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e o [checkpoint 009](ARCA_HANDOFF_CHECKPOINT_2026-09-22_009.md). O desenho prioriza a reutilização do PNCP durável já provado e planeja uma consulta pontual independente da API do Portal para avançar a fonte financeira, com token privado, documento explícito, teto de bytes, fake fetch e custódia durável antes de qualquer GET real. Nenhum código de documento, segredo ou novo acesso à rede foi definido/executado neste ciclo. O desenho requer revisão antes da implementação; a execução live exige manifesto concreto e autorização explícita posterior. M3 permanece canônico no commit `d10d851`; M4 não comprova qualquer dado real novo. Edge Steward segue congelado.
+Preparação M4: ler `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e o [checkpoint 009](ARCA_HANDOFF_CHECKPOINT_2026-09-22_009.md). O desenho prioriza a reutilização do PNCP durável já provado e planeja uma consulta pontual independente da API do Portal para avançar a fonte financeira, com token privado, documento explícito, teto de bytes, fake fetch e custódia durável antes de qualquer GET real. Nenhum código de documento, segredo ou novo acesso à rede foi definido/executado neste ciclo. A execução live exige manifesto concreto e autorização explícita posterior. M4a não comprova dado real novo. Edge Steward segue congelado.
 
 M3 foi integrado em `d10d851` após corrigir o teste de correlação não coletada. O CI da PR e o pós-merge passaram integralmente: 886/886 Node no Node 22.18, 27/27 Python, piloto investigativo, validadores multifonte M0/M1, financeiro M2, correlacionado M3 e verificação pública. A fixture M3 produziu 11 envelopes, 2 lacunas, 8 relações vinculadas, 2 agentes, verificação adversarial e `HUMAN_REVIEW`; rede e publicação desligadas. Ler o [checkpoint final M3](ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md), o histórico pré-merge 007 e `docs/ARCA_MULTISOURCE_CORRELATED_OFFLINE_M3.md`. Próximo marco M4: primeiro acesso live de uma fonte por vez, apenas após pré-registro de escopo, cofre durável, autorização explícita para rede e limites; não iniciar aquisição live por inferência. Edge Steward #78 permanece draft e congelado.
 
@@ -25,10 +30,10 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_006.md`;
-3. `docs/ARCA_FINANCIAL_CORRELATION_OFFLINE_M2.md`;
-4. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md`;
+2. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
+3. `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`;
+4. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md` para histórico M3;
 5. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
 
 ## Resultado entregue no M2
@@ -130,11 +135,11 @@ Não alegar:
 
 ## Próximo trabalho recomendado — M4 condicionado
 
-Planejar um probe live mínimo de **uma fonte por vez** com UF, janela, página, limite de registros, timeout, retries e cofre privado durável pré-registrados. Exigir autorização explícita antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver o checkpoint 008 para condições de parada.
+Executar M4b somente após confirmar o contrato oficial exato do endpoint Portal. Implementar cliente limitado com fake fetch, custódia criptografada durável e workflow manual, validar CI sem rede. Depois pré-registrar um probe de **uma fonte por vez** com documento/UF, janela, página, limite de registros, timeout, retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 011 para condições de parada.
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Confirmar que `main` contém `d10d8516ec05c8e1c8378159ed6459da966a61fb` ou sucessor e consultar PRs/Actions posteriores ao run `35695672043`.
+Confirmar que `main` contém `d36df26a45d736f1fdc605721426b3a8b228d4ba` ou sucessor e consultar PRs/Actions posteriores ao run `35745354987`. Ler o checkpoint 011 primeiro.
 
 Executar:
 
@@ -142,6 +147,7 @@ Executar:
 npm ci
 node --test tests/multisource-correlated-offline-m3.test.mjs
 node --test tests/financial-correlation-offline.test.mjs
+node --test tests/m4-controlled-scope.test.mjs tests/durable-private-custody.test.mjs
 npm run validate:multisource-correlated
 npm run validate:financial-correlation
 npm run validate:multisource

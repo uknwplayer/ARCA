@@ -52,9 +52,9 @@
 
 **Files:** Add `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_010.md`, update `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md`, `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`, CI workflow only if focused tests are not covered by `npm test`.
 
-- [ ] Record exact implemented subset, test evidence, blocked items and next official-contract step; do not mark M4 live complete.
-- [ ] Run `npm test` on Node 22.18 CI, Python suite, M0–M3 validators and `check:public`; report any local Node 24 discrepancy separately.
-- [ ] Open PR, wait for CI green, merge; verify post-merge CI; close checkpoint with actual run IDs if needed.
+- [x] Record exact implemented subset, test evidence, blocked items and next official-contract step; do not mark M4 live complete. Checkpoints 010 and 011.
+- [x] Run `npm test` on Node 22.18 CI, Python suite, M0–M3 validators and `check:public`; report any local Node 24 discrepancy separately. CI 35745211122 and 35745354987 green; local Node 24 Passkey `UND_ERR_SOCKET` 891/892.
+- [x] Open PR #84, wait for CI green, merge `d36df26a45d736f1fdc605721426b3a8b228d4ba`; verify post-merge CI 35745354987; close checkpoint 011.
 
 ## Deferred, explicitly outside this plan
 
