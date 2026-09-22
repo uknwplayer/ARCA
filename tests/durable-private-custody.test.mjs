@@ -86,6 +86,28 @@ test("durable custody receipt is deterministic and binds encrypted envelope to l
   assert.equal(a.plaintextStored,false);
   assert.equal(a.automaticAdversePublication,false);
   assert.equal(a.humanReviewRequired,true);
+  assert.equal(Object.hasOwn(a,"proofSchema"),false);
+});
+
+test("Portal proof can bind to encrypted durable custody without changing PNCP receipt format",()=>{
+  const env=envelope();
+  const p={...proof(env),schema:"arca.portal-controlled-live-probe.v0.1"};
+  const receipt=buildDurableCustodyReceipt({envelope:env,proof:p,vaultRepository:"example/private-vault"});
+  assert.equal(receipt.proofSchema,p.schema);
+  assert.equal(receipt.envelopeHash,sha256(JSON.stringify(env)));
+  assert.equal(receipt.plaintextStored,false);
+  assert.equal(receipt.automaticAdversePublication,false);
+});
+
+test("Portal proof missing human review or claiming publication fails before a durable receipt",()=>{
+  const env=envelope();
+  const p={...proof(env),schema:"arca.portal-controlled-live-probe.v0.1"};
+  assert.throws(()=>buildDurableCustodyReceipt({envelope:env,
+    proof:{...p,humanReviewRequired:false},vaultRepository:"example/private-vault"}),/PROOF_INVALID/);
+  assert.throws(()=>buildDurableCustodyReceipt({envelope:env,
+    proof:{...p,automaticAdversePublication:true},vaultRepository:"example/private-vault"}),/PROOF_INVALID/);
+  assert.throws(()=>buildDurableCustodyReceipt({envelope:env,
+    proof:{...p,networkUsed:false},vaultRepository:"example/private-vault"}),/PROOF_INVALID/);
 });
 
 test("GitHub private backend commits envelope and receipt atomically through one ref advance",async()=>{

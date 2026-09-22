@@ -5,6 +5,7 @@ export const DURABLE_CUSTODY_RECEIPT_SCHEMA="arca.durable-custody-receipt.v0.1";
 
 const ENVELOPE_SCHEMA="arca.encrypted-custody-envelope.v0.1";
 const LIVE_PROOF_SCHEMA="arca.pncp-controlled-live-probe.v0.1";
+const PORTAL_LIVE_PROOF_SCHEMA="arca.portal-controlled-live-probe.v0.1";
 const MAX_ENVELOPE_BYTES=60*1024*1024;
 const SAFE_REPOSITORY=/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const SAFE_BRANCH=/^[A-Za-z0-9._-]{1,128}$/;
@@ -76,11 +77,17 @@ export function buildDurableCustodyReceipt({
      envelope?.algorithm!=="AES-256-GCM"||
      envelope?.plaintextIncluded!==false)
     throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_INVALID");
-  if(proof?.schema!==LIVE_PROOF_SCHEMA||
+  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA].includes(proof?.schema)||
      proof?.status!=="CAPTURED_AND_SEALED"||
      proof?.networkUsed!==true||
      proof?.custody?.encrypted!==true||
-     proof?.custody?.plaintextPublished!==false)
+     proof?.custody?.plaintextPublished!==false||
+     (proof.schema===PORTAL_LIVE_PROOF_SCHEMA&&(
+       proof.humanReviewRequired!==true||
+       proof.anomalyIsNotIrregularity!==true||
+       proof.classifierEmittedSignals!==false||
+       proof.investigationIngressUsed!==false||
+       proof.automaticAdversePublication!==false)))
     throw new Error("ARCA_DURABLE_CUSTODY_PROOF_INVALID");
 
   const sourceRepository=safeRepository(envelope.repository);
@@ -110,6 +117,7 @@ export function buildDurableCustodyReceipt({
 
   const base={
     schema:DURABLE_CUSTODY_RECEIPT_SCHEMA,
+    ...(proof.schema===PORTAL_LIVE_PROOF_SCHEMA?{proofSchema:PORTAL_LIVE_PROOF_SCHEMA}:{}),
     status:"STORED_PRIVATE",
     storage:"github-private-repository",
     vaultRepository:repo,

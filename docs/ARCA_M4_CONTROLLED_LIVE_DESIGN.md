@@ -1,6 +1,6 @@
 # ARCA — Desenho M4: aquisição live isolada por fonte
 
-Estado: **DESENHO PARA REVISÃO; SEM CÓDIGO LIVE NOVO E SEM EXECUÇÃO DE REDE**. Base canônica: `861014be4d10810215298a89c278f884a095bfe4` (M3 integrado). Data: 2026-09-22.
+Estado: **DESENHO APROVADO; PREPARAÇÃO OFFLINE EM ANDAMENTO; SEM CÓDIGO DE TRANSPORTE LIVE NOVO E SEM EXECUÇÃO DE REDE**. Base canônica: `861014be4d10810215298a89c278f884a095bfe4` (M3 integrado). Data: 2026-09-22.
 
 ## Intenção e sucesso
 
