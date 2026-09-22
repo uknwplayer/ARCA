@@ -1,121 +1,154 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-21 / Portal da Transparência offline M1**
+Checkpoint: **2026-09-22 / Correlação PNCP ↔ execução financeira offline M2**
 
-Estado: **M1 integrado à `main`; CI pós-merge verde. M2 é o próximo marco**
-Âncora canônica após M1: `68f2a0e86f60400b0a208c0b2c06599a1601f177`
+Estado: **M2 concluído e integrado à `main`; CI pós-merge verde. M3 é o próximo marco**
+Âncora canônica após M2: `bb006433f21a622aea4aaf618b728a19e4c327f5`
 
-CI pós-merge M1: [35650058116](https://github.com/uknwplayer/ARCA/actions/runs/35650058116)
+PR M2: [#79](https://github.com/uknwplayer/ARCA/pull/79)  
+CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853847)  
+CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
 ## Retomada imediata
 
-O M1 adicionou o adaptador de **download de despesas do Portal da Transparência em fixture offline**. Leia o checkpoint final `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_005.md`, a especificação `docs/ARCA_PORTAL_EXPENSES_OFFLINE_M1.md` e o roadmap `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. Iniciar M2 pelos vínculos pagamento ↔ empenhos impactados e por fixtures PNCP, sem rede.
+O M2 implementou o núcleo offline de correlação entre contratação PNCP e execução financeira, sem rede e sem publicação. O próximo marco é **M3 — Gate offline multifonte completo**: integrar o correlator M2 ao piloto multifonte já existente, com três UFs, orçamento fixo, dois agentes independentes, verificação adversarial e fila de revisão humana.
 
-Validação de M1: [PR #76](https://github.com/uknwplayer/ARCA/pull/76), [CI da PR](https://github.com/uknwplayer/ARCA/actions/runs/35649925658) e [CI pós-merge](https://github.com/uknwplayer/ARCA/actions/runs/35650058116) verdes no Node 22.18. Testes focais locais 14/14, validador dos dois pilotos PASS, Python 27/27, piloto controlado PASS e fronteira pública sem violações. A suíte local em Node 24 marcou 866/867 devido ao teste Passkey antigo `UND_ERR_SOCKET`. Digest do ensaio Portal: `d33af20d7382df409032ecac0d94e24f97bd1ab6e04b02d55d05856182281bf9`.
+Ler primeiro:
 
-O segundo adaptador cobre **somente dados sintéticos com colunas documentadas de pagamento**. Não há CSV oficial capturado, localização real do gasto por UF, ligação pagamento ↔ empenho ↔ PNCP, consulta live ou publicação. O marco seguinte M2 define relações e chaves verificáveis, incluindo pagamento que afeta vários empenhos; M3 executa o piloto conjunto offline.
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_006.md`;
+2. `docs/ARCA_FINANCIAL_CORRELATION_OFFLINE_M2.md`;
+3. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
+4. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
 
-## Resultado entregue
+## Resultado entregue no M2
 
-Foi implementada a fundação multifonte independente do PNCP: contrato de adaptadores, registro com oito famílias oficiais, envelope de evidência, fixture limitada a `AC/AL/AM`, deduplicação, dois agentes independentes, verificação adversarial e encaminhamento à revisão humana. Rede e publicação permanecem bloqueadas. O relatório controlado local tem digest `5668cc7c4cc4c9adbd5911a6ca917b42a5611802bab1fa2b34baa17856ca2c88`.
+Foi adicionado `src/investigation/financial-correlation-offline.mjs` com:
 
-Validação local do ciclo: 862/862 testes Node no runtime exigido `22.18.0`, 27/27 testes Python, piloto investigativo `PASS`, validador multifonte `PASS` e `check:public` sem violações.
+- identificadores canônicos hash-only para órgão e fornecedor;
+- namespaces controlados para CNPJ/SIAFI e fixtures;
+- relação pagamento → empenho com cardinalidade um-para-muitos;
+- relação empenho ↔ contratação em quatro estados:
+  - `CONFIRMED`;
+  - `CANDIDATE`;
+  - `CONFLICTING`;
+  - `NOT_OBSERVED`;
+- proveniência por vínculo e contraprova preservada;
+- diferença temporal e explicações alternativas;
+- relatório determinístico e sanitizado;
+- bloqueio explícito de rede e publicação.
 
-Validação remota: PR [#74](https://github.com/uknwplayer/ARCA/pull/74) integrada no commit canônico [`9182249`](https://github.com/uknwplayer/ARCA/commit/9182249bffbc7d4dbf96e314720e77b840f22933); CI final da PR [35647210669](https://github.com/uknwplayer/ARCA/actions/runs/35647210669) e CI pós-merge [35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) verdes.
+Fixture M2:
 
-O roadmap vigente e detalhado está em `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`. O checkpoint final deste ciclo é `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-21_005.md`; o 004 preserva o estado local pré-merge e o 003 documenta M0.
+`examples/multisource-offline-fixtures/financial-correlation-m2-v1.json`
 
-## Base RC1 preservada
+Validador:
 
-A documentação oficial e a versão raiz agora refletem o sistema existente como `0.4.0-rc.1`: protótipo avançado e piloto controlado, não produção. Foram alinhados README, Changelog, Documento Mestre v1.4.0, matriz de maturidade, status de custódia e política de checkpoint.
+`npm run validate:financial-correlation`
 
-A PR [#72](https://github.com/uknwplayer/ARCA/pull/72) foi integrada após CI verde. A execução pós-merge aprovou 853 testes Node, 27 testes Python, o piloto investigativo controlado e a verificação do repositório/fronteira pública.
+Resultado pós-merge:
 
-## Estado técnico atual
+- 878/878 testes Node;
+- 27/27 testes Python da malha executora;
+- piloto investigativo controlado: PASS;
+- Gate Offline Multifonte V1: PASS;
+- Gate de correlação financeira M2: PASS;
+- `check:public`: sem violações;
+- rede usada: `false`;
+- publicação tentada: `false`.
 
-- Core e grafo auditável: implementados e testados.
-- Workbench/Creator: funcionais localmente; não são portal comunitário de produção.
-- Fila compartilhada e backend durável: implementados.
-- Malha executora: prova ao vivo controlada com 4/4 tarefas aceitas.
-- Observador PNCP: arquitetura nacional em 27 shards de UF.
-- Scheduler/runner: ciclo offline de todas as UFs atestado.
-- Aquisição ao vivo: dois probes controlados e limitados.
-- Custódia: envelope criptografado e persistência privada durável provados.
-- Indisponibilidade: resultado limitado, lacuna explícita e retentativa opt-in.
-- Publicação: revisão humana obrigatória; material público sanitizado.
-- Classificador/ingresso: testados de forma controlada, mas desligados nos probes PNCP ao vivo.
+Digest do relatório M2:
 
-## Decisões permanentes
+`27dfca7e04f3068fda3446254378a9ecfb13dd074ce0932eedf2bacba54e36a0`
 
-1. O ARCA permanece uma rede autônoma orientada a eventos.
-2. Humanos observam, auditam, comentam, adicionam fontes, contestam, confirmam e revisam.
-3. Workers escalam pelo backlog acionável, não pelo número de usuários conectados.
-4. Usuários compartilham uma investigação canônica deduplicada.
-5. O escopo PNCP é nacional; nenhum município é default. A localidade inicial é apenas origem histórica de teste.
-6. Falha de transporte não produz suspeita nem investigação automática.
-7. Anomalia não é irregularidade.
-8. Agentes propõem; o estado canônico e a publicação atravessam gates.
-9. Publicação exige revisão humana.
-10. Cada entrega material termina com CURRENT + checkpoint histórico e, quando aplicável, handoff operacional privado.
+Digest da fixture M2:
 
-## Provas e referências
+`3355887e5c538a1fa15b2193da2b1076949d21efbf52e3549055c4459fb4b35e`
 
-| Prova | Referência | Resultado |
-|---|---|---|
-| Mesh006 | [run 35539487516](https://github.com/uknwplayer/ARCA/actions/runs/35539487516) | 4/4 aceitas |
-| 27 UFs offline | [PR #61](https://github.com/uknwplayer/ARCA/pull/61) | 27/27, sem rede |
-| PNCP controlado 001 | [run 35544888070](https://github.com/uknwplayer/ARCA/actions/runs/35544888070) | 10 alvos, ingresso off |
-| Migração durável | [run 35546194827](https://github.com/uknwplayer/ARCA/actions/runs/35546194827) | sem rede/decriptação |
-| PNCP durável 002 | [run 35547609136](https://github.com/uknwplayer/ARCA/actions/runs/35547609136) | 2 alvos, custódia antes do sucesso |
-| Base pré-RC1 | [run 35548063705](https://github.com/uknwplayer/ARCA/actions/runs/35548063705) | 853 Node + 27 Python |
-| Consolidação RC1 | [run 35604102042](https://github.com/uknwplayer/ARCA/actions/runs/35604102042) | PR e preview público verdes |
-| Pós-merge RC1 | [run 35604244525](https://github.com/uknwplayer/ARCA/actions/runs/35604244525) | verde |
-| Gate Offline Multifonte V1 | [PR #74](https://github.com/uknwplayer/ARCA/pull/74) | integrado, 862 Node + 27 Python |
-| Pós-merge multifonte | [run 35647349010](https://github.com/uknwplayer/ARCA/actions/runs/35647349010) | verde |
-| Portal offline M1 | [PR #76](https://github.com/uknwplayer/ARCA/pull/76) | integrado; duas evidências sintéticas |
-| Pós-merge M1 | [run 35650058116](https://github.com/uknwplayer/ARCA/actions/runs/35650058116) | verde |
+A prova sintética contém 3 pagamentos, 4 relações pagamento→empenho, 4 contratações e 2 pontes fortes. Um pagamento afeta dois empenhos. O resultado contém exatamente um caso de cada estado de correlação.
 
-## O que não foi provado
+## Invariantes confirmados
 
-Não existe ainda uma prova completa PNCP ao vivo → classificador → fila → investigação multiagente → verificação adversarial → revisão humana. Também não existem serviço 24/7, SLOs, alerta/monitoramento de produção, precisão real do classificador, interface comunitária madura, rotação formal de segredos ou armazenamento WORM/object-lock.
+1. Nome ou valor isolado nunca confirma identidade.
+2. Compatibilidade temporal nunca confirma causalidade ou identidade.
+3. `NOT_OBSERVED` não significa desaparecimento, desvio ou irregularidade.
+4. `CONFLICTING` preserva contraprova e exige resolução humana.
+5. Mesmo `CONFIRMED` confirma somente o vínculo documental representado; não prova regularidade, entrega ou adequação de preço.
+6. Identificadores brutos de fixture não aparecem no relatório M2.
+7. Rede e publicação permanecem fail-closed.
+8. Revisão humana continua obrigatória.
 
-Não alegar cobertura nacional contínua, consulta ao vivo de todos os municípios, prontidão de produção, irregularidade, certificação jurídica, publicação autônoma ou imutabilidade física da custódia.
+## Base multifonte preservada
 
-## Próximo trabalho recomendado
+M0 e M1 continuam válidos:
 
-Executar **M2** do roadmap: relações estruturais PNCP ↔ execução financeira ainda sintéticas, começando pela relação um-para-muitos entre pagamento e empenhos impactados, sem rede nem publicação. Não inferir equivalência contratual de mero nome/valor.
+- `Public Source Adapter V1`;
+- `Evidence Envelope V1`;
+- registro das oito famílias oficiais;
+- PNCP offline;
+- Portal da Transparência offline em fixture;
+- dois agentes independentes;
+- verificação adversarial;
+- fila em `HUMAN_REVIEW`;
+- indisponibilidade de fonte não gera suspeita.
 
-O roteiro histórico abaixo continua válido para o futuro piloto PNCP ao vivo, mas não deve anteceder os gates multifonte offline.
+Ainda **não há CSV oficial capturado do Portal da Transparência** e nenhuma correlação M2 representa um pagamento ou contratação real.
 
-Executar um piloto ponta a ponta único, fechado e sem publicação:
+## Edge Steward congelado
 
-1. pré-registrar uma UF, janela, modalidade, uma página, limite pequeno, timeout e orçamento;
-2. exigir confirmação explícita para rede;
-3. habilitar classificador somente no shard pré-registrado;
-4. registrar candidatos e não selecionados para métricas;
-5. habilitar ingresso somente acima do critério fixado;
-6. deduplicar pela fila compartilhada;
-7. atribuir ao menos dois papéis independentes;
-8. executar verificação adversarial;
-9. submeter a revisão humana;
-10. manter publicação desligada;
-11. emitir apenas recibo sanitizado e métricas agregadas.
+O trabalho paralelo **ARCA Edge Steward v0.1** permanece congelado no [PR #78](https://github.com/uknwplayer/ARCA/pull/78), em draft.
 
-Critérios de parada: qualquer vazamento, divergência de escopo, cadeia inválida, credencial ausente, backend não privado, ambiguidade de reexecução ou tentativa de publicação fecha o piloto sem novo acesso.
+Decisão vigente: não implementar nem mesclar o Edge Steward antes de o núcleo investigativo estar funcional de verdade e online. O PR #78 serve apenas como documentação preservada e não faz parte do caminho crítico M3–M5.
+
+## O que ainda não foi provado
+
+Não existe ainda prova completa:
+
+`PNCP live → execução financeira live → correlação → classificador → fila → investigação multiagente → verificação adversarial → revisão humana`.
+
+Também não existem serviço 24/7, SLOs, telemetria de produção, precisão/recall real, interface comunitária madura, rotação formal de segredos ou armazenamento WORM/Object Lock.
+
+Não alegar:
+
+- pagamento real observado pelo M2;
+- dinheiro desaparecido;
+- irregularidade;
+- cobertura nacional contínua;
+- todos os municípios consultados;
+- prontidão de produção;
+- publicação autônoma.
+
+## Próximo trabalho recomendado — M3
+
+Executar **M3 — Gate offline multifonte completo**:
+
+1. integrar PNCP + pagamento + empenhos impactados + correlator M2;
+2. manter três UFs sem município default;
+3. fixar orçamento de registros;
+4. deduplicar solicitações humanas e observador;
+5. executar dois agentes independentes;
+6. executar verificação adversarial;
+7. produzir métricas de `CONFIRMED/CANDIDATE/CONFLICTING/NOT_OBSERVED`;
+8. enviar somente para `HUMAN_REVIEW`;
+9. manter rede e publicação desligadas;
+10. produzir relatório sanitizado determinístico.
+
+M4 live só começa depois de M0–M3 verdes.
 
 ## Instruções de retomada para um chat com contexto limitado
 
-1. Abrir este arquivo, o Documento Mestre v1.4.0 e a matriz de estado.
-2. Confirmar que `main` contém o commit `68f2a0e86f60400b0a208c0b2c06599a1601f177` ou sucessor; consultar PRs posteriores à #76 e Actions posteriores ao run 35650058116.
-3. Rodar:
-   - `npm ci`
-   - `npm test`
-   - `node --test tests/multisource-offline-gate.test.mjs tests/portal-expenses-offline-adapter.test.mjs`
-   - `npm run validate:multisource`
-   - `PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v`
-   - `PYTHONPATH=. python scripts/validate-investigative-roadmap.py`
-   - `npm run check:public`
-4. Nunca copiar valores secretos, bytes/ciphertext de custódia, localizadores privados ou material bruto para documentos públicos.
-5. Não ativar rede, classificador ou ingresso por inferência; usar workflow/gate explícito e escopo limitado.
-6. Antes de desenvolver, verificar se há checkpoint operacional privado mais recente.
-7. Ao finalizar, atualizar CURRENT e criar o próximo checkpoint histórico.
+Confirmar que `main` contém `bb006433f21a622aea4aaf618b728a19e4c327f5` ou sucessor e consultar PRs/Actions posteriores ao run `35690990372`.
+
+Executar:
+
+```bash
+npm ci
+node --test tests/financial-correlation-offline.test.mjs
+npm run validate:financial-correlation
+npm run validate:multisource
+npm test
+PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v
+PYTHONPATH=. python scripts/validate-investigative-roadmap.py
+npm run check:public
+```
+
+Nunca ativar rede, classificador, ingresso ou publicação por inferência. Todo avanço live exige gate explícito e escopo limitado.
