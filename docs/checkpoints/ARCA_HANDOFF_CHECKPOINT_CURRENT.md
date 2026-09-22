@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / M4b implementado em branch; revisão e CI Node 22.18 pendentes; nenhum GET real autorizado ou executado**
+Checkpoint: **2026-09-22 / M4b verificado em CI Node 22.18; merge e GET real pendentes**
 
-Estado: **M4a integrado à `main`; M4b concluído no branch `docs/m4b-portal-contract-spec`; método M5-R documentado em branch; nenhuma execução live**
+Estado: **M4a integrado à `main`; M4b concluído e com CI canônica verde na PR #88; método M5-R documentado; nenhuma execução live**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 013 — M4b Portal controlado](ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md). Commit local da implementação `9e88fce6c781f2dc2d0793392216b043fac55580`; PR ainda não aberto; CI canônica Node 22.18 pendente. O `npm test` local em Node 24 teve 915/916, com a falha Passkey `UND_ERR_SOCKET` conhecida na linha de base. Nenhum workflow foi disparado e nenhum GET real foi autorizado ou executado. O próximo gate é revisão do Criador e CI verde; autorização live continua separada.
+Handoff mais recente: [checkpoint 014 — M4b verificado em CI](ARCA_HANDOFF_CHECKPOINT_2026-09-22_014.md). PR #88 @ `8fff8e7f9b8ec46ee5eef7a959006e78d57644ab`; CI canônica Node 22.18 run `35795775111` verde. Nenhum workflow live foi disparado e nenhum GET real foi autorizado ou executado. O próximo gate é revisão final e integração canônica; autorização live continua separada.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -144,11 +144,11 @@ Não alegar:
 
 ## Próximo trabalho recomendado — M4 condicionado
 
-M4b está implementado no branch e aguarda revisão e CI. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
+M4b está implementado na PR #88 e a CI canônica Node 22.18 está verde; aguarda revisão final e integração canônica. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Confirmar que `main` contém `d36df26a45d736f1fdc605721426b3a8b228d4ba` ou sucessor e consultar PRs/Actions posteriores ao run `35745354987`. Ler o checkpoint 011 primeiro.
+Consultar a PR #88, o checkpoint 014 e a CI `35795775111`. Se #88 ainda não estiver integrada, esse é o gate imediato. Nenhum GET Portal deve ser executado por inferência.
 
 Executar:
 
