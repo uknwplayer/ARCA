@@ -2,7 +2,7 @@
 
 ## Atualização M4b — pesquisa contratual
 
-Base canônica antes desta atualização: `9224471ea4b3d3bbad5ebd2888a5862f6fe66f11` (M4a integrado e checkpoint 011). A pesquisa M4b confirmou no índice oficial o caminho `GET /api-de-dados/despesas/empenhos-impactados` e exigência de token, mas não conseguiu recuperar o detalhe OpenAPI dos parâmetros, fase, autenticação e resposta. Ler [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md) e [desenho M4b para revisão](../superpowers/specs/2026-09-22-m4b-portal-contract-design.md) antes de codificar transporte. Não foi feito GET Portal nem criada autorização live; M4a permanece o último código integrado.
+Base canônica antes desta atualização: `9224471ea4b3d3bbad5ebd2888a5862f6fe66f11` (M4a integrado e checkpoint 011). O criador aprovou o desenho M4b e enviou captura da operação oficial: GET `/api-de-dados/despesas/empenhos-impactados`, query obrigatória `codigoDocumento`, `fase=3` (pagamento) e `pagina=1`; os exemplos oficiais usam cabeçalho `chave-api-dados`. Ler [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md), [desenho M4b](../superpowers/specs/2026-09-22-m4b-portal-contract-design.md) e [plano M4b para revisão](../superpowers/plans/2026-09-22-m4b-portal-controlled-probe.md) antes de codificar transporte. O JSON integral do Swagger não foi recuperado; capturar resposta bruta sem parser financeiro. Não foi feito GET Portal nem criada autorização live; M4a permanece o último código integrado.
 
 Checkpoint: **2026-09-22 / M4a integrado; M4b condicionado ao contrato oficial**
 
