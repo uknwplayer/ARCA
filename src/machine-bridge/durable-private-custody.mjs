@@ -6,6 +6,7 @@ export const DURABLE_CUSTODY_RECEIPT_SCHEMA="arca.durable-custody-receipt.v0.1";
 const ENVELOPE_SCHEMA="arca.encrypted-custody-envelope.v0.1";
 const LIVE_PROOF_SCHEMA="arca.pncp-controlled-live-probe.v0.1";
 const PORTAL_LIVE_PROOF_SCHEMA="arca.portal-controlled-live-probe.v0.1";
+const PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA="arca.portal-related-documents-controlled-probe.v0.2";
 const MAX_ENVELOPE_BYTES=60*1024*1024;
 const SAFE_REPOSITORY=/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const SAFE_BRANCH=/^[A-Za-z0-9._-]{1,128}$/;
@@ -65,6 +66,38 @@ function jsonResponseBody(text){
   try{return JSON.parse(text)}catch{return null}
 }
 function clone(value){return JSON.parse(JSON.stringify(value))}
+function proofHasForbiddenKey(value){
+  if(Array.isArray(value))return value.some(proofHasForbiddenKey);
+  if(!value||typeof value!=="object")return false;
+  return Object.entries(value).some(([key,item])=>
+    /^(?:documentCode|apiKey|token|authorization|responseBody|requestUrl|fullUrl|personName|beneficiaryName|favorecido)$/i.test(key)||
+    proofHasForbiddenKey(item));
+}
+function validPortalStatusProof(envelope,proof){
+  if(proof?.schema!==PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA||
+     !["SUCCEEDED","FAILED"].includes(proof.probeStatus)||
+     proof.captureStatus!=="CAPTURED_AND_SEALED"||
+     !["VALIDATED","FAILED"].includes(proof.validationStatus)||
+     (proof.validationStatus==="VALIDATED"&&proof.probeStatus!=="SUCCEEDED")||
+     (proof.validationStatus==="FAILED"&&proof.probeStatus!=="FAILED")||
+     proof.repository!==envelope?.repository||proof.revision!==envelope?.revision||
+     proof.scopeHash!==envelope?.scopeHash||proof.contractId!=="PORTAL_EXPENSE_RELATED_DOCUMENTS"||
+     proof.httpStatusClass!=="2xx"||proof.responseBytesSha256!==proof.resultHash||
+     !SAFE_SHA256.test(proof.resultHash??"")||
+     !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<1||proof.responseByteCount>65536||
+     (proof.validationStatus==="VALIDATED"&&(!Number.isSafeInteger(proof.recordCount)||proof.recordCount<0||proof.recordCount>25))||
+     (proof.validationStatus==="FAILED"&&Object.hasOwn(proof,"recordCount"))||
+     proof.custody?.encrypted!==true||proof.custody?.plaintextPublished!==false||
+     proof.custody?.envelopeHash!==sha256(JSON.stringify(envelope))||
+     proof.durableCustody?.required!==true||
+     !["STORED_PRIVATE","ALREADY_STORED_PRIVATE"].includes(proof.durableCustody?.status)||
+     proof.durableCustody?.plaintextStored!==false||
+     !SAFE_SHA256.test(proof.durableCustody?.receiptHash??"")||
+     proof.classifierEmittedSignals!==false||proof.investigationIngressUsed!==false||
+     proof.automaticAdversePublication!==false||proof.humanReviewRequired!==true||
+     proof.anomalyIsNotIrregularity!==true||proofHasForbiddenKey(proof))
+    throw new Error("ARCA_DURABLE_CUSTODY_PROOF_INVALID");
+}
 
 export function buildDurableCustodyReceipt({
   envelope,
@@ -77,17 +110,27 @@ export function buildDurableCustodyReceipt({
      envelope?.algorithm!=="AES-256-GCM"||
      envelope?.plaintextIncluded!==false)
     throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_INVALID");
-  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA].includes(proof?.schema)||
-     proof?.status!=="CAPTURED_AND_SEALED"||
+  const portalV02=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA;
+  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA].includes(proof?.schema)||
+     (portalV02
+       ?(proof?.probeStatus!=="CAPTURING"||proof?.captureStatus!=="CAPTURED_AND_SEALED"||proof?.validationStatus!=="PENDING")
+       :proof?.status!=="CAPTURED_AND_SEALED")||
      proof?.networkUsed!==true||
      proof?.custody?.encrypted!==true||
      proof?.custody?.plaintextPublished!==false||
-     (proof.schema===PORTAL_LIVE_PROOF_SCHEMA&&(
+     ((proof.schema===PORTAL_LIVE_PROOF_SCHEMA||portalV02)&&(
        proof.humanReviewRequired!==true||
        proof.anomalyIsNotIrregularity!==true||
        proof.classifierEmittedSignals!==false||
        proof.investigationIngressUsed!==false||
-       proof.automaticAdversePublication!==false)))
+       proof.automaticAdversePublication!==false))||
+     (portalV02&&(proof.probeStatus!=="CAPTURING"||proof.captureStatus!=="CAPTURED_AND_SEALED"||
+       proof.validationStatus!=="PENDING"||proof.scopeHash!==envelope.scopeHash||
+       proof.contractId!=="PORTAL_EXPENSE_RELATED_DOCUMENTS"||
+       proof.httpStatusClass!=="2xx"||
+       proof.responseBytesSha256!==proof.resultHash||
+       !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<1||proof.responseByteCount>65536||
+       proofHasForbiddenKey(proof))))
     throw new Error("ARCA_DURABLE_CUSTODY_PROOF_INVALID");
 
   const sourceRepository=safeRepository(envelope.repository);
@@ -117,7 +160,8 @@ export function buildDurableCustodyReceipt({
 
   const base={
     schema:DURABLE_CUSTODY_RECEIPT_SCHEMA,
-    ...(proof.schema===PORTAL_LIVE_PROOF_SCHEMA?{proofSchema:PORTAL_LIVE_PROOF_SCHEMA}:{}),
+    ...([PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA].includes(proof.schema)?{proofSchema:proof.schema}:{}),
+    ...(portalV02?{captureProofHash:sha256(stableStringify(proof))}:{}),
     status:"STORED_PRIVATE",
     storage:"github-private-repository",
     vaultRepository:repo,
@@ -233,21 +277,28 @@ export function createGitHubPrivateCustodyBackend({
       if(envelopeBytes.byteLength>MAX_ENVELOPE_BYTES)
         throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_TOO_LARGE");
       const receiptBytes=Buffer.from(stableStringify(receipt)+"\n","utf8");
+      const captureProofBytes=receipt.proofSchema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA
+        ?Buffer.from(stableStringify(proof)+"\n","utf8"):null;
       const prefix=receipt.envelopeHash.slice(0,2);
       const envelopePath=`custody/${prefix}/${receipt.envelopeHash}.envelope.json`;
       const receiptPath=`receipts/${prefix}/${receipt.envelopeHash}.receipt.json`;
+      const captureProofPath=`proofs/${prefix}/${receipt.envelopeHash}.capture-proof.json`;
       const envelopeBlobSha=gitBlobSha(envelopeBytes);
       const receiptBlobSha=gitBlobSha(receiptBytes);
+      const captureProofBlobSha=captureProofBytes?gitBlobSha(captureProofBytes):null;
 
       const state=await repositoryState();
-      const [existingEnvelope,existingReceipt]=await Promise.all([
+      const [existingEnvelope,existingReceipt,existingCaptureProof]=await Promise.all([
         contentMeta(state.owner,state.name,envelopePath),
-        contentMeta(state.owner,state.name,receiptPath)
+        contentMeta(state.owner,state.name,receiptPath),
+        captureProofBytes?contentMeta(state.owner,state.name,captureProofPath):Promise.resolve(null)
       ]);
-      if(Boolean(existingEnvelope)!==Boolean(existingReceipt))
+      if(Boolean(existingEnvelope)!==Boolean(existingReceipt)||
+         (captureProofBytes&&Boolean(existingEnvelope)!==Boolean(existingCaptureProof)))
         throw new Error("ARCA_DURABLE_CUSTODY_PARTIAL_STATE");
       if(existingEnvelope&&existingReceipt){
-        if(existingEnvelope.sha!==envelopeBlobSha||existingReceipt.sha!==receiptBlobSha)
+        if(existingEnvelope.sha!==envelopeBlobSha||existingReceipt.sha!==receiptBlobSha||
+           (captureProofBytes&&existingCaptureProof.sha!==captureProofBlobSha))
           throw new Error("ARCA_DURABLE_CUSTODY_CONTENT_ADDRESS_CONFLICT");
         return Object.freeze({
           status:"ALREADY_STORED",
@@ -256,7 +307,8 @@ export function createGitHubPrivateCustodyBackend({
           envelopeHash:receipt.envelopeHash,
           vaultCommitSha:state.headSha,
           envelopePath,
-          receiptPath
+          receiptPath,
+          ...(captureProofBytes?{captureProofPath,captureProofHash:receipt.captureProofHash}:{})
         });
       }
 
@@ -264,22 +316,22 @@ export function createGitHubPrivateCustodyBackend({
       const baseTreeSha=requiredText(commit?.tree?.sha,"BASE_TREE_SHA",64).toLowerCase();
       if(!/^[a-f0-9]{40}$/.test(baseTreeSha))throw new Error("ARCA_DURABLE_CUSTODY_TREE_INVALID");
 
-      const envelopeBlob=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/blobs`,{
-        body:{content:envelopeBytes.toString("base64"),encoding:"base64"}
-      });
-      const receiptBlob=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/blobs`,{
-        body:{content:receiptBytes.toString("base64"),encoding:"base64"}
-      });
-      if(envelopeBlob?.sha!==envelopeBlobSha||receiptBlob?.sha!==receiptBlobSha)
-        throw new Error("ARCA_DURABLE_CUSTODY_BLOB_HASH_MISMATCH");
+      const blobs=[
+        {path:envelopePath,bytes:envelopeBytes,sha:envelopeBlobSha},
+        {path:receiptPath,bytes:receiptBytes,sha:receiptBlobSha},
+        ...(captureProofBytes?[{path:captureProofPath,bytes:captureProofBytes,sha:captureProofBlobSha}]:[])
+      ];
+      for(const blob of blobs){
+        const uploaded=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/blobs`,{
+          body:{content:blob.bytes.toString("base64"),encoding:"base64"}
+        });
+        if(uploaded?.sha!==blob.sha)throw new Error("ARCA_DURABLE_CUSTODY_BLOB_HASH_MISMATCH");
+      }
 
       const tree=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/trees`,{
         body:{
           base_tree:baseTreeSha,
-          tree:[
-            {path:envelopePath,mode:"100644",type:"blob",sha:envelopeBlobSha},
-            {path:receiptPath,mode:"100644",type:"blob",sha:receiptBlobSha}
-          ]
+          tree:blobs.map(blob=>({path:blob.path,mode:"100644",type:"blob",sha:blob.sha}))
         }
       });
       const treeSha=requiredText(tree?.sha,"NEW_TREE_SHA",64).toLowerCase();
@@ -299,11 +351,13 @@ export function createGitHubPrivateCustodyBackend({
         body:{sha:newCommitSha,force:false}
       });
 
-      const [storedEnvelope,storedReceipt]=await Promise.all([
+      const [storedEnvelope,storedReceipt,storedCaptureProof]=await Promise.all([
         contentMeta(state.owner,state.name,envelopePath),
-        contentMeta(state.owner,state.name,receiptPath)
+        contentMeta(state.owner,state.name,receiptPath),
+        captureProofBytes?contentMeta(state.owner,state.name,captureProofPath):Promise.resolve(null)
       ]);
-      if(storedEnvelope?.sha!==envelopeBlobSha||storedReceipt?.sha!==receiptBlobSha)
+      if(storedEnvelope?.sha!==envelopeBlobSha||storedReceipt?.sha!==receiptBlobSha||
+         (captureProofBytes&&storedCaptureProof?.sha!==captureProofBlobSha))
         throw new Error("ARCA_DURABLE_CUSTODY_POST_WRITE_VERIFY_FAILED");
 
       return Object.freeze({
@@ -313,8 +367,87 @@ export function createGitHubPrivateCustodyBackend({
         envelopeHash:receipt.envelopeHash,
         vaultCommitSha:newCommitSha,
         envelopePath,
-        receiptPath
+        receiptPath,
+        ...(captureProofBytes?{captureProofPath,captureProofHash:receipt.captureProofHash}:{})
       });
+    },
+
+    async persistStatusProof({envelope,proof}={}){
+      validPortalStatusProof(envelope,proof);
+      const envelopeHash=sha256(JSON.stringify(envelope));
+      const proofHash=sha256(stableStringify(proof));
+      const proofBytes=Buffer.from(stableStringify(proof)+"\n","utf8");
+      const proofBlobSha=gitBlobSha(proofBytes);
+      const prefix=envelopeHash.slice(0,2);
+      const proofPath=`proofs/${prefix}/${envelopeHash}.${proofHash}.validation-proof.json`;
+      const envelopePath=`custody/${prefix}/${envelopeHash}.envelope.json`;
+      const receiptPath=`receipts/${prefix}/${envelopeHash}.receipt.json`;
+      const captureProofPath=`proofs/${prefix}/${envelopeHash}.capture-proof.json`;
+      const state=await repositoryState();
+      const [storedEnvelope,storedReceipt,storedCaptureProof,existingProof]=await Promise.all([
+        contentMeta(state.owner,state.name,envelopePath),
+        contentMeta(state.owner,state.name,receiptPath),
+        contentMeta(state.owner,state.name,captureProofPath),
+        contentMeta(state.owner,state.name,proofPath)
+      ]);
+      const envelopeBytes=Buffer.from(JSON.stringify(envelope)+"\n","utf8");
+      if(storedEnvelope?.sha!==gitBlobSha(envelopeBytes)||!storedReceipt?.sha||!storedCaptureProof?.sha)
+        throw new Error("ARCA_DURABLE_CUSTODY_CAPTURE_NOT_STORED");
+      if(typeof storedReceipt.content!=="string"||storedReceipt.encoding!=="base64"||
+         typeof storedCaptureProof?.content!=="string"||storedCaptureProof.encoding!=="base64")
+        throw new Error("ARCA_DURABLE_CUSTODY_RECEIPT_CONTENT_UNAVAILABLE");
+      let receipt;
+      try{receipt=JSON.parse(Buffer.from(storedReceipt.content,"base64").toString("utf8"))}
+      catch{throw new Error("ARCA_DURABLE_CUSTODY_RECEIPT_CONTENT_INVALID")}
+      let captureProof;
+      try{captureProof=JSON.parse(Buffer.from(storedCaptureProof.content,"base64").toString("utf8"))}
+      catch{throw new Error("ARCA_DURABLE_CUSTODY_CAPTURE_PROOF_INVALID")}
+      const {receiptHash:storedReceiptHash,...receiptBody}=receipt??{};
+      validatePublicSafety(receipt);
+      if(receipt?.envelopeHash!==envelopeHash||
+         receipt?.vaultRepository!==repo||receipt?.vaultBranch!==targetBranch||
+         receipt?.proofSchema!==PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA||
+         receipt?.captureProofHash!==sha256(stableStringify(captureProof))||
+         storedCaptureProof.sha!==gitBlobSha(Buffer.from(stableStringify(captureProof)+"\n","utf8"))||
+         storedReceiptHash!==proof.durableCustody.receiptHash||
+         storedReceiptHash!==sha256(stableStringify(receiptBody)))
+        throw new Error("ARCA_DURABLE_CUSTODY_RECEIPT_BINDING_INVALID");
+      if(captureProof?.probeStatus!=="CAPTURING"||captureProof?.captureStatus!=="CAPTURED_AND_SEALED"||
+         captureProof?.validationStatus!=="PENDING"||
+         proof.scopeHash!==captureProof.scopeHash||proof.resultHash!==captureProof.resultHash||
+         proof.responseBytesSha256!==captureProof.responseBytesSha256||
+         proof.responseByteCount!==captureProof.responseByteCount||
+         proof.contractId!==captureProof.contractId||proof.httpStatusClass!==captureProof.httpStatusClass)
+        throw new Error("ARCA_DURABLE_CUSTODY_STATUS_PROOF_CAPTURE_BINDING_INVALID");
+
+      if(existingProof){
+        if(existingProof.sha!==proofBlobSha)throw new Error("ARCA_DURABLE_CUSTODY_CONTENT_ADDRESS_CONFLICT");
+        return Object.freeze({status:"ALREADY_STORED_PRIVATE",proofHash,proofPath,vaultCommitSha:state.headSha});
+      }
+
+      const commit=await request("GET",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/commits/${state.headSha}`);
+      const baseTreeSha=requiredText(commit?.tree?.sha,"BASE_TREE_SHA",64).toLowerCase();
+      if(!/^[a-f0-9]{40}$/.test(baseTreeSha))throw new Error("ARCA_DURABLE_CUSTODY_TREE_INVALID");
+      const blob=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/blobs`,{
+        body:{content:proofBytes.toString("base64"),encoding:"base64"}
+      });
+      if(blob?.sha!==proofBlobSha)throw new Error("ARCA_DURABLE_CUSTODY_BLOB_HASH_MISMATCH");
+      const tree=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/trees`,{
+        body:{base_tree:baseTreeSha,tree:[{path:proofPath,mode:"100644",type:"blob",sha:proofBlobSha}]}
+      });
+      const treeSha=requiredText(tree?.sha,"NEW_TREE_SHA",64).toLowerCase();
+      if(!/^[a-f0-9]{40}$/.test(treeSha))throw new Error("ARCA_DURABLE_CUSTODY_NEW_TREE_INVALID");
+      const createdCommit=await request("POST",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/commits`,{
+        body:{message:`custody: validate ${proofHash.slice(0,12)}`,tree:treeSha,parents:[state.headSha]}
+      });
+      const newCommitSha=requiredText(createdCommit?.sha,"NEW_COMMIT_SHA",64).toLowerCase();
+      if(!/^[a-f0-9]{40}$/.test(newCommitSha))throw new Error("ARCA_DURABLE_CUSTODY_NEW_COMMIT_INVALID");
+      await request("PATCH",`/repos/${encodeURIComponent(state.owner)}/${encodeURIComponent(state.name)}/git/refs/heads/${encodeURIComponent(targetBranch)}`,{
+        body:{sha:newCommitSha,force:false}
+      });
+      const stored=await contentMeta(state.owner,state.name,proofPath);
+      if(stored?.sha!==proofBlobSha)throw new Error("ARCA_DURABLE_CUSTODY_POST_WRITE_VERIFY_FAILED");
+      return Object.freeze({status:"STORED_PRIVATE",proofHash,proofPath,vaultCommitSha:newCommitSha});
     }
   });
 }
