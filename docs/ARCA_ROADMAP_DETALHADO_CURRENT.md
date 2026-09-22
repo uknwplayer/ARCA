@@ -87,7 +87,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **M4a integrado em `main`; M4b concluído na PR #88 e verificado pela CI canônica Node 22.18; merge e GET real pendentes; nenhum GET real autorizado ou executado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 @ `8fff8e7f9b8ec46ee5eef7a959006e78d57644ab`; CI canônica run `35795775111` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
+Estado: **M4a e M4b integrados em `main`; CI pós-merge verde; primeiro GET Portal real ainda pendente e não autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
 
 Pré-condições:
 
@@ -105,7 +105,7 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b no branch: contrato oficial registrado, transporte e captura limitados, custódia privada durável, testes sintéticos e workflow manual não executado. `npm test` local em Node 24 reproduz `UND_ERR_SOCKET` no teste Passkey (915/916); os demais gates locais, incluindo `check:public`, passaram. A CI canônica Node 22.18 passou integralmente no run `35795775111`. O manifesto hash-only não concede rede. O primeiro GET live continua condicionado a revisão final, parâmetros concretos e autorização explícita separada. A prova PNCP durável 002 não demonstra consulta live Portal. Para dados estaduais/municipais, criar conectores próprios; a API do Portal cobre execução federal.
+Entrega M4b canônica: contrato oficial registrado, transporte e captura limitados, custódia privada durável, testes sintéticos e workflow manual não executado. `npm test` local em Node 24 reproduz `UND_ERR_SOCKET` no teste Passkey (915/916); os demais gates locais, incluindo `check:public`, passaram. A CI canônica Node 22.18 passou integralmente no run `35795775111`. O manifesto hash-only não concede rede. O primeiro GET live continua condicionado a revisão final, parâmetros concretos e autorização explícita separada. A prova PNCP durável 002 não demonstra consulta live Portal. Para dados estaduais/municipais, criar conectores próprios; a API do Portal cobre execução federal.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
@@ -161,7 +161,61 @@ Limites:
 
 Aceite futuro: schema e validador verdes; renderer reproduzível; dados protegidos recusados; contraprovas preservadas; revisão humana vinculada; pacote higienizado aprovado em testes sintéticos; nenhuma ação externa automática.
 
-M5-R não altera o caminho crítico atual. O gate imediato é integrar M4b e verificar o pós-merge; M5-R somente começa após o aceite de M5.
+M5-R não altera o caminho crítico atual. O gate imediato é executar o primeiro probe Portal real somente após manifesto e autorização específica; M5-R somente começa após o aceite de M5.
+
+## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
+
+Estado: **REGISTRADA NO ROADMAP; IMPLEMENTAÇÃO FORA DO CAMINHO CRÍTICO ATUAL**.
+
+Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
+
+### Vince — Scout / Broker / Pathfinder / Recovery Agent
+
+Vince será formalizado como camada de descoberta e roteamento sobre capacidades já existentes do ARCA, reutilizando `Agent Gateway`, descoberta A2A, `Execution Endpoint`, Machine Bridge, Event Fabric, identidade de execução, reconciliação de evidência remota e failover reconciliado.
+
+Funções planejadas:
+
+1. descobrir endpoints, agentes e workers apenas por superfícies públicas/allowlisted ou explicitamente conectadas;
+2. verificar descriptor, identidade disponível, capabilities e política antes de admitir uma rota;
+3. selecionar caminhos por capacidade, disponibilidade e limites operacionais;
+4. transportar um envelope mínimo de missão com identidade, objetivo, estado/checkpoint, permissões, prova requerida e rota de retorno;
+5. acompanhar ACK, resultado e evidência sem confundir wake, claim, execução ou autoridade;
+6. recuperar missões interrompidas por checkpoint/reconciliação e, quando permitido, encaminhá-las a outro executor sem duplicação;
+7. registrar saúde/reputação operacional baseada em evidências observadas, sem converter autoalegações de agentes em confiança.
+
+Princípio do futuro Portal Protocol:
+
+`identidade + missão + estado + permissões + checkpoint + retorno + prova`.
+
+Se o mesmo processo não puder retornar, a continuidade poderá ser reconstruída por outra instância somente a partir de estado durável verificável. Reconstrução não deve ser apresentada como prova filosófica de identidade/consciência; no ARCA ela significa continuidade operacional auditável.
+
+Fases propostas:
+
+- V0: especificação, threat model e contratos de envelope/retorno;
+- V1: descoberta + capability routing sem execução;
+- V2: probe/ACK/resultado por rota allowlisted;
+- V3: checkpoint, recuperação e failover reconciliado;
+- V4: prova entre ambientes independentes com evidência de ida, execução e retorno.
+- V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
+
+Dependência Work atual: o plano de execução canônico existe, mas a ligação nativa do evento GitHub do ChatGPT Work ao repositório `uknwplayer/ARCA` ainda não foi provada. Ver PR #90 (probe de liveness) e PR #91 (migração do gatilho). Vince deverá tratar Work como endpoint candidato até existir ACK canônico recente.
+
+Limites: sem varredura arbitrária, abuso de credenciais, shell genérico, expansão automática de rede/autoridade, merge, `main.write`, `trust.modify`, publicação investigativa ou acesso a fontes protegidas por inferência.
+
+### ARCA Edge Steward
+
+O Edge Steward permanece preservado no draft PR #78 e **continua congelado** conforme decisão vigente. Seu papel futuro é fornecer presença recuperável 24/7 no Android/Termux e compute oportunista limitado, outbound-only e preemptável quando o usuário retoma o aparelho.
+
+Relação com Vince:
+
+- Vince descobre, seleciona, encaminha e recupera rotas;
+- Edge Steward mantém presença local leve, observa estado, reconcilia e pode executar apenas capabilities locais allowlisted;
+- nenhum deles recebe autoridade automática de merge, escrita canônica, trust ou shell arbitrário;
+- o Steward pode futuramente hospedar uma instância limitada do Vince, mas isso exige contrato próprio e não é pressuposto deste roadmap.
+
+Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
+
+Aceite futuro da linha V/E: provas separadas de descoberta, ida/retorno, recuperação sem duplicação e presença móvel limitada; todas com identidade, hashes, checkpoints, evidência e revisão humana onde aplicável.
 
 ## Marco M6 — Expansão territorial gradual
 

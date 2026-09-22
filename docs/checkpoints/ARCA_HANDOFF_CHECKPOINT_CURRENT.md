@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / M4b verificado em CI Node 22.18; merge e GET real pendentes**
+Checkpoint: **2026-09-22 / M4b integrado; CI pós-merge verde; GET real pendente**
 
-Estado: **M4a integrado à `main`; M4b concluído e com CI canônica verde na PR #88; método M5-R documentado; nenhuma execução live**
+Estado: **M4a e M4b integrados à `main`; CI pós-merge verde; M5 preparado documentalmente; nenhuma execução Portal live**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 014 — M4b verificado em CI](ARCA_HANDOFF_CHECKPOINT_2026-09-22_014.md). PR #88 @ `8fff8e7f9b8ec46ee5eef7a959006e78d57644ab`; CI canônica Node 22.18 run `35795775111` verde. Nenhum workflow live foi disparado e nenhum GET real foi autorizado ou executado. O próximo gate é revisão final e integração canônica; autorização live continua separada.
+Handoff mais recente: [checkpoint 015 — M4b integrado e pós-merge verde](ARCA_HANDOFF_CHECKPOINT_2026-09-22_015.md). Merge `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge `35798543860` verde. Nenhum GET Portal real foi autorizado ou executado. O próximo gate é um manifesto concreto e autorização separada para um único GET.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. O gate imediato de M4b é revisão do branch e CI Node 22.18, conforme checkpoint 013. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado e verificado pós-merge; o gate imediato passa a ser o primeiro probe Portal real, limitado e explicitamente autorizado, conforme checkpoint 015. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 
@@ -144,11 +144,11 @@ Não alegar:
 
 ## Próximo trabalho recomendado — M4 condicionado
 
-M4b está implementado na PR #88 e a CI canônica Node 22.18 está verde; aguarda revisão final e integração canônica. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
+M4b está integrado em `main` e a CI pós-merge está verde. O próximo passo é preparar o primeiro manifesto Portal real sem executar rede até autorização específica. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar a PR #88, o checkpoint 014 e a CI `35795775111`. Se #88 ainda não estiver integrada, esse é o gate imediato. Nenhum GET Portal deve ser executado por inferência.
+Consultar o checkpoint 015 e a CI pós-merge `35798543860`. M4b já está integrado. Nenhum GET Portal deve ser executado por inferência; preparar primeiro o manifesto concreto e obter autorização específica.
 
 Executar:
 
