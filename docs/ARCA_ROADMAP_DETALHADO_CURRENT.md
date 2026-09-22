@@ -163,6 +163,57 @@ Aceite futuro: schema e validador verdes; renderer reproduzível; dados protegid
 
 M5-R não altera o caminho crítico atual. M4b permanece o próximo gate; M5-R somente começa após o aceite de M5.
 
+## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
+
+Estado: **REGISTRADA NO ROADMAP; IMPLEMENTAÇÃO FORA DO CAMINHO CRÍTICO ATUAL**.
+
+Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
+
+### Vince — Scout / Broker / Pathfinder / Recovery Agent
+
+Vince será formalizado como camada de descoberta e roteamento sobre capacidades já existentes do ARCA, reutilizando `Agent Gateway`, descoberta A2A, `Execution Endpoint`, Machine Bridge, Event Fabric, identidade de execução, reconciliação de evidência remota e failover reconciliado.
+
+Funções planejadas:
+
+1. descobrir endpoints, agentes e workers apenas por superfícies públicas/allowlisted ou explicitamente conectadas;
+2. verificar descriptor, identidade disponível, capabilities e política antes de admitir uma rota;
+3. selecionar caminhos por capacidade, disponibilidade e limites operacionais;
+4. transportar um envelope mínimo de missão com identidade, objetivo, estado/checkpoint, permissões, prova requerida e rota de retorno;
+5. acompanhar ACK, resultado e evidência sem confundir wake, claim, execução ou autoridade;
+6. recuperar missões interrompidas por checkpoint/reconciliação e, quando permitido, encaminhá-las a outro executor sem duplicação;
+7. registrar saúde/reputação operacional baseada em evidências observadas, sem converter autoalegações de agentes em confiança.
+
+Princípio do futuro Portal Protocol:
+
+`identidade + missão + estado + permissões + checkpoint + retorno + prova`.
+
+Se o mesmo processo não puder retornar, a continuidade poderá ser reconstruída por outra instância somente a partir de estado durável verificável. Reconstrução não deve ser apresentada como prova filosófica de identidade/consciência; no ARCA ela significa continuidade operacional auditável.
+
+Fases propostas:
+
+- V0: especificação, threat model e contratos de envelope/retorno;
+- V1: descoberta + capability routing sem execução;
+- V2: probe/ACK/resultado por rota allowlisted;
+- V3: checkpoint, recuperação e failover reconciliado;
+- V4: prova entre ambientes independentes com evidência de ida, execução e retorno.
+
+Limites: sem varredura arbitrária, abuso de credenciais, shell genérico, expansão automática de rede/autoridade, merge, `main.write`, `trust.modify`, publicação investigativa ou acesso a fontes protegidas por inferência.
+
+### ARCA Edge Steward
+
+O Edge Steward permanece preservado no draft PR #78 e **continua congelado** conforme decisão vigente. Seu papel futuro é fornecer presença recuperável 24/7 no Android/Termux e compute oportunista limitado, outbound-only e preemptável quando o usuário retoma o aparelho.
+
+Relação com Vince:
+
+- Vince descobre, seleciona, encaminha e recupera rotas;
+- Edge Steward mantém presença local leve, observa estado, reconcilia e pode executar apenas capabilities locais allowlisted;
+- nenhum deles recebe autoridade automática de merge, escrita canônica, trust ou shell arbitrário;
+- o Steward pode futuramente hospedar uma instância limitada do Vince, mas isso exige contrato próprio e não é pressuposto deste roadmap.
+
+Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
+
+Aceite futuro da linha V/E: provas separadas de descoberta, ida/retorno, recuperação sem duplicação e presença móvel limitada; todas com identidade, hashes, checkpoints, evidência e revisão humana onde aplicável.
+
 ## Marco M6 — Expansão territorial gradual
 
 Ordem operacional:
