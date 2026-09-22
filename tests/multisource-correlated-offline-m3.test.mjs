@@ -104,10 +104,16 @@ test("human request and observer wake deduplicate into the same canonical invest
 
 test("M3 enforces three-UF scope while allowing each source to cover the same UF",async()=>{
   const duplicate=sourceFixture();
-  duplicate.shards.push(structuredClone(duplicate.shards[0]));
+  duplicate.shards[2]=structuredClone(duplicate.shards[0]);
   await assert.rejects(()=>runMultisourceOfflineGate({
     registry:registry(),fixture:duplicate,correlationReport:correlation(),queueRoot:queueRoot(),clock
-  }),/SHARD_BUDGET_EXCEEDED|DUPLICATE_SOURCE_UF/);
+  }),/DUPLICATE_SOURCE_UF/);
+
+  const tooManyShards=sourceFixture();
+  tooManyShards.shards.push(structuredClone(tooManyShards.shards[0]));
+  await assert.rejects(()=>runMultisourceOfflineGate({
+    registry:registry(),fixture:tooManyShards,correlationReport:correlation(),queueRoot:queueRoot(),clock
+  }),/SHARD_BUDGET_EXCEEDED/);
 
   const over=sourceFixture();
   over.shards[2].uf="AP";
