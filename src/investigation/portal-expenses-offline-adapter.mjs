@@ -69,9 +69,9 @@ export function normalizePortalPaymentImpactFixture(relation){
   const commitmentCode=field(relation,"commitmentCode",80);
   const subitem=field(relation,"subitem",40);
   const paidAmountCents=Number(relation.paidAmountCents);
-  if(!/^[A-Z0-9._:-]+$/.test(paymentDocumentCode)||
-     !/^[A-Z0-9._:-]+$/.test(commitmentCode)||
-     !/^[A-Z0-9._:-]+$/.test(subitem)||
+  if(!/^[A-Z0-9._-]+$/.test(paymentDocumentCode)||
+     !/^[A-Z0-9._-]+$/.test(commitmentCode)||
+     !/^[A-Z0-9._-]+$/.test(subitem)||
      !Number.isSafeInteger(paidAmountCents)||paidAmountCents<0)
     throw new Error("ARCA_PORTAL_EXPENSE_INVALID_IMPACT_RELATION");
   return Object.freeze({
