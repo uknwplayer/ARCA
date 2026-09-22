@@ -87,7 +87,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **PRÓXIMO MARCO CONDICIONADO; REDE NÃO AUTORIZADA NESTE CICLO**.
+Estado: **DESENHO EM REVISÃO; NENHUM NOVO GET AUTORIZADO OU EXECUTADO**. Ver `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 009.
 
 Pré-condições:
 
@@ -104,6 +104,8 @@ Ordem:
 3. nenhuma correlação live no primeiro acesso;
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
+
+Próxima entrega concreta: após revisar o desenho, implementar offline manifesto de escopo, fake fetch e transporte Portal de consulta pontual com teto de bytes e token privado; integrar captura criptografada ao backend durável e workflow manual. O primeiro acesso live só vem após código e CI revisados, parâmetros reais preenchidos e autorização explícita específica. A prova PNCP durável 002 não deve ser confundida com consulta live Portal. Para dados estaduais/municipais, criar conectores próprios; a API do Portal cobre execução federal.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 

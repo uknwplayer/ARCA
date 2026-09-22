@@ -1,8 +1,8 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / Fechamento do Gate correlacionado offline M3**
+Checkpoint: **2026-09-22 / M4 em desenho; M3 integrado**
 
-Estado: **M3 integrado à `main`; CI pós-merge verde; M4 é o próximo marco condicionado**
+Estado: **M3 integrado à `main`; CI pós-merge verde; desenho M4 para revisão, sem execução live**
 Âncora canônica após M3: `d10d8516ec05c8e1c8378159ed6459da966a61fb`
 
 PR M3: [#81](https://github.com/uknwplayer/ARCA/pull/81)
@@ -14,6 +14,8 @@ CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853
 CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
 ## Retomada imediata
+
+Preparação M4: ler `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e o [checkpoint 009](ARCA_HANDOFF_CHECKPOINT_2026-09-22_009.md). O desenho prioriza a reutilização do PNCP durável já provado e planeja uma consulta pontual independente da API do Portal para avançar a fonte financeira, com token privado, documento explícito, teto de bytes, fake fetch e custódia durável antes de qualquer GET real. Nenhum código de documento, segredo ou novo acesso à rede foi definido/executado neste ciclo. O desenho requer revisão antes da implementação; a execução live exige manifesto concreto e autorização explícita posterior. M3 permanece canônico no commit `d10d851`; M4 não comprova qualquer dado real novo. Edge Steward segue congelado.
 
 M3 foi integrado em `d10d851` após corrigir o teste de correlação não coletada. O CI da PR e o pós-merge passaram integralmente: 886/886 Node no Node 22.18, 27/27 Python, piloto investigativo, validadores multifonte M0/M1, financeiro M2, correlacionado M3 e verificação pública. A fixture M3 produziu 11 envelopes, 2 lacunas, 8 relações vinculadas, 2 agentes, verificação adversarial e `HUMAN_REVIEW`; rede e publicação desligadas. Ler o [checkpoint final M3](ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md), o histórico pré-merge 007 e `docs/ARCA_MULTISOURCE_CORRELATED_OFFLINE_M3.md`. Próximo marco M4: primeiro acesso live de uma fonte por vez, apenas após pré-registro de escopo, cofre durável, autorização explícita para rede e limites; não iniciar aquisição live por inferência. Edge Steward #78 permanece draft e congelado.
 
