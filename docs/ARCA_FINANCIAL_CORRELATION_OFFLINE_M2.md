@@ -1,6 +1,6 @@
 # ARCA — M2: correlação PNCP ↔ execução financeira offline
 
-Estado: **IMPLEMENTAÇÃO EM VALIDAÇÃO**.
+Estado: **CONCLUÍDO E INTEGRADO À `main`** — [PR #79](https://github.com/uknwplayer/ARCA/pull/79), [CI pós-merge](https://github.com/uknwplayer/ARCA/actions/runs/35690990372).
 
 Objetivo: representar relações verificáveis entre contratação pública e execução financeira sem transformar semelhança de nome, valor ou proximidade temporal em identidade comprovada.
 
@@ -136,7 +136,7 @@ npm test
 npm run check:public
 ```
 
-## Próximo passo após aceite do M2
+## Próximo passo após M2
 
 Integrar este correlator ao Gate Offline Multifonte no M3, usando três UFs, orçamento fixo, dois agentes independentes, verificação adversarial e fila de revisão humana.
 
