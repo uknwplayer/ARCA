@@ -1,0 +1,45 @@
+name: ARCA Portal manifest preview
+run-name: Portal manifest preview ${{ github.run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Exact confirmation for offline manifest preview only
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out canonical revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Build sanitized Portal manifest preview
+        env:
+          ARCA_PORTAL_MANIFEST_CONFIRMATION: ${{ inputs.confirmation }}
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_MANIFEST_OUTPUT: artifacts/portal-manifest-preview.json
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/arca-portal-manifest-preview.mjs
+
+      - name: Upload sanitized manifest preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-manifest-preview-${{ github.run_id }}
+          path: artifacts/portal-manifest-preview.json
+          if-no-files-found: error
+          retention-days: 7
