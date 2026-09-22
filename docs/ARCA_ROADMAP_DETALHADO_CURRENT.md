@@ -1,8 +1,8 @@
 # ARCA — Roadmap detalhado atual
 
-Atualizado em: **2026-09-21**
+Atualizado em: **2026-09-22**
 
-Base canônica após M1: `0.4.0-rc.1` / `68f2a0e86f60400b0a208c0b2c06599a1601f177`
+Base canônica após M2: `0.4.0-rc.1` / `bb006433f21a622aea4aaf618b728a19e4c327f5`
 
 Regra: este arquivo descreve a sequência vigente. Não substituir gates por ativação direta.
 
@@ -50,24 +50,27 @@ Aceite: [PR #76](https://github.com/uknwplayer/ARCA/pull/76), commit [`68f2a0e`]
 
 Objetivo: relacionar registros sem declarar equivalência apenas por nome ou valor.
 
-Estado: **PRÓXIMO MARCO ATIVO**.
+Estado: **CONCLUÍDO E INTEGRADO À `main`**.
 
-Passos:
+Entregas:
 
-1. congelar fixtures sintéticas para PNCP, documento de pagamento e empenhos impactados, preservando relações um-para-muitos;
-2. criar identificadores canônicos de órgão e fornecedor;
-3. preservar CNPJ/identificadores somente conforme política pública e minimização;
-4. correlacionar por chaves fortes quando existentes; se não houver, conservar candidato sem afirmar identidade;
-5. classificar relações como `CONFIRMED`, `CANDIDATE`, `CONFLICTING` ou `NOT_OBSERVED`;
-6. registrar explicações alternativas e diferença temporal;
-7. impedir que `NOT_OBSERVED` seja convertido em desaparecimento ou irregularidade;
-8. exigir proveniência por campo e de cada vínculo.
+1. fixture sintética com PNCP, documentos de pagamento e empenhos impactados, incluindo relação um-para-muitos;
+2. identificadores canônicos hash-only para órgão e fornecedor;
+3. namespaces controlados para CNPJ/SIAFI e dados de fixture;
+4. pontes fortes separadas de candidatos;
+5. estados `CONFIRMED`, `CANDIDATE`, `CONFLICTING` e `NOT_OBSERVED`;
+6. explicações alternativas e diferença temporal;
+7. `NOT_OBSERVED` explicitamente separado de desaparecimento ou irregularidade;
+8. proveniência e contraprova por vínculo;
+9. rede e publicação bloqueadas.
 
-Aceite: teste positivo, ambíguo, conflitante e ausente; nenhum falso achado automático.
+Aceite: [PR #79](https://github.com/uknwplayer/ARCA/pull/79), commit [`bb00643`](https://github.com/uknwplayer/ARCA/commit/bb006433f21a622aea4aaf618b728a19e4c327f5), CI da PR [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853847) e CI pós-merge [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372) verdes. Validador M2: 1 caso de cada estado, um pagamento impactando dois empenhos, nenhuma conclusão adversa automática.
 
 ## Marco M3 — Gate offline multifonte completo
 
-Objetivo: repetir o piloto com PNCP + execução financeira.
+Estado: **PRÓXIMO MARCO ATIVO**.
+
+Objetivo: repetir o piloto com PNCP + execução financeira e integrar o correlator M2 ao fluxo multiagente.
 
 Passos:
 
