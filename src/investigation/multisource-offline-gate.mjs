@@ -36,7 +36,86 @@ function validateUf(value){
   if(!UF_CODES.has(uf))throw new Error("ARCA_MULTISOURCE_INVALID_UF");
   return uf;
 }
-function correlationSummary(report){
+function bindCorrelationToEvidence(report,envelopes){
+  const paymentEvidence=new Map();
+  const procurementEvidence=new Map();
+  const commitmentEvidence=new Map();
+  const pairEvidence=new Map();
+  const paymentsByCommitment=new Map();
+
+  const add=(map,key,value)=>{
+    const set=map.get(key)??new Set();
+    set.add(value);map.set(key,set);
+  };
+
+  for(const envelope of envelopes){
+    if(envelope.sourceId==="br.portal-transparencia.download-despesas"){
+      const payment=/^portal-payment:([^:]+)$/.exec(envelope.recordKey);
+      if(payment){
+        paymentEvidence.set(`payment:sha256:${sha256(payment[1])}`,envelope.envelopeSha256);
+        continue;
+      }
+      const impact=/^portal-payment-impact:([^:]+):([^:]+):([^:]+)$/.exec(envelope.recordKey);
+      if(impact){
+        const paymentRef=`payment:sha256:${sha256(impact[1])}`;
+        const commitmentRef=`commitment:sha256:${sha256(impact[2])}`;
+        add(commitmentEvidence,commitmentRef,envelope.envelopeSha256);
+        add(pairEvidence,`${paymentRef}|${commitmentRef}`,envelope.envelopeSha256);
+        add(paymentsByCommitment,commitmentRef,paymentRef);
+      }
+    }else if(envelope.sourceId==="br.pncp.public-api"){
+      procurementEvidence.set(`procurement:sha256:${sha256(envelope.recordKey)}`,envelope.envelopeSha256);
+    }
+  }
+
+  const bindings=[];
+  for(const relation of report.paymentCommitmentRelations??[]){
+    const paymentEnvelope=paymentEvidence.get(relation.fromRef);
+    const impactEnvelopes=pairEvidence.get(`${relation.fromRef}|${relation.toRef}`);
+    if(!paymentEnvelope||!impactEnvelopes?.size)
+      throw new Error("ARCA_MULTISOURCE_CORRELATION_EVIDENCE_BINDING_MISSING");
+    bindings.push(Object.freeze({
+      relationId:relation.relationId,
+      evidenceEnvelopeRefs:Object.freeze([...new Set([paymentEnvelope,...impactEnvelopes])].sort())
+    }));
+  }
+
+  for(const relation of report.procurementFinancialRelations??[]){
+    const refs=[];
+    if(relation.state==="NOT_OBSERVED"){
+      const procurementEnvelope=procurementEvidence.get(relation.fromRef);
+      if(!procurementEnvelope)throw new Error("ARCA_MULTISOURCE_CORRELATION_EVIDENCE_BINDING_MISSING");
+      refs.push(procurementEnvelope);
+    }else{
+      const commitmentEnvelopes=commitmentEvidence.get(relation.fromRef);
+      const procurementEnvelope=procurementEvidence.get(relation.toRef);
+      if(!commitmentEnvelopes?.size||!procurementEnvelope)
+        throw new Error("ARCA_MULTISOURCE_CORRELATION_EVIDENCE_BINDING_MISSING");
+      refs.push(...commitmentEnvelopes,procurementEnvelope);
+      for(const paymentRef of paymentsByCommitment.get(relation.fromRef)??[]){
+        const paymentEnvelope=paymentEvidence.get(paymentRef);
+        if(!paymentEnvelope)throw new Error("ARCA_MULTISOURCE_CORRELATION_EVIDENCE_BINDING_MISSING");
+        refs.push(paymentEnvelope);
+      }
+    }
+    bindings.push(Object.freeze({
+      relationId:relation.relationId,
+      evidenceEnvelopeRefs:Object.freeze([...new Set(refs)].sort())
+    }));
+  }
+
+  const expected=(report.paymentCommitmentRelations?.length??0)+(report.procurementFinancialRelations?.length??0);
+  if(bindings.length!==expected||new Set(bindings.map(item=>item.relationId)).size!==expected)
+    throw new Error("ARCA_MULTISOURCE_CORRELATION_EVIDENCE_BINDING_INCOMPLETE");
+  const sorted=bindings.sort((a,b)=>a.relationId.localeCompare(b.relationId));
+  return Object.freeze({
+    boundRelationCount:sorted.length,
+    bindings:Object.freeze(sorted),
+    bindingSha256:sha256(sorted)
+  });
+}
+
+function correlationSummary(report,envelopes){
   if(report===null||report===undefined)return null;
   if(report?.schema!==FINANCIAL_CORRELATION_REPORT_SCHEMA)
     throw new Error("ARCA_MULTISOURCE_CORRELATION_SCHEMA_INVALID");
@@ -46,7 +125,7 @@ function correlationSummary(report){
      report.safety?.humanReviewRequired!==true||report.safety?.adverseFinding!==false||
      report.safety?.notObservedIsNotDisappearance!==true)
     throw new Error("ARCA_MULTISOURCE_CORRELATION_SAFETY_INVALID");
-  if(!Array.isArray(report.procurementFinancialRelations))
+  if(!Array.isArray(report.procurementFinancialRelations)||!Array.isArray(report.paymentCommitmentRelations))
     throw new Error("ARCA_MULTISOURCE_CORRELATION_RELATIONS_INVALID");
   const states={CANDIDATE:0,CONFIRMED:0,CONFLICTING:0,NOT_OBSERVED:0};
   for(const relation of report.procurementFinancialRelations){
@@ -59,15 +138,18 @@ function correlationSummary(report){
   for(const [state,count] of Object.entries(states))
     if(Number(report.relationStateCounts?.[state]??-1)!==count)
       throw new Error("ARCA_MULTISOURCE_CORRELATION_STATE_COUNT_MISMATCH");
+  const evidenceBinding=bindCorrelationToEvidence(report,envelopes);
   return Object.freeze({
     schema:"arca.multisource-correlation-summary.v1",
     reportSha256:report.reportSha256,
     relationCount:report.procurementFinancialRelations.length,
+    paymentCommitmentRelationCount:report.paymentCommitmentRelations.length,
     relationStateCounts:Object.freeze(states),
     oneToMany:Object.freeze({
       paymentsWithMultipleCommitments:Number(report.oneToMany?.paymentsWithMultipleCommitments??0),
       maximumCommitmentsPerPayment:Number(report.oneToMany?.maximumCommitmentsPerPayment??0)
     }),
+    evidenceBinding,
     humanReviewRequired:true,
     adverseFinding:false
   });
@@ -233,7 +315,6 @@ export async function runMultisourceOfflineGate({registry,fixture,queueRoot,adap
   if(ufs.length>3)throw new Error("ARCA_MULTISOURCE_UF_BUDGET_EXCEEDED");
   const shardKeys=shards.map((shard,index)=>`${text(shard.sourceId,"SOURCE_ID",160)}|${shardUfs[index]}`);
   if(new Set(shardKeys).size!==shardKeys.length)throw new Error("ARCA_MULTISOURCE_DUPLICATE_SOURCE_UF");
-  const correlation=correlationSummary(correlationReport);
   const adapterBySource=new Map(adapters.map(adapter=>[adapter.sourceId,adapter]));
   const requestedSourceIds=[...new Set(shards.map(shard=>text(shard.sourceId,"SOURCE_ID",160)))].sort();
   const results=[];
@@ -253,6 +334,7 @@ export async function runMultisourceOfflineGate({registry,fixture,queueRoot,adap
     if(!previous)byKey.set(key,envelope);
   }
   const envelopes=[...byKey.values()].sort((a,b)=>a.recordKey.localeCompare(b.recordKey));
+  const correlation=correlationSummary(correlationReport,envelopes);
   const multiSource=requestedSourceIds.length>1;
   const gaps=results.filter(result=>result.gap).map(result=>Object.freeze(multiSource
     ?{sourceId:result.sourceId,uf:result.uf,...result.gap}
