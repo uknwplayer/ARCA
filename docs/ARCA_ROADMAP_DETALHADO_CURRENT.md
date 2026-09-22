@@ -87,7 +87,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **M4a e M4b integrados em `main`; CI pós-merge verde; primeiro GET Portal real ainda pendente e não autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
+Estado: **M4a/M4b integrados; M5 Fase A e preview offline do manifesto integrados; primeiro GET Portal real ainda pendente e não autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
 
 Pré-condições:
 
@@ -105,11 +105,13 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b canônica: contrato oficial registrado, transporte e captura limitados, custódia privada durável, testes sintéticos e workflow manual não executado. `npm test` local em Node 24 reproduz `UND_ERR_SOCKET` no teste Passkey (915/916); os demais gates locais, incluindo `check:public`, passaram. A CI canônica Node 22.18 passou integralmente no run `35795775111`. O manifesto hash-only não concede rede. O primeiro GET live continua condicionado a revisão final, parâmetros concretos e autorização explícita separada. A prova PNCP durável 002 não demonstra consulta live Portal. Para dados estaduais/municipais, criar conectores próprios; a API do Portal cobre execução federal.
+Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. O primeiro GET live continua condicionado a documento real escolhido, preview revisado e autorização explícita separada. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
 ## Marco M5 — Live correlacionado limitado
+
+Estado: **FASE A OFFLINE INTEGRADA; GATE PRÉ-CORRELAÇÃO CANÔNICO; AGUARDA PRIMEIRO SCHEMA PORTAL LIVE OBSERVADO**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -161,7 +163,7 @@ Limites:
 
 Aceite futuro: schema e validador verdes; renderer reproduzível; dados protegidos recusados; contraprovas preservadas; revisão humana vinculada; pacote higienizado aprovado em testes sintéticos; nenhuma ação externa automática.
 
-M5-R não altera o caminho crítico atual. O gate imediato é executar o primeiro probe Portal real somente após manifesto e autorização específica; M5-R somente começa após o aceite de M5.
+M5-R não altera o caminho crítico atual. O gate imediato é escolher um documento público real, gerar/revisar seu manifesto offline e só então decidir sobre um probe Portal real autorizado; M5-R somente começa após o aceite de M5.
 
 ## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
 

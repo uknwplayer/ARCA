@@ -13,8 +13,8 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
 | Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
-| Correlação PNCP ↔ execução financeira M2 | sim, fixture sintética | sim | não | não | PR #79; CI 35690990372; 4 estados e relação 1:N | capturar contrato real e validar vínculo documental |
-| Portal da Transparência / captura M4b | sim, fixture + transporte controlado | sim | não | não | PR #88; merge `03d1465`; CI pós-merge 35798543860 | primeiro GET real e schema observado |
+| Correlação PNCP ↔ execução financeira M2/M5-A | sim, M2 sintético + M5 gate pré-correlação | sim | não | não | PR #79 + #94; M5 pós-merge 35799032982 | duas entradas live normalizadas e custodiais |
+| Portal da Transparência / captura M4b | sim, fixture + transporte + preview offline | sim | não | não | PR #88 + #95; CI pós-merge 35798543860 / 35799273391 | documento real, primeiro GET e schema observado |
 | Aquisição PNCP controlada | sim | sim | sim | não | runs 35544888070 e 35547609136 | expansão gradual e orçamento operacional |
 | Disponibilidade da fonte | sim | sim | parcial | não | PR #71 | política de retentativa/alerta em serviço |
 | Classificador de sinais | parcial | sim, sintético | não | não | fixtures e testes | precisão/recall e calibração em dados reais |
