@@ -1,8 +1,8 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / M4 em desenho; M3 integrado**
+Checkpoint: **2026-09-22 / M4a preflight e custódia offline; M3 integrado**
 
-Estado: **M3 integrado à `main`; CI pós-merge verde; desenho M4 para revisão, sem execução live**
+Estado: **M3 integrado à `main`; preparação M4a implementada localmente; PR/CI pendentes; sem execução live**
 Âncora canônica após M3: `d10d8516ec05c8e1c8378159ed6459da966a61fb`
 
 PR M3: [#81](https://github.com/uknwplayer/ARCA/pull/81)
@@ -14,6 +14,8 @@ CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853
 CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
 ## Retomada imediata
+
+M4a após aprovação do desenho: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada agora aceita o esquema de prova Portal **somente como contrato**, com as mesmas restrições de segurança e `proofSchema` exclusivo no recibo Portal; o recibo PNCP mantém formato antigo. Há 10/10 testes focais e validadores M0–M3/verificação pública verdes localmente. A suíte local Node 24: 891/892 por falha conhecida Passkey `UND_ERR_SOCKET`; CI Node 22.18 pendente. Não há transporte Portal, workflow live, prova Portal real ou autorização de GET. Ler [checkpoint 010](ARCA_HANDOFF_CHECKPOINT_2026-09-22_010.md), desenho M4 e plano `docs/superpowers/plans/2026-09-22-m4-preflight-and-custody.md`. Não marcar M4 concluído; próximo gate é confirmar contrato oficial da API, implementar captura limitada e testar sem rede real.
 
 Preparação M4: ler `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e o [checkpoint 009](ARCA_HANDOFF_CHECKPOINT_2026-09-22_009.md). O desenho prioriza a reutilização do PNCP durável já provado e planeja uma consulta pontual independente da API do Portal para avançar a fonte financeira, com token privado, documento explícito, teto de bytes, fake fetch e custódia durável antes de qualquer GET real. Nenhum código de documento, segredo ou novo acesso à rede foi definido/executado neste ciclo. O desenho requer revisão antes da implementação; a execução live exige manifesto concreto e autorização explícita posterior. M3 permanece canônico no commit `d10d851`; M4 não comprova qualquer dado real novo. Edge Steward segue congelado.
 
