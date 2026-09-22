@@ -1,6 +1,6 @@
 # ARCA — Matriz de estado 0.4.0-rc.1
 
-Data de corte: 2026-09-22. Referência de entrada: `bb006433f21a622aea4aaf618b728a19e4c327f5`.
+Data de corte: 2026-09-22. Referência de entrada: `d10d8516ec05c8e1c8378159ed6459da966a61fb`.
 
 Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada e registrada; não significa produção.
 
@@ -12,9 +12,9 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Fila investigativa compartilhada | sim | sim | não | não | PRs #56–#57 | operação contínua e telemetria |
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
-| Gate Offline Multifonte V1 | sim | sim | não | não | contrato, envelopes, AC/AL/AM, 2 agentes | integração M3 com correlator financeiro |
-| Correlação PNCP ↔ execução financeira M2 | sim, fixture sintética | sim | não | não | PR #79; CI 35690990372; 4 estados e relação 1:N | integração ao Gate M3 e depois dados reais |
-| Portal da Transparência offline M1 | sim, fixture sintética | sim | não | não | PR #76; CI 35650058116; colunas oficiais de pagamento, envelopes | parser CSV/captura oficial; integração M3/M4 |
+| Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
+| Correlação PNCP ↔ execução financeira M2 | sim, fixture sintética | sim | não | não | PR #79; CI 35690990372; 4 estados e relação 1:N | capturar contrato real e validar vínculo documental |
+| Portal da Transparência offline M1 | sim, fixture sintética | sim | não | não | PR #76; CI 35650058116; colunas oficiais de pagamento, envelopes | parser CSV/captura oficial em M4 |
 | Aquisição PNCP controlada | sim | sim | sim | não | runs 35544888070 e 35547609136 | expansão gradual e orçamento operacional |
 | Disponibilidade da fonte | sim | sim | parcial | não | PR #71 | política de retentativa/alerta em serviço |
 | Classificador de sinais | parcial | sim, sintético | não | não | fixtures e testes | precisão/recall e calibração em dados reais |
@@ -28,13 +28,13 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 
 ## Verificação de corte
 
-A execução pós-M2 [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372) aprovou:
+A execução pós-M3 [35695672043](https://github.com/uknwplayer/ARCA/actions/runs/35695672043) aprovou:
 
-- 878 testes Node;
+- 886 testes Node;
 - 27 testes Python da malha executora;
 - piloto investigativo controlado;
 - Gate Offline Multifonte V1;
-- Gate de correlação financeira M2;
+- Gate de correlação financeira M2 e Gate correlacionado M3;
 - verificação do repositório e fronteira pública.
 
 O validador M2 registrou um caso de cada estado (`CONFIRMED`, `CANDIDATE`, `CONFLICTING`, `NOT_OBSERVED`), rede desligada e nenhuma publicação.

@@ -1,9 +1,13 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / Gate correlacionado offline M3 em validação**
+Checkpoint: **2026-09-22 / Fechamento do Gate correlacionado offline M3**
 
-Estado: **M2 concluído e integrado à `main`; M3 na PR #81, CI de correção pendente**
-Âncora canônica após M2: `bb006433f21a622aea4aaf618b728a19e4c327f5`
+Estado: **M3 integrado à `main`; CI pós-merge verde; M4 é o próximo marco condicionado**
+Âncora canônica após M3: `d10d8516ec05c8e1c8378159ed6459da966a61fb`
+
+PR M3: [#81](https://github.com/uknwplayer/ARCA/pull/81)
+CI da PR: [35695562784](https://github.com/uknwplayer/ARCA/actions/runs/35695562784)
+CI pós-merge: [35695672043](https://github.com/uknwplayer/ARCA/actions/runs/35695672043)
 
 PR M2: [#79](https://github.com/uknwplayer/ARCA/pull/79)  
 CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853847)  
@@ -11,16 +15,17 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M3 em [PR #81](https://github.com/uknwplayer/ARCA/pull/81), branch `feat/multisource-correlated-offline-m3` (base canônica `52add0e`). Antes da correção do teste, [CI 35691849173](https://github.com/uknwplayer/ARCA/actions/runs/35691849173) registrou 885/886 testes Node: o teste `tampered or unrelated correlation cannot enter the M3 evidence graph` criava um pagamento com código alterado, mas atualizava só o primeiro dos dois empenhos impactados; o correlator rejeitava a fixture internamente inválida antes do gate M3. A correção atualiza todos os vínculos do pagamento, preservando a validade interna e testando a recusa do gate quando o pagamento não foi coletado. Testes focais M3: 8/8; validadores M3, M2 e M0/M1: PASS; `check:public`: zero violações. A suíte local Node 24: 885/886, com a falha preexistente `creator-passkey-console.test.mjs` (`UND_ERR_SOCKET`); aguardar CI no Node 22.18 para aceitar a PR. Ler o [checkpoint M3 em validação](ARCA_HANDOFF_CHECKPOINT_2026-09-22_007.md) e `docs/ARCA_MULTISOURCE_CORRELATED_OFFLINE_M3.md`. M4 não inicia antes de M3 integrado e CI pós-merge verde. Edge Steward continua congelado na PR #78.
+M3 foi integrado em `d10d851` após corrigir o teste de correlação não coletada. O CI da PR e o pós-merge passaram integralmente: 886/886 Node no Node 22.18, 27/27 Python, piloto investigativo, validadores multifonte M0/M1, financeiro M2, correlacionado M3 e verificação pública. A fixture M3 produziu 11 envelopes, 2 lacunas, 8 relações vinculadas, 2 agentes, verificação adversarial e `HUMAN_REVIEW`; rede e publicação desligadas. Ler o [checkpoint final M3](ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md), o histórico pré-merge 007 e `docs/ARCA_MULTISOURCE_CORRELATED_OFFLINE_M3.md`. Próximo marco M4: primeiro acesso live de uma fonte por vez, apenas após pré-registro de escopo, cofre durável, autorização explícita para rede e limites; não iniciar aquisição live por inferência. Edge Steward #78 permanece draft e congelado.
 
-O M2 implementou o núcleo offline de correlação entre contratação PNCP e execução financeira, sem rede e sem publicação. O próximo marco é **M3 — Gate offline multifonte completo**: integrar o correlator M2 ao piloto multifonte já existente, com três UFs, orçamento fixo, dois agentes independentes, verificação adversarial e fila de revisão humana.
+O M2 implementou o núcleo offline de correlação entre contratação PNCP e execução financeira, sem rede e sem publicação. O M3 integrou o correlator M2 ao piloto multifonte com três UFs, orçamento fixo, dois agentes independentes, verificação adversarial e fila de revisão humana.
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_006.md`;
-2. `docs/ARCA_FINANCIAL_CORRELATION_OFFLINE_M2.md`;
-3. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
-4. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_006.md`;
+3. `docs/ARCA_FINANCIAL_CORRELATION_OFFLINE_M2.md`;
+4. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
+5. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
 
 ## Resultado entregue no M2
 
@@ -119,32 +124,21 @@ Não alegar:
 - prontidão de produção;
 - publicação autônoma.
 
-## Próximo trabalho recomendado — M3
+## Próximo trabalho recomendado — M4 condicionado
 
-Executar **M3 — Gate offline multifonte completo**:
-
-1. integrar PNCP + pagamento + empenhos impactados + correlator M2;
-2. manter três UFs sem município default;
-3. fixar orçamento de registros;
-4. deduplicar solicitações humanas e observador;
-5. executar dois agentes independentes;
-6. executar verificação adversarial;
-7. produzir métricas de `CONFIRMED/CANDIDATE/CONFLICTING/NOT_OBSERVED`;
-8. enviar somente para `HUMAN_REVIEW`;
-9. manter rede e publicação desligadas;
-10. produzir relatório sanitizado determinístico.
-
-M4 live só começa depois de M0–M3 verdes.
+Planejar um probe live mínimo de **uma fonte por vez** com UF, janela, página, limite de registros, timeout, retries e cofre privado durável pré-registrados. Exigir autorização explícita antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver o checkpoint 008 para condições de parada.
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Confirmar que `main` contém `bb006433f21a622aea4aaf618b728a19e4c327f5` ou sucessor e consultar PRs/Actions posteriores ao run `35690990372`.
+Confirmar que `main` contém `d10d8516ec05c8e1c8378159ed6459da966a61fb` ou sucessor e consultar PRs/Actions posteriores ao run `35695672043`.
 
 Executar:
 
 ```bash
 npm ci
+node --test tests/multisource-correlated-offline-m3.test.mjs
 node --test tests/financial-correlation-offline.test.mjs
+npm run validate:multisource-correlated
 npm run validate:financial-correlation
 npm run validate:multisource
 npm test

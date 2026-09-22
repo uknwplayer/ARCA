@@ -68,7 +68,7 @@ Aceite: [PR #79](https://github.com/uknwplayer/ARCA/pull/79), commit [`bb00643`]
 
 ## Marco M3 — Gate offline multifonte completo
 
-Estado: **IMPLEMENTADO NA PR #81; CI DE CORREÇÃO E INTEGRAÇÃO PENDENTES**.
+Estado: **CONCLUÍDO E INTEGRADO À `main`**.
 
 Objetivo: repetir o piloto com PNCP + execução financeira e integrar o correlator M2 ao fluxo multiagente.
 
@@ -83,9 +83,11 @@ Passos:
 7. métricas de cobertura, correlação, conflito e ausência;
 8. publicação desligada.
 
-Aceite: execução determinística reproduzível e relatório sanitizado; teste de recusa de correlação não coletada verde no Node 22.18, CI completo da PR, integração, CI pós-merge e checkpoint final. Ver `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_007.md`.
+Aceite: execução determinística e relatório sanitizado, [PR #81](https://github.com/uknwplayer/ARCA/pull/81), commit [`d10d851`](https://github.com/uknwplayer/ARCA/commit/d10d8516ec05c8e1c8378159ed6459da966a61fb), CI da PR [35695562784](https://github.com/uknwplayer/ARCA/actions/runs/35695562784) e pós-merge [35695672043](https://github.com/uknwplayer/ARCA/actions/runs/35695672043) verdes. Ver checkpoint final `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md`.
 
 ## Marco M4 — Live controlado de uma fonte por vez
+
+Estado: **PRÓXIMO MARCO CONDICIONADO; REDE NÃO AUTORIZADA NESTE CICLO**.
 
 Pré-condições:
 
