@@ -1,0 +1,158 @@
+{
+  "schema": "arca.multisource-offline-fixture.v1",
+  "pilotId": "multisource-correlated-offline-m3-001",
+  "timeWindow": "2026-08/2026-09",
+  "shards": [
+    {
+      "sourceId":"br.pncp.public-api",
+      "uf":"AC",
+      "status":"AVAILABLE",
+      "records":[
+        {
+          "recordKey":"pncp:fixture:ac:2026:confirmed",
+          "orgaoRef":"synthetic-public-body-ac-a",
+          "year":2026,
+          "sequential":101,
+          "modalityId":6,
+          "estimatedValue":125050,
+          "municipalityCode":null,
+          "sourceUrl":"https://pncp.gov.br/app/editais/fixture-ac-confirmed",
+          "retrievedAt":"2026-09-22T04:00:00.000Z"
+        },
+        {
+          "recordKey":"pncp:fixture:ac:2026:conflicting",
+          "orgaoRef":"synthetic-public-body-ac-c",
+          "year":2026,
+          "sequential":102,
+          "modalityId":6,
+          "estimatedValue":50000,
+          "municipalityCode":null,
+          "sourceUrl":"https://pncp.gov.br/app/editais/fixture-ac-conflicting",
+          "retrievedAt":"2026-09-22T04:00:01.000Z"
+        },
+        {
+          "recordKey":"pncp:fixture:ac:2026:not-observed",
+          "orgaoRef":"synthetic-public-body-ac-d",
+          "year":2026,
+          "sequential":103,
+          "modalityId":8,
+          "estimatedValue":77000,
+          "municipalityCode":null,
+          "sourceUrl":"https://pncp.gov.br/app/editais/fixture-ac-not-observed",
+          "retrievedAt":"2026-09-22T04:00:02.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId":"br.pncp.public-api",
+      "uf":"AL",
+      "status":"SOURCE_UNAVAILABLE",
+      "reason":"synthetic-source-unavailable-m3"
+    },
+    {
+      "sourceId":"br.pncp.public-api",
+      "uf":"AM",
+      "status":"AVAILABLE",
+      "records":[
+        {
+          "recordKey":"pncp:fixture:am:2026:candidate",
+          "orgaoRef":"synthetic-public-body-am-b",
+          "year":2026,
+          "sequential":201,
+          "modalityId":8,
+          "estimatedValue":98000,
+          "municipalityCode":null,
+          "sourceUrl":"https://pncp.gov.br/app/editais/fixture-am-candidate",
+          "retrievedAt":"2026-09-22T04:05:00.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "uf":"AC",
+      "status":"AVAILABLE",
+      "records":[
+        {
+          "row":{
+            "Código Pagamento":"FIXTURE-PAYMENT-AC-001",
+            "Código Órgão":"00001",
+            "Órgão":"ORGAO FICTICIO AC A",
+            "Código Favorecido":"PJ-FICTICIA-AC-A",
+            "Favorecido":"FORNECEDOR FICTICIO AC A",
+            "Data Emissão":"02/09/2026",
+            "Valor do Pagamento Convertido pra R$":"1250,50"
+          },
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:10:00.000Z"
+        },
+        {
+          "row":{
+            "Código Pagamento":"FIXTURE-PAYMENT-AC-003",
+            "Código Órgão":"00003",
+            "Órgão":"ORGAO FICTICIO AC C",
+            "Código Favorecido":"PJ-FICTICIA-AC-C",
+            "Favorecido":"FORNECEDOR FICTICIO AC C",
+            "Data Emissão":"04/09/2026",
+            "Valor do Pagamento Convertido pra R$":"500,00"
+          },
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:10:01.000Z"
+        }
+      ],
+      "impactRecords":[
+        {
+          "relation":{"paymentDocumentCode":"FIXTURE-PAYMENT-AC-001","commitmentCode":"FIXTURE-NE-AC-001","subitem":"01","paidAmountCents":80000},
+          "period":"2026-09",
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:11:00.000Z"
+        },
+        {
+          "relation":{"paymentDocumentCode":"FIXTURE-PAYMENT-AC-001","commitmentCode":"FIXTURE-NE-AC-002","subitem":"02","paidAmountCents":45050},
+          "period":"2026-09",
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:11:01.000Z"
+        },
+        {
+          "relation":{"paymentDocumentCode":"FIXTURE-PAYMENT-AC-003","commitmentCode":"FIXTURE-NE-AC-004","subitem":"01","paidAmountCents":50000},
+          "period":"2026-09",
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:11:02.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "uf":"AL",
+      "status":"SOURCE_UNAVAILABLE",
+      "reason":"synthetic-download-unavailable-m3"
+    },
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "uf":"AM",
+      "status":"AVAILABLE",
+      "records":[
+        {
+          "row":{
+            "Código Pagamento":"FIXTURE-PAYMENT-AM-002",
+            "Código Órgão":"00002",
+            "Órgão":"ORGAO FICTICIO AM B",
+            "Código Favorecido":"PJ-FICTICIA-AM-B",
+            "Favorecido":"FORNECEDOR FICTICIO AM B",
+            "Data Emissão":"03/09/2026",
+            "Valor do Pagamento Convertido pra R$":"980,00"
+          },
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:15:00.000Z"
+        }
+      ],
+      "impactRecords":[
+        {
+          "relation":{"paymentDocumentCode":"FIXTURE-PAYMENT-AM-002","commitmentCode":"FIXTURE-NE-AM-003","subitem":"01","paidAmountCents":98000},
+          "period":"2026-09",
+          "sourceUrl":"https://portaldatransparencia.gov.br/download-de-dados/despesas",
+          "retrievedAt":"2026-09-22T04:16:00.000Z"
+        }
+      ]
+    }
+  ]
+}
