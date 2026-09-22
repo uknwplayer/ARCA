@@ -1,0 +1,66 @@
+{
+  "schema": "arca.m5-phase-a-fixture.v1",
+  "manifestInput": {
+    "operationalQuestion": "Os documentos publicados permitem reconciliar a contratação selecionada com a execução financeira no período?",
+    "questionKind": "DOCUMENT_RECONCILIATION",
+    "jurisdiction": "BR/FEDERAL",
+    "timeWindow": {
+      "start": "2026-01-01",
+      "end": "2026-01-31"
+    },
+    "subjectRef": "subject:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "sourceScopes": {
+      "PNCP": {
+        "scopeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "PORTAL": {
+        "scopeSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    },
+    "budgets": {
+      "maxSources": 2,
+      "maxAgentReports": 2,
+      "maxCorrelationRelations": 8,
+      "retries": 0
+    },
+    "stopConditions": [
+      "BUDGET_EXCEEDED",
+      "CORRELATION_WITHOUT_EVIDENCE",
+      "CUSTODY_INVALID",
+      "PROTECTED_DATA_REQUIRED",
+      "PUBLICATION_ATTEMPTED",
+      "SCHEMA_DRIFT_UNREVIEWED",
+      "SCOPE_DIVERGENCE"
+    ],
+    "humanReviewRequired": true,
+    "publicationEnabled": false
+  },
+  "custodyInputs": [
+    {
+      "source": "PNCP",
+      "scopeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "custody": {
+        "status": "VERIFIED",
+        "private": true,
+        "envelopeSha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "receiptSha256": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "normalizationState": "NORMALIZED"
+    },
+    {
+      "source": "PORTAL",
+      "scopeSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "custody": {
+        "status": "VERIFIED",
+        "private": true,
+        "envelopeSha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "receiptSha256": "7777777777777777777777777777777777777777777777777777777777777777"
+      },
+      "normalizationState": "NORMALIZED"
+    }
+  ]
+}
