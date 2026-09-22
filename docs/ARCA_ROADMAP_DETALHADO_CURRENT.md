@@ -126,6 +126,43 @@ Passos:
 
 Aceite: cadeia completa auditável e revisão humana registrada.
 
+## Marco M5-R — Public Investigation & Referral Dossier
+
+Estado: **MÉTODO V0.1 DOCUMENTADO; IMPLEMENTAÇÃO EXECUTÁVEL PENDENTE**.
+
+Objetivo: transformar uma investigação pública correlacionada e revisada em um dossiê técnico reproduzível de encaminhamento, sem acusação automática, veredito, protocolo autônomo ou ampliação da autoridade de acesso do ARCA. Ver `docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`.
+
+Dependências obrigatórias:
+
+- M5 aceito com aquisição correlacionada e custódia válida;
+- dois agentes independentes e verificação adversarial executados;
+- fatos, alegações, relações, hipóteses, contraprovas e achados oficiais separados;
+- revisão humana registrada;
+- controles de privacidade e fronteira de publicação ativos.
+
+Implementação incremental:
+
+1. schema versionado do registro e do `Referral Dossier`;
+2. validador fail-closed de completude, estados epistêmicos e `PUBLIC_TRAIL_END`;
+3. reconciliação de categorias financeiras, estornos, períodos parciais e duplicidades;
+4. renderer determinístico com cronologia, fontes, hashes, relações, inconsistências, hipóteses concorrentes e contraprovas;
+5. controle de dados protegidos, minimização e descrição segura das lacunas;
+6. revisão humana obrigatória para exportação e decisão separada para encaminhamento;
+7. manifesto criptográfico e exportação pública higienizada;
+8. testes exclusivamente sintéticos, incluindo falsos positivos, fontes indisponíveis e trilhas públicas incompletas.
+
+Limites:
+
+- `PUBLIC_TRAIL_END` registra limite probatório e nunca culpa ou irregularidade;
+- o dossiê não concede acesso bancário, fiscal, telemático, médico ou judicial protegido;
+- não há invasão, engenharia social, abuso de credenciais, interceptação, compra/uso de vazamentos ou tentativa de superar sigilo;
+- nenhuma autoridade recebe material sem decisão humana específica;
+- nenhuma acusação, denúncia, publicação, protocolo ou pedido de quebra de sigilo é automático.
+
+Aceite futuro: schema e validador verdes; renderer reproduzível; dados protegidos recusados; contraprovas preservadas; revisão humana vinculada; pacote higienizado aprovado em testes sintéticos; nenhuma ação externa automática.
+
+M5-R não altera o caminho crítico atual. M4b permanece o próximo gate; M5-R somente começa após o aceite de M5.
+
 ## Marco M6 — Expansão territorial gradual
 
 Ordem operacional:
