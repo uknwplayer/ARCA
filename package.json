@@ -40,6 +40,7 @@
     "validate:arca-node-introduction": "node scripts/validate-arca-node-introduction.mjs",
     "validate:arca-federation-response": "node scripts/validate-arca-federation-response.mjs",
     "validate:multisource": "node scripts/validate-multisource-offline-gate.mjs",
+    "validate:financial-correlation": "node scripts/validate-financial-correlation-offline.mjs",
     "publication:check": "node scripts/arca-publication-boundary.mjs --check",
     "publication:preview": "node scripts/arca-publication-boundary.mjs --preview",
     "check:public": "node scripts/check-repository.mjs --public && node scripts/check-aie.mjs && node scripts/check-pncp.mjs --public && npm run publication:check",
