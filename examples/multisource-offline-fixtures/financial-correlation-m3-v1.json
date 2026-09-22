@@ -1,0 +1,122 @@
+{
+  "schema": "arca.financial-correlation-fixture.v1",
+  "pilotId": "multisource-correlated-offline-m3-001",
+  "timeWindow": "2026-08/2026-09",
+  "payments": [
+    {
+      "sourceId": "br.portal-transparencia.download-despesas",
+      "documentCode": "FIXTURE-PAYMENT-AC-001",
+      "issuedAt": "2026-09-02",
+      "amountCents": 125050,
+      "agencyIdentifier": {"namespace":"FIXTURE_ORG","value":"ORG-AC-A","provenanceRef":"fixture:m3-payment-ac-001#agency"},
+      "beneficiaryIdentifier": {"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AC-A","provenanceRef":"fixture:m3-payment-ac-001#beneficiary"},
+      "provenanceRefs": ["fixture:m3-payment-ac-001#document","fixture:m3-payment-ac-001#issued-at","fixture:m3-payment-ac-001#amount"]
+    },
+    {
+      "sourceId": "br.portal-transparencia.download-despesas",
+      "documentCode": "FIXTURE-PAYMENT-AM-002",
+      "issuedAt": "2026-09-03",
+      "amountCents": 98000,
+      "agencyIdentifier": {"namespace":"FIXTURE_ORG","value":"ORG-AM-B","provenanceRef":"fixture:m3-payment-am-002#agency"},
+      "beneficiaryIdentifier": {"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AM-B","provenanceRef":"fixture:m3-payment-am-002#beneficiary"},
+      "provenanceRefs": ["fixture:m3-payment-am-002#document","fixture:m3-payment-am-002#issued-at","fixture:m3-payment-am-002#amount"]
+    },
+    {
+      "sourceId": "br.portal-transparencia.download-despesas",
+      "documentCode": "FIXTURE-PAYMENT-AC-003",
+      "issuedAt": "2026-09-04",
+      "amountCents": 50000,
+      "agencyIdentifier": {"namespace":"FIXTURE_ORG","value":"ORG-AC-C","provenanceRef":"fixture:m3-payment-ac-003#agency"},
+      "beneficiaryIdentifier": {"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AC-C","provenanceRef":"fixture:m3-payment-ac-003#beneficiary"},
+      "provenanceRefs": ["fixture:m3-payment-ac-003#document","fixture:m3-payment-ac-003#issued-at","fixture:m3-payment-ac-003#amount"]
+    }
+  ],
+  "commitmentImpacts": [
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "dataset":"Despesas_Pagamento_EmpenhosImpactados",
+      "paymentDocumentCode":"FIXTURE-PAYMENT-AC-001",
+      "commitmentCode":"FIXTURE-NE-AC-001",
+      "subitem":"01",
+      "paidAmountCents":80000,
+      "provenanceRefs":["fixture:m3-impact-ac-001#payment-code","fixture:m3-impact-ac-001#commitment-code","fixture:m3-impact-ac-001#paid-amount"]
+    },
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "dataset":"Despesas_Pagamento_EmpenhosImpactados",
+      "paymentDocumentCode":"FIXTURE-PAYMENT-AC-001",
+      "commitmentCode":"FIXTURE-NE-AC-002",
+      "subitem":"02",
+      "paidAmountCents":45050,
+      "provenanceRefs":["fixture:m3-impact-ac-002#payment-code","fixture:m3-impact-ac-002#commitment-code","fixture:m3-impact-ac-002#paid-amount"]
+    },
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "dataset":"Despesas_Pagamento_EmpenhosImpactados",
+      "paymentDocumentCode":"FIXTURE-PAYMENT-AM-002",
+      "commitmentCode":"FIXTURE-NE-AM-003",
+      "subitem":"01",
+      "paidAmountCents":98000,
+      "provenanceRefs":["fixture:m3-impact-am-003#payment-code","fixture:m3-impact-am-003#commitment-code","fixture:m3-impact-am-003#paid-amount"]
+    },
+    {
+      "sourceId":"br.portal-transparencia.download-despesas",
+      "dataset":"Despesas_Pagamento_EmpenhosImpactados",
+      "paymentDocumentCode":"FIXTURE-PAYMENT-AC-003",
+      "commitmentCode":"FIXTURE-NE-AC-004",
+      "subitem":"01",
+      "paidAmountCents":50000,
+      "provenanceRefs":["fixture:m3-impact-ac-004#payment-code","fixture:m3-impact-ac-004#commitment-code","fixture:m3-impact-ac-004#paid-amount"]
+    }
+  ],
+  "procurements": [
+    {
+      "sourceId":"br.pncp.public-api",
+      "recordKey":"pncp:fixture:ac:2026:confirmed",
+      "publishedAt":"2026-08-10",
+      "agencyIdentifier":{"namespace":"FIXTURE_ORG","value":"ORG-AC-A","provenanceRef":"fixture:m3-pncp-ac-confirmed#agency"},
+      "supplierIdentifier":{"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AC-A","provenanceRef":"fixture:m3-pncp-ac-confirmed#supplier"},
+      "provenanceRefs":["fixture:m3-pncp-ac-confirmed#record","fixture:m3-pncp-ac-confirmed#published-at"]
+    },
+    {
+      "sourceId":"br.pncp.public-api",
+      "recordKey":"pncp:fixture:am:2026:candidate",
+      "publishedAt":"2026-08-15",
+      "agencyIdentifier":{"namespace":"FIXTURE_ORG","value":"ORG-AM-B","provenanceRef":"fixture:m3-pncp-am-candidate#agency"},
+      "supplierIdentifier":{"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AM-B","provenanceRef":"fixture:m3-pncp-am-candidate#supplier"},
+      "provenanceRefs":["fixture:m3-pncp-am-candidate#record","fixture:m3-pncp-am-candidate#published-at"]
+    },
+    {
+      "sourceId":"br.pncp.public-api",
+      "recordKey":"pncp:fixture:ac:2026:conflicting",
+      "publishedAt":"2026-08-20",
+      "agencyIdentifier":{"namespace":"FIXTURE_ORG","value":"ORG-AC-C","provenanceRef":"fixture:m3-pncp-ac-conflicting#agency"},
+      "supplierIdentifier":{"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AC-C","provenanceRef":"fixture:m3-pncp-ac-conflicting#supplier"},
+      "provenanceRefs":["fixture:m3-pncp-ac-conflicting#record","fixture:m3-pncp-ac-conflicting#published-at"]
+    },
+    {
+      "sourceId":"br.pncp.public-api",
+      "recordKey":"pncp:fixture:ac:2026:not-observed",
+      "publishedAt":"2026-08-25",
+      "agencyIdentifier":{"namespace":"FIXTURE_ORG","value":"ORG-AC-D","provenanceRef":"fixture:m3-pncp-ac-not-observed#agency"},
+      "supplierIdentifier":{"namespace":"FIXTURE_SUPPLIER","value":"SUPPLIER-AC-D","provenanceRef":"fixture:m3-pncp-ac-not-observed#supplier"},
+      "provenanceRefs":["fixture:m3-pncp-ac-not-observed#record","fixture:m3-pncp-ac-not-observed#published-at"]
+    }
+  ],
+  "strongBindings": [
+    {
+      "commitmentCode":"FIXTURE-NE-AC-001",
+      "procurementRecordKey":"pncp:fixture:ac:2026:confirmed",
+      "basis":"EXPLICIT_PUBLIC_RELATION_FIXTURE",
+      "provenanceRefs":["fixture:m3-bridge-ac-confirmed#commitment-to-procurement"],
+      "conflictRefs":[]
+    },
+    {
+      "commitmentCode":"FIXTURE-NE-AC-004",
+      "procurementRecordKey":"pncp:fixture:ac:2026:conflicting",
+      "basis":"EXPLICIT_PUBLIC_RELATION_FIXTURE",
+      "provenanceRefs":["fixture:m3-bridge-ac-conflicting#commitment-to-procurement"],
+      "conflictRefs":["fixture:m3-counterevidence-ac-conflicting#independent-record"]
+    }
+  ]
+}
