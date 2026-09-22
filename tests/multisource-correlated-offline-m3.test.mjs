@@ -135,8 +135,11 @@ test("tampered or unrelated correlation cannot enter the M3 evidence graph",asyn
   }),/CORRELATION_SAFETY_INVALID/);
 
   const unrelatedFixture=correlationFixture();
-  unrelatedFixture.payments[0].documentCode="FIXTURE-PAYMENT-NOT-COLLECTED";
-  unrelatedFixture.commitmentImpacts[0].paymentDocumentCode="FIXTURE-PAYMENT-NOT-COLLECTED";
+  const originalCode=unrelatedFixture.payments[0].documentCode;
+  const unrelatedCode="FIXTURE-PAYMENT-NOT-COLLECTED";
+  unrelatedFixture.payments[0].documentCode=unrelatedCode;
+  for(const impact of unrelatedFixture.commitmentImpacts)
+    if(impact.paymentDocumentCode===originalCode)impact.paymentDocumentCode=unrelatedCode;
   const unrelated=runFinancialCorrelationOffline({fixture:unrelatedFixture});
   await assert.rejects(()=>runMultisourceOfflineGate({
     registry:registry(),fixture:sourceFixture(),correlationReport:unrelated,queueRoot:queueRoot(),clock
