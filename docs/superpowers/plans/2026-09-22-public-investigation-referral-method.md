@@ -127,7 +127,7 @@ Run: `git diff --check && git status --short && git diff --stat`
 
 Expected: nenhuma falha de whitespace e somente os cinco documentos planejados alterados/criados.
 
-- [ ] **Step 5: Criar commit e PR**
+- [x] **Step 5: Criar commit e PR**
 
 ```bash
 git add docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md \

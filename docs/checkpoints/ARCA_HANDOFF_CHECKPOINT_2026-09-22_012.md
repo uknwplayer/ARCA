@@ -8,6 +8,12 @@ Branch: `docs/public-investigation-referral-method-v0.1`
 
 Base da branch: `9224471ea4b3d3bbad5ebd2888a5862f6fe66f11`
 
+PR: [#87 — docs(investigation): define public referral method V0.1](https://github.com/uknwplayer/ARCA/pull/87)
+
+Commit remoto: [`98eccf5`](https://github.com/uknwplayer/ARCA/commit/98eccf568567bca8a00d0cc58d509cb3bc0b9081)
+
+CI da PR: [35785679530](https://github.com/uknwplayer/ARCA/actions/runs/35785679530) — **verde**
+
 ## 1. Decisão do Criador
 
 O Criador aprovou formalizar no ARCA o método usado para levantar valores públicos, separar a natureza dos recursos, preservar fontes e limitações e transformar o fim da trilha pública em um dossiê técnico de encaminhamento.
@@ -96,7 +102,7 @@ Linha de base antes da mudança:
 - a falha já estava documentada no checkpoint 011 para o ambiente Node 24 e não é causada por esta mudança documental;
 - a CI canônica anterior em Node 22.18 estava verde.
 
-Verificações da mudança devem incluir:
+Verificações executadas:
 
 ```bash
 PYTHONPATH=. python scripts/validate-investigative-roadmap.py
@@ -104,7 +110,14 @@ npm run check:public
 git diff --check
 ```
 
-O resultado final e a PR são registrados na atualização desta mesma branch antes da conclusão.
+Resultados:
+
+- validador investigativo: `PASS`;
+- verificação pública: `PASS`, zero violações;
+- `git diff --check`: `PASS`;
+- CI canônica Node 22.18: `PASS` no run 35785679530;
+- PR #87 aberta, mergeável e não mesclada;
+- nenhuma publicação operacional, denúncia, protocolo ou aquisição de dados foi executada.
 
 ## 8. Sequência futura autorizada
 
