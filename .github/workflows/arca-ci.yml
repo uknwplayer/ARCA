@@ -49,6 +49,9 @@ jobs:
       - name: Run offline multisource gate
         run: npm run validate:multisource
 
+      - name: Run offline financial correlation gate
+        run: npm run validate:financial-correlation
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |
