@@ -52,6 +52,9 @@ jobs:
       - name: Run offline financial correlation gate
         run: npm run validate:financial-correlation
 
+      - name: Run correlated multisource offline gate
+        run: npm run validate:multisource-correlated
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |

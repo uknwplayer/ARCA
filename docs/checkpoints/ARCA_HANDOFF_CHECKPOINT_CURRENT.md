@@ -1,8 +1,8 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / Correlação PNCP ↔ execução financeira offline M2**
+Checkpoint: **2026-09-22 / Gate correlacionado offline M3 em validação**
 
-Estado: **M2 concluído e integrado à `main`; CI pós-merge verde. M3 é o próximo marco**
+Estado: **M2 concluído e integrado à `main`; M3 na PR #81, CI de correção pendente**
 Âncora canônica após M2: `bb006433f21a622aea4aaf618b728a19e4c327f5`
 
 PR M2: [#79](https://github.com/uknwplayer/ARCA/pull/79)  
@@ -10,6 +10,8 @@ CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853
 CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
 ## Retomada imediata
+
+M3 em [PR #81](https://github.com/uknwplayer/ARCA/pull/81), branch `feat/multisource-correlated-offline-m3` (base canônica `52add0e`). Antes da correção do teste, [CI 35691849173](https://github.com/uknwplayer/ARCA/actions/runs/35691849173) registrou 885/886 testes Node: o teste `tampered or unrelated correlation cannot enter the M3 evidence graph` criava um pagamento com código alterado, mas atualizava só o primeiro dos dois empenhos impactados; o correlator rejeitava a fixture internamente inválida antes do gate M3. A correção atualiza todos os vínculos do pagamento, preservando a validade interna e testando a recusa do gate quando o pagamento não foi coletado. Testes focais M3: 8/8; validadores M3, M2 e M0/M1: PASS; `check:public`: zero violações. A suíte local Node 24: 885/886, com a falha preexistente `creator-passkey-console.test.mjs` (`UND_ERR_SOCKET`); aguardar CI no Node 22.18 para aceitar a PR. Ler o [checkpoint M3 em validação](ARCA_HANDOFF_CHECKPOINT_2026-09-22_007.md) e `docs/ARCA_MULTISOURCE_CORRELATED_OFFLINE_M3.md`. M4 não inicia antes de M3 integrado e CI pós-merge verde. Edge Steward continua congelado na PR #78.
 
 O M2 implementou o núcleo offline de correlação entre contratação PNCP e execução financeira, sem rede e sem publicação. O próximo marco é **M3 — Gate offline multifonte completo**: integrar o correlator M2 ao piloto multifonte já existente, com três UFs, orçamento fixo, dois agentes independentes, verificação adversarial e fila de revisão humana.
 
