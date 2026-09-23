@@ -1,0 +1,91 @@
+name: ARCA Vince Live Probe 003
+run-name: Vince crash recovery live probe 003
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arca-vince-live-probe-003
+  cancel-in-progress: false
+
+jobs:
+  dispatch-before-crash:
+    if: >-
+      github.event.issue.number == 115 &&
+      github.event.issue.state == 'open' &&
+      github.event.comment.user.login == 'uknwplayer' &&
+      github.event.comment.body == 'ARCA_VINCE_LIVE_PROBE_003_EXECUTE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Dispatch once and persist recovery checkpoint
+        env:
+          ARCA_GITHUB_DISPATCH_TOKEN: ${{ secrets.ARCA_SATELLITE_DISPATCH_TOKEN }}
+          ARCA_CONTROL_REPOSITORY: ${{ github.repository }}
+        run: |
+          PYTHONPATH=. python scripts/arca-vince-recovery-probe.py dispatch \
+            --mission-id vince-live-003 \
+            --checkpoint-output artifacts/vince-recovery-checkpoint.json
+
+      - name: Upload durable recovery checkpoint
+        uses: actions/upload-artifact@v4
+        with:
+          name: vince-recovery-checkpoint-003-${{ github.run_id }}
+          path: artifacts/vince-recovery-checkpoint.json
+          if-no-files-found: error
+          retention-days: 14
+
+  recover-after-crash:
+    needs: dispatch-before-crash
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download recovery checkpoint only
+        uses: actions/download-artifact@v4
+        with:
+          name: vince-recovery-checkpoint-003-${{ github.run_id }}
+          path: artifacts/recovery-input
+
+      - name: Recover original accepted route without redispatch
+        env:
+          ARCA_GITHUB_DISPATCH_TOKEN: ${{ secrets.ARCA_SATELLITE_DISPATCH_TOKEN }}
+          ARCA_CONTROL_REPOSITORY: ${{ github.repository }}
+        run: |
+          PYTHONPATH=. python scripts/arca-vince-recovery-probe.py recover \
+            --checkpoint-input artifacts/recovery-input/vince-recovery-checkpoint.json \
+            --proof-output artifacts/vince-recovery-live-proof.json \
+            --timeout-seconds 240 \
+            --poll-seconds 3
+
+      - name: Upload recovery proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vince-recovery-live-proof-003-${{ github.run_id }}
+          path: artifacts/vince-recovery-live-proof.json
+          if-no-files-found: ignore
+          retention-days: 14
