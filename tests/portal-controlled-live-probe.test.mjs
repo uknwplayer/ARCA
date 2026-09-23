@@ -145,6 +145,11 @@ test("Portal probe persists, seals exact original bytes and emits only a sanitiz
   assert.equal(result.proof.captureStatus,"CAPTURED_AND_SEALED");
   assert.equal(result.proof.validationStatus,"VALIDATED");
   assert.equal(result.proof.recordCount,1);
+  assert.equal(result.proof.schemaObservation.observationState,"SCHEMA_OBSERVED");
+  assert.equal(result.proof.schemaObservation.structure.recordCount,1);
+  assert.deepEqual(result.proof.schemaObservation.structure.fields.map(item=>item.name),["documento","fase","valor"]);
+  assert.equal(result.proof.schemaObservation.valuesIncluded,false);
+  assert.equal(result.proof.schemaObservation.normalizationPerformed,false);
   assert.equal(result.proof.durableCustody.receiptHash,backend.calls[1].receipt.receiptHash);
   assert.equal(JSON.stringify(result.proof).includes(documentCode),false);
   assert.equal(JSON.stringify(result.proof).includes(apiKey),false);
@@ -198,6 +203,10 @@ test("Portal probe rejects schema drift, more than 25 records and invalid UTF-8 
     assert.equal(result.proof.failureCode,item.failureCode);
     assert.equal(result.proof.probeStatus,"FAILED");
     assert.equal(Object.hasOwn(result.proof,"recordCount"),false);
+    if(item.failureCode==="ARCA_PORTAL_DTO_SCHEMA_INVALID"){
+      assert.equal(result.proof.schemaObservation.observationState,"SCHEMA_OBSERVED");
+      assert.equal(result.proof.schemaObservation.valuesIncluded,false);
+    }
     assert.equal(backend.calls.at(-1).type,"status");
     assert.equal(fs.readdirSync(context.temporaryParent).length,0);
   }

@@ -47,7 +47,8 @@
     "check:public": "node scripts/check-repository.mjs --public && node scripts/check-aie.mjs && node scripts/check-pncp.mjs --public && npm run publication:check",
     "work:endpoint": "node scripts/arca-work-endpoint.mjs",
     "validate:m5-phase-a": "node scripts/validate-m5-phase-a.mjs",
-    "validate:m5-phase-b": "node scripts/validate-m5-phase-b.mjs"
+    "validate:m5-phase-b": "node scripts/validate-m5-phase-b.mjs",
+    "validate:m5-phase-c": "node scripts/validate-m5-phase-c.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"

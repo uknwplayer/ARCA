@@ -779,6 +779,74 @@
         "proteção contra homonimos",
         "sem ranking politico"
       ]
+    },
+    {
+      "id": "m5-c-observador-schema-portal",
+      "nome": "M5 Fase C — Observador estrutural do schema Portal",
+      "tipo": "investigacao",
+      "finalidade": "Observar a estrutura real de uma resposta Portal 2xx já custodial sem expor valores nem admitir parser automaticamente.",
+      "estado": "candidato_offline",
+      "localizacao": [
+        "src/investigation/m5-portal-schema-observer.mjs",
+        "docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md"
+      ],
+      "dependeDe": [
+        "m4-aquisicao-controlada",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "m4-aquisicao-controlada"
+      ],
+      "entradas": [
+        "bytes custodiais verificados",
+        "hashes de scope/resposta/envelope/recibo"
+      ],
+      "saidas": [
+        "observacao estrutural sanitizada",
+        "hash do schema observado",
+        "decisao humana de review"
+      ],
+      "capabilities": [
+        "observacao de raiz",
+        "campos",
+        "tipos",
+        "presenca",
+        "binding criptografico"
+      ],
+      "limites": [
+        "sem valores",
+        "sem normalizacao",
+        "sem parser automatico",
+        "sem nova rede",
+        "sem publicacao"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-phase-c"
+      ],
+      "modosDeFalha": [
+        "UTF-8 invalido",
+        "JSON invalido",
+        "raiz incompatível",
+        "registros nao objeto",
+        "budget excedido",
+        "hash divergente"
+      ],
+      "recuperacao": [
+        "preservar custodia",
+        "registrar drift",
+        "revisao humana",
+        "desenhar parser em gate separado"
+      ],
+      "fallback": "SCHEMA_DRIFT_REVIEW_REQUIRED",
+      "riscoDeReexecucao": "nao repetir GET por causa de drift; reutilizar bytes custodiais",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md"
+      ],
+      "seguranca": [
+        "valuesIncluded=false",
+        "humanReviewRequired=true",
+        "parserAdmitted=false"
+      ]
     }
   ]
 }
