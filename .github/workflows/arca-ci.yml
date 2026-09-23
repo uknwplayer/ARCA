@@ -55,6 +55,9 @@ jobs:
       - name: Run correlated multisource offline gate
         run: npm run validate:multisource-correlated
 
+      - name: Executar gate TCU Acórdãos offline S2
+        run: npm run validate:tcu-s2
+
       - name: Run M5 Phase A pre-correlation gate
         run: npm run validate:m5-phase-a
 
