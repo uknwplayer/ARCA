@@ -15,9 +15,9 @@ const STATES=new Set(VINCE_V5_AVAILABILITY_STATES);
 function iso(value,label){
   const text=String(value??"").trim();
   const millis=Date.parse(text);
-  if(!text||!Number.isFinite(millis)||new Date(millis).toISOString()!==text)
+  if(!text||!Number.isFinite(millis))
     throw new Error(`ARCA_VINCE_V5_${label}_INVALID`);
-  return {text,millis};
+  return {text:new Date(millis).toISOString(),millis};
 }
 function finiteDuration(value,label,{min=1,max=86_400_000}={}){
   const n=Number(value);
@@ -324,12 +324,13 @@ export function selectVinceV5Route({
     const records=(byEndpoint.get(descriptor.endpointId)??[])
       .filter(record=>record.validMillis>=clock.millis)
       .sort((a,b)=>b.observedMillis-a.observedMillis);
-    const eligible=records.find(record=>
-      record.item.state==="AVAILABLE"&&
-      record.item.routeEligible===true&&
-      record.item.wakeAcknowledged===true
-    )??null;
-    const latest=records[0]?.item??null;
+    const latestRecord=records[0]??null;
+    const eligible=latestRecord&&
+      latestRecord.item.state==="AVAILABLE"&&
+      latestRecord.item.routeEligible===true&&
+      latestRecord.item.wakeAcknowledged===true
+      ?latestRecord:null;
+    const latest=latestRecord?.item??null;
     return {
       endpointId:descriptor.endpointId,
       participantKind:descriptor.participantKind,
