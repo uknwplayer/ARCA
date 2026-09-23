@@ -1,4 +1,5 @@
 import {createPrivateKey} from "node:crypto";
+import {signVinceRecoveryReceipt} from "./vince-recovery-identity.mjs";
 import {
   signMeshNodeAdvertisement,
   signMeshReceipt,
@@ -35,7 +36,8 @@ function publicDescriptor(identity){
       "receipt",
       "request-evidence",
       "cognitive-substitution-receipt",
-      "reconciled-failover-receipt"
+      "reconciled-failover-receipt",
+      "vince-recovery-receipt"
     ])
   });
 }
@@ -98,6 +100,10 @@ export function createVaultMeshSignerBroker({
 ,
     async signReconciledFailoverReceipt(receipt,options={}){
       return withSigner("reconciled-failover-receipt",signer=>signMeshReconciledFailoverReceipt(receipt,signer,options));
+    },
+
+    async signVinceRecoveryReceipt(receipt,options={}){
+      return withSigner("vince-recovery-receipt",signer=>signVinceRecoveryReceipt(receipt,signer,options));
     }
   });
 }
