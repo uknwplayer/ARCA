@@ -167,7 +167,7 @@ M5-R não altera o caminho crítico atual. O gate imediato é corrigir a autenti
 
 ## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
 
-Estado: **VINCE V0.4 IMPLEMENTADO; V1/V2/V3/V3.1 LIVE-PROVEN; V3.2 SIGNED-IDENTITY HARDENING TESTADO OFFLINE; EDGE STEWARD CONTINUA CONGELADO**.
+Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; V4 GATE/VERIFIER CANÔNICOS E REPLIT PREPARADO, MAS RESULT RETURN BLOQUEADO POR AUTORIZAÇÃO; EDGE STEWARD CONGELADO**.
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
@@ -199,7 +199,7 @@ Fases propostas:
 - V3: **LIVE-PROVEN LIMITADO** — failover A→B após falha transitória pré-aceitação, sem DispatchRef em A e sem duplicação; runs `35809204841` / `35809214584`;
 - V3.1: **LIVE-PROVEN LIMITADO** — recovery em runner novo a partir de checkpoint durável e DispatchRef original, sem redispatch; runs `35810698274` / `35810708455`;
 - V3.2: **IMPLEMENTADO / TESTADO OFFLINE** — checkpoint/proof revalidados no Machine Bridge, Execution Identity create-only e recibo Ed25519 em domínio dedicado; prova live aguarda signer persistente;
-- V4: prova entre ambientes independentes com evidência de ida, execução e retorno.
+- V4: **EM PROGRESSO** — gate e verificador GitHub→Replit canônicos; worker Replit isolado implementado; probe 004 inconclusivo porque a escrita do result foi rejeitada por HTTP 403. Próximo gate: corrigir Contents write no canal V4 e executar nova missão one-shot.
 - V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
 
 Dependência Work atual: o plano de execução canônico existe, mas a ligação nativa do evento GitHub do ChatGPT Work ao repositório `uknwplayer/ARCA` ainda não foi provada. Ver PR #90 (probe de liveness) e PR #91 (migração do gatilho). Vince deverá tratar Work como endpoint candidato até existir ACK canônico recente.
