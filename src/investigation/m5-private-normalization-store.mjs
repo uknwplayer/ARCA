@@ -31,13 +31,18 @@ function token(value){
   return out;
 }
 function encoded(path){return path.split("/").map(encodeURIComponent).join("/")}
+const NORMALIZATION_PROOF_SCHEMAS=new Set([
+  "arca.m5-portal-custodial-normalization-proof.v1",
+  "arca.m5-pncp-custodial-normalization-proof.v1"
+]);
+
 function validProof(proof,envelope){
   if(envelope?.schema!=="arca.encrypted-custody-envelope.v0.1"||
      envelope?.status!=="SEALED"||
      envelope?.algorithm!=="AES-256-GCM"||
      envelope?.plaintextIncluded!==false||
      !SAFE_SHA64.test(envelope?.contentRootHash??"")||
-     proof?.schema!=="arca.m5-portal-custodial-normalization-proof.v1"||
+     !NORMALIZATION_PROOF_SCHEMAS.has(proof?.schema)||
      proof?.status!=="NORMALIZED_CUSTODIAL_OFFLINE"||
      proof?.sourceNetworkUsed!==false||
      proof?.portalRequestUsed!==false||
