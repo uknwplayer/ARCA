@@ -1,8 +1,8 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V5 Termux A/B Foundation integrada**
+Checkpoint: **2026-09-23 / Vince V5 Termux A/B Live Proof 010 verificado**
 
-Estado: **Vince V5 Termux A/B integrado e testado: presença Ed25519 READY/WITHDRAWN, freshness fail-closed e seleção de rota sem dispatch; prova live A/B pendente; Work é opcional; Replit é apenas histórico; V4.1.1 preservado; Portal em 401; Edge congelado**
+Estado: **Vince V5 Termux A/B live-proven: A+B READY selecionou A; A WITHDRAWN transferiu a rota para B; zero dispatch; Work opcional; Replit somente histórico; V4.1.1 preservado; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
 Handoff mais recente: [checkpoint 032 — Vince V5 Termux A/B Foundation](ARCA_HANDOFF_CHECKPOINT_2026-09-23_032.md). A PR #144 integrou o caminho V5 sem dependência operacional de Work/Replit: dois workers Termux podem publicar leases `READY/WITHDRAWN` assinadas por Ed25519; o Vince verifica pin, assinatura e freshness e seleciona rota com `dispatchPerformed:false`. Commit canônico `49b7afb348ad651829d593203de35715d27e7758`; CI da PR `35839970387` verde e CI pós-merge `35840109710` verde. O Probe 010 está pré-registrado na issue #143 e aguarda criar/publicar a identidade B no Termux antes da prova live. Work permanece endpoint opcional; a prova 008 continua válida historicamente.
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-Vince: o caminho prioritário passa a ser V5 Termux A/B. A identidade A live-proven (`vince-termux-android-1`) deve ser preservada; criar B em diretório separado, publicar somente sua identidade pública, revisar/pinar B e então executar o Probe 010 em duas fases: A+B `READY` com seleção sem dispatch; depois A `WITHDRAWN` e B `READY`, exigindo seleção de B. Isso prova failover lógico entre workers/identidades, não tolerância à perda física do telefone. Work não bloqueia o Vince e Replit não participa do caminho operacional. Edge Steward permanece congelado.
+Vince: o Probe 010 Termux A/B está live-proven. O próximo gate recomendado é ligar a seleção V5 já provada à execução one-shot V4.1.1 já provada: selecionar exatamente um worker, emitir exatamente um request `git-status`, receber resultado Ed25519, verificar contra o pin e consumir o challenge de forma durável. Sem retry/failover automático nesse gate; qualquer substituição após falha deve exigir reconciliação explícita para impedir execução duplicada. Work continua opcional; Replit não participa do caminho operacional; Edge Steward permanece congelado.
 
 O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
