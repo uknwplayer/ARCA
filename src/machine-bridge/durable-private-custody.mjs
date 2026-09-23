@@ -8,6 +8,7 @@ const LIVE_PROOF_SCHEMA="arca.pncp-controlled-live-probe.v0.1";
 const PORTAL_LIVE_PROOF_SCHEMA="arca.portal-controlled-live-probe.v0.1";
 const PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA="arca.portal-related-documents-controlled-probe.v0.2";
 const PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03="arca.portal-related-documents-controlled-probe.v0.3";
+const PORTAL_AUTH_VALIDATION_PROOF_SCHEMA="arca.portal-auth-validation-controlled-probe.v0.1";
 const MAX_ENVELOPE_BYTES=60*1024*1024;
 const SAFE_REPOSITORY=/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const SAFE_BRANCH=/^[A-Za-z0-9._-]{1,128}$/;
@@ -88,25 +89,33 @@ function portalHttpMetaValid(proof,{final=false}={}){
 
 function validPortalStatusProof(envelope,proof){
   const v03=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03;
-  const statusOk=v03?portalHttpMetaValid(proof,{final:true}):proof?.httpStatusClass==="2xx";
-  const non2xx=v03&&proof.httpStatusClass!=="2xx";
+  const auth=proof?.schema===PORTAL_AUTH_VALIDATION_PROOF_SCHEMA;
+  const modern=v03||auth;
+  const statusOk=modern?portalHttpMetaValid(proof,{final:true}):proof?.httpStatusClass==="2xx";
+  const non2xx=modern&&proof.httpStatusClass!=="2xx";
   const validationOk=non2xx
     ?proof.probeStatus==="FAILED"&&proof.validationStatus==="NOT_APPLICABLE"&&
       !Object.hasOwn(proof,"recordCount")
     :(["VALIDATED","FAILED"].includes(proof?.validationStatus)&&
-      (proof.validationStatus==="VALIDATED"?(proof.probeStatus==="SUCCEEDED"):proof.probeStatus==="FAILED"));
-  const minBytes=v03?0:1;
-  if(![PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(proof?.schema)||
+      (proof.validationStatus==="VALIDATED"?proof.probeStatus==="SUCCEEDED":proof.probeStatus==="FAILED"));
+  const minBytes=modern?0:1;
+  const expectedContract=auth?"PORTAL_AUTH_SITUACAO_IMOVEL":"PORTAL_EXPENSE_RELATED_DOCUMENTS";
+  const maxRecords=auth?100:25;
+  if(![
+       PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,
+       PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03,
+       PORTAL_AUTH_VALIDATION_PROOF_SCHEMA
+     ].includes(proof?.schema)||
      !["SUCCEEDED","FAILED"].includes(proof.probeStatus)||
      proof.captureStatus!=="CAPTURED_AND_SEALED"||
      !["VALIDATED","FAILED","NOT_APPLICABLE"].includes(proof.validationStatus)||
      !validationOk||
      proof.repository!==envelope?.repository||proof.revision!==envelope?.revision||
-     proof.scopeHash!==envelope?.scopeHash||proof.contractId!=="PORTAL_EXPENSE_RELATED_DOCUMENTS"||
+     proof.scopeHash!==envelope?.scopeHash||proof.contractId!==expectedContract||
      !statusOk||proof.responseBytesSha256!==proof.resultHash||
      !SAFE_SHA256.test(proof.resultHash??"")||
      !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<minBytes||proof.responseByteCount>65536||
-     (proof.validationStatus==="VALIDATED"&&(!Number.isSafeInteger(proof.recordCount)||proof.recordCount<0||proof.recordCount>25))||
+     (proof.validationStatus==="VALIDATED"&&(!Number.isSafeInteger(proof.recordCount)||proof.recordCount<0||proof.recordCount>maxRecords))||
      ((proof.validationStatus==="FAILED"||proof.validationStatus==="NOT_APPLICABLE")&&Object.hasOwn(proof,"recordCount"))||
      proof.custody?.encrypted!==true||proof.custody?.plaintextPublished!==false||
      proof.custody?.envelopeHash!==sha256(JSON.stringify(envelope))||
@@ -133,9 +142,12 @@ export function buildDurableCustodyReceipt({
     throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_INVALID");
   const portalV02=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA;
   const portalV03=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03;
+  const portalAuth=proof?.schema===PORTAL_AUTH_VALIDATION_PROOF_SCHEMA;
   const portalRelated=portalV02||portalV03;
-  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(proof?.schema)||
-     (portalRelated
+  const portalCapture=portalRelated||portalAuth;
+  const portalModern=portalV03||portalAuth;
+  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03,PORTAL_AUTH_VALIDATION_PROOF_SCHEMA].includes(proof?.schema)||
+     (portalCapture
        ?(proof?.probeStatus!=="CAPTURING"||proof?.captureStatus!=="CAPTURED_AND_SEALED"||proof?.validationStatus!=="PENDING")
        :proof?.status!=="CAPTURED_AND_SEALED")||
      proof?.networkUsed!==true||
@@ -147,12 +159,12 @@ export function buildDurableCustodyReceipt({
        proof.classifierEmittedSignals!==false||
        proof.investigationIngressUsed!==false||
        proof.automaticAdversePublication!==false))||
-     (portalRelated&&(proof.probeStatus!=="CAPTURING"||proof.captureStatus!=="CAPTURED_AND_SEALED"||
+     (portalCapture&&(proof.probeStatus!=="CAPTURING"||proof.captureStatus!=="CAPTURED_AND_SEALED"||
        proof.validationStatus!=="PENDING"||proof.scopeHash!==envelope.scopeHash||
-       proof.contractId!=="PORTAL_EXPENSE_RELATED_DOCUMENTS"||
-       (portalV03?!portalHttpMetaValid(proof):proof.httpStatusClass!=="2xx")||
+       proof.contractId!==(portalAuth?"PORTAL_AUTH_SITUACAO_IMOVEL":"PORTAL_EXPENSE_RELATED_DOCUMENTS")||
+       (portalModern?!portalHttpMetaValid(proof):proof.httpStatusClass!=="2xx")||
        proof.responseBytesSha256!==proof.resultHash||
-       !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<(portalV03?0:1)||proof.responseByteCount>65536||
+       !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<(portalModern?0:1)||proof.responseByteCount>65536||
        proofHasForbiddenKey(proof))))
     throw new Error("ARCA_DURABLE_CUSTODY_PROOF_INVALID");
 
@@ -183,8 +195,8 @@ export function buildDurableCustodyReceipt({
 
   const base={
     schema:DURABLE_CUSTODY_RECEIPT_SCHEMA,
-    ...([PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(proof.schema)?{proofSchema:proof.schema}:{}),
-    ...(portalRelated?{captureProofHash:sha256(stableStringify(proof))}:{}),
+    ...([PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03,PORTAL_AUTH_VALIDATION_PROOF_SCHEMA].includes(proof.schema)?{proofSchema:proof.schema}:{}),
+    ...(portalCapture?{captureProofHash:sha256(stableStringify(proof))}:{}),
     status:"STORED_PRIVATE",
     storage:"github-private-repository",
     vaultRepository:repo,
@@ -300,7 +312,7 @@ export function createGitHubPrivateCustodyBackend({
       if(envelopeBytes.byteLength>MAX_ENVELOPE_BYTES)
         throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_TOO_LARGE");
       const receiptBytes=Buffer.from(stableStringify(receipt)+"\n","utf8");
-      const captureProofBytes=[PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(receipt.proofSchema)
+      const captureProofBytes=[PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03,PORTAL_AUTH_VALIDATION_PROOF_SCHEMA].includes(receipt.proofSchema)
         ?Buffer.from(stableStringify(proof)+"\n","utf8"):null;
       const prefix=receipt.envelopeHash.slice(0,2);
       const envelopePath=`custody/${prefix}/${receipt.envelopeHash}.envelope.json`;
@@ -429,7 +441,7 @@ export function createGitHubPrivateCustodyBackend({
       validatePublicSafety(receipt);
       if(receipt?.envelopeHash!==envelopeHash||
          receipt?.vaultRepository!==repo||receipt?.vaultBranch!==targetBranch||
-         ![PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(receipt?.proofSchema)||
+         ![PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03,PORTAL_AUTH_VALIDATION_PROOF_SCHEMA].includes(receipt?.proofSchema)||
          receipt?.captureProofHash!==sha256(stableStringify(captureProof))||
          storedCaptureProof.sha!==gitBlobSha(Buffer.from(stableStringify(captureProof)+"\n","utf8"))||
          storedReceiptHash!==proof.durableCustody.receiptHash||
