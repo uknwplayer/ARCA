@@ -12,6 +12,14 @@ on:
         description: Reviewed v0.2 scope SHA-256
         required: true
         type: string
+      token_provenance:
+        description: Must be OFFICIAL_EMAIL_REGISTRATION
+        required: true
+        type: string
+      token_received_at:
+        description: Declared UTC instant when the token was received by email
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -41,6 +49,8 @@ jobs:
           ARCA_PORTAL_SCOPE_SHA256: ${{ inputs.scope_sha256 }}
           ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
           ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: ${{ inputs.token_received_at }}
           ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
           ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
           ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
@@ -55,6 +65,8 @@ jobs:
           ARCA_PORTAL_SCOPE_SHA256: ${{ inputs.scope_sha256 }}
           ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
           ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: ${{ inputs.token_received_at }}
           ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
           ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
           ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
