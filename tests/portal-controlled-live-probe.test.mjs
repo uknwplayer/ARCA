@@ -29,6 +29,8 @@ function validEnv(overrides={}){
     ARCA_PORTAL_CONFIRMATION:"PORTAL_DOCUMENT_GET_ONLY",
     ARCA_PORTAL_DOCUMENT_CODE:documentCode,
     ARCA_PORTAL_API_KEY:apiKey,
+    ARCA_PORTAL_TOKEN_PROVENANCE:"OFFICIAL_EMAIL_REGISTRATION",
+    ARCA_PORTAL_TOKEN_RECEIVED_AT:"2026-09-23T11:00:00.000Z",
     ARCA_PORTAL_CUSTODY_PASSPHRASE:passphrase,
     ARCA_PORTAL_SCOPE_SHA256:scope.scopeSha256,
     ARCA_CUSTODY_VAULT_REPOSITORY:vaultRepository,
@@ -92,7 +94,10 @@ test("Portal probe refuses invalid authorization and private custody before a Po
     {ARCA_PORTAL_API_KEY:""},
     {ARCA_PORTAL_CUSTODY_PASSPHRASE:"short"},
     {ARCA_PORTAL_SCOPE_SHA256:"0".repeat(64)},
-    {GITHUB_SHA:"not-a-revision"}
+    {GITHUB_SHA:"not-a-revision"},
+    {ARCA_PORTAL_TOKEN_PROVENANCE:""},
+    {ARCA_PORTAL_TOKEN_PROVENANCE:"GOVBR_LOGIN"},
+    {ARCA_PORTAL_TOKEN_RECEIVED_AT:""}
   ]){
     const spy=fetchSpy([]);
     await assert.rejects(()=>runPortalRelatedDocumentsProbe({
@@ -118,7 +123,13 @@ test("Portal probe preflight validates scope and private custody without creatin
     env:validEnv(),fetchImpl:spy.fetchImpl,durableCustodyBackend:backend,
     outputDir:context.outputDir,temporaryParent:context.temporaryParent,preflightOnly:true
   });
-  assert.deepEqual(result,{status:"PREFLIGHT_READY",scopeHash:validEnv().ARCA_PORTAL_SCOPE_SHA256});
+  assert.equal(result.status,"PREFLIGHT_READY");
+  assert.equal(result.scopeHash,validEnv().ARCA_PORTAL_SCOPE_SHA256);
+  assert.equal(result.credentialReadiness.activeState,"ACTIVE_UNKNOWN");
+  assert.equal(result.credentialReadiness.activeVerified,false);
+  assert.equal(result.credentialReadiness.networkUsed,false);
+  assert.equal(result.credentialReadiness.tokenIncluded,false);
+  assert.equal(JSON.stringify(result).includes(apiKey),false);
   assert.deepEqual(backend.calls.map(call=>call.type),["preflight"]);
   assert.equal(spy.calls.length,0);
   assert.deepEqual(fs.readdirSync(context.outputDir),[]);
@@ -142,6 +153,10 @@ test("Portal probe persists, seals exact original bytes and emits only a sanitiz
   assert.equal(spy.calls[0].options.headers["chave-api-dados"],apiKey);
   assert.deepEqual(backend.calls.map(call=>call.type),["preflight","persist","status"]);
   assert.equal(result.proof.probeStatus,"SUCCEEDED");
+  assert.equal(result.proof.credentialObservation.observationState,"ACCEPTED_ON_OBSERVED_REQUEST");
+  assert.equal(result.proof.credentialObservation.activeVerified,true);
+  assert.equal(result.proof.credentialReadiness.activeState,"ACTIVE_UNKNOWN");
+  assert.equal(JSON.stringify(result.proof).includes(apiKey),false);
   assert.equal(result.proof.captureStatus,"CAPTURED_AND_SEALED");
   assert.equal(result.proof.validationStatus,"VALIDATED");
   assert.equal(result.proof.recordCount,1);
