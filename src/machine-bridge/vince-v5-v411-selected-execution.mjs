@@ -381,7 +381,9 @@ export async function proveV5SelectedV411ReplayRejected({
   if(!hasV41AcceptedChallenge(registry,request.challenge))
     throw new Error("VINCE_V5_V411_REPLAY_NOT_YET_CONSUMED");
   const entry=registry.entries.find(x=>x.challengeSha256===v41ChallengeSha256(request.challenge));
-  if(!entry||entry.missionId!==jobId)throw new Error("VINCE_V5_V411_REPLAY_ENTRY_MISMATCH");
+  if(!entry||entry.missionId!==jobId||request.jobId!==jobId||
+     entry.requestSha256!==v5V411Sha256(request))
+    throw new Error("VINCE_V5_V411_REPLAY_ENTRY_MISMATCH");
   return Object.freeze({
     status:"DURABLE_REPLAY_REJECTED",
     missionId:jobId,
