@@ -18,7 +18,7 @@ jobs:
       github.event.issue.number == 97 &&
       github.event.issue.state == 'open' &&
       github.event.comment.user.login == 'uknwplayer' &&
-      github.event.comment.body == 'ARCA_PORTAL_LIVE_AUTHORIZATION_001_EXECUTE'
+      github.event.comment.body == 'ARCA_PORTAL_LIVE_AUTHORIZATION_001_RETRY_ONCE'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
