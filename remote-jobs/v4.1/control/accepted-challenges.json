@@ -11,6 +11,16 @@
       "proofSha256": "5112d8a007da47d94beb2e1a3d98d3f506a19c4a538f3502032dad16aa3bfd2a",
       "workerNodeId": "vince-termux-android-1",
       "workerKeyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1"
+    },
+    {
+      "acceptedAt": "2026-09-23T10:09:59.940Z",
+      "challengeSha256": "be3bcb7f25e8fe56567d1d84473e895ee8a9c8bc09078a988fe125754ecb5f8e",
+      "missionId": "vince-v41-v5-selected-live-011",
+      "requestSha256": "e6fe5cfb8f2df3f2dde12e8a9dd31b4cef5c00a48388c7d6c9af2623762ce0ec",
+      "resultSha256": "f01be6a3d6b31d143d6c11094ab0a2903d0bd8a83e4fed1247d3e7a795e471e6",
+      "proofSha256": "6c4f1915c6d369be62e29ff844d779fafdcd289be25e2a128a2c07439982b5cc",
+      "workerNodeId": "vince-termux-android-2",
+      "workerKeyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0"
     }
   ]
 }
