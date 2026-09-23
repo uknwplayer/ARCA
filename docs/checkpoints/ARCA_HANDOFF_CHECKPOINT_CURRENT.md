@@ -31,6 +31,12 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 - **Vince Discovery Global / Connectivity Investigator** registrado como capacidade futura, mundial, incluindo China, somente por superfícies públicas/allowlisted/explicitamente conectadas e sem bypass de autenticação.
 - Essas decisões não reativam Vince/Edge nem alteram o caminho crítico M5.
 
+## Decisões futuras registradas
+
+- **M10 — Produto, governança, interface e acesso**: totalmente congelado até o ARCA estar funcional de ponta a ponta e haver decisão humana explícita. Abrange Política de Privacidade, Política de Segurança, Termos de Uso, frontend/site, design próprio inspirado em princípios de organização do gov.br sem imitação institucional, conclusão do Painel do Criador e análise sobre necessidade de login.
+- **M7-CIV — Inteligência cívica documental**: planejado para projetos de lei, atividade legislativa e histórico público institucional/judicial/administrativo de agentes públicos. O ARCA avaliará confiabilidade de fonte/evidência, não “confiabilidade” de pessoas; processos, acusações, condenações, absolvições e sanções serão estados distintos e nunca convertidos automaticamente em culpa.
+- Essas frentes não alteram o caminho crítico M5.
+
 ## Retomada imediata
 
 M5 é novamente o caminho crítico. Fases A e B estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado, custodiar a resposta, observar o schema real e só então construir/revisar o parser que alimentará a Fase B. **Não executar quarto GET por inferência.** Até haver token oficialmente ativo + autorização explícita nova, continuar apenas com preparação fail-closed que não invente schema live.
