@@ -82,6 +82,9 @@ jobs:
       - name: Validar parser PNCP live observado
         run: npm run validate:m5-pncp-live-parser
 
+      - name: Validar autorização da normalização PNCP
+        run: npm run validate:m5-pncp-normalization-auth
+
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 
