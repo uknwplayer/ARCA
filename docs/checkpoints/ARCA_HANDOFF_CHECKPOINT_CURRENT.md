@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Gate 040 com prova operacional concluída; quarto GET ainda bloqueado**
+Checkpoint: **2026-09-23 / Gate 042 — quarto GET retornou 401 e foi custodial; diagnóstico offline ativo**
 
-Estado: **M5 Fases A+B+C+D+E offline integradas e testadas; Gate 040 com prova operacional real concluída usando secrets reais e zero GET Portal; hashes sanitizados revisados; M5 live ainda não aceito; quarto GET permanece bloqueado; Portal segue sem primeiro 2xx real; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **M5 Fases A+B+C+D+E integradas/testadas; quarto GET Portal executado exatamente uma vez no run 35886041113 e retornou HTTP 401; resposta de 169 bytes selada e armazenada em custódia privada; retries=0; credencial continua sem atividade comprovada; primeiro 2xx Portal segue pendente; nenhuma nova tentativa autorizada; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 041 — Gate 040 com prova operacional concluída; quarto GET ainda bloqueado](ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md). O run `35884318441` concluiu com `success` usando secrets reais, sem capability de request ao Portal, e produziu os três vínculos sanitizados revisados. A PR #173 continua vinculando o live probe ao scope, digest do Gate 040 e fingerprint da credencial; qualquer drift falha antes da criação do transporte. Nenhum quarto GET foi executado.
+Handoff mais recente: [checkpoint 042 — quarto GET retornou 401 e foi custodial; diagnóstico offline ativo](ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md). O run `35886041113` executou exatamente um GET na revisão `268c8e385d8345d5a02ce2fd3350b1ea1088481a`, após preflight/binding válidos, recebeu HTTP 401 e encerrou sem retry. A resposta foi criptografada e persistida em custódia privada; nenhum plaintext foi publicado. A autorização daquele GET foi consumida e não existe nova autorização de rede.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. Fases A, B, C, D e E estão integradas e testadas offline. O Gate 040 isolado já foi executado com os secrets reais no run `35884318441` e passou sem possuir capability de GET ao Portal. Os hashes sanitizados foram revisados e o estado permanece `ACTIVE_UNKNOWN`, como esperado sem chamada à API. O próximo passo operacional possível é uma **autorização humana explícita e separada para exatamente um GET**, vinculada ao `scopeHash`, `preflightSha256` e `credentialFingerprintSha256` do checkpoint 041. O bloqueio live final continua sendo obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.**
+M5 continua o caminho crítico. Fases A, B, C, D e E estão integradas e testadas. O quarto GET controlado foi executado no run `35886041113`: o binding passou, houve exatamente uma requisição, HTTP 401, `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, `retries=0`, e a resposta foi selada/custodiada. O fingerprint da credencial usada coincide com a chave do e-mail oficial mais recente. O contrato HTTP atual foi revalidado offline: host/rota e header `chave-api-dados` estão coerentes com a documentação oficial. **Não há nova autorização de rede.** O próximo passo é diagnóstico offline/suporte do Portal; qualquer nova tentativa exigirá novo Gate 040, revisão dos novos hashes e nova autorização humana explícita.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_039.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md`;
@@ -204,7 +205,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 041. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 042. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
