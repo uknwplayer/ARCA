@@ -156,7 +156,9 @@ Componente: `m5-d-prontidao-credencial-portal`.
 
 Função: separar token presente/formato/proveniência de atividade real. Produz fingerprint sanitizado e mantém `ACTIVE_UNKNOWN` até observação da própria API.
 
-Recuperação: em 401, preservar status e fingerprint, revisar emissão/configuração/documentação e exigir nova autorização antes de qualquer nova tentativa. Nunca concluir causa específica apenas pelo código HTTP.
+Observação live atual: run `35886041113` retornou HTTP 401 após binding válido. Estado: `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`; resposta de 169 bytes selada e armazenada em custódia privada, sem retry. O fingerprint canônico usado no request foi `37c90b46b7e1a4fcf699aee3f94979829cb044d13979cfbf05a229cd869a8092`, conferido contra o e-mail oficial mais recente.
+
+Recuperação: em 401, preservar status e fingerprint, revisar emissão/configuração/documentação e exigir nova autorização antes de qualquer nova tentativa. Nunca concluir causa específica apenas pelo código HTTP. Gate 042 prioriza suporte/diagnóstico offline antes de qualquer quinto GET.
 
 
 ### Gate 040 — preflight Portal isolado
@@ -165,7 +167,7 @@ Componente: `portal-isolated-preflight`.
 
 Função: validar fingerprint/proveniência da credencial, scope e cofre privado sem possuir capability de request ao endpoint do Portal.
 
-Prova operacional: run `35884318441` concluído com `success` usando secrets reais, `READY_FOR_EXPLICIT_AUTHORIZATION`, `ACTIVE_UNKNOWN`, cofre privado pronto e `portalNetworkUsed=false`. Os vínculos sanitizados estão registrados no checkpoint 041.
+Prova operacional histórica: run `35884318441` concluiu o primeiro preflight real. Após o merge documental, o Gate 040 foi refeito no run `35885734963` na revisão `268c8e385d8345d5a02ce2fd3350b1ea1088481a`; seus vínculos foram consumidos pelo quarto GET do run `35886041113`. Qualquer próximo request exige novo Gate 040.
 
 Recuperação: qualquer falha ou drift mantém rede Portal não autorizada. Corrigir metadado, secret ou cofre e repetir somente o preflight. O quarto GET continua em gate humano separado.
 
@@ -203,3 +205,16 @@ Componente: `m5-e-preflight-binding`.
 Função: vincular o live probe ao estado sanitizado e revisado do Gate 040. Mudança de revisão, documento, credencial ou cofre invalida o digest antes da criação do transporte Portal.
 
 Recuperação: gerar novo preflight, revisar novos hashes e exigir nova autorização humana; nunca adaptar/reutilizar autorização automaticamente.
+
+
+### Gate 042 — diagnóstico offline do quarto 401
+
+Componente operacional/documental: `m5-gate-042-portal-401-diagnostico`.
+
+Função: consolidar a prova 401 custodial, revalidar contrato HTTP e credencial sem rede, preparar suporte técnico e impedir retry cego.
+
+Estado: **ATIVO / ZERO NOVO GET / issue #176**.
+
+Evidência canônica: run `35886041113`, HTTP 401, `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, 1 request, `retries=0`, `CAPTURED_AND_SEALED`, `STORED_PRIVATE`.
+
+Recuperação: suporte técnico/diagnóstico offline; se houver necessidade futura de teste diferencial, novo Gate 040 + autorização humana específica para um único endpoint allowlisted. Nenhuma autorização antiga é reutilizável.
