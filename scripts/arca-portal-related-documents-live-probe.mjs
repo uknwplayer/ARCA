@@ -279,6 +279,10 @@ async function main(){
       validationStatus:result.proof.validationStatus,
       scopeHash:result.proof.scopeHash,
       envelopeHash:result.proof.custody.envelopeHash,
+      ...(result.proof.schemaObservation?{
+        schemaObservationState:result.proof.schemaObservation.observationState,
+        observedSchemaSha256:result.proof.schemaObservation.observedSchemaSha256
+      }:{}),
       proofPath:path.basename(result.proofPath),
       envelopePath:path.basename(result.envelopePath)
     })+"\n");
