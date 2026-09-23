@@ -8,6 +8,7 @@ import {
 } from "./public-source-contract.mjs";
 import {createDurableInvestigationQueue} from "../machine-bridge/investigation-queue.mjs";
 import {createOfflinePortalExpensesAdapter} from "./portal-expenses-offline-adapter.mjs";
+import {createOfflineTransferegovSpecialTransfersAdapter} from "./transferegov-special-transfers-offline-adapter.mjs";
 import {FINANCIAL_CORRELATION_REPORT_SCHEMA} from "./financial-correlation-offline.mjs";
 
 export const MULTISOURCE_OFFLINE_GATE_SCHEMA="arca.multisource-offline-gate.v1";
@@ -241,10 +242,15 @@ function comparabilityAgent(context){
   const assessment=context.sourceIds.length<2
     ?"SECOND_SOURCE_REQUIRED"
     :context.correlation?"CROSS_SOURCE_CORRELATION_AVAILABLE":"MULTISOURCE_COMPARISON_AVAILABLE";
+  let sourceObservation="Offline fixture does not by itself prove a cross-source relation or physical delivery";
+  if(context.sourceIds.includes("br.pncp.public-api"))
+    sourceObservation="PNCP describes procurement records but does not prove payment or physical delivery";
+  else if(context.sourceIds.includes("br.portal-transparencia.download-despesas"))
+    sourceObservation="Portal payment fixture does not prove a procurement link or physical delivery";
+  else if(context.sourceIds.includes("br.transferegov.public"))
+    sourceObservation="Transferegov transfer fixture provides transfer/execution context but does not prove procurement linkage or physical delivery";
   const observations=[
-    context.sourceIds.includes("br.pncp.public-api")
-      ?"PNCP describes procurement records but does not prove payment or physical delivery"
-      :"Portal payment fixture does not prove a procurement link or physical delivery",
+    sourceObservation,
     "No automated adverse conclusion is permitted from this offline gate"
   ];
   if(context.correlation){
@@ -301,7 +307,7 @@ function adversarialVerify({reports,envelopes,gaps,correlation=null}){
   });
 }
 
-export async function runMultisourceOfflineGate({registry,fixture,queueRoot,adapters=[createOfflinePncpAdapter(),createOfflinePortalExpensesAdapter()],agents=createIndependentOfflineAgents(),correlationReport=null,triggerKind="SCHEDULED_REVIEW",triggerRef=null,participantRef=null,networkEnabled=false,publicationEnabled=false,clock=()=>new Date()}={}){
+export async function runMultisourceOfflineGate({registry,fixture,queueRoot,adapters=[createOfflinePncpAdapter(),createOfflinePortalExpensesAdapter(),createOfflineTransferegovSpecialTransfersAdapter()],agents=createIndependentOfflineAgents(),correlationReport=null,triggerKind="SCHEDULED_REVIEW",triggerRef=null,participantRef=null,networkEnabled=false,publicationEnabled=false,clock=()=>new Date()}={}){
   if(networkEnabled!==false)throw new Error("ARCA_MULTISOURCE_NETWORK_FORBIDDEN");
   if(publicationEnabled!==false)throw new Error("ARCA_MULTISOURCE_PUBLICATION_FORBIDDEN");
   if(!registry||registry.schema!=="arca.public-source-registry.v1")throw new Error("ARCA_MULTISOURCE_REGISTRY_REQUIRED");
