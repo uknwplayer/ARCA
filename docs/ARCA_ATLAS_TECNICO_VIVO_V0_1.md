@@ -165,7 +165,9 @@ Componente: `portal-isolated-preflight`.
 
 Função: validar fingerprint/proveniência da credencial, scope e cofre privado sem possuir capability de request ao endpoint do Portal.
 
-Recuperação: qualquer falha mantém rede Portal não autorizada. Corrigir metadado, secret ou cofre e repetir somente o preflight. O quarto GET continua em gate humano separado.
+Prova operacional: run `35884318441` concluído com `success` usando secrets reais, `READY_FOR_EXPLICIT_AUTHORIZATION`, `ACTIVE_UNKNOWN`, cofre privado pronto e `portalNetworkUsed=false`. Os vínculos sanitizados estão registrados no checkpoint 041.
+
+Recuperação: qualquer falha ou drift mantém rede Portal não autorizada. Corrigir metadado, secret ou cofre e repetir somente o preflight. O quarto GET continua em gate humano separado.
 
 
 ### ARCA Device Agent / Runtime Autônomo Local
@@ -194,7 +196,7 @@ Documento canônico: `docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md`.
 
 ### M5-E — binding do preflight ao probe live
 
-Estado canônico da M5-E: **integrado/testado offline**. O Gate 040 está **implementado/testado offline**, com prova operacional pelos secrets reais ainda pendente.
+Estado canônico da M5-E: **integrado/testado offline com binding exercitado em preflight operacional real**. O Gate 040 está **implementado/testado e com prova operacional concluída pelos secrets reais**, sem GET Portal.
 
 Componente: `m5-e-preflight-binding`.
 
