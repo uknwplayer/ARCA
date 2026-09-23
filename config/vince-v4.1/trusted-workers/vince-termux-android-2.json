@@ -1,0 +1,26 @@
+{
+  "format": "arca-vince-v4.1-worker-pin",
+  "version": 1,
+  "workerKind": "termux-android",
+  "identity": {
+    "nodeId": "vince-termux-android-2",
+    "algorithm": "Ed25519",
+    "publicKeySpki": "MCowBQYDK2VwAyEAgbkP6f+JzJU/tkxiegUVaGsdjh2W1alZ7W12JyA2VpA=",
+    "keyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0"
+  },
+  "source": {
+    "repository": "uknwplayer/ARCA",
+    "branch": "vince-v41-termux-channel",
+    "path": "remote-jobs/v4.1/identities/vince-termux-android-2.json",
+    "blobSha": "48c9a9cae72e230449463468176a32f7b8a68c31"
+  },
+  "reviewedAt": "2026-09-23T09:05:00.000Z",
+  "policy": {
+    "action": "git-status",
+    "automaticRetryAllowed": false,
+    "failoverAllowed": false,
+    "authorityExpanded": false,
+    "coreMutationAllowed": false,
+    "trustModificationAllowed": false
+  }
+}
