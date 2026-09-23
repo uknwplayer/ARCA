@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / autenticação Portal diagnosticada; custódia HTTP V0.3 integrada**
+Checkpoint: **2026-09-23 / Vince Pathfinder Live Proof 001 verificado**
 
-Estado: **M4a/M4b e M5 Fase A integrados; três GETs Portal retornaram 401; probe V0.3 agora custodia respostas HTTP de erro; nenhum quarto GET autorizado**
+Estado: **Vince V0.1 canônico e live-proven em rota satélite limitada; Portal permanece bloqueado em 401; Edge Steward congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 020 — diagnóstico de autenticação + custódia HTTP V0.3](ARCA_HANDOFF_CHECKPOINT_2026-09-23_020.md). Três GETs autorizados retornaram `401`; o terceiro já usou token novo. A PR #107 integrou custódia limitada de respostas 4xx/5xx para que futuras falhas também deixem evidência criptográfica. Nenhum quarto GET está autorizado.
+Handoff mais recente: [checkpoint 021 — Vince Pathfinder Live Proof 001](ARCA_HANDOFF_CHECKPOINT_2026-09-23_021.md). O run `35808000764` selecionou `github-satellite-linux`, recebeu ACK de fila, observou execução remota no run `35808010876` e reconciliou `VERIFIED_RESULT`, sem mutação do Core, trust ou autoridade. Portal permanece no estado do checkpoint 020; nenhum quarto GET está autorizado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
