@@ -253,9 +253,10 @@ class VincePathfinder:
             "trust_modified": False,
             "authority_expanded": False,
         }
+        instance = dict(material)
+        instance["attempted_executor_ids"] = tuple(material["attempted_executor_ids"])
         return VincePathfinderProof(
-            **material,
-            attempted_executor_ids=tuple(material["attempted_executor_ids"]),
+            **instance,
             proof_sha256=_sha256_json(material),
         )
 
