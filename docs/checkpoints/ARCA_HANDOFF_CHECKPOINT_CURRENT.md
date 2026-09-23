@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V4.1.1 Durable Control-Plane Replay Proof verificado**
+Checkpoint: **2026-09-23 / Vince V5 Work Read-only Availability Proof 008 verificado**
 
-Estado: **Vince V4.1.1 live-proven: Termux com Ed25519 pinada + challenge aceito durável + replay em novo verifier falha fechado; Portal em 401; Edge congelado**
+Estado: **Vince V5 foundation integrada e live-proven em observação read-only: superfície GitHub/PR do Work alcançável, executor Work INCONCLUSIVE e não roteável sem ACK recente; V4.1.1 preservado; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 030 — Vince V4.1.1 Durable Control-Plane Replay Proof](ARCA_HANDOFF_CHECKPOINT_2026-09-23_030.md). A PR #134 integrou o registry durável e o consumo com compare-and-swap; a PR #135 adicionou o gatilho read-only da prova. O run `35832175245` reprocessou a prova histórica 006 em um verifier novo e observou `VINCE_V41_CHALLENGE_REPLAY` / `DURABLE_REPLAY_REJECTED`, com `workerReexecuted:false`. V4.1.1 está concluído; próximo gate Vince: V5 endpoint availability/routing.
+Handoff mais recente: [checkpoint 031 — Vince V5 Work Read-only Availability Proof 008](ARCA_HANDOFF_CHECKPOINT_2026-09-23_031.md). A PR #137 integrou o modelo V5 de disponibilidade/roteamento e a PR #139 integrou o probe read-only. O run `35833356337` observou a PR #90 sem wake: `surfaceReachable:true`, estado `INCONCLUSIVE / SURFACE_REACHABLE_EXECUTION_UNPROVEN`, 1 candidato, 0 elegíveis, `selectedEndpointId:null` e `dispatchPerformed:false`. Work continua candidato e não deve ser promovido para `AVAILABLE` sem ACK recente correlacionado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-Vince: V4.1.1 está concluído e canônico. O worker Termux V4.1 permanece one-shot, a identidade Ed25519 continua pinada e o plano de controle agora persiste challenges aceitos no canal dedicado. A prova de replay em processo novo passou sem reexecutar o celular. Próximo gate funcional: V5 endpoint availability/routing, mantendo Edge Steward congelado.
+Vince: V5 foundation está canônica e a primeira observação live read-only passou. O heartbeat da PR #90 prova somente que a superfície GitHub configurada é alcançável; como não há ACK recente correlacionado, o Work permanece `INCONCLUSIVE`, não elegível e nenhuma rota foi disparada. O worker Termux V4.1.1 continua preservado com attestation/replay durável. Próximo gate V5 para Work: wake + ACK correlacionado em prova separada; não inferir disponibilidade pelo heartbeat. Edge Steward permanece congelado.
 
 O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
