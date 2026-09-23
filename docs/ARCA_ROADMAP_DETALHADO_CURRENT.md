@@ -115,13 +115,13 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live ocorreram sob autorizações #97, #101 e #104 e todos retornaram `UNAUTHORIZED`; o terceiro já usou token novo confirmado offline. A PR #107 integrou custódia criptográfica de respostas HTTP de erro. Próximo avanço exige confirmar a emissão do token pelo fluxo oficial de cadastro de e-mail e recebimento por e-mail e nova autorização explícita antes de qualquer quarto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
+Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live ocorreram sob autorizações #97, #101 e #104 e todos retornaram `UNAUTHORIZED`; o terceiro já usou token novo confirmado offline. A PR #107 integrou custódia criptográfica de respostas HTTP de erro. A emissão do token pelo fluxo oficial de cadastro/recebimento por e-mail foi confirmada e o Gate 040 passou operacionalmente no run `35884318441`, sem GET Portal. O próximo avanço exige nova autorização humana explícita antes de qualquer quarto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C+D+E OFFLINE INTEGRADAS E TESTADAS; GATE 040 IMPLEMENTADO/TESTADO E AGUARDANDO PROVA OPERACIONAL; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
+Estado: **FASES A+B+C+D+E OFFLINE INTEGRADAS E TESTADAS; GATE 040 COM PROVA OPERACIONAL CONCLUÍDA SEM GET PORTAL; CADEIA LIVE AINDA AGUARDA AUTORIZAÇÃO EXPLÍCITA DO QUARTO GET E PRIMEIRO 2xx PORTAL**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -177,7 +177,18 @@ Ver `docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md`. O CI canônico executa `
 
 ### Gate 040 — preflight Portal isolado sem captura
 
-Estado: **IMPLEMENTADO E TESTADO OFFLINE / PR #168 / CI #348 E #349 VERDES / PROVA OPERACIONAL COM SECRETS REAIS PENDENTE / sem GET Portal**.
+Estado: **IMPLEMENTADO E TESTADO / PR #168 / CI #348 E #349 VERDES / PROVA OPERACIONAL COM SECRETS REAIS CONCLUÍDA NO RUN `35884318441` / zero GET Portal**.
+
+Prova operacional sanitizada:
+- revisão: `133e7943e1eac9d90be79652d7544787ba1613fa`;
+- `scopeHash`: `06702c06faac9eea05c6ce5e7a0577dec807d33edeb23750c8d6a66b98710685`;
+- `preflightSha256`: `8fbf3113c6d30895b05d31d9c3a6483ae320cd627b0d17984fc1e6d202dc0356`;
+- `credentialFingerprintSha256`: `37c90b46b7e1a4fcf699aee3f94979829cb044d13979cfbf05a229cd869a8092`;
+- `credentialActiveState=ACTIVE_UNKNOWN`;
+- `custodyReady=true`, `custodyPrivate=true`;
+- `portalNetworkUsed=false`, `portalNetworkAuthorized=false`, `portalRequestCapabilityPresent=false`.
+
+O próximo gate continua sendo humano e separado: autorização explícita para exatamente um GET vinculado a esses três hashes.
 
 Objetivo: validar a credencial, o escopo derivado e a disponibilidade do cofre em um workflow que não possui etapa de captura nem importa o transporte do Portal.
 

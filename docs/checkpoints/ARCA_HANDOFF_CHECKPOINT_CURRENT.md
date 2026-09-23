@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / M5 Fase E integrada e Gate 040 pronto para prova operacional**
+Checkpoint: **2026-09-23 / Gate 040 com prova operacional concluída; quarto GET ainda bloqueado**
 
-Estado: **M5 Fases A+B+C+D+E offline integradas e testadas; Gate 040 implementado/testado sem GET Portal e aguardando prova operacional; M5 live ainda não aceito; Portal segue sem primeiro 2xx real; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **M5 Fases A+B+C+D+E offline integradas e testadas; Gate 040 com prova operacional real concluída usando secrets reais e zero GET Portal; hashes sanitizados revisados; M5 live ainda não aceito; quarto GET permanece bloqueado; Portal segue sem primeiro 2xx real; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 040 — M5 Fase E integrada e Gate 040 pronto para prova operacional](ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md). A PR #173 vinculou o live probe ao scope, digest do Gate 040 e fingerprint da credencial; qualquer drift falha antes da criação do transporte. Nenhum quarto GET foi executado.
+Handoff mais recente: [checkpoint 041 — Gate 040 com prova operacional concluída; quarto GET ainda bloqueado](ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md). O run `35884318441` concluiu com `success` usando secrets reais, sem capability de request ao Portal, e produziu os três vínculos sanitizados revisados. A PR #173 continua vinculando o live probe ao scope, digest do Gate 040 e fingerprint da credencial; qualquer drift falha antes da criação do transporte. Nenhum quarto GET foi executado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -63,14 +63,15 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 - O live probe exige binding exato de scope + preflight + fingerprint.
 - Mudança de token/revisão/documento/cofre falha antes da criação do transporte.
 - A Fase E não autoriza o quarto GET; autorização humana continua separada.
+- Prova operacional do Gate 040: run `35884318441` — **success**, `READY_FOR_EXPLICIT_AUTHORIZATION`, `ACTIVE_UNKNOWN`, cofre privado pronto e `portalNetworkUsed=false`.
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. Fases A, B, C, D e E estão integradas e testadas offline. O próximo passo operacional é executar o Gate 040 isolado com os secrets reais; esse gate não possui capability de GET ao Portal. Somente depois da revisão dos hashes poderá existir uma autorização humana separada para um único GET. O bloqueio live final continua sendo obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até um token obtido pelo fluxo oficial ser submetido a preflight e houver autorização explícita nova, continuar apenas com preparação fail-closed. Atividade real da credencial permanece ACTIVE_UNKNOWN até observação da própria API.
+M5 continua o caminho crítico. Fases A, B, C, D e E estão integradas e testadas offline. O Gate 040 isolado já foi executado com os secrets reais no run `35884318441` e passou sem possuir capability de GET ao Portal. Os hashes sanitizados foram revisados e o estado permanece `ACTIVE_UNKNOWN`, como esperado sem chamada à API. O próximo passo operacional possível é uma **autorização humana explícita e separada para exatamente um GET**, vinculada ao `scopeHash`, `preflightSha256` e `credentialFingerprintSha256` do checkpoint 041. O bloqueio live final continua sendo obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.**
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O gate imediato é executar o Gate 040 isolado com os secrets reais e revisar sua saída sanitizada; atividade real da credencial só poderá ser observada pela própria API em um GET explicitamente autorizado. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O Gate 040 isolado já foi executado com os secrets reais e sua saída sanitizada foi revisada; atividade real da credencial só poderá ser observada pela própria API em um GET explicitamente autorizado. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 
@@ -82,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_039.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_037.md`;
@@ -202,7 +204,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 040. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 041. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

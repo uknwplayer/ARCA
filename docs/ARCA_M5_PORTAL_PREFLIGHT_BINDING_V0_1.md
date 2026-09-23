@@ -1,6 +1,6 @@
 # ARCA — M5 Fase E: Binding do preflight ao probe live V0.1
 
-Estado: **IMPLEMENTAÇÃO CANDIDATA / OFFLINE / SEM QUARTO GET**.
+Estado: **INTEGRADO / BINDING VALIDADO EM PREFLIGHT OPERACIONAL REAL / SEM QUARTO GET**.
 
 Issue: #172.
 
@@ -105,4 +105,4 @@ Um mismatch nunca autoriza retry automático. É necessário produzir/revisar no
 
 Esta implementação não executa o Portal.
 
-O Gate 040 ainda precisa de uma prova operacional com os secrets reais. Depois dela, os hashes sanitizados poderão alimentar o workflow live, mas o quarto GET continua dependendo de autorização explícita separada.
+O Gate 040 concluiu a prova operacional com secrets reais no run `35884318441`, sem acesso ao Portal. Os hashes sanitizados revisados podem alimentar o workflow live, mas o quarto GET continua dependendo de autorização humana explícita e separada. Qualquer drift de revisão, documento, credencial ou cofre invalida esses vínculos e exige novo Gate 040.

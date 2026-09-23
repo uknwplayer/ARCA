@@ -919,7 +919,7 @@
       "nome": "Gate 040 — Preflight Portal isolado sem captura",
       "tipo": "seguranca_investigacao",
       "finalidade": "Validar credencial, escopo e cofre sem capability de request ao Portal.",
-      "estado": "implementado_testado_offline_prova_operacional_pendente",
+      "estado": "implementado_testado_prova_operacional_concluida_sem_get_portal",
       "localizacao": [
         "scripts/arca-portal-isolated-preflight.mjs",
         ".github/workflows/arca-portal-isolated-preflight.yml"
