@@ -337,13 +337,14 @@ export function selectVinceV5Route({
       capabilities:[...descriptor.capabilities],
       eligible:Boolean(eligible),
       eligibleObservedAt:eligible?.item?.observedAt??null,
+      eligibleEvidenceAt:eligible?.item?.evidence?.ackObservedAt??eligible?.item?.observedAt??null,
       latestState:latest?.state??"INCONCLUSIVE",
       latestReason:latest?.reason??"NO_FRESH_OBSERVATION"
     };
   });
 
   const eligible=evaluated.filter(item=>item.eligible).sort((a,b)=>
-    String(b.eligibleObservedAt).localeCompare(String(a.eligibleObservedAt))||
+    String(b.eligibleEvidenceAt).localeCompare(String(a.eligibleEvidenceAt))||
     a.endpointId.localeCompare(b.endpointId)
   );
   const selected=eligible[0]??null;
