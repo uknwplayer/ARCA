@@ -54,9 +54,15 @@ test("preflight isolado valida prontidão sem capability de request Portal",asyn
   assert.equal(result.rawDocumentCodeIncluded,false);
   assert.match(result.scopeHash,/^[a-f0-9]{64}$/);
   assert.match(result.credentialFingerprintSha256,/^[a-f0-9]{64}$/);
+  assert.match(result.preflightSha256,/^[a-f0-9]{64}$/);
   const serialized=JSON.stringify(result);
   assert.equal(serialized.includes(apiKey),false);
   assert.equal(serialized.includes(documentCode),false);
+  const again=await runPortalIsolatedPreflight({
+    env:env(),
+    durableCustodyBackend:custody()
+  });
+  assert.equal(again.preflightSha256,result.preflightSha256);
 });
 
 test("preflight isolado falha fechado antes de custódia quando metadados são inválidos",async()=>{
