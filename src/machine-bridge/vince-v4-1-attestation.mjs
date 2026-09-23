@@ -107,8 +107,14 @@ export function verifyV41AttestedResult({
   result,
   pinnedIdentity,
   challengeLedger,
-  now=new Date()
+  now=new Date(),
+  remoteEnvironment="replit",
+  transport="github-contents-v4.1"
 }={}){
+  if(!["replit","termux-android"].includes(remoteEnvironment))
+    throw new Error("VINCE_V41_REMOTE_ENVIRONMENT_INVALID");
+  if(transport!=="github-contents-v4.1")
+    throw new Error("VINCE_V41_TRANSPORT_INVALID");
   const {requestSha256}=validateV41Request(request,{now});
   if(!plain(result)||result.format!==ARCA_VINCE_V41_RESULT_FORMAT||result.protocolVersion!=="4.1")
     throw new Error("VINCE_V41_RESULT_SCHEMA_INVALID");
@@ -169,8 +175,8 @@ export function verifyV41AttestedResult({
     resultSha256:result.resultSha256,
     workerNodeId:result.workerIdentity.nodeId,
     workerKeyFingerprint:result.workerIdentity.keyFingerprint,
-    remoteEnvironment:"replit",
-    transport:"github-contents-v4.1",
+    remoteEnvironment,
+    transport,
     gitBranch:result.gitBranch,
     gitHead:result.gitHead,
     gitDirty:result.gitDirty,
