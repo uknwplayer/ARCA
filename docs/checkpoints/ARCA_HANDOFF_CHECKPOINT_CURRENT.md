@@ -47,6 +47,14 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 - PocketPal pode servir como fallback local/manual e bancada de benchmark, sem virar dependência do ARCA.
 - Isso não é transferência da instância ChatGPT hospedada para o telefone; é um runtime/modelo local separado que pode interoperar com o ARCA.
 
+## Frente futura registrada — ARCA AI Gateway / OpenAI-compatible
+
+- Planejado e congelado até solicitação explícita do usuário.
+- Pode usar OpenAI API sem servidor próprio.
+- Custos tratados por uso/budget e revalidados no momento da ativação.
+- Futuramente pode rotear entre OpenAI, modelos locais, servidores próprios e outros providers compatíveis.
+- Nenhuma API key, billing ou chamada externa ativada enquanto congelado.
+
 ## Retomada imediata
 
 M5 continua o caminho crítico. Fases A, B, C e D estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até um token obtido pelo fluxo oficial ser submetido a preflight e houver autorização explícita nova, continuar apenas com preparação fail-closed. Atividade real da credencial permanece ACTIVE_UNKNOWN até observação da própria API.
