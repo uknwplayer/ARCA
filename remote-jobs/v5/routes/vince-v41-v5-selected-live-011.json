@@ -1,0 +1,110 @@
+{
+  "format": "arca-vince-v5-termux-route-proof-v1",
+  "version": 1,
+  "observedAt": "2026-09-23T10:07:47.131Z",
+  "observations": [
+    {
+      "format": "arca-vince-v5-endpoint-availability-v1",
+      "version": 1,
+      "endpointId": "vince-termux-android-1",
+      "state": "INCONCLUSIVE",
+      "reason": "SIGNED_PRESENCE_WITHDRAWN",
+      "source": "termux-signed-presence",
+      "observedAt": "2026-09-23T10:05:37.227Z",
+      "validUntil": "2026-09-23T10:20:37.227Z",
+      "surfaceReachable": true,
+      "wakeAcknowledged": false,
+      "executionReady": false,
+      "routeEligible": false,
+      "evidence": {
+        "presenceSha256": "4a60dd3c59fca7c0adb59aade4eddbbc6702638916aa3fb6e3f96484c10fa9e8",
+        "workerKeyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1",
+        "presenceState": "WITHDRAWN",
+        "cryptographicPresenceVerified": true
+      },
+      "authority": {
+        "trustGranted": false,
+        "codeMutation": false,
+        "canonicalWrite": false,
+        "executionAuthority": false
+      }
+    },
+    {
+      "format": "arca-vince-v5-endpoint-availability-v1",
+      "version": 1,
+      "endpointId": "vince-termux-android-2",
+      "state": "AVAILABLE",
+      "reason": "CRYPTOGRAPHIC_READY_LEASE",
+      "source": "termux-signed-presence",
+      "observedAt": "2026-09-23T10:05:47.289Z",
+      "validUntil": "2026-09-23T10:20:47.289Z",
+      "surfaceReachable": true,
+      "wakeAcknowledged": false,
+      "executionReady": true,
+      "routeEligible": true,
+      "evidence": {
+        "presenceSha256": "b59b63b2563479b2412bcd8e291bd8a5516500d446507e2f34673d002295271c",
+        "workerKeyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0",
+        "presenceState": "READY",
+        "cryptographicPresenceVerified": true
+      },
+      "authority": {
+        "trustGranted": false,
+        "codeMutation": false,
+        "canonicalWrite": false,
+        "executionAuthority": false
+      }
+    }
+  ],
+  "route": {
+    "format": "arca-vince-v5-route-selection-v1",
+    "version": 1,
+    "capability": "git-status",
+    "observedAt": "2026-09-23T10:07:47.131Z",
+    "state": "AVAILABLE",
+    "selectedEndpointId": "vince-termux-android-2",
+    "candidateCount": 2,
+    "eligibleCount": 1,
+    "candidates": [
+      {
+        "endpointId": "vince-termux-android-1",
+        "participantKind": "worker",
+        "capabilities": [
+          "git-status"
+        ],
+        "eligible": false,
+        "eligibleObservedAt": null,
+        "eligibleEvidenceAt": null,
+        "latestState": "INCONCLUSIVE",
+        "latestReason": "SIGNED_PRESENCE_WITHDRAWN"
+      },
+      {
+        "endpointId": "vince-termux-android-2",
+        "participantKind": "worker",
+        "capabilities": [
+          "git-status"
+        ],
+        "eligible": true,
+        "eligibleObservedAt": "2026-09-23T10:05:47.289Z",
+        "eligibleEvidenceAt": "2026-09-23T10:05:47.289Z",
+        "latestState": "AVAILABLE",
+        "latestReason": "CRYPTOGRAPHIC_READY_LEASE"
+      }
+    ],
+    "dispatchPerformed": false,
+    "authority": {
+      "trustGranted": false,
+      "codeMutation": false,
+      "canonicalWrite": false,
+      "executionAuthority": false
+    }
+  },
+  "safety": {
+    "dispatchPerformed": false,
+    "workUsed": false,
+    "replitUsed": false,
+    "githubActionsUsedAsExecutor": false,
+    "edgeStewardActivated": false,
+    "authorityExpanded": false
+  }
+}
