@@ -55,6 +55,14 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 - Futuramente pode rotear entre OpenAI, modelos locais, servidores próprios e outros providers compatíveis.
 - Nenhuma API key, billing ou chamada externa ativada enquanto congelado.
 
+## M5 Fase E — binding do preflight ao probe live
+
+- Em implementação na issue #172.
+- O Gate 040 passa a emitir `preflightSha256`.
+- O live probe exigirá binding exato de scope + preflight + fingerprint.
+- Mudança de token/revisão/documento/cofre falha antes da rede.
+- A Fase E não autoriza o quarto GET; autorização humana continua separada.
+
 ## Retomada imediata
 
 M5 continua o caminho crítico. Fases A, B, C e D estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até um token obtido pelo fluxo oficial ser submetido a preflight e houver autorização explícita nova, continuar apenas com preparação fail-closed. Atividade real da credencial permanece ACTIVE_UNKNOWN até observação da própria API.
