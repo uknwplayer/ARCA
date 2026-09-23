@@ -247,7 +247,7 @@ Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes a
 
 ### Futuro — ARCA Device Agent / Runtime Autônomo Local
 
-Estado: **PLANEJADO / CONGELADO / NÃO COMPETE COM M5**.
+Estado: **PLANEJADO / CONGELADO / NÃO COMPETE COM M5**. **Caminho preferencial: ARCA Device Agent. Runtime Autônomo Local permanece congelado até solicitação explícita do usuário.**
 
 Objetivo: permitir que o dispositivo do operador exponha capabilities locais explícitas ao ARCA sem transformar o telefone em shell irrestrito e, em uma variante futura, permitir execução autônoma local independente da nuvem.
 
@@ -315,7 +315,11 @@ Variante futura para independência operacional da nuvem:
 
 Regra conceitual: um modelo local independente **não é a mesma instância do ChatGPT transferida para o telefone**. É outro runtime/modelo, ainda que possa reutilizar protocolos, memória exportável permitida, Atlas, policies e estilo operacional do ARCA.
 
-Pré-condição para descongelamento: núcleo ARCA funcional e decisão humana explícita. A implementação deve começar no Nível 1 e só avançar de autoridade após provas e revisão.
+Pré-condição para descongelamento do Device Agent: núcleo ARCA funcional e decisão humana explícita. A implementação deve começar no Nível 1 e só avançar de autoridade após provas e revisão.
+
+O **Runtime Autônomo Local** possui regra mais forte: permanece congelado até **solicitação explícita do usuário**, independentemente de o ARCA já estar funcional.
+
+Documento canônico: `docs/ARCA_DEVICE_AGENT_RUNTIME_LOCAL_V0_1.md`.
 
 ### Vince — Scout / Broker / Pathfinder / Recovery Agent
 

@@ -177,3 +177,7 @@ Função futura: expor capabilities locais explícitas do dispositivo ao plano d
 A variante Runtime Autônomo Local poderá executar modelo, memória, scheduler e ferramentas em infraestrutura controlada pelo operador. Isso cria independência operacional da nuvem, mas não constitui transferência da instância/modelo hospedado pelo ChatGPT para o dispositivo.
 
 Princípios: deny-by-default, capability catalog, identidade criptográfica, replay protection, revogação, kill switch, watchdog, budgets de recurso e auditoria.
+
+Decisão: **Device Agent é o caminho preferencial para o operador atual**. Runtime Autônomo Local permanece congelado até solicitação explícita do usuário.
+
+Documento canônico: `docs/ARCA_DEVICE_AGENT_RUNTIME_LOCAL_V0_1.md`.
