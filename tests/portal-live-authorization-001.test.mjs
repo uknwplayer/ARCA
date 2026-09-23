@@ -10,7 +10,7 @@ test("Portal authorization 001 is restricted to issue #97 and exact creator toke
   assert.match(workflow,/github\.event\.issue\.number == 97/);
   assert.match(workflow,/github\.event\.issue\.state == 'open'/);
   assert.match(workflow,/github\.event\.comment\.user\.login == 'uknwplayer'/);
-  assert.match(workflow,/ARCA_PORTAL_LIVE_AUTHORIZATION_001_EXECUTE/);
+  assert.match(workflow,/ARCA_PORTAL_LIVE_AUTHORIZATION_001_RETRY_ONCE/);
 });
 
 test("Portal authorization 001 pins reviewed revision and scope",()=>{
