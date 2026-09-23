@@ -193,11 +193,14 @@ class VincePathfinder:
             authority_expanded=False,
         )
 
-    def dispatch(self, mission: VinceMission, dispatcher: ExecutorMeshDispatcher) -> VincePathfinderProof:
+    def dispatch_decision(self, mission: VinceMission, dispatcher: ExecutorMeshDispatcher) -> DispatchDecision:
         discovery = self.discover(mission)
         if not discovery.routes:
             raise RuntimeError("VINCE_NO_ADMISSIBLE_ROUTE")
-        decision = dispatcher.dispatch(mission.job())
+        return dispatcher.dispatch(mission.job())
+
+    def dispatch(self, mission: VinceMission, dispatcher: ExecutorMeshDispatcher) -> VincePathfinderProof:
+        decision = self.dispatch_decision(mission, dispatcher)
         return self._proof(mission, decision, receipt=None)
 
     def reconcile(
