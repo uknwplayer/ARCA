@@ -194,6 +194,8 @@ Documento canônico: `docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md`.
 
 ### M5-E — binding do preflight ao probe live
 
+Estado canônico da M5-E: **integrado/testado offline**. O Gate 040 está **implementado/testado offline**, com prova operacional pelos secrets reais ainda pendente.
+
 Componente: `m5-e-preflight-binding`.
 
 Função: vincular o live probe ao estado sanitizado e revisado do Gate 040. Mudança de revisão, documento, credencial ou cofre invalida o digest antes da criação do transporte Portal.
