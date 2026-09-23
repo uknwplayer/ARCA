@@ -1117,6 +1117,73 @@
         "kill switch",
         "human override"
       ]
+    },
+    {
+      "id": "arca-ai-gateway",
+      "nome": "ARCA AI Gateway / OpenAI-compatible",
+      "tipo": "ia_gateway_futuro",
+      "finalidade": "Desacoplar o ARCA de fornecedor/modelo específico e rotear chamadas por capability, custo e disponibilidade.",
+      "estado": "planejado_congelado_ate_solicitacao_usuario",
+      "localizacao": [
+        "docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md"
+      ],
+      "dependeDe": [
+        "atlas-tecnico-vivo"
+      ],
+      "chamadoPor": [
+        "vince-pathfinder",
+        "futuros_agentes_arca"
+      ],
+      "entradas": [
+        "provider config",
+        "model id",
+        "capabilities",
+        "budget",
+        "policy"
+      ],
+      "saidas": [
+        "resposta de modelo",
+        "telemetria de uso",
+        "custo estimado"
+      ],
+      "capabilities": [
+        "roteamento de modelos",
+        "provider abstraction",
+        "budgeting futuro",
+        "fallback futuro"
+      ],
+      "limites": [
+        "sem provider ativado",
+        "sem API key",
+        "sem billing",
+        "sem chamada externa enquanto congelado"
+      ],
+      "healthCheck": [
+        "não aplicável enquanto congelado"
+      ],
+      "modosDeFalha": [
+        "provider indisponível",
+        "custo excedido",
+        "capability incompatível",
+        "rate limit"
+      ],
+      "recuperacao": [
+        "fallback aprovado",
+        "modelo alternativo",
+        "parar por budget",
+        "revisão humana"
+      ],
+      "fallback": "sem chamada de IA externa",
+      "riscoDeReexecucao": "dependente da tarefa; exigir idempotência nas ações mutáveis",
+      "runbook": [
+        "docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md"
+      ],
+      "seguranca": [
+        "budget explícito",
+        "trust separado",
+        "segredo fora do repositório",
+        "ativação humana"
+      ]
     }
   ]
 }
