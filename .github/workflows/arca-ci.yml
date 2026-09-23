@@ -67,6 +67,9 @@ jobs:
       - name: Executar gate M5 Fase C de observação do schema Portal
         run: npm run validate:m5-phase-c
 
+      - name: Executar parser Portal offline M5-F
+        run: npm run validate:m5-portal-parser
+
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 
