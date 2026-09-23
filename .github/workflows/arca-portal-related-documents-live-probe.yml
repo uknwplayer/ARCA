@@ -64,11 +64,12 @@ jobs:
         run: node scripts/arca-portal-related-documents-live-probe.mjs
 
       - name: Upload encrypted envelope and sanitized proof
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: portal-related-documents-${{ github.run_id }}
           path: |
             artifacts/portal-related-documents.envelope.json
             artifacts/portal-related-documents-proof.json
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 7
