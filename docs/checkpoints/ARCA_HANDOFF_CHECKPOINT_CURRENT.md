@@ -23,6 +23,14 @@ PR M2: [#79](https://github.com/uknwplayer/ARCA/pull/79)
 CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853847)  
 CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
+## Decisões transversais novas
+
+- **Atlas Técnico Vivo V0.1** criado como mapa canônico de componentes, dependências, falhas, recuperação e runbooks.
+- Inventário inicial machine-readable em `docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json`.
+- **pt-BR é o idioma padrão obrigatório do ARCA para conteúdo humano novo/significativamente alterado**; históricos em inglês migram gradualmente quando tocados.
+- **Vince Discovery Global / Connectivity Investigator** registrado como capacidade futura, mundial, incluindo China, somente por superfícies públicas/allowlisted/explicitamente conectadas e sem bypass de autenticação.
+- Essas decisões não reativam Vince/Edge nem alteram o caminho crítico M5.
+
 ## Retomada imediata
 
 M5 é novamente o caminho crítico. Fases A e B estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado, custodiar a resposta, observar o schema real e só então construir/revisar o parser que alimentará a Fase B. **Não executar quarto GET por inferência.** Até haver token oficialmente ativo + autorização explícita nova, continuar apenas com preparação fail-closed que não invente schema live.
