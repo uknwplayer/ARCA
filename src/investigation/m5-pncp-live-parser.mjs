@@ -61,6 +61,13 @@ function nullableString(v,field,max=1600){
   if(v===null)return null;
   return str(v,field,max);
 }
+function optionalString(v,field,max=3000){
+  if(typeof v!=="string")throw new Error(`ARCA_M5_PNCP_PARSER_INVALID_${field}`);
+  const out=v.normalize("NFKC").trim();
+  if(out.length>max||/[\u0000-\u001f\u007f]/u.test(out))
+    throw new Error(`ARCA_M5_PNCP_PARSER_INVALID_${field}`);
+  return out||null;
+}
 function integer(v,field,{min=0,max=Number.MAX_SAFE_INTEGER}={}){
   if(!Number.isSafeInteger(v)||v<min||v>max)
     throw new Error(`ARCA_M5_PNCP_PARSER_INVALID_${field}`);
@@ -176,7 +183,7 @@ export function normalizePncpLiveProcurementRecord(record){
     instrumentCode:record.tipoInstrumentoConvocatorioCodigo,
     instrumentName:str(record.tipoInstrumentoConvocatorioNome,"INSTRUMENTO_NOME",400),
     publishedAt:datePrefix(record.dataPublicacaoPncp,"DATA_PUBLICACAO"),
-    objectDescription:str(record.objetoCompra,"OBJETO",3000),
+    objectDescription:optionalString(record.objetoCompra,"OBJETO",3000),
     estimatedValueCents,
     currency:"BRL",
     srp:record.srp,

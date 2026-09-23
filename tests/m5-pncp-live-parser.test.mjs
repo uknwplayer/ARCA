@@ -39,6 +39,13 @@ test("PNCP parser normalizes procurement target without inventing supplier",()=>
   assert.equal(row.correlationAuthorized,false);
 });
 
+test("PNCP parser preserves empty objetoCompra as null without inventing content",()=>{
+  const row=fixture().page.data[0];
+  const normalized=normalizePncpLiveProcurementRecord({...row,objetoCompra:""});
+  assert.equal(normalized.objectDescription,null);
+  assert.equal(normalized.supplierObserved,false);
+});
+
 test("PNCP parser fails closed on field drift and control mismatch",()=>{
   const row=fixture().page.data[0];
   assert.throws(()=>normalizePncpLiveProcurementRecord({...row,novoCampo:"x"}),/SCHEMA_DRIFT/);
