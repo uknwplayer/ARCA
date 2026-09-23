@@ -1620,7 +1620,7 @@
       "nome": "M5-F — Parser financeiro Portal offline",
       "tipo": "investigacao_normalizacao",
       "finalidade": "Implementar parser fail-closed do schema financeiro observado no Gate 046 sem aplicar bytes live.",
-      "estado": "implementado_branch_fixture_sintetica_live_bloqueado",
+      "estado": "integrado_testado_fixture_sintetica_live_bloqueado",
       "localizacao": [
         "src/investigation/m5-portal-related-documents-parser.mjs",
         "tests/m5-portal-related-documents-parser.test.mjs",
@@ -1641,7 +1641,8 @@
       "saidas": [
         "normalizacao sintetica deterministica",
         "normalizationSha256",
-        "refs SHA-256 de texto"
+        "refs SHA-256 de texto",
+        "parserContractSha256"
       ],
       "capabilities": [
         "parse de data",
@@ -1684,6 +1685,79 @@
         "publicationAttempted=false",
         "humanReviewRequired=true",
         "adverseFinding=false"
+      ]
+    },
+    {
+      "id": "m5-g-portal-parser-admission",
+      "nome": "M5-G — Admissão da normalização custodial",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Vincular parser, schema e custódia live antes de permitir normalização privada.",
+      "estado": "implementado_branch_decisao_humana_pendente",
+      "localizacao": [
+        "src/investigation/m5-portal-parser-admission.mjs",
+        "scripts/prepare-m5-portal-parser-admission.mjs",
+        ".github/workflows/arca-m5-portal-parser-admission-preflight.yml",
+        "docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-f-portal-related-documents-parser-offline",
+        "m5-gate-046-portal-related-documents-2xx"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "revisao do codigo",
+        "parser contract hash",
+        "schema hash",
+        "envelope hash",
+        "receipt hash",
+        "response hash",
+        "scope hash"
+      ],
+      "saidas": [
+        "candidato AWAITING_HUMAN_ADMISSION",
+        "candidateSha256",
+        "decisao humana hash-bound"
+      ],
+      "capabilities": [
+        "binding deterministico",
+        "gate de decisao humana",
+        "admissao restrita a normalizacao offline"
+      ],
+      "limites": [
+        "nao abre custodia no preflight",
+        "sem rede",
+        "sem publicacao",
+        "sem correlacao",
+        "sem auto-admissao"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-parser-admission",
+        "workflow M5-G preflight"
+      ],
+      "modosDeFalha": [
+        "candidate hash mismatch",
+        "parser/schema binding mismatch",
+        "revisao divergente",
+        "decisao invalida"
+      ],
+      "recuperacao": [
+        "gerar novo candidato na revisao final",
+        "exigir decisao humana explicita"
+      ],
+      "fallback": "manter liveNormalizationAuthorized=false",
+      "riscoDeReexecucao": "baixo no preflight; zero acesso a dados live",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md"
+      ],
+      "seguranca": [
+        "rawBytesIncluded=false",
+        "sourceValuesIncluded=false",
+        "networkAuthorized=false",
+        "publicationAuthorized=false",
+        "correlationAuthorized=false",
+        "humanAdmissionRequired=true"
       ]
     }
   ]
