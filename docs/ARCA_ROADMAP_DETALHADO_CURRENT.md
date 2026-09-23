@@ -202,6 +202,18 @@ Mesmo sucesso neste gate **não autoriza o quarto GET**.
 
 `npm run validate:portal-isolated-preflight`
 
+### M5 Fase E — binding do preflight ao probe live
+
+Estado: **CANDIDATO OFFLINE / issue #172 / nenhum quarto GET**.
+
+A Fase E amarra o workflow live ao resultado exato do Gate 040. O preflight passa a emitir `preflightSha256`, e o probe live exige `scope_sha256 + preflight_sha256 + credential_fingerprint_sha256`.
+
+Antes de qualquer request, o probe recalcula a atestação a partir da revisão, documento, credencial e cofre atuais. Qualquer divergência falha fechado e o transporte HTTP nem é criado.
+
+Isso impede reutilizar uma autorização depois de trocar token, documento, revisão ou cofre.
+
+Ver `docs/ARCA_M5_PORTAL_PREFLIGHT_BINDING_V0_1.md`.
+
 ## Marco M5-R — Public Investigation & Referral Dossier
 
 Estado: **MÉTODO V0.1 DOCUMENTADO; IMPLEMENTAÇÃO EXECUTÁVEL PENDENTE**.
