@@ -1,0 +1,50 @@
+{
+  "schema": "arca.m5-pncp-live-parser-fixture.v1",
+  "observedStructureSha256": "4a00de8f61190819cc6e172f45438dcb22dc1c952430fc7a1c79f2cc0dcfabb9",
+  "page": {
+    "data": [
+      {
+        "amparoLegal": {"codigo": 1, "descricao": "AMPARO FICTICIO", "nome": "LEI FICTICIA"},
+        "anoCompra": 2026,
+        "dataAberturaProposta": "2026-09-20T10:00:00",
+        "dataAtualizacao": "2026-09-18T12:00:00",
+        "dataAtualizacaoGlobal": "2026-09-18T12:00:00",
+        "dataEncerramentoProposta": "2026-09-25T10:00:00",
+        "dataInclusao": "2026-09-18T11:00:00",
+        "dataPublicacaoPncp": "2026-09-18T12:00:00",
+        "emendaParlamentar": null,
+        "fontesOrcamentarias": [{"codigo": 100, "dataInclusao": "2026-09-18", "descricao": "FONTE FICTICIA", "nome": "FONTE 100"}],
+        "informacaoComplementar": null,
+        "justificativaPresencial": null,
+        "linkProcessoEletronico": "https://example.invalid/processo-ficticio",
+        "linkSistemaOrigem": null,
+        "modalidadeId": 6,
+        "modalidadeNome": "MODALIDADE FICTICIA",
+        "modoDisputaId": 1,
+        "modoDisputaNome": "ABERTO FICTICIO",
+        "numeroCompra": "COMPRA-FICTICIA-001",
+        "numeroControlePNCP": "00000000000000-1-1/2026",
+        "objetoCompra": "OBJETO FICTICIO PARA TESTE",
+        "orgaoEntidade": {"cnpj": "00000000000000", "esferaId": "F", "poderId": "E", "razaoSocial": "ORGAO FICTICIO"},
+        "orgaoSubRogado": null,
+        "processo": "PROCESSO-FICTICIO-001",
+        "sequencialCompra": 1,
+        "situacaoCompraId": 1,
+        "situacaoCompraNome": "PUBLICADA",
+        "srp": false,
+        "tipoInstrumentoConvocatorioCodigo": 1,
+        "tipoInstrumentoConvocatorioNome": "EDITAL FICTICIO",
+        "unidadeOrgao": {"codigoIbge": "1600303", "codigoUnidade": "U001", "municipioNome": "MUNICIPIO FICTICIO", "nomeUnidade": "UNIDADE FICTICIA", "ufNome": "AMAPA FICTICIO", "ufSigla": "AP"},
+        "unidadeSubRogada": null,
+        "usuarioNome": "USUARIO FICTICIO",
+        "valorTotalEstimado": 1234.56,
+        "valorTotalHomologado": null
+      }
+    ],
+    "empty": false,
+    "numeroPagina": 1,
+    "paginasRestantes": 0,
+    "totalPaginas": 1,
+    "totalRegistros": 1
+  }
+}
