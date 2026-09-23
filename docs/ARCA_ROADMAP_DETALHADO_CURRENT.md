@@ -95,6 +95,28 @@ Passos:
 
 Aceite: execução determinística e relatório sanitizado, [PR #81](https://github.com/uknwplayer/ARCA/pull/81), commit [`d10d851`](https://github.com/uknwplayer/ARCA/commit/d10d8516ec05c8e1c8378159ed6459da966a61fb), CI da PR [35695562784](https://github.com/uknwplayer/ARCA/actions/runs/35695562784) e pós-merge [35695672043](https://github.com/uknwplayer/ARCA/actions/runs/35695672043) verdes. Ver checkpoint final `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md`.
 
+## Linha S1 — Expansão de fontes públicas: Transferegov
+
+Estado: **PR #179 / OFFLINE FIXTURE / ZERO REDE**.
+
+O novo ambiente oficial de APIs de Dados Abertos do Transferegov.br passa a ser a terceira fonte executável do núcleo offline, começando por Transferências Especiais. O descriptor `br.transferegov.public` aponta para `https://api-publica.transferegov.gestao.gov.br/`, permanece sem `PUBLIC_GET` e aceita somente `OFFLINE_FIXTURE`.
+
+Entregas V0.1:
+
+- adaptador estrito para fixture sintética;
+- campos de transferência, emenda, ente beneficiário, UF/município, referência de autor, valores, estado e atualização;
+- Evidence Envelopes hash-only;
+- budgets e rejeição de campos/origens/UF inconsistentes;
+- indisponibilidade sem geração de suspeita;
+- integração ao Gate Offline Multifonte V1;
+- revisão humana obrigatória e publicação desligada.
+
+Limites: transferência/pagamento não prova contratação, entrega física, regularidade ou cumprimento de objeto. Referência de parlamentar é contexto documental, nunca conclusão adversa. O schema live ainda precisa de gate próprio.
+
+Depois de S1, a sequência de expansão prevista é TCU → Siconfi → CEIS/CNEP → DOU → FNDE, sempre começando offline e sem competir com o Gate 042 do Portal.
+
+Ver `docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md` e checkpoint 043.
+
 ## Marco M4 — Live controlado de uma fonte por vez
 
 Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; quatro GETs Portal retornaram 401; o quarto ocorreu no run `35886041113` com binding Gate 040 válido, exatamente 1 request, zero retry e custódia privada durável; nenhum quinto GET autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
