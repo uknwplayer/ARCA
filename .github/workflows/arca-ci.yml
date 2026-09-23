@@ -70,6 +70,9 @@ jobs:
       - name: Validar preflight Portal isolado sem captura
         run: npm run validate:portal-isolated-preflight
 
+      - name: Executar gate M5 Fase E de binding do preflight
+        run: npm run validate:m5-phase-e
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |
