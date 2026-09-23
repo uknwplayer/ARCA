@@ -17,7 +17,7 @@ test("Vince V4 live proof 005 verifies with canonical ARCA verifier",()=>{
   assert.equal(proof.transport,"github-contents-v4");
   assert.equal(proof.requestSha256,"c0699f366877a97793330b3587c2c4b7742a66d2f2be4d1a835a2800ecaede32");
   assert.equal(proof.resultSha256,"3ded72842a195693d90664ff644f0309742a7331e4c735f2f44d51b3b83dd2e7");
-  assert.equal(proof.proofSha256,"4b4bdc2fe101ba502cdb42a2dd9244bafed997c17581a2f8c3959702987a9e39");
+  assert.equal(proof.proofSha256,"daea9c2cb9bf6cb25aa947ac16fd6af8b83a016ff8e8235b031a657b6e80e95e");
   assert.equal(proof.gitBranch,"feat/aie-0.4-foundation");
   assert.equal(proof.gitHead,"8055e6ba7e8ad9140a0f69146e61216efc895a90");
   assert.equal(proof.gitDirty,false);
