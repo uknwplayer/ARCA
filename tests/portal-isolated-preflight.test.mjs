@@ -13,7 +13,7 @@ function env(overrides={}){
     ARCA_PORTAL_DOCUMENT_CODE:documentCode,
     ARCA_PORTAL_API_KEY:apiKey,
     ARCA_PORTAL_TOKEN_PROVENANCE:"OFFICIAL_EMAIL_REGISTRATION",
-    ARCA_PORTAL_TOKEN_RECEIVED_AT:"2026-09-23T01:03:00.000Z",
+    ARCA_PORTAL_TOKEN_RECEIVED_AT:"2026-01-15T12:34:56.000Z",
     ARCA_CUSTODY_VAULT_REPOSITORY:"uknwplayer/arca-private-vault",
     ARCA_CUSTODY_VAULT_TOKEN:"synthetic-vault-token-0123456789",
     ARCA_CUSTODY_VAULT_BRANCH:"main",
@@ -82,6 +82,13 @@ test("preflight isolado recusa cofre não privado ou indisponível",async()=>{
     env:env(),
     durableCustodyBackend:{async preflight(){return {ready:false,private:false}}}
   }),/CUSTODY_NOT_READY/);
+});
+
+test("script isolado não importa transporte nem contém endpoint Portal",()=>{
+  const script=fs.readFileSync("scripts/arca-portal-isolated-preflight.mjs","utf8");
+  assert.doesNotMatch(script,/portal-related-documents-transport/);
+  assert.doesNotMatch(script,/fetchRelatedDocuments/);
+  assert.doesNotMatch(script,/api\.portaldatransparencia\.gov\.br/);
 });
 
 test("workflow isolado não contém etapa de captura nem endpoint Portal",()=>{
