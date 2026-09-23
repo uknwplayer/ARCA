@@ -43,6 +43,8 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 - Níveis futuros: ARCA-only → Termux → Device.
 - Capability catalog, deny-by-default, identidade, replay protection, revogação, watchdog, budgets e kill switch.
 - Variante local soberana poderá rodar modelo/memória/scheduler/tools em infraestrutura do operador.
+- **Decisão atual: ARCA Device Agent é o caminho preferencial; Runtime Autônomo Local permanece congelado até solicitação explícita do usuário.**
+- PocketPal pode servir como fallback local/manual e bancada de benchmark, sem virar dependência do ARCA.
 - Isso não é transferência da instância ChatGPT hospedada para o telefone; é um runtime/modelo local separado que pode interoperar com o ARCA.
 
 ## Retomada imediata
