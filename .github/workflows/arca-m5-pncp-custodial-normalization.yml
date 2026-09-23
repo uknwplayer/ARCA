@@ -1,0 +1,78 @@
+name: ARCA M5 — normalizacao custodial PNCP historico
+run-name: PNCP custody normalization — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'pncp-custodial-normalization-*'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão autorizada
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar autorização e bindings PNCP
+        run: npm run validate:m5-pncp-normalization-auth
+
+      - name: Transportar somente envelope criptografado PNCP já existente
+        uses: actions/download-artifact@v4
+        with:
+          name: pncp-controlled-live-proof-35547609136
+          path: artifacts/source
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 35547609136
+
+      - name: Normalizar custódia PNCP sem novo GET
+        env:
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/normalize-m5-pncp-custody-local.mjs \
+            --envelope artifacts/source/pncp-live-custody.envelope.json \
+            --output artifacts/normalized
+
+      - name: Persistir envelope PNCP normalizado no cofre privado
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+        run: |
+          set -euo pipefail
+          node scripts/persist-m5-normalization-private.mjs \
+            --envelope artifacts/normalized/pncp-normalization.envelope.json \
+            --proof artifacts/normalized/pncp-normalization-proof.json \
+            | tee artifacts/normalized/private-store-receipt.json
+
+      - name: Publicar somente prova PNCP sanitizada
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-pncp-normalization-proof-${{ github.run_id }}
+          path: |
+            artifacts/normalized/pncp-normalization-proof.json
+            artifacts/normalized/private-store-receipt.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Limpar material custodial do workspace
+        if: always()
+        run: rm -rf artifacts/source artifacts/normalized/pncp-normalization.envelope.json
