@@ -3,8 +3,12 @@ import path from "node:path";
 import {buildM4ControlledScopeV02} from "../src/investigation/m4-controlled-scope.mjs";
 import {assessPortalCredentialReadiness} from "../src/investigation/portal-credential-readiness.mjs";
 import {createGitHubPrivateCustodyBackend} from "../src/machine-bridge/durable-private-custody.mjs";
+import {
+  buildPortalIsolatedPreflightAttestation,
+  PORTAL_ISOLATED_PREFLIGHT_SCHEMA
+} from "../src/investigation/portal-preflight-attestation.mjs";
 
-export const PORTAL_ISOLATED_PREFLIGHT_SCHEMA="arca.portal-isolated-preflight.v1";
+export {PORTAL_ISOLATED_PREFLIGHT_SCHEMA};
 
 function required(value,code,max=4096,min=1){
   if(typeof value!=="string"||value.length<min||value.length>max||
@@ -77,29 +81,15 @@ export async function runPortalIsolatedPreflight({
   if(custodyState?.ready!==true||custodyState?.private!==true)
     throw new Error("ARCA_PORTAL_PREFLIGHT_CUSTODY_NOT_READY");
 
-  return Object.freeze({
-    schema:PORTAL_ISOLATED_PREFLIGHT_SCHEMA,
-    version:1,
-    status:"READY_FOR_EXPLICIT_AUTHORIZATION",
+  return buildPortalIsolatedPreflightAttestation({
     revision:codeRevision,
     scopeHash:scope.scopeSha256,
     documentCodeSha256:scope.scope.documentCodeSha256,
     credentialFingerprintSha256:credentialReadiness.credentialFingerprintSha256,
     credentialProvenance:credentialReadiness.provenance,
     credentialReceivedAt:credentialReadiness.receivedAt,
-    credentialActiveState:credentialReadiness.activeState,
-    credentialActiveVerified:false,
-    custodyReady:true,
-    custodyPrivate:true,
     custodyRepositoryHash:custodyState.repositoryHash,
-    custodyBranch:custodyState.branch,
-    portalNetworkUsed:false,
-    portalNetworkAuthorized:false,
-    portalRequestCapabilityPresent:false,
-    automaticRetryAuthorized:false,
-    humanAuthorizationRequired:true,
-    tokenIncluded:false,
-    rawDocumentCodeIncluded:false
+    custodyBranch:custodyState.branch
   });
 }
 
