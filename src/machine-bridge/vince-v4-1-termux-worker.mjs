@@ -211,6 +211,36 @@ export function makeGhChannelClient({runImpl=run}={}){
   };
 }
 
+export async function publishTermuxV41Identity({
+  identityDirectory=TERMUX_V41_DEFAULT_IDENTITY_DIR,
+  channelRepository=TERMUX_V41_DEFAULT_CHANNEL_REPO,
+  channelBranch=TERMUX_V41_DEFAULT_CHANNEL_BRANCH,
+  channelClient=makeGhChannelClient()
+}={}){
+  const loaded=await loadTermuxV41Identity({directory:identityDirectory});
+  const path=`remote-jobs/v4.1/identities/${loaded.identity.nodeId}.json`;
+  await channelClient.createJson({
+    repository:channelRepository,
+    branch:channelBranch,
+    path,
+    message:`vince v4.1 termux public identity: ${loaded.identity.nodeId}`,
+    value:{
+      format:"arca-vince-v4.1-worker-identity",
+      protocolVersion:"4.1",
+      workerKind:TERMUX_V41_WORKER_KIND,
+      identity:loaded.identity
+    }
+  });
+  return Object.freeze({
+    status:"PUBLIC_IDENTITY_PUBLISHED",
+    workerKind:TERMUX_V41_WORKER_KIND,
+    channelRepository,
+    channelBranch,
+    path,
+    identity:loaded.identity
+  });
+}
+
 export async function runTermuxV41OneShot({
   jobId,
   repoPath=process.cwd(),
