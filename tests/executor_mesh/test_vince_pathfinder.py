@@ -11,12 +11,15 @@ from runtime.executor_mesh import (
     ExecutorMeshDispatcher,
     ExecutorRegistry,
     JobRequest,
+    ProviderPermanentError,
+    ProviderTransientError,
     load_registry,
 )
 from runtime.vince_pathfinder import (
     VINCE_DISCOVERY_SCHEMA,
     VINCE_MISSION_SCHEMA,
     VINCE_PROOF_SCHEMA,
+    VINCE_FAILOVER_PROOF_SCHEMA,
     VinceMission,
     VincePathfinder,
     route_ids,
@@ -41,6 +44,24 @@ class FakeAdapter:
 
     def result(self, ref):
         raise AssertionError("not used in unit test")
+
+
+class TransientAdapter:
+    def submit(self, executor, job):
+        raise ProviderTransientError("synthetic transient before dispatch acceptance")
+    def status(self, ref):
+        raise AssertionError("not used")
+    def result(self, ref):
+        raise AssertionError("not used")
+
+
+class PermanentAdapter:
+    def submit(self, executor, job):
+        raise ProviderPermanentError("synthetic permanent failure")
+    def status(self, ref):
+        raise AssertionError("not used")
+    def result(self, ref):
+        raise AssertionError("not used")
 
 
 def mission(**overrides):
@@ -188,6 +209,111 @@ class VincePathfinderTests(unittest.TestCase):
         self.assertEqual(proof.result_sha256, "b" * 64)
         self.assertRegex(proof.accepted_receipt_sha256, r"^[a-f0-9]{64}$")
         self.assertRegex(proof.proof_sha256, r"^[a-f0-9]{64}$")
+
+
+    def test_failover_reconciliation_accepts_only_transient_pre_dispatch_failure(self):
+        registry = ExecutorRegistry()
+        first = ExecutorDescriptor(
+            executor_id="sat-a", provider_family="a",
+            capabilities=frozenset({"python","os.linux","profile.smoke"}),
+            trust_state="VERIFIED", admission_state="LAB_ADMITTED", available=True,
+            reliability=1.0, network_hops=1,
+            metadata={"execution_domain":"sat-a"},
+        )
+        second = ExecutorDescriptor(
+            executor_id="sat-b", provider_family="b",
+            capabilities=frozenset({"python","os.linux","profile.smoke"}),
+            trust_state="VERIFIED", admission_state="LAB_ADMITTED", available=True,
+            reliability=0.99, network_hops=2,
+            metadata={"execution_domain":"sat-b"},
+        )
+        registry.register(first); registry.register(second)
+        journal = DispatchJournal()
+        success = FakeAdapter()
+        dispatcher = ExecutorMeshDispatcher(
+            CostAwareScheduler(registry), {"a":TransientAdapter(),"b":success}, journal
+        )
+        value = mission()
+        decision = dispatcher.dispatch(value.job())
+        self.assertEqual(decision.attempted_executor_ids, ("sat-a","sat-b"))
+        attempts = journal.attempt_history(value.job())
+        self.assertEqual([x.outcome for x in attempts], ["TRANSIENT_FAILURE","DISPATCHED"])
+        self.assertIsNone(attempts[0].ref)
+        self.assertIsNotNone(attempts[1].ref)
+        receipt = AcceptedExecutionReceipt(
+            schema="arca.executor-receipt.v0.1", job_id=value.mission_id,
+            executor_id=decision.ref.executor_id, provider_family=decision.ref.provider_family,
+            dispatch_external_id=decision.ref.external_id,
+            dispatch_correlation_id=decision.ref.correlation_id,
+            profile=value.profile, result_sha256="c"*64,
+        )
+        proof = VincePathfinder(registry).reconcile_failover(value, decision, receipt, journal)
+        self.assertEqual(proof.schema, VINCE_FAILOVER_PROOF_SCHEMA)
+        self.assertEqual(proof.failed_executor_id, "sat-a")
+        self.assertEqual(proof.selected_executor_id, "sat-b")
+        self.assertEqual(proof.accepted_executor_id, "sat-b")
+        self.assertTrue(proof.failover_safe)
+        self.assertFalse(proof.duplicate_dispatch_detected)
+        self.assertEqual([x.outcome for x in proof.attempt_history], ["TRANSIENT_FAILURE","DISPATCHED"])
+        self.assertFalse(proof.authority_expanded)
+        self.assertRegex(proof.proof_sha256, r"^[a-f0-9]{64}$")
+
+    def test_permanent_failure_does_not_fail_over(self):
+        registry = ExecutorRegistry()
+        for executor_id, family, hops in [("sat-a","a",1),("sat-b","b",2)]:
+            registry.register(ExecutorDescriptor(
+                executor_id=executor_id, provider_family=family,
+                capabilities=frozenset({"python","os.linux","profile.smoke"}),
+                trust_state="VERIFIED", admission_state="LAB_ADMITTED", available=True,
+                reliability=1.0 if executor_id=="sat-a" else 0.99,
+                network_hops=hops, metadata={"execution_domain":executor_id},
+            ))
+        journal = DispatchJournal()
+        dispatcher = ExecutorMeshDispatcher(
+            CostAwareScheduler(registry), {"a":PermanentAdapter(),"b":FakeAdapter()}, journal
+        )
+        value = mission()
+        with self.assertRaises(ProviderPermanentError):
+            dispatcher.dispatch(value.job())
+        attempts = journal.attempt_history(value.job())
+        self.assertEqual(len(attempts),1)
+        self.assertEqual(attempts[0].executor_id,"sat-a")
+        self.assertEqual(attempts[0].outcome,"PERMANENT_FAILURE")
+
+    def test_failover_proof_rejects_ambiguous_first_attempt_with_dispatch_ref(self):
+        registry = ExecutorRegistry()
+        for executor_id, family, hops in [("sat-a","a",1),("sat-b","b",2)]:
+            registry.register(ExecutorDescriptor(
+                executor_id=executor_id, provider_family=family,
+                capabilities=frozenset({"python","os.linux","profile.smoke"}),
+                trust_state="VERIFIED", admission_state="LAB_ADMITTED", available=True,
+                reliability=1.0, network_hops=hops,
+                metadata={"execution_domain":executor_id},
+            ))
+        value=mission()
+        journal=DispatchJournal()
+        unsafe_ref=DispatchRef(
+            executor_id="sat-a",provider_family="a",
+            external_id="d"*40,correlation_id="d"*40
+        )
+        journal.record_attempt(value.job(),executor_id="sat-a",provider_family="a",outcome="TRANSIENT_FAILURE",ref=unsafe_ref)
+        good_ref=DispatchRef(
+            executor_id="sat-b",provider_family="b",
+            external_id="e"*40,correlation_id="e"*40
+        )
+        journal.record_attempt(value.job(),executor_id="sat-b",provider_family="b",outcome="DISPATCHED",ref=good_ref)
+        journal.record(value.job(),good_ref)
+        ranked=CostAwareScheduler(registry).rank(value.job())
+        second_ranked=next(x for x in ranked if x.descriptor.executor_id=="sat-b")
+        from runtime.executor_mesh import DispatchDecision
+        decision=DispatchDecision(good_ref,second_ranked,False,("sat-a","sat-b"))
+        receipt=AcceptedExecutionReceipt(
+            schema="arca.executor-receipt.v0.1",job_id=value.mission_id,
+            executor_id="sat-b",provider_family="b",dispatch_external_id="e"*40,
+            dispatch_correlation_id="e"*40,profile=value.profile,result_sha256="f"*64,
+        )
+        with self.assertRaisesRegex(ValueError,"FIRST_ATTEMPT_NOT_SAFE"):
+            VincePathfinder(registry).reconcile_failover(value,decision,receipt,journal)
 
 
 if __name__ == "__main__":

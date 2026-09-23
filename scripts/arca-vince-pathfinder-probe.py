@@ -32,6 +32,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one bounded Vince Pathfinder route proof")
     parser.add_argument("--mission-id", required=True)
     parser.add_argument("--force-satellite", action="store_true")
+    parser.add_argument("--fail-satellite-a", action="store_true")
     parser.add_argument("--collect-timeout", type=int, default=240)
     parser.add_argument("--poll-seconds", type=int, default=3)
     parser.add_argument("--output", default="artifacts/vince-pathfinder-live-proof.json")
@@ -99,22 +100,42 @@ def main() -> int:
     )
     primary = GitQueueAdapter(transport)
     satellite_b = GitQueueAdapter(transport, provider_family="github-git-queue-b")
+
+    class ControlledTransientAdapter:
+        def submit(self, executor, job):
+            raise ProviderTransientError("VINCE_CONTROLLED_TRANSIENT_BEFORE_DISPATCH_ACCEPTANCE")
+        def status(self, ref):
+            return primary.status(ref)
+        def result(self, ref):
+            return primary.result(ref)
+
+    journal = DispatchJournal()
     dispatcher = ExecutorMeshDispatcher(
         CostAwareScheduler(registry),
         {
-            "github-git-queue": primary,
+            "github-git-queue": ControlledTransientAdapter() if args.fail_satellite_a else primary,
             "github-git-queue-b": satellite_b,
         },
-        DispatchJournal(),
+        journal,
     )
 
     decision = vince.dispatch_decision(mission, dispatcher)
     ack = vince.acknowledge(mission, decision)
+    attempt_history = [
+        {
+            "executor_id": attempt.executor_id,
+            "provider_family": attempt.provider_family,
+            "outcome": attempt.outcome,
+            "has_dispatch_ref": attempt.ref is not None,
+        }
+        for attempt in journal.attempt_history(mission.job())
+    ]
 
     output = {
         "mission": mission.envelope(),
         "discovery": asdict(discovery),
         "ack": asdict(ack),
+        "attempt_history": attempt_history,
         "result": None,
     }
     print(canonical_json({
@@ -126,6 +147,7 @@ def main() -> int:
             "ack_state": ack.ack_state,
             "execution_state": ack.execution_state,
             "dispatch_external_id": decision.ref.external_id,
+            "attempt_history": attempt_history,
         }
     }), flush=True)
 
@@ -133,8 +155,22 @@ def main() -> int:
     while True:
         try:
             receipt = dispatcher.collect(mission.job())
-            final = vince.reconcile(mission, decision, receipt)
-            output["result"] = asdict(final)
+            if args.fail_satellite_a:
+                final = vince.reconcile_failover(mission, decision, receipt, journal)
+                output["failover"] = asdict(final)
+                output["result"] = {
+                    "execution_state": "VERIFIED_RESULT",
+                    "result_sha256": final.result_sha256,
+                    "accepted_receipt_sha256": final.accepted_receipt_sha256,
+                    "proof_sha256": final.proof_sha256,
+                    "failover_safe": final.failover_safe,
+                    "duplicate_dispatch_detected": final.duplicate_dispatch_detected,
+                    "failed_executor_id": final.failed_executor_id,
+                    "selected_executor_id": final.selected_executor_id,
+                }
+            else:
+                final = vince.reconcile(mission, decision, receipt)
+                output["result"] = asdict(final)
             target = ROOT / args.output
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -142,10 +178,11 @@ def main() -> int:
                 "vince": {
                     "mission_id": mission.mission_id,
                     "selected_executor_id": final.selected_executor_id,
-                    "ack_state": final.ack_state,
-                    "execution_state": final.execution_state,
+                    "execution_state": "VERIFIED_RESULT" if args.fail_satellite_a else final.execution_state,
                     "result_sha256": final.result_sha256,
                     "proof_sha256": final.proof_sha256,
+                    "failover_safe": getattr(final, "failover_safe", None),
+                    "duplicate_dispatch_detected": getattr(final, "duplicate_dispatch_detected", None),
                     "core_mutation_performed": final.core_mutation_performed,
                     "authority_expanded": final.authority_expanded,
                 }
