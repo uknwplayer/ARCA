@@ -55,6 +55,12 @@ jobs:
       - name: Run correlated multisource offline gate
         run: npm run validate:multisource-correlated
 
+      - name: Run M5 Phase A pre-correlation gate
+        run: npm run validate:m5-phase-a
+
+      - name: Run M5 Phase B post-custody gate
+        run: npm run validate:m5-phase-b
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |
