@@ -1,0 +1,262 @@
+{
+  "schema": "arca.public-source-registry.v1",
+  "sources": [
+    {
+      "id": "br.pncp.public-api",
+      "publisher": "Portal Nacional de Contratações Públicas (PNCP)",
+      "sourceClass": "public_procurement_record",
+      "accessMethod": "official_public_api",
+      "canonicalPublicUrl": "https://pncp.gov.br/api/pncp/swagger-ui/index.html",
+      "allowedOrigins": [
+        "https://pncp.gov.br"
+      ],
+      "formats": [
+        "JSON"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "federal",
+          "state",
+          "municipal"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "publisher-dependent"
+      },
+      "adapterStatus": "ACTIVE",
+      "executableModes": [
+        "OFFLINE_FIXTURE"
+      ],
+      "updateProfile": "publisher-dependent",
+      "limitations": [
+        "does-not-prove-payment",
+        "does-not-prove-physical-delivery",
+        "publisher-data-quality-dependent"
+      ]
+    },
+    {
+      "id": "br.portal-transparencia.download-despesas",
+      "publisher": "CGU / Portal da Transparência",
+      "sourceClass": "federal_financial_execution",
+      "accessMethod": "official_public_dataset",
+      "canonicalPublicUrl": "https://portaldatransparencia.gov.br/download-de-dados/despesas",
+      "allowedOrigins": [
+        "https://portaldatransparencia.gov.br"
+      ],
+      "formats": [
+        "CSV"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "federal"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "daily-dataset-snapshot"
+      },
+      "adapterStatus": "ACTIVE",
+      "executableModes": [
+        "OFFLINE_FIXTURE"
+      ],
+      "updateProfile": "daily-dataset-snapshot",
+      "limitations": [
+        "download-not-automated",
+        "not-a-complete-state-or-municipal-ledger",
+        "payment-may-affect-multiple-commitments",
+        "uf-attribution-requires-separate-proof"
+      ]
+    },
+    {
+      "id": "br.transferegov.public",
+      "publisher": "Transferegov.br",
+      "sourceClass": "public_transfers_and_agreements",
+      "accessMethod": "official_public_api",
+      "canonicalPublicUrl": "https://api-publica.transferegov.gestao.gov.br/",
+      "allowedOrigins": [
+        "https://api-publica.transferegov.gestao.gov.br"
+      ],
+      "formats": [
+        "CSV",
+        "JSON"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "federal",
+          "state",
+          "municipal"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "module-dependent"
+      },
+      "adapterStatus": "ACTIVE",
+      "executableModes": [
+        "OFFLINE_FIXTURE"
+      ],
+      "updateProfile": "module-dependent",
+      "limitations": [
+        "offline-fixture-only-until-live-schema-is-accepted",
+        "requires-program-specific-correlation",
+        "transfer-or-payment-does-not-prove-procurement-link",
+        "physical-execution-may-require-sector-source"
+      ]
+    },
+    {
+      "id": "br.cgu.ceis-cnep",
+      "publisher": "Controladoria-Geral da União",
+      "sourceClass": "public_sanctions_registry",
+      "accessMethod": "official_public_dataset",
+      "canonicalPublicUrl": "https://portaldatransparencia.gov.br/sancoes",
+      "allowedOrigins": [
+        "https://portaldatransparencia.gov.br"
+      ],
+      "formats": [
+        "CSV",
+        "HTML",
+        "JSON"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "national"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "registry-dependent"
+      },
+      "adapterStatus": "DECLARED_ONLY",
+      "executableModes": [],
+      "updateProfile": "registry-dependent",
+      "limitations": [
+        "sanction-is-context-not-proof-of-current-procurement-irregularity"
+      ]
+    },
+    {
+      "id": "br.tesouro.siconfi",
+      "publisher": "Tesouro Nacional / Siconfi",
+      "sourceClass": "subnational_fiscal_data",
+      "accessMethod": "official_public_api",
+      "canonicalPublicUrl": "https://siconfi.tesouro.gov.br/siconfi/index.jsf",
+      "allowedOrigins": [
+        "https://siconfi.tesouro.gov.br"
+      ],
+      "formats": [
+        "CSV",
+        "JSON"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "state",
+          "municipal"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "statement-dependent"
+      },
+      "adapterStatus": "DECLARED_ONLY",
+      "executableModes": [],
+      "updateProfile": "statement-dependent",
+      "limitations": [
+        "aggregated-fiscal-data",
+        "does-not-identify-every-contract-payment"
+      ]
+    },
+    {
+      "id": "br.tcu.open-data",
+      "publisher": "Tribunal de Contas da União",
+      "sourceClass": "public_external_control_record",
+      "accessMethod": "official_public_dataset",
+      "canonicalPublicUrl": "https://sites.tcu.gov.br/dados-abertos/",
+      "allowedOrigins": [
+        "https://sites.tcu.gov.br"
+      ],
+      "formats": [
+        "CATALOG",
+        "CSV",
+        "JSON"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "federal",
+          "national"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "dataset-dependent"
+      },
+      "adapterStatus": "DECLARED_ONLY",
+      "executableModes": [],
+      "updateProfile": "dataset-dependent",
+      "limitations": [
+        "control-record-scope-varies",
+        "decision-context-must-be-read"
+      ]
+    },
+    {
+      "id": "br.in.dou",
+      "publisher": "Imprensa Nacional / Diário Oficial da União",
+      "sourceClass": "official_gazette_record",
+      "accessMethod": "official_public_portal",
+      "canonicalPublicUrl": "https://www.in.gov.br/consulta",
+      "allowedOrigins": [
+        "https://www.in.gov.br"
+      ],
+      "formats": [
+        "HTML",
+        "PDF"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "federal"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "publication-dependent"
+      },
+      "adapterStatus": "DECLARED_ONLY",
+      "executableModes": [],
+      "updateProfile": "business-days-and-extra-editions",
+      "limitations": [
+        "state-and-municipal-gazettes-require-separate-connectors"
+      ]
+    },
+    {
+      "id": "br.fnde.open-data",
+      "publisher": "Fundo Nacional de Desenvolvimento da Educação",
+      "sourceClass": "public_education_funding_data",
+      "accessMethod": "official_public_catalog",
+      "canonicalPublicUrl": "https://www.gov.br/fnde/pt-br/acesso-a-informacao/dados-abertos",
+      "allowedOrigins": [
+        "https://www.gov.br"
+      ],
+      "formats": [
+        "CATALOG",
+        "CSV"
+      ],
+      "publicAccess": true,
+      "coverage": {
+        "levels": [
+          "federal",
+          "state",
+          "municipal"
+        ]
+      },
+      "temporalCoverage": {
+        "kind": "dataset-dependent"
+      },
+      "adapterStatus": "DECLARED_ONLY",
+      "executableModes": [],
+      "updateProfile": "dataset-dependent",
+      "limitations": [
+        "program-specific-semantics",
+        "delivery-confirmation-may-require-local-source"
+      ]
+    }
+  ]
+}
