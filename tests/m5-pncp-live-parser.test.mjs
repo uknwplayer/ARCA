@@ -46,6 +46,15 @@ test("PNCP parser preserves empty objetoCompra as null without inventing content
   assert.equal(normalized.supplierObserved,false);
 });
 
+test("PNCP parser normalizes line breaks in objetoCompra without exposing controls",()=>{
+  const row=fixture().page.data[0];
+  const normalized=normalizePncpLiveProcurementRecord({
+    ...row,
+    objetoCompra:"LINHA 1\n\tLINHA 2"
+  });
+  assert.equal(normalized.objectDescription,"LINHA 1 LINHA 2");
+});
+
 test("PNCP parser fails closed on field drift and control mismatch",()=>{
   const row=fixture().page.data[0];
   assert.throws(()=>normalizePncpLiveProcurementRecord({...row,novoCampo:"x"}),/SCHEMA_DRIFT/);
