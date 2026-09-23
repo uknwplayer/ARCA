@@ -1,6 +1,6 @@
 # ARCA — Matriz de estado 0.4.0-rc.1
 
-Data de corte: 2026-09-23. Referência de entrada Vince V5 read-only: `1bc71d7cabc336d564c3f04e8b5ea8e1c97d120f`.
+Data de corte: 2026-09-23. Referência de entrada Vince V5 Termux A/B: `49b7afb348ad651829d593203de35715d27e7758`.
 
 Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada e registrada; não significa produção.
 
@@ -11,7 +11,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Protocolo de agentes e AIE | sim | sim | parcial | não | testes de capacidades, guardrails e runtime | avaliação prolongada e SLOs |
 | Fila investigativa compartilhada | sim | sim | não | não | PRs #56–#57 | operação contínua e telemetria |
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
-| Vince Pathfinder/Recovery V0.4 + V4.1.1 + V5 | sim | sim | sim para V1–V4.1.1 e V5 read-only limitado | não | PR #134/#135/#137/#139; runs `35830210570`, `35832175245` e `35833356337`; Work surface reachable, route `INCONCLUSIVE` | V5 Work wake+ACK recente; endpoint positivo roteável; signer V3.2-live |
+| Vince Pathfinder/Recovery V0.4 + V4.1.1 + V5 | sim | sim | sim para V1–V4.1.1 e V5 Work read-only; Termux A/B ainda sem prova live | não | PR #134/#135/#137/#139/#144; CI `35839970387`/`35840109710`; presença Ed25519 A/B e route selection integradas | Probe 010 Termux A/B live; depois dispatch one-shot do selecionado; signer V3.2-live |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
 | Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
 | Correlação PNCP ↔ execução financeira M2/M5-A | sim, M2 sintético + M5 gate pré-correlação | sim | não | não | PR #79 + #94; M5 pós-merge 35799032982 | duas entradas live normalizadas e custodiais |
