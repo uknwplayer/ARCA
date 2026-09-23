@@ -2,21 +2,22 @@ name: ARCA Portal — Gate 040-SI preflight isolado
 run-name: Gate 040-SI — ${{ github.run_id }}
 
 on:
-  create:
+  push:
+    branches:
+      - 'portal-preflight-situacao-imovel-*'
 
 permissions:
   contents: read
 
 jobs:
   gate-040-si:
-    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'portal-preflight-situacao-imovel-')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Obter a revisão autorizada
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ github.ref }}
           persist-credentials: false
 
       - name: Preparar Node 22.18
