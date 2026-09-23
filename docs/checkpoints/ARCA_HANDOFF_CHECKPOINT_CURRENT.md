@@ -151,7 +151,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar o checkpoint 016. Nenhum GET Portal deve ser executado por inferência; primeiro escolher um documento público real, gerar o preview offline e revisar o manifesto.
+Consultar primeiro o checkpoint 033. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
