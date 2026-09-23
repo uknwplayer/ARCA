@@ -853,7 +853,7 @@
       "nome": "M5 Fase D — Prontidão verificável da credencial Portal",
       "tipo": "seguranca_investigacao",
       "finalidade": "Separar presença/formato/proveniência do token de sua atividade real, sem expor o segredo.",
-      "estado": "integrado_testado_com_observacao_live_401",
+      "estado": "integrado_testado_com_observacao_live_2xx",
       "localizacao": [
         "src/investigation/portal-credential-readiness.mjs",
         "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
@@ -874,7 +874,9 @@
         "fingerprint sanitizado",
         "estado ACTIVE_UNKNOWN",
         "observação pós-request",
-        "observação live AUTHORIZATION_NOT_ESTABLISHED"
+        "observação live AUTHORIZATION_NOT_ESTABLISHED",
+        "observação live ACCEPTED_ON_OBSERVED_REQUEST",
+        "activeVerified=true no run 35910916588"
       ],
       "capabilities": [
         "fingerprint de credencial",
@@ -888,7 +890,8 @@
         "não autoriza retry"
       ],
       "healthCheck": [
-        "npm run validate:m5-phase-d"
+        "npm run validate:m5-phase-d",
+        "run 35910916588 HTTP 200"
       ],
       "modosDeFalha": [
         "proveniência ausente",
@@ -904,7 +907,7 @@
         "preservar fingerprint/status",
         "nova autorização antes de novo GET"
       ],
-      "fallback": "ACTIVE_UNKNOWN / AUTHORIZATION_NOT_ESTABLISHED",
+      "fallback": "ACTIVE_UNKNOWN antes de rede / ACCEPTED_ON_OBSERVED_REQUEST somente após 2xx observado",
       "riscoDeReexecucao": "nenhum retry automático; nova tentativa exige gate explícito",
       "runbook": [
         "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md",
@@ -945,12 +948,14 @@
         "scopeHash",
         "estado ACTIVE_UNKNOWN",
         "custodyReady",
-        "preflightSha256"
+        "preflightSha256",
+        "targetBindingSha256 na variante Gate 040-SI"
       ],
       "capabilities": [
         "preflight de credencial",
         "derivação de scope",
-        "preflight de cofre"
+        "preflight de cofre",
+        "preflight target-bound v2"
       ],
       "limites": [
         "sem transporte Portal",
@@ -959,7 +964,8 @@
         "sem autorização de rede"
       ],
       "healthCheck": [
-        "npm run validate:portal-isolated-preflight"
+        "npm run validate:portal-isolated-preflight",
+        "run 35910828041 Gate 040-SI success"
       ],
       "modosDeFalha": [
         "secret ausente",
@@ -1257,7 +1263,7 @@
       "nome": "Gate 042 — Diagnóstico offline do quarto 401 Portal",
       "tipo": "seguranca_investigacao",
       "finalidade": "Consolidar o quarto 401 custodial, revalidar contrato de autenticação e preparar suporte sem novo request Portal.",
-      "estado": "ativo_zero_novo_get",
+      "estado": "resolvido_ativacao_chave_historico_preservado",
       "localizacao": [
         "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md",
         "docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md"
@@ -1279,7 +1285,9 @@
       "saidas": [
         "diagnóstico offline",
         "dossiê sanitizado de suporte",
-        "gate para eventual teste diferencial futuro"
+        "gate para eventual teste diferencial futuro",
+        "confirmação CGU de chave antes inativa e depois ativada",
+        "separação entre autenticação e intermitência de documentos-relacionados"
       ],
       "capabilities": [
         "análise offline",
@@ -1303,11 +1311,10 @@
         "exposição de segredo"
       ],
       "recuperacao": [
-        "suporte técnico",
-        "novo Gate 040 se houver futuro request",
-        "nova autorização humana explícita"
+        "autenticação geral comprovada pelo Gate 045",
+        "novo Gate e nova autorização antes de qualquer request futuro"
       ],
-      "fallback": "manter Portal live bloqueado",
+      "fallback": "manter documentos-relacionados sem retry automático",
       "riscoDeReexecucao": "nenhum request no Gate 042",
       "runbook": [
         "docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md"
@@ -1323,7 +1330,7 @@
       "nome": "Transferegov — Transferências Especiais S1",
       "tipo": "investigacao_fonte_publica",
       "finalidade": "Adicionar contexto de transferências especiais ao núcleo multifonte por fixture offline segura.",
-      "estado": "pr_179_offline_fixture_zero_rede",
+      "estado": "integrado_main_pr_179_offline_fixture_zero_rede",
       "localizacao": [
         "src/investigation/transferegov-special-transfers-offline-adapter.mjs",
         "docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md",
@@ -1389,7 +1396,7 @@
       "nome": "TCU — Acórdãos Offline S2",
       "tipo": "investigacao_fonte_publica",
       "finalidade": "Adicionar decisões documentais do TCU ao núcleo por fixture nacional segura.",
-      "estado": "s2_offline_fixture_zero_rede",
+      "estado": "integrado_main_pr_180_s2_offline_fixture_zero_rede",
       "localizacao": [
         "src/investigation/tcu-acordaos-offline-adapter.mjs",
         "config/public-source-registry-s2.json",
@@ -1447,6 +1454,79 @@
         "publicationAttempted=false",
         "humanReviewRequired=true",
         "adverseFinding=false"
+      ]
+    },
+    {
+      "id": "m5-gate-045-portal-auth-validation-2xx",
+      "nome": "Gate 045 — Validação controlada da autenticação Portal",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Comprovar atividade real da chave Portal em endpoint simples recomendado pela CGU sem confundir autenticação com disponibilidade do endpoint financeiro.",
+      "estado": "concluido_http_200_autorizacao_consumida",
+      "localizacao": [
+        "src/investigation/portal-situacao-imovel-scope.mjs",
+        "src/investigation/portal-situacao-imovel-transport.mjs",
+        "scripts/arca-portal-situacao-imovel-preflight.mjs",
+        "scripts/arca-portal-situacao-imovel-live-probe.mjs",
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md"
+      ],
+      "dependeDe": [
+        "m5-d-prontidao-credencial-portal",
+        "m5-e-preflight-binding",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "autorização humana específica",
+        "Gate 040-SI válido",
+        "credencial via secret",
+        "cofre privado"
+      ],
+      "saidas": [
+        "HTTP 200 sanitizado",
+        "ACCEPTED_ON_OBSERVED_REQUEST",
+        "activeVerified=true",
+        "prova custodial privada"
+      ],
+      "capabilities": [
+        "preflight target-bound",
+        "GET one-shot",
+        "zero retries",
+        "custódia antes da validação"
+      ],
+      "limites": [
+        "somente /api-de-dados/situacao-imovel no run autorizado",
+        "não prova documentos-relacionados",
+        "sem rerun",
+        "sem publicação"
+      ],
+      "healthCheck": [
+        "Gate 040-SI run 35910828041 success",
+        "live run 35910916588 success"
+      ],
+      "modosDeFalha": [
+        "binding divergente",
+        "credencial rejeitada",
+        "cofre indisponível",
+        "resposta fora do budget",
+        "schema inesperado"
+      ],
+      "recuperacao": [
+        "não repetir automaticamente",
+        "novo escopo + novo Gate + nova autorização humana"
+      ],
+      "fallback": "nenhum request adicional",
+      "riscoDeReexecucao": "alto; autorização consumida e rerun proibido",
+      "runbook": [
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md"
+      ],
+      "seguranca": [
+        "maxRequests=1",
+        "retries=0",
+        "plaintextPublished=false",
+        "STORED_PRIVATE",
+        "humanReviewRequired=true"
       ]
     }
   ]

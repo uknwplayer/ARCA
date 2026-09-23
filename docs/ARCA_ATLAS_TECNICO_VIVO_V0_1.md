@@ -156,9 +156,9 @@ Componente: `m5-d-prontidao-credencial-portal`.
 
 Função: separar token presente/formato/proveniência de atividade real. Produz fingerprint sanitizado e mantém `ACTIVE_UNKNOWN` até observação da própria API.
 
-Observação live atual: run `35886041113` retornou HTTP 401 após binding válido. Estado: `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`; resposta de 169 bytes selada e armazenada em custódia privada, sem retry. O fingerprint canônico usado no request foi `37c90b46b7e1a4fcf699aee3f94979829cb044d13979cfbf05a229cd869a8092`, conferido contra o e-mail oficial mais recente.
+Observação live atual: após a CGU confirmar que a chave estava inativada e ativá-la, o run `35910916588` retornou HTTP 200 em `/api-de-dados/situacao-imovel`. Estado: `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, `credentialInvalidProven=false`, exatamente 1 request, `retries=0` e custódia privada. O fingerprint canônico continua `37c90b46b7e1a4fcf699aee3f94979829cb044d13979cfbf05a229cd869a8092`. O 401 histórico do run `35886041113` permanece preservado como evidência anterior à ativação.
 
-Recuperação: em 401, preservar status e fingerprint, revisar emissão/configuração/documentação e exigir nova autorização antes de qualquer nova tentativa. Nunca concluir causa específica apenas pelo código HTTP. Gate 042 prioriza suporte/diagnóstico offline antes de qualquer quinto GET.
+Recuperação: em falhas futuras, preservar status e fingerprint e exigir nova autorização antes de qualquer tentativa. A atividade atual da chave está comprovada apenas no request 2xx observado; não inferir a saúde de outros endpoints a partir dele.
 
 
 ### Gate 040 — preflight Portal isolado
@@ -167,7 +167,7 @@ Componente: `portal-isolated-preflight`.
 
 Função: validar fingerprint/proveniência da credencial, scope e cofre privado sem possuir capability de request ao endpoint do Portal.
 
-Prova operacional histórica: run `35884318441` concluiu o primeiro preflight real. Após o merge documental, o Gate 040 foi refeito no run `35885734963` na revisão `268c8e385d8345d5a02ce2fd3350b1ea1088481a`; seus vínculos foram consumidos pelo quarto GET do run `35886041113`. Qualquer próximo request exige novo Gate 040.
+Prova operacional histórica: run `35884318441` concluiu o primeiro preflight real. O run `35885734963` foi consumido pelo quarto GET histórico. A variante target-bound Gate 040-SI foi provada no run `35910828041`, revisão `9ccf812bad58b1674a48973fb15869a11cb53467`, target `PORTAL_SITUACAO_IMOVEL`, zero rede; seu binding foi consumido pelo único GET do run `35910916588`. Qualquer próximo request exige novo Gate.
 
 Recuperação: qualquer falha ou drift mantém rede Portal não autorizada. Corrigir metadado, secret ou cofre e repetir somente o preflight. O quarto GET continua em gate humano separado.
 
@@ -213,11 +213,11 @@ Componente operacional/documental: `m5-gate-042-portal-401-diagnostico`.
 
 Função: consolidar a prova 401 custodial, revalidar contrato HTTP e credencial sem rede, preparar suporte técnico e impedir retry cego.
 
-Estado: **ATIVO / ZERO NOVO GET / issue #176**.
+Estado: **RESOLVIDO QUANTO À ATIVAÇÃO DA CHAVE / HISTÓRICO PRESERVADO NA ISSUE #176**.
 
 Evidência canônica: run `35886041113`, HTTP 401, `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, 1 request, `retries=0`, `CAPTURED_AND_SEALED`, `STORED_PRIVATE`.
 
-Recuperação: suporte técnico/diagnóstico offline; se houver necessidade futura de teste diferencial, novo Gate 040 + autorização humana específica para um único endpoint allowlisted. Nenhuma autorização antiga é reutilizável.
+Resultado: a CGU confirmou chave anteriormente inativa, ativou-a e informou intermitência em `documentos-relacionados`. O teste diferencial autorizado em `/situacao-imovel` retornou HTTP 200. A autenticação geral está comprovada; `documentos-relacionados` continua não comprovado após ativação. Nenhuma autorização antiga é reutilizável.
 
 
 ### Transferegov — Transferências Especiais S1
@@ -226,7 +226,7 @@ Componente: `transferegov-transferencias-especiais-offline`.
 
 Função: introduzir no núcleo multifonte uma fonte pública independente para contexto de transferências especiais, emendas, pagamentos e execução, inicialmente apenas por fixture sintética.
 
-Estado: **PR #179 / OFFLINE FIXTURE / ZERO REDE**.
+Estado: **INTEGRADO À `main` / PR #179 / OFFLINE FIXTURE / ZERO REDE**.
 
 Origem canônica: `https://api-publica.transferegov.gestao.gov.br/`.
 
@@ -245,7 +245,7 @@ Componente: `tcu-acordaos-offline-s2`.
 
 Função: incorporar decisões de controle externo do TCU como fonte documental nacional, inicialmente por fixture sintética e sem rede.
 
-Estado: **S2 / OFFLINE FIXTURE / ZERO REDE**.
+Estado: **INTEGRADO À `main` / PR #180 / S2 / OFFLINE FIXTURE / ZERO REDE**.
 
 Origem canônica: `https://dados-abertos.apps.tcu.gov.br/api/acordao/recupera-acordaos`.
 
@@ -256,3 +256,22 @@ Arquitetura: Evidence Envelope aceita `BR/NATIONAL` além de `BR/UF/XX`, sem mud
 Limites: acórdão exige leitura contextual; recurso, revisão ou decisão posterior podem mudar seu significado; sem inferência adversa automática, sem `PUBLIC_GET`, sem publicação.
 
 Recuperação: URL externa ao domínio TCU, data inválida, campo inesperado, snapshot incorreto ou fonte não executável falham fechado.
+
+
+### Gate 045 — autenticação Portal comprovada
+
+Componente: `m5-gate-045-portal-auth-validation-2xx`.
+
+Função: validar a atividade real da chave Portal em um endpoint simples recomendado pela CGU, sem misturar a validação de autenticação com o endpoint financeiro intermitente.
+
+Estado: **CONCLUÍDO / HTTP 200 / AUTORIZAÇÃO CONSUMIDA**.
+
+Preflight: run `35910828041`, revisão `9ccf812bad58b1674a48973fb15869a11cb53467`, target-bound, zero rede, cofre privado pronto.
+
+Live: run `35910916588`, mesma revisão, exatamente 1 GET a `/api-de-dados/situacao-imovel`, HTTP 200, `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, 5 strings validadas, 66 bytes, `retries=0`, `STORED_PRIVATE`.
+
+Custódia: envelope `ef6bcd5e0c75ba8fa9638780bbf8fbbe5a3402ce3b0a68ab251e3338daf662b8`; receipt `5168cb72997d3f8aa504b0aff5939b1215235ebab50ca72c6ec462e2c2f59854`.
+
+Limite: o resultado prova que a chave atual foi aceita nessa requisição. Não prova a disponibilidade de `/despesas/documentos-relacionados`, nem autoriza repetir qualquer endpoint.
+
+Recuperação: qualquer novo GET requer novo escopo, Gate atual e autorização humana explícita. O run `35910916588` não deve ser rerodado.
