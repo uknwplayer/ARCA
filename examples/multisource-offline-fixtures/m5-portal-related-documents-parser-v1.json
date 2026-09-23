@@ -1,0 +1,32 @@
+{
+  "schema": "arca.m5-portal-related-documents-parser-fixture.v1",
+  "observedSchemaSha256": "79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6",
+  "records": [
+    {
+      "data": "23/09/2026",
+      "documento": "DOC-FICTICIO-001",
+      "documentoResumido": "DOCUMENTO FICTICIO DE TESTE",
+      "elementoDespesa": "ELEMENTO FICTICIO 01",
+      "especie": "PAGAMENTO FICTICIO",
+      "fase": "Pagamento",
+      "favorecido": "FAVORECIDO FICTICIO A",
+      "orgaoSuperior": "ORGAO SUPERIOR FICTICIO A",
+      "orgaoVinculado": "ORGAO VINCULADO FICTICIO A",
+      "unidadeGestora": "UNIDADE GESTORA FICTICIA A",
+      "valor": "R$ 1.234,56"
+    },
+    {
+      "data": "2026-09-22",
+      "documento": "DOC-FICTICIO-002",
+      "documentoResumido": "SEGUNDO DOCUMENTO FICTICIO",
+      "elementoDespesa": "ELEMENTO FICTICIO 02",
+      "especie": "LIQUIDACAO FICTICIA",
+      "fase": "Liquidação",
+      "favorecido": "FAVORECIDO FICTICIO B",
+      "orgaoSuperior": "ORGAO SUPERIOR FICTICIO B",
+      "orgaoVinculado": "ORGAO VINCULADO FICTICIO B",
+      "unidadeGestora": "UNIDADE GESTORA FICTICIA B",
+      "valor": "-50,00"
+    }
+  ]
+}
