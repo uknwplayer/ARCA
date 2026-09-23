@@ -97,7 +97,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Linha S1 — Expansão de fontes públicas: Transferegov
 
-Estado: **PR #179 / OFFLINE FIXTURE / ZERO REDE**.
+Estado: **INTEGRADO À `main` / PR #179 / OFFLINE FIXTURE / ZERO REDE**.
 
 O novo ambiente oficial de APIs de Dados Abertos do Transferegov.br passa a ser a terceira fonte executável do núcleo offline no snapshot `config/public-source-registry-s1.json`, começando por Transferências Especiais. O registro histórico V1 permanece congelado para preservar as provas M0/M1. No snapshot S1, `br.transferegov.public` aponta para `https://api-publica.transferegov.gestao.gov.br/`, permanece sem `PUBLIC_GET` e aceita somente `OFFLINE_FIXTURE`.
 
@@ -119,7 +119,7 @@ Ver `docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md` e checkpoint 043.
 
 ## Linha S2 — TCU Acórdãos offline
 
-Estado: **IMPLEMENTADO EM BRANCH / OFFLINE FIXTURE / ZERO REDE**.
+Estado: **INTEGRADO À `main` / PR #180 / OFFLINE FIXTURE / ZERO REDE**.
 
 O snapshot `config/public-source-registry-s2.json` preserva S1 e ativa `br.tcu.open-data` para `OFFLINE_FIXTURE`, usando o webservice oficial de Acórdãos do TCU.
 
@@ -141,7 +141,7 @@ Ver `docs/ARCA_TCU_ACORDAOS_OFFLINE_S2.md` e checkpoint 044.
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; quatro GETs Portal retornaram 401; o quarto ocorreu no run `35886041113` com binding Gate 040 válido, exatamente 1 request, zero retry e custódia privada durável; nenhum quinto GET autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
+Estado: **M4a/M4b integrados; autenticação atual do Portal comprovada em probe separado: Gate 040-SI `35910828041` + exatamente 1 GET a `/api-de-dados/situacao-imovel` no run `35910916588`, HTTP 200, `activeVerified=true`, zero retry e custódia privada; os quatro GETs históricos de `documentos-relacionados` permanecem 401 e esse endpoint não foi retestado após a ativação da chave; nenhum novo GET autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
 
 Pré-condições:
 
@@ -159,13 +159,13 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live anteriores ocorreram sob autorizações #97, #101 e #104 e retornaram `UNAUTHORIZED`. Depois, a chave oficial mais recente foi validada byte-a-byte por fingerprint, o Gate 040 foi refeito na revisão `268c8e3`, e o quarto GET autorizado ocorreu no run `35886041113`: HTTP 401, exatamente 1 request, `retries=0`, resposta selada e `STORED_PRIVATE`. O próximo avanço não é outro retry: exige diagnóstico offline/suporte e, se ainda necessário, novo Gate 040 + nova autorização humana explícita para qualquer quinto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
+Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. Quatro GETs históricos de `documentos-relacionados` retornaram 401. A CGU confirmou depois que a chave estava inativada e a ativou, além de informar intermitência conhecida nesse endpoint. Sob nova autorização específica, o Gate 040-SI `35910828041` passou sem rede e o run `35910916588` executou exatamente um GET no endpoint de validação `/api-de-dados/situacao-imovel`: HTTP 200, `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, 5 strings válidas, 66 bytes, `retries=0` e `STORED_PRIVATE`. Isso prova a autenticação atual, não a disponibilidade de `documentos-relacionados`. A autorização foi consumida; qualquer novo request exige novo gate e nova autorização humana explícita. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C+D+E INTEGRADAS E TESTADAS; QUARTO GET CONTROLADO EXECUTADO E CUSTODIADO COM HTTP 401; PRIMEIRO 2xx PORTAL AINDA PENDENTE; GATE 042 EM DIAGNÓSTICO OFFLINE; NENHUM QUINTO GET AUTORIZADO**.
+Estado: **FASES A+B+C+D+E INTEGRADAS E TESTADAS; AUTENTICAÇÃO PORTAL COMPROVADA POR HTTP 200 EM `/situacao-imovel` NO RUN `35910916588`; PRIMEIRO 2xx DE `documentos-relacionados`/DADO FINANCEIRO AINDA PENDENTE; GATE 042 RESOLVIDO QUANTO À ATIVAÇÃO DA CHAVE; GATE 045 REGISTRADO; NENHUM NOVO GET AUTORIZADO**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -190,7 +190,7 @@ A Fase B implementa e testa o trecho `pre-correlation READY → bundle normaliza
 
 Ela não executa rede e registra explicitamente `m5Accepted:false`. Dados normalizados só entram no correlator se carregarem as âncoras dos envelopes de custódia; bridges fortes exigem proveniência das duas fontes. Ver `docs/ARCA_M5_POST_CUSTODY_CORRELATION_V0_1.md`.
 
-O bloqueio live permanece o mesmo: obter um primeiro 2xx Portal autorizado, custodiar a resposta, observar o schema real, construir/revisar o parser correspondente e só depois alimentar a Fase B com evidência live. O CI canônico agora executa explicitamente `validate:m5-phase-a` e `validate:m5-phase-b`.
+O bloqueio de autenticação foi removido pelo HTTP 200 do run `35910916588`. O bloqueio live específico do M5 agora é obter, sob nova autorização, um primeiro 2xx de `documentos-relacionados`, custodiar essa resposta, observar o schema financeiro real, construir/revisar o parser correspondente e só depois alimentar a Fase B com evidência live. O CI canônico agora executa explicitamente `validate:m5-phase-a` e `validate:m5-phase-b`.
 
 
 ### M5 Fase C — observação estrutural do schema Portal
@@ -259,7 +259,7 @@ Mesmo sucesso neste gate **não autoriza o quarto GET**.
 
 ### Gate 042 — diagnóstico offline do quarto 401
 
-Estado: **ATIVO / ZERO NOVO GET / ISSUE #176**.
+Estado: **RESOLVIDO QUANTO À ATIVAÇÃO DA CHAVE / ISSUE #176 PRESERVADA COMO HISTÓRICO**.
 
 O run `35886041113` provou a cadeia de autorização/binding/custódia, mas o Portal respondeu HTTP 401. A prova sanitizada registrou `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, 169 bytes de resposta, `retries=0` e `STORED_PRIVATE`.
 
@@ -270,9 +270,23 @@ Revalidação offline atual:
 - método é GET e o host é o oficial;
 - não há evidência suficiente para atribuir causa específica ao 401.
 
-Próximo caminho: suporte técnico da CGU com dossiê sanitizado e, se for necessário um teste diferencial futuro, preparar/autorizar separadamente um único GET de endpoint básico oficial, como `/api-de-dados/orgaos-siafi?pagina=1`, para distinguir falha global de autenticação de problema específico de endpoint. Nenhuma execução é autorizada por este plano.
+Resultado do suporte: a CGU confirmou que a chave estava inativada, ativou-a e informou que `documentos-relacionados` apresenta intermitência. O teste diferencial foi então feito no endpoint recomendado pela própria equipe, `/api-de-dados/situacao-imovel`, sob Gate 040-SI e autorização específica: HTTP 200 no run `35910916588`. A falha geral de autenticação está resolvida; a saúde de `documentos-relacionados` continua não comprovada após a ativação. Nenhuma nova execução está autorizada.
 
 Ver `docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md` e issue #176.
+
+### Gate 045 — validação controlada da autenticação Portal
+
+Estado: **CONCLUÍDO / HTTP 200 / AUTORIZAÇÃO CONSUMIDA**.
+
+Após a CGU informar que a chave estava inativada e foi ativada, foi criada uma trilha independente de validação no endpoint recomendado pela equipe: `GET /api-de-dados/situacao-imovel`.
+
+Gate 040-SI canônico: run `35910828041`, revisão `9ccf812bad58b1674a48973fb15869a11cb53467`, `preflightSha256=873b69ca46e0e061b2ee90203904f8a48c47e512a0fadae656078c3efd955587`, zero rede.
+
+Probe live: run `35910916588`, mesma revisão, exatamente 1 GET, HTTP 200, `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, 5 strings validadas, 66 bytes, `retries=0`, resposta selada e `STORED_PRIVATE`.
+
+Conclusão: a chave atual funciona. Isso não comprova a disponibilidade do endpoint `documentos-relacionados`, que a CGU informou estar intermitente. A autorização deste probe foi consumida. Qualquer próximo GET requer novo Gate e nova autorização humana explícita.
+
+Ver `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md`.
 
 ### M5 Fase E — binding do preflight ao probe live
 
