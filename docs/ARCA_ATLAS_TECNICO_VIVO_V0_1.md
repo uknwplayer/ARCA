@@ -388,3 +388,24 @@ Limites: `correlationAuthorized=false`, `publicationAuthorized=false`, nenhum no
 Recuperação: binding adulterado ou cadeia incompleta falha fechado. Não colapsar captura original e derivação normalizada no mesmo envelope.
 
 Runbook: `docs/ARCA_M5_PORTAL_LIVE_NORMALIZED_BINDING_V0_1.md`.
+
+
+### M5-J — observação e parser PNCP live
+
+Componente: `m5-j-pncp-live-parser`.
+
+Função: observar a custódia PNCP live já existente e construir parser real baseado na estrutura observada, sem novo GET.
+
+Estado: **OBSERVAÇÃO CONCLUÍDA / PARSER V1 EM BRANCH / NORMALIZAÇÃO LIVE AINDA BLOQUEADA**.
+
+Custódia: run `35547609136`, envelope `c707689e04d7bd091a59555d883a2d2a4d716b442b485d8b3b55efa1c65c6202`, receipt `ad1fd3f1c3e09637f48f8e387f47f518392246cb30338704e914bac99028e19b`.
+
+Observação: run `35932200063`, 3 arquivos / 6289 bytes, `observedStructureSha256=4a00de8f61190819cc6e172f45438dcb22dc1c952430fc7a1c79f2cc0dcfabb9`.
+
+A página de descoberta possui 2 contratações, com órgão/CNPJ, unidade, UF/IBGE, modalidade, processo, objeto, situação e valor estimado. O schema não apresenta fornecedor/adjudicatário.
+
+O parser V1 exige estrutura exata, valida o vínculo número de controle↔CNPJ↔ano↔sequencial e emite `supplierIdentifier=null`, `supplierObserved=false`.
+
+Limites: fixture sintética apenas; normalização live ainda bloqueada; sem correlação/publicação; ausência de fornecedor é lacuna de cobertura, não indício.
+
+Runbook: `docs/ARCA_M5_PNCP_LIVE_PARSER_V0_1.md`.
