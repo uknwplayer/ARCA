@@ -95,6 +95,7 @@ export function createPublicSourceRegistry(document={}){
 
 function jurisdiction(value){
   const normalized=text(value,"JURISDICTION",32).toUpperCase();
+  if(normalized==="BR/NATIONAL")return normalized;
   const match=/^BR\/UF\/([A-Z]{2})$/.exec(normalized);
   if(!match||!UF_CODES.has(match[1]))throw new Error("ARCA_EVIDENCE_INVALID_JURISDICTION");
   return normalized;
