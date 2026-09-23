@@ -126,3 +126,16 @@ Vince poderá futuramente consultar o Atlas para:
 - saber se deve parar e pedir revisão humana.
 
 Consultar o Atlas não concede autoridade nova ao Vince.
+
+
+## Frentes futuras congeladas
+
+### Produto, governança e interface
+
+O marco M10 permanece congelado até o ARCA estar funcional de ponta a ponta e haver decisão humana explícita. Inclui políticas de privacidade/segurança, termos de uso, frontend/site, design system próprio, conclusão do Painel do Criador e análise sobre necessidade de login.
+
+### Inteligência cívica documental
+
+O módulo M7-CIV é planejado para consolidar atividade legislativa e histórico público institucional/judicial/administrativo de agentes públicos. O Atlas deverá, quando implementado, mapear adaptadores por fonte, proteção contra homônimos, estados processuais e vínculo de proveniência.
+
+Regra: o ARCA poderá avaliar confiabilidade de fonte/evidência, não reputação ou “confiabilidade” de pessoa.
