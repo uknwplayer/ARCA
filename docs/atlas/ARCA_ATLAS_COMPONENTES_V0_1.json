@@ -919,7 +919,7 @@
       "nome": "Gate 040 — Preflight Portal isolado sem captura",
       "tipo": "seguranca_investigacao",
       "finalidade": "Validar credencial, escopo e cofre sem capability de request ao Portal.",
-      "estado": "candidato",
+      "estado": "implementado_testado_offline_prova_operacional_pendente",
       "localizacao": [
         "scripts/arca-portal-isolated-preflight.mjs",
         ".github/workflows/arca-portal-isolated-preflight.yml"
@@ -942,7 +942,8 @@
         "fingerprint",
         "scopeHash",
         "estado ACTIVE_UNKNOWN",
-        "custodyReady"
+        "custodyReady",
+        "preflightSha256"
       ],
       "capabilities": [
         "preflight de credencial",
@@ -1190,7 +1191,7 @@
       "nome": "M5 Fase E — Binding do preflight ao probe live",
       "tipo": "seguranca_investigacao",
       "finalidade": "Impedir reutilização de autorização quando revisão, documento, credencial ou cofre mudarem.",
-      "estado": "candidato_offline",
+      "estado": "integrado_testado_offline",
       "localizacao": [
         "src/investigation/portal-preflight-attestation.mjs",
         "scripts/arca-portal-related-documents-live-probe.mjs",
