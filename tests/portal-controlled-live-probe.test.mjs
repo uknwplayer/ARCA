@@ -203,23 +203,33 @@ test("Portal probe rejects schema drift, more than 25 records and invalid UTF-8 
   }
 });
 
-test("Portal probe distinguishes HTTP operational failures without retaining response text",async t=>{
+test("Portal probe seals HTTP operational failures and exposes only sanitized metadata",async t=>{
   const expected=new Map([[400,"ARCA_PORTAL_HTTP_BAD_REQUEST"],[401,"ARCA_PORTAL_HTTP_UNAUTHORIZED"],
     [429,"ARCA_PORTAL_HTTP_RATE_LIMITED"],[500,"ARCA_PORTAL_HTTP_SERVER_ERROR"]]);
   for(const [status,errorCode] of expected){
     const context=await tempContext(t);
-    const spy=fetchSpy(`${apiKey} ${documentCode}`,{status});
+    const raw=`${apiKey} ${documentCode} synthetic error body`;
+    const spy=fetchSpy(raw,{status,contentType:"application/json"});
     const backend=fakeCustodyBackend();
-    await assert.rejects(()=>runPortalRelatedDocumentsProbe({
+    const result=await runPortalRelatedDocumentsProbe({
       env:validEnv(),fetchImpl:spy.fetchImpl,durableCustodyBackend:backend,
       outputDir:context.outputDir,temporaryParent:context.temporaryParent
-    }),error=>{
-      assert.equal(error.message,errorCode);
-      assert.equal(error.message.includes(apiKey),false);
-      assert.equal(error.message.includes(documentCode),false);
-      return true;
     });
-    assert.equal(backend.calls.at(-1).type,"preflight");
+    assert.equal(result.status,"FAILED");
+    assert.equal(result.proof.probeStatus,"FAILED");
+    assert.equal(result.proof.validationStatus,"NOT_APPLICABLE");
+    assert.equal(result.proof.failureCode,errorCode);
+    assert.equal(result.proof.httpFailureCode,errorCode);
+    assert.equal(result.proof.httpStatus,status);
+    assert.equal(result.proof.httpStatusClass,`${Math.floor(status/100)}xx`);
+    assert.equal(result.proof.captureStatus,"CAPTURED_AND_SEALED");
+    assert.deepEqual(backend.calls.map(call=>call.type),["preflight","persist","status"]);
+    assert.equal(JSON.stringify(result.proof).includes(apiKey),false);
+    assert.equal(JSON.stringify(result.proof).includes(documentCode),false);
+    assert.equal(JSON.stringify(result.proof).includes(raw),false);
+    const envelope=JSON.parse(fs.readFileSync(result.envelopePath,"utf8"));
+    const opened=openCustodyEnvelope({envelope,passphrase});
+    assert.equal(Buffer.from(opened.files[0].data,"base64").toString("utf8"),raw);
     assert.equal(fs.readdirSync(context.temporaryParent).length,0);
   }
 });

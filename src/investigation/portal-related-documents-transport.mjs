@@ -10,7 +10,7 @@ function sha256(bytes){
 }
 
 function exactOptions(options){
-  const allowed=["fetchImpl","apiKey","timeoutMs","maxBytes"];
+  const allowed=["fetchImpl","apiKey","timeoutMs","maxBytes","captureHttpErrors"];
   if(!options||typeof options!=="object"||Array.isArray(options)||
      Object.keys(options).some(key=>!allowed.includes(key)))
     throw new Error("ARCA_PORTAL_TRANSPORT_UNEXPECTED_OPTION");
@@ -56,6 +56,9 @@ export function createPortalRelatedDocumentsTransport(options={}){
   const maxBytes=options.maxBytes??MAX_RESPONSE_BYTES;
   if(!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>MAX_RESPONSE_BYTES)
     throw new Error("ARCA_PORTAL_TRANSPORT_BYTE_BUDGET_INVALID");
+  if(Object.hasOwn(options,"captureHttpErrors")&&typeof options.captureHttpErrors!=="boolean")
+    throw new Error("ARCA_PORTAL_TRANSPORT_CAPTURE_HTTP_ERRORS_INVALID");
+  const captureHttpErrors=options.captureHttpErrors===true;
 
   let requestStarted=false;
   return Object.freeze({
@@ -87,9 +90,10 @@ export function createPortalRelatedDocumentsTransport(options={}){
           throw new Error("ARCA_PORTAL_TRANSPORT_REDIRECT_FORBIDDEN");
         if(!Number.isInteger(response?.status)||response.status<100||response.status>599)
           throw new Error("ARCA_PORTAL_TRANSPORT_RESPONSE_INVALID");
-        if(!response.ok)throw new Error(statusError(response.status));
-        const contentType=jsonContentType(response);
-        if(!contentType)throw new Error("ARCA_PORTAL_TRANSPORT_CONTENT_TYPE_INVALID");
+        const httpErrorCode=response.ok?null:statusError(response.status);
+        if(httpErrorCode&&!captureHttpErrors)throw new Error(httpErrorCode);
+        const contentType=response.headers?.get?.("content-type")??null;
+        if(response.ok&&!jsonContentType(response))throw new Error("ARCA_PORTAL_TRANSPORT_CONTENT_TYPE_INVALID");
         const reader=response.body?.getReader?.();
         if(!reader)throw new Error("ARCA_PORTAL_TRANSPORT_BODY_UNAVAILABLE");
 
@@ -130,9 +134,11 @@ export function createPortalRelatedDocumentsTransport(options={}){
         const bodyBytes=Buffer.concat(chunks,total);
         return Object.freeze({
           status:response.status,
+          ok:response.ok,
           contentType,
           bodyBytes,
-          responseBytesSha256:hash.digest("hex")
+          responseBytesSha256:hash.digest("hex"),
+          ...(httpErrorCode?{httpErrorCode}:{})
         });
       }finally{
         clearTimeout(timeout);
