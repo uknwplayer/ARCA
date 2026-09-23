@@ -1,0 +1,45 @@
+name: ARCA Vince V5 Work Read-only Probe 008
+
+run-name: Vince V5 Work surface-only observation 008
+
+on:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  observe:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.number == 138 &&
+        github.event.comment.user.login == 'uknwplayer' &&
+        github.event.comment.body == 'ARCA_VINCE_V5_WORK_READONLY_PROBE_008'
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      ARCA_GITHUB_TOKEN: ${{ github.token }}
+      ARCA_GITHUB_REPOSITORY: uknwplayer/ARCA
+      ARCA_WORK_WAKE_REF: test/work-access-check-v2
+      ARCA_WORK_WAKE_PR: '90'
+      ARCA_WORK_ENDPOINT_ID: chatgpt-work
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+
+      - name: Observe Work trigger surface without wake
+        run: node scripts/arca-vince-v5-work-readonly-probe.mjs --expect-surface-only
