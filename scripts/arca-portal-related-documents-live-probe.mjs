@@ -7,6 +7,7 @@ import {buildM4ControlledScopeV02} from "../src/investigation/m4-controlled-scop
 import {createPortalRelatedDocumentsTransport} from "../src/investigation/portal-related-documents-transport.mjs";
 import {sealCustodyDirectory,openCustodyEnvelope} from "../src/machine-bridge/encrypted-custody-envelope.mjs";
 import {createGitHubPrivateCustodyBackend} from "../src/machine-bridge/durable-private-custody.mjs";
+import {observePortalJsonSchema} from "../src/investigation/m5-portal-schema-observer.mjs";
 
 export const PORTAL_RELATED_DOCUMENTS_PROBE_SCHEMA="arca.portal-related-documents-controlled-probe.v0.3";
 const DTO_FIELDS=new Set([
@@ -200,6 +201,7 @@ export async function runPortalRelatedDocumentsProbe({
     let recordCount=null;
     let failureCode=null;
     let validationStatus="NOT_APPLICABLE";
+    let schemaObservation=null;
     if(captured.ok){
       try{
         let bodyText;
@@ -208,6 +210,17 @@ export async function runPortalRelatedDocumentsProbe({
         let parsed;
         try{parsed=JSON.parse(bodyText)}
         catch{throw new Error("ARCA_PORTAL_JSON_INVALID")}
+        schemaObservation=observePortalJsonSchema({
+          bytes:reopenedBytes,
+          custodyBinding:{
+            source:"PORTAL",
+            scopeSha256:scope.scopeSha256,
+            custodyEnvelopeSha256:envelopeHash,
+            custodyReceiptSha256:durableCustody.receiptHash,
+            responseBytesSha256
+          },
+          sourceCaptureNetworkUsed:true
+        });
         recordCount=validateDtoRecords(parsed);
       }catch(error){
         const code=String(error?.message??"");
@@ -224,6 +237,7 @@ export async function runPortalRelatedDocumentsProbe({
       ...captureProof,
       probeStatus:failureCode?"FAILED":"SUCCEEDED",
       validationStatus,
+      ...(schemaObservation?{schemaObservation}:{}),
       ...(failureCode?{failureCode}:{recordCount}),
       durableCustody
     };
