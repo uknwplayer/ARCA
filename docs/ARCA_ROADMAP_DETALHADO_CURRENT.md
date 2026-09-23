@@ -304,7 +304,7 @@ Ver `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`.
 
 ### M5-F — parser offline do schema financeiro Portal
 
-Estado: **IMPLEMENTADO EM BRANCH / FIXTURE SINTÉTICA / LIVE NORMALIZATION BLOQUEADA**.
+Estado: **INTEGRADO / PARSER ADMITIDO / NORMALIZAÇÃO LIVE CONCLUÍDA PELO M5-H**.
 
 Âncora: `observedSchemaSha256=79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6`, derivado do Gate 046.
 
@@ -327,7 +327,7 @@ Ver `docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md` e checkpoint 047.
 
 ### M5-G — admissão da normalização custodial
 
-Estado: **IMPLEMENTADO EM BRANCH / SEM REDE / SEM ABRIR CUSTÓDIA / DECISÃO HUMANA PENDENTE**.
+Estado: **INTEGRADO / CANDIDATO CANÔNICO ADMITIDO / DECISÃO CONSUMIDA PELO M5-H**.
 
 O M5-G separa parser testado de permissão para aplicá-lo aos bytes reais. O candidato de admissão vincula revisão, parser contract hash, `observedSchemaSha256`, envelope, receipt, response hash e scope do Gate 046.
 
@@ -343,7 +343,7 @@ Ver `docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md` e checkpoint 048.
 
 ### M5-H — normalização custodial offline admitida
 
-Estado: **AUTORIZAÇÃO HUMANA REGISTRADA / EXECUTOR LOCAL-ONLY IMPLEMENTADO / LIVE AINDA NÃO EXECUTADO**.
+Estado: **EXECUTADO COM SUCESSO / NORMALIZAÇÃO LIVE CUSTODIAL CONCLUÍDA / SEM NOVO GET / SEM CORRELAÇÃO**.
 
 Candidato admitido: `0bcf1806c2480b2f82f8efff43e67436460043375d302fb6fcf44c80ec3e97f9`.
 
@@ -353,11 +353,37 @@ O executor `m5-portal-custodial-normalization.mjs` valida candidato, decisão, p
 
 O CLI `normalize-m5-portal-custody-local.mjs` não baixa dados nem possui transporte Portal/GitHub. Ele exige envelope + passphrase já presentes localmente.
 
-Fronteira atual: envelope e passphrase live estão na infraestrutura privada GitHub/Actions. A execução não foi feita porque buscá-los seria transporte de rede, incompatível com a leitura estrita da autorização atual `sem rede`.
+Execução real: run `35931108034`, revisão `bcb0c7064df3294bf31520053de8ab893a71e2fa`. O transporte buscou apenas o envelope criptografado já existente no GitHub, sem API key do Portal e sem novo GET. O resultado foi normalizado, resselado e persistido no cofre privado. `normalizationSha256=f7306be0478fb603a5fe70957eeb15bf337b7b4db51f6eacbaf699c89f7bcfa7`.
 
-Próximo passo: co-localizar custódia localmente ou obter autorização separada para transporte privado da custódia. Nenhum novo GET Portal é necessário.
+Próximo passo: M5-I — construir binding live normalizado compatível com a Fase B, mantendo correlação/publicação bloqueadas.
 
 Ver `docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md` e checkpoint 049.
+
+### M5-I — binding live normalizado Portal
+
+Estado: **IMPLEMENTADO EM BRANCH / FONTE PORTAL LIVE NORMALIZADA / CORRELAÇÃO BLOQUEADA**.
+
+O M5-I preserva duas camadas distintas:
+
+- captura original do Gate 046 como âncora de custódia;
+- envelope normalizado M5-H como derivação privada.
+
+Binding live:
+
+- capture envelope `d398da542596a7ad387f0d1c5bbe2b9e201e00e1f812507a7e2c97b16d421db5`;
+- capture receipt `1ed2cadf58f1a3213271387400e3015089c24c690b7e1c948eb63d056c564cbc`;
+- observed schema `79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6`;
+- normalization `f7306be0478fb603a5fe70957eeb15bf337b7b4db51f6eacbaf699c89f7bcfa7`;
+- normalized envelope `6cb8513dab0505611e7f376398ca9c2e334131c58265b818fe1b73e8bc72cbcb`;
+- private store receipt `39671a927032514d89e474cb81f61215745db88b858f3d43115daf265ee794a6`.
+
+Saída: `custodyInput` + `sourceBinding` compatíveis com a Fase B e um bloco separado de derivação normalizada.
+
+Limites: sem valores no binding público, `correlationAuthorized=false`, `publicationAuthorized=false`, nenhum novo GET.
+
+Próximo passo: integrar o M5-I e abrir gate separado para correlação documental PNCP↔Portal.
+
+Ver `docs/ARCA_M5_PORTAL_LIVE_NORMALIZED_BINDING_V0_1.md` e checkpoint 050.
 
 ### M5 Fase E — binding do preflight ao probe live
 

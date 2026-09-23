@@ -1770,7 +1770,7 @@
       "nome": "M5-H — Normalização custodial offline",
       "tipo": "investigacao_normalizacao",
       "finalidade": "Normalizar bytes reais já custodiais somente após admissão humana hash-bound e sem rede de fonte.",
-      "estado": "autorizado_executor_local_only_live_pendente",
+      "estado": "live_normalizado_stored_private",
       "localizacao": [
         "src/investigation/m5-portal-custodial-normalization.mjs",
         "scripts/normalize-m5-portal-custody-local.mjs",
@@ -1797,7 +1797,10 @@
       "saidas": [
         "normalizationSha256",
         "novo envelope privado normalizado",
-        "prova sanitizada sem valores"
+        "prova sanitizada sem valores",
+        "normalizationSha256=f7306be0478fb603a5fe70957eeb15bf337b7b4db51f6eacbaf699c89f7bcfa7",
+        "normalizedEnvelopeSha256=6cb8513dab0505611e7f376398ca9c2e334131c58265b818fe1b73e8bc72cbcb",
+        "privateStoreReceiptSha256=39671a927032514d89e474cb81f61215745db88b858f3d43115daf265ee794a6"
       ],
       "capabilities": [
         "reabertura local de custodia",
@@ -1807,16 +1810,15 @@
         "reselagem privada"
       ],
       "limites": [
-        "sem download",
-        "sem HTTP",
         "sem Portal GET",
         "sem publicacao",
         "sem correlacao",
-        "execucao live ainda nao realizada"
+        "transporte GitHub apenas de envelope criptografado"
       ],
       "healthCheck": [
         "npm run validate:m5-custodial-admission",
-        "node --test tests/m5-portal-custodial-normalization.test.mjs"
+        "node --test tests/m5-portal-custodial-normalization.test.mjs",
+        "run 35931108034 success"
       ],
       "modosDeFalha": [
         "candidate hash mismatch",
@@ -1827,11 +1829,11 @@
         "parser drift"
       ],
       "recuperacao": [
-        "manter custodia fechada",
-        "co-localizar envelope e passphrase",
-        "ou obter autorizacao separada para transporte privado"
+        "não repetir aquisição Portal",
+        "revalidar cadeia M5-H/M5-I",
+        "novo gate humano antes de correlação"
       ],
-      "fallback": "não executar normalização live",
+      "fallback": "manter fonte normalizada privada e correlação bloqueada",
       "riscoDeReexecucao": "baixo em fixture; live depende de custodia local e decisão válida",
       "runbook": [
         "docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md"
@@ -1844,6 +1846,78 @@
         "normalizedValuesIncludedInProof=false",
         "rawBytesIncludedInProof=false",
         "humanReviewRequired=true"
+      ]
+    },
+    {
+      "id": "m5-i-portal-live-normalized-binding",
+      "nome": "M5-I — Binding live normalizado Portal",
+      "tipo": "investigacao_proveniencia",
+      "finalidade": "Emitir binding compatível com a Fase B preservando captura original e derivação normalizada como camadas distintas.",
+      "estado": "implementado_branch_correlacao_bloqueada",
+      "localizacao": [
+        "src/investigation/m5-portal-live-normalized-binding.mjs",
+        "config/m5-portal-live-normalized-binding-gate046.json",
+        "scripts/validate-m5-live-normalized-binding.mjs",
+        "docs/ARCA_M5_PORTAL_LIVE_NORMALIZED_BINDING_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-gate-046-portal-related-documents-2xx",
+        "m5-h-portal-custodial-normalization-offline"
+      ],
+      "chamadoPor": [
+        "ci-principal",
+        "futura-fase-b-live"
+      ],
+      "entradas": [
+        "capture envelope/receipt",
+        "observed schema hash",
+        "candidate/decision/parser hashes",
+        "normalization proof",
+        "normalized envelope/store receipt"
+      ],
+      "saidas": [
+        "custodyInput NORMALIZED",
+        "sourceBinding NORMALIZED",
+        "derivedNormalization hash-only",
+        "bindingSha256"
+      ],
+      "capabilities": [
+        "proveniencia em duas camadas",
+        "compatibilidade com Fase B",
+        "integridade deterministica"
+      ],
+      "limites": [
+        "sem valores no binding",
+        "correlationAuthorized=false",
+        "publicationAuthorized=false",
+        "sem novo GET"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-live-normalized-binding",
+        "node --test tests/m5-portal-live-normalized-binding.test.mjs"
+      ],
+      "modosDeFalha": [
+        "binding hash mismatch",
+        "normalization hash invalido",
+        "custodia original/derivada colapsada",
+        "estado inseguro"
+      ],
+      "recuperacao": [
+        "reconstruir binding a partir das provas sanitizadas",
+        "manter correlacao bloqueada"
+      ],
+      "fallback": "fonte Portal permanece normalizada privada sem entrar em correlacao",
+      "riscoDeReexecucao": "baixo; somente metadata hash-only",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_LIVE_NORMALIZED_BINDING_V0_1.md"
+      ],
+      "seguranca": [
+        "private=true",
+        "normalizationState=NORMALIZED",
+        "correlationAuthorized=false",
+        "publicationAuthorized=false",
+        "humanReviewRequired=true",
+        "adverseFinding=false"
       ]
     }
   ]
