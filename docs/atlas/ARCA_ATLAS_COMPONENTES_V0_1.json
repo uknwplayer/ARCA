@@ -785,7 +785,7 @@
       "nome": "M5 Fase C — Observador estrutural do schema Portal",
       "tipo": "investigacao",
       "finalidade": "Observar a estrutura real de uma resposta Portal 2xx já custodial sem expor valores nem admitir parser automaticamente.",
-      "estado": "candidato_offline",
+      "estado": "integrado_testado_offline",
       "localizacao": [
         "src/investigation/m5-portal-schema-observer.mjs",
         "docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md"
