@@ -1,0 +1,666 @@
+{
+  "schema": "arca.atlas-tecnico.componentes.v0.1",
+  "idioma": "pt-BR",
+  "atualizadoEm": "2026-09-23",
+  "regras": {
+    "fonteHumana": "docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md",
+    "idiomaOficial": "docs/ARCA_POLITICA_IDIOMA_PT_BR.md",
+    "atualizacaoObrigatoriaEmMudancaArquitetural": true
+  },
+  "componentes": [
+    {
+      "id": "nucleo-core-event-store",
+      "nome": "Core e Event Store",
+      "tipo": "nucleo",
+      "finalidade": "Validar, registrar e encadear eventos/evidências do ARCA.",
+      "estado": "implementado_testado",
+      "localizacao": [
+        "src/",
+        "runtime/"
+      ],
+      "dependeDe": [],
+      "chamadoPor": [
+        "fila-investigativa",
+        "m3-gate-multifonte",
+        "m5-b-pos-custodia"
+      ],
+      "entradas": [
+        "eventos",
+        "evidencias",
+        "relacoes"
+      ],
+      "saidas": [
+        "estado canonico",
+        "trilha auditavel"
+      ],
+      "capabilities": [
+        "validacao",
+        "TRACE",
+        "cadeia SHA-256"
+      ],
+      "limites": [
+        "nao decide culpa",
+        "nao publica autonomamente"
+      ],
+      "healthCheck": [
+        "npm test"
+      ],
+      "modosDeFalha": [
+        "invariante quebrada",
+        "evento invalido"
+      ],
+      "recuperacao": [
+        "reexecutar validadores",
+        "restaurar a partir de checkpoint/estado duravel"
+      ],
+      "fallback": "parar fluxo e preservar ultimo estado valido",
+      "riscoDeReexecucao": "baixo quando estado duravel e idempotencia sao preservados",
+      "runbook": [
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md"
+      ],
+      "seguranca": [
+        "fail-closed",
+        "trilha auditavel"
+      ]
+    },
+    {
+      "id": "fila-investigativa",
+      "nome": "Fila investigativa compartilhada",
+      "tipo": "controle",
+      "finalidade": "Deduplicar e mover investigações entre estados controlados.",
+      "estado": "implementado",
+      "localizacao": [
+        "src/machine-bridge/investigation-queue.mjs"
+      ],
+      "dependeDe": [
+        "nucleo-core-event-store"
+      ],
+      "chamadoPor": [
+        "m3-gate-multifonte",
+        "m5-b-pos-custodia"
+      ],
+      "entradas": [
+        "solicitacoes",
+        "transicoes"
+      ],
+      "saidas": [
+        "investigacao canonica",
+        "estado de revisao"
+      ],
+      "capabilities": [
+        "deduplicacao",
+        "transicao de estado"
+      ],
+      "limites": [
+        "nao publica",
+        "nao decide veredito"
+      ],
+      "healthCheck": [
+        "npm test"
+      ],
+      "modosDeFalha": [
+        "estado invalido",
+        "duplicacao"
+      ],
+      "recuperacao": [
+        "reabrir estado duravel",
+        "reconciliar id da investigacao"
+      ],
+      "fallback": "HUMAN_REVIEW",
+      "riscoDeReexecucao": "medio se ids/deduplicacao forem ignorados",
+      "runbook": [
+        "docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md"
+      ],
+      "seguranca": [
+        "transicoes allowlisted"
+      ]
+    },
+    {
+      "id": "m4-aquisicao-controlada",
+      "nome": "M4 Aquisição live controlada",
+      "tipo": "investigacao",
+      "finalidade": "Executar aquisição live limitada de uma fonte por vez sob manifesto e autorização.",
+      "estado": "parcial_live",
+      "localizacao": [
+        "src/investigation/",
+        "docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md"
+      ],
+      "dependeDe": [
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "m5-a-pre-correlacao"
+      ],
+      "entradas": [
+        "manifesto",
+        "autorizacao",
+        "fonte publica"
+      ],
+      "saidas": [
+        "resposta custodial",
+        "recibo sanitizado"
+      ],
+      "capabilities": [
+        "GET limitado quando explicitamente autorizado"
+      ],
+      "limites": [
+        "sem rede por inferencia",
+        "sem publicacao"
+      ],
+      "healthCheck": [
+        "tests/m4-controlled-scope.test.mjs"
+      ],
+      "modosDeFalha": [
+        "401/403",
+        "schema inesperado",
+        "custodia invalida",
+        "resposta excessiva"
+      ],
+      "recuperacao": [
+        "parar",
+        "registrar erro",
+        "revalidar credencial/documentacao",
+        "nova autorizacao antes de novo GET"
+      ],
+      "fallback": "nenhum acesso alternativo protegido; procurar rota publica oficial",
+      "riscoDeReexecucao": "alto se houver ambiguidade de entrega; exige reconciliacao",
+      "runbook": [
+        "docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md",
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md"
+      ],
+      "seguranca": [
+        "autorizacao explicita",
+        "budget",
+        "custodia antes de correlacao"
+      ]
+    },
+    {
+      "id": "custodia-privada",
+      "nome": "Custódia privada durável",
+      "tipo": "evidencia",
+      "finalidade": "Preservar material bruto e recibos com integridade criptografica fora da superficie publica.",
+      "estado": "implementado_live_limitado",
+      "localizacao": [
+        "src/",
+        "docs/"
+      ],
+      "dependeDe": [],
+      "chamadoPor": [
+        "m4-aquisicao-controlada",
+        "m5-a-pre-correlacao",
+        "m5-b-pos-custodia"
+      ],
+      "entradas": [
+        "bytes",
+        "metadados",
+        "hashes"
+      ],
+      "saidas": [
+        "envelope custodial",
+        "recibo"
+      ],
+      "capabilities": [
+        "criptografia",
+        "enderecamento por conteudo"
+      ],
+      "limites": [
+        "segredos e material bruto nao vao ao repo publico"
+      ],
+      "healthCheck": [
+        "tests/durable-private-custody.test.mjs"
+      ],
+      "modosDeFalha": [
+        "hash divergente",
+        "backend indisponivel"
+      ],
+      "recuperacao": [
+        "validar recibo",
+        "usar copia duravel autorizada"
+      ],
+      "fallback": "bloquear correlacao",
+      "riscoDeReexecucao": "baixo para leitura; aquisicao precisa reconciliacao",
+      "runbook": [
+        "docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md"
+      ],
+      "seguranca": [
+        "AES-256-GCM/scrypt",
+        "private-by-default"
+      ]
+    },
+    {
+      "id": "m5-a-pre-correlacao",
+      "nome": "M5 Fase A — gate pré-correlação",
+      "tipo": "investigacao",
+      "finalidade": "Exigir PNCP+Portal custodiais e normalizados antes da correlação.",
+      "estado": "integrado_testado_offline",
+      "localizacao": [
+        "src/investigation/m5-investigation-manifest.mjs"
+      ],
+      "dependeDe": [
+        "m4-aquisicao-controlada",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "m5-b-pos-custodia"
+      ],
+      "entradas": [
+        "manifesto M5",
+        "custodia PNCP",
+        "custodia Portal",
+        "estado de normalizacao"
+      ],
+      "saidas": [
+        "READY_FOR_CORRELATION ou bloqueio"
+      ],
+      "capabilities": [
+        "validacao de escopo",
+        "budget",
+        "gate de custodia"
+      ],
+      "limites": [
+        "nao faz GET",
+        "nao correlaciona sozinho"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-phase-a"
+      ],
+      "modosDeFalha": [
+        "fonte ausente",
+        "custodia invalida",
+        "normalizacao incompleta"
+      ],
+      "recuperacao": [
+        "corrigir pre-condicao e revalidar"
+      ],
+      "fallback": "bloqueio fail-closed",
+      "riscoDeReexecucao": "baixo",
+      "runbook": [
+        "docs/ARCA_M5_LIVE_CORRELATED_DESIGN_V0_1.md"
+      ],
+      "seguranca": [
+        "exatamente PNCP+Portal",
+        "m5Accepted=false"
+      ]
+    },
+    {
+      "id": "m5-b-pos-custodia",
+      "nome": "M5 Fase B — pós-custódia",
+      "tipo": "investigacao",
+      "finalidade": "Correlacionar dados normalizados ancorados à custódia e chegar à revisão humana.",
+      "estado": "integrado_testado_offline",
+      "localizacao": [
+        "src/investigation/m5-post-custody-correlation.mjs"
+      ],
+      "dependeDe": [
+        "m5-a-pre-correlacao",
+        "fila-investigativa",
+        "custodia-privada"
+      ],
+      "chamadoPor": [],
+      "entradas": [
+        "bundle custodial normalizado"
+      ],
+      "saidas": [
+        "correlacao",
+        "2 relatorios",
+        "verificacao adversarial",
+        "HUMAN_REVIEW"
+      ],
+      "capabilities": [
+        "correlacao",
+        "dois analistas",
+        "verificacao adversarial"
+      ],
+      "limites": [
+        "network=false",
+        "publication=false",
+        "adverseFinding=false",
+        "m5Accepted=false"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-phase-b"
+      ],
+      "modosDeFalha": [
+        "proveniencia sem ancora",
+        "budget excedido",
+        "agentes nao independentes"
+      ],
+      "recuperacao": [
+        "corrigir bundle/pre-condicoes e revalidar"
+      ],
+      "fallback": "bloqueio ou HUMAN_REVIEW",
+      "riscoDeReexecucao": "baixo com fila/digest canonicos",
+      "runbook": [
+        "docs/ARCA_M5_POST_CUSTODY_CORRELATION_V0_1.md"
+      ],
+      "seguranca": [
+        "contraprova preservada",
+        "revisao humana obrigatoria"
+      ]
+    },
+    {
+      "id": "vince-pathfinder",
+      "nome": "Vince Pathfinder/Recovery",
+      "tipo": "execucao",
+      "finalidade": "Descobrir, selecionar e recuperar rotas de execução autorizadas.",
+      "estado": "probe_011_live_proven",
+      "localizacao": [
+        "src/machine-bridge/",
+        "scripts/"
+      ],
+      "dependeDe": [
+        "machine-bridge",
+        "termux-workers"
+      ],
+      "chamadoPor": [
+        "operador"
+      ],
+      "entradas": [
+        "presencas assinadas",
+        "pins",
+        "missoes allowlisted"
+      ],
+      "saidas": [
+        "rota",
+        "dispatch",
+        "prova",
+        "recovery"
+      ],
+      "capabilities": [
+        "discovery limitado",
+        "routing",
+        "selected one-shot",
+        "replay protection"
+      ],
+      "limites": [
+        "sem shell arbitrario",
+        "sem trust automatico",
+        "sem main.write"
+      ],
+      "healthCheck": [
+        "Probe 011",
+        "tests Vince"
+      ],
+      "modosDeFalha": [
+        "worker indisponivel",
+        "replay",
+        "ambiguidade",
+        "pin mismatch"
+      ],
+      "recuperacao": [
+        "checkpoint",
+        "registry duravel",
+        "reconciliacao explicita"
+      ],
+      "fallback": "parar antes de redispatch ambiguo",
+      "riscoDeReexecucao": "critico; protegido por challenge duravel",
+      "runbook": [
+        "docs/ARCA_VINCE_V5_V411_LIVE_PROOF_011.md"
+      ],
+      "seguranca": [
+        "Ed25519",
+        "pinning",
+        "CAS",
+        "zero retry automatico"
+      ]
+    },
+    {
+      "id": "vince-discovery-global",
+      "nome": "Vince Discovery Global",
+      "tipo": "execucao",
+      "finalidade": "Descobrir globalmente agentes/workers/runners/APIs/IA, inclusive ecossistemas chineses.",
+      "estado": "planejado_nao_ativo",
+      "localizacao": [
+        "docs/ARCA_VINCE_DISCOVERY_GLOBAL_V0_1.md"
+      ],
+      "dependeDe": [
+        "vince-pathfinder",
+        "atlas-tecnico-vivo"
+      ],
+      "chamadoPor": [],
+      "entradas": [
+        "superficies publicas/allowlisted",
+        "documentacao"
+      ],
+      "saidas": [
+        "candidatos de capability"
+      ],
+      "capabilities": [
+        "descoberta global futura",
+        "connectivity investigation futura"
+      ],
+      "limites": [
+        "sem bypass de autenticacao",
+        "sem exploracao",
+        "descoberta nao concede trust"
+      ],
+      "healthCheck": [
+        "nao aplicavel enquanto congelado"
+      ],
+      "modosDeFalha": [
+        "fonte enganosa",
+        "descriptor falso",
+        "restricao juridica/tecnica"
+      ],
+      "recuperacao": [
+        "descartar candidato",
+        "preservar evidencia",
+        "revisao humana"
+      ],
+      "fallback": "nenhum",
+      "riscoDeReexecucao": "nao aplicavel",
+      "runbook": [
+        "docs/ARCA_VINCE_DISCOVERY_GLOBAL_V0_1.md"
+      ],
+      "seguranca": [
+        "teste isolado",
+        "admissao separada",
+        "origem geografica neutra"
+      ]
+    },
+    {
+      "id": "termux-workers",
+      "nome": "Workers Termux A/B",
+      "tipo": "executor",
+      "finalidade": "Executar capabilities allowlisted com identidade Ed25519 local.",
+      "estado": "live_proven_mesmo_dispositivo",
+      "localizacao": [
+        "Android/Termux",
+        "config/vince-v4.1/trusted-workers/"
+      ],
+      "dependeDe": [
+        "machine-bridge"
+      ],
+      "chamadoPor": [
+        "vince-pathfinder"
+      ],
+      "entradas": [
+        "dispatch pinado"
+      ],
+      "saidas": [
+        "resultado assinado"
+      ],
+      "capabilities": [
+        "git-status"
+      ],
+      "limites": [
+        "mesmo celular nao prova redundancia fisica",
+        "sem shell arbitrario"
+      ],
+      "healthCheck": [
+        "presenca assinada READY",
+        "doctor"
+      ],
+      "modosDeFalha": [
+        "lease expirada",
+        "identidade divergente",
+        "dispositivo indisponivel"
+      ],
+      "recuperacao": [
+        "nova lease",
+        "reconciliacao",
+        "outro worker apenas por gate seguro"
+      ],
+      "fallback": "nenhum failover automatico pos-dispatch",
+      "riscoDeReexecucao": "alto; challenge e registry bloqueiam replay",
+      "runbook": [
+        "docs/ARCA_VINCE_V5_V411_SELECTED_ONESHOT_GATE_V0_1.md"
+      ],
+      "seguranca": [
+        "chave privada apenas local"
+      ]
+    },
+    {
+      "id": "machine-bridge",
+      "nome": "Machine Bridge",
+      "tipo": "transporte",
+      "finalidade": "Transportar instruções/provas entre executores e manter contratos de execução.",
+      "estado": "implementado",
+      "localizacao": [
+        "src/machine-bridge/"
+      ],
+      "dependeDe": [],
+      "chamadoPor": [
+        "vince-pathfinder",
+        "termux-workers"
+      ],
+      "entradas": [
+        "requests",
+        "dispatches",
+        "proofs"
+      ],
+      "saidas": [
+        "resultados",
+        "estado reconciliado"
+      ],
+      "capabilities": [
+        "transporte",
+        "reconciliacao",
+        "identidade de execucao"
+      ],
+      "limites": [
+        "transporte nao equivale a autoridade"
+      ],
+      "healthCheck": [
+        "npm test"
+      ],
+      "modosDeFalha": [
+        "transporte indisponivel",
+        "estado divergente"
+      ],
+      "recuperacao": [
+        "usar estado duravel",
+        "reconciliar antes de novo dispatch"
+      ],
+      "fallback": "transportes alternativos futuros",
+      "riscoDeReexecucao": "medio/alto sem registry",
+      "runbook": [
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md"
+      ],
+      "seguranca": [
+        "separacao control-plane/transport/executor"
+      ]
+    },
+    {
+      "id": "atlas-tecnico-vivo",
+      "nome": "Atlas Técnico Vivo",
+      "tipo": "governanca",
+      "finalidade": "Manter o mapa canônico de componentes, dependências, falhas e recuperação.",
+      "estado": "v0.1_ativo",
+      "localizacao": [
+        "docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md",
+        "docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json"
+      ],
+      "dependeDe": [],
+      "chamadoPor": [
+        "operadores",
+        "agentes futuros",
+        "vince-discovery-global"
+      ],
+      "entradas": [
+        "mudancas arquiteturais",
+        "runbooks",
+        "status"
+      ],
+      "saidas": [
+        "mapa humano",
+        "mapa machine-readable"
+      ],
+      "capabilities": [
+        "inventario",
+        "dependencias",
+        "recuperacao"
+      ],
+      "limites": [
+        "nao concede autoridade"
+      ],
+      "healthCheck": [
+        "revisao em toda mudanca significativa"
+      ],
+      "modosDeFalha": [
+        "documentacao desatualizada"
+      ],
+      "recuperacao": [
+        "atualizar junto ao checkpoint/roadmap"
+      ],
+      "fallback": "checkpoint CURRENT",
+      "riscoDeReexecucao": "nao aplicavel",
+      "runbook": [
+        "docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md"
+      ],
+      "seguranca": [
+        "sem segredos",
+        "somente metadados operacionais seguros"
+      ]
+    },
+    {
+      "id": "fronteira-publicacao",
+      "nome": "Fronteira de publicação",
+      "tipo": "seguranca",
+      "finalidade": "Impedir vazamento de material bruto/privado e exigir revisão humana.",
+      "estado": "implementado",
+      "localizacao": [
+        "publication/",
+        "scripts/",
+        "docs/"
+      ],
+      "dependeDe": [
+        "nucleo-core-event-store"
+      ],
+      "chamadoPor": [
+        "fluxos de exportacao"
+      ],
+      "entradas": [
+        "artefatos candidatos"
+      ],
+      "saidas": [
+        "preview higienizado ou bloqueio"
+      ],
+      "capabilities": [
+        "scanner",
+        "allowlist/denylist",
+        "preview"
+      ],
+      "limites": [
+        "publicacao autonoma proibida"
+      ],
+      "healthCheck": [
+        "npm run check:public"
+      ],
+      "modosDeFalha": [
+        "secret/private data detectado"
+      ],
+      "recuperacao": [
+        "remover material proibido e regenerar preview"
+      ],
+      "fallback": "nao publicar",
+      "riscoDeReexecucao": "baixo",
+      "runbook": [
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md"
+      ],
+      "seguranca": [
+        "human review"
+      ]
+    }
+  ]
+}

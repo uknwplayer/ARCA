@@ -6,6 +6,16 @@ Base canônica após M2: `0.4.0-rc.1` / `bb006433f21a622aea4aaf618b728a19e4c327f
 
 Regra: este arquivo descreve a sequência vigente. Não substituir gates por ativação direta.
 
+## Regra transversal — idioma oficial e Atlas Técnico Vivo
+
+- **Português brasileiro (pt-BR) é o idioma padrão obrigatório do projeto para todo conteúdo humano novo ou significativamente alterado.**
+- Exceções apenas por compatibilidade técnica: nomes oficiais, identificadores, campos de API/protocolo, mensagens exatas de erro e código.
+- Documentos históricos em inglês serão migrados gradualmente quando forem tocados.
+- Toda mudança arquitetural significativa deve atualizar o **Atlas Técnico Vivo** e, se houver impacto operacional, o runbook correspondente.
+- Fonte humana: `docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md`.
+- Inventário legível por máquina: `docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json`.
+- Política de idioma: `docs/ARCA_POLITICA_IDIOMA_PT_BR.md`.
+
 ## Marco M0 — Fundação multifonte offline
 
 Estado: **CONCLUÍDO E INTEGRADO À `main`**
@@ -181,6 +191,18 @@ M5-R não altera o caminho crítico atual. O gate imediato é corrigir a autenti
 Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; V4 HETEROGÊNEO GITHUB↔REPLIT LIVE-PROVEN LIMITADO; V4.1 TERMUX ATTESTED LIVE-PROVEN; V4.1.1 DURABLE REPLAY LIVE-PROVEN; V5 AVAILABILITY FOUNDATION + WORK READ-ONLY LIVE-PROVEN; EDGE STEWARD CONGELADO**.
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
+
+### Vince — Scout / Broker / Pathfinder / Recovery Agent
+
+#### Futuro: Vince Discovery Global / Connectivity Investigator
+
+Estado: **PLANEJADO / NÃO ATIVO / NÃO COMPETE COM M5**.
+
+Vince poderá futuramente procurar agentes, workers, runners, APIs, serviços de IA e infraestrutura **globalmente**, inclusive em ecossistemas chineses. A origem geográfica não concede nem reduz confiança automaticamente. Descoberta não equivale a admissão: qualquer candidato deverá passar por identidade/descriptor, capabilities, política, teste isolado e evidência antes de poder integrar o ARCA.
+
+O Connectivity Investigator poderá investigar falhas de integração por documentação oficial, mudanças de endpoint, headers, tokens, OAuth/API key, status de serviço e rotas públicas equivalentes. Não poderá burlar autenticação, explorar vulnerabilidades, abusar de credenciais ou acessar áreas protegidas. No caso do Portal da Transparência, seu papel futuro seria procurar a rota oficial correta ou alternativa pública legítima, nunca “forçar entrada”.
+
+Ver `docs/ARCA_VINCE_DISCOVERY_GLOBAL_V0_1.md`.
 
 ### Vince — Scout / Broker / Pathfinder / Recovery Agent
 
@@ -381,6 +403,7 @@ Toda entrega material deve atualizar:
 2. novo `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_YYYY-MM-DD_NNN.md`;
 3. este roadmap;
 4. matriz de estado quando a maturidade mudar;
-5. checkpoint privado se topologia operacional mudar.
+5. checkpoint privado se topologia operacional mudar;
+6. `docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md` e `docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json` se houver impacto arquitetural ou operacional.
 
 O checkpoint deve registrar SHA, PR, CI, testes, decisões, limites, próximo passo, comandos de retomada e condições de parada.
