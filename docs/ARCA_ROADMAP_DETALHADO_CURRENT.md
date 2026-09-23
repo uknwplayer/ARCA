@@ -175,6 +175,33 @@ Uma resposta 401 deve ser registrada como `AUTHORIZATION_NOT_ESTABLISHED`; ela n
 
 Ver `docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md`. O CI canônico executa `validate:m5-phase-d` junto dos gates M5-A/B/C.
 
+### Gate 040 — preflight Portal isolado sem captura
+
+Estado: **CANDIDATO / issue #167 / sem GET Portal**.
+
+Objetivo: validar a credencial, o escopo derivado e a disponibilidade do cofre em um workflow que não possui etapa de captura nem importa o transporte do Portal.
+
+O workflow usa o token somente via GitHub Secret. Proveniência e instante de recebimento entram como parâmetros da execução e não são hardcoded no repositório.
+
+Saída sanitizada esperada:
+
+- `READY_FOR_EXPLICIT_AUTHORIZATION`;
+- `ACTIVE_UNKNOWN`;
+- fingerprint SHA-256 da credencial;
+- `scopeHash`;
+- cofre privado pronto;
+- `portalNetworkUsed=false`;
+- `portalRequestCapabilityPresent=false`;
+- `humanAuthorizationRequired=true`.
+
+Mesmo sucesso neste gate **não autoriza o quarto GET**.
+
+`.github/workflows/arca-portal-isolated-preflight.yml`
+
+`scripts/arca-portal-isolated-preflight.mjs`
+
+`npm run validate:portal-isolated-preflight`
+
 ## Marco M5-R — Public Investigation & Referral Dossier
 
 Estado: **MÉTODO V0.1 DOCUMENTADO; IMPLEMENTAÇÃO EXECUTÁVEL PENDENTE**.
