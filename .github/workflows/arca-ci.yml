@@ -67,6 +67,9 @@ jobs:
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 
+      - name: Validar preflight Portal isolado sem captura
+        run: npm run validate:portal-isolated-preflight
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |
