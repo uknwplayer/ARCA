@@ -70,6 +70,7 @@ export function runPortalCustodialNormalizationOffline({
   candidate,
   decision,
   sourceRepository="uknwplayer/ARCA",
+  executorRevision=null,
   outputDir=null,
   sealedAt=new Date()
 }={}){
@@ -152,10 +153,14 @@ export function runPortalCustodialNormalizationOffline({
     }
   }
 
+  const normalizedExecutorRevision=executorRevision===null?null:String(executorRevision).trim().toLowerCase();
+  if(normalizedExecutorRevision!==null&&!/^[a-f0-9]{40}$/.test(normalizedExecutorRevision))
+    throw new Error("ARCA_M5_H_EXECUTOR_REVISION_INVALID");
   const proofBase={
     schema:M5_PORTAL_CUSTODIAL_NORMALIZATION_PROOF_SCHEMA,
     version:1,
     status:"NORMALIZED_CUSTODIAL_OFFLINE",
+    ...(normalizedExecutorRevision?{executorRevision:normalizedExecutorRevision}:{}),
     candidateSha256:candidate.candidateSha256,
     decisionSha256:admitted.decisionSha256,
     parserContractSha256:candidate.parserContractSha256,

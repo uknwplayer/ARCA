@@ -41,6 +41,7 @@ export function runLocalCli({env=process.env}={}){
     passphrase:passphrase(env.ARCA_PORTAL_CUSTODY_PASSPHRASE),
     candidate,
     decision,
+    executorRevision:env.GITHUB_SHA??null,
     outputDir
   });
   const proofPath=path.join(outputDir,"portal-normalization-proof.json");
