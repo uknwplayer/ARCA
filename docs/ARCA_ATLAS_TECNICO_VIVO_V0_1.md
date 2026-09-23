@@ -218,3 +218,20 @@ Estado: **ATIVO / ZERO NOVO GET / issue #176**.
 Evidência canônica: run `35886041113`, HTTP 401, `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, 1 request, `retries=0`, `CAPTURED_AND_SEALED`, `STORED_PRIVATE`.
 
 Recuperação: suporte técnico/diagnóstico offline; se houver necessidade futura de teste diferencial, novo Gate 040 + autorização humana específica para um único endpoint allowlisted. Nenhuma autorização antiga é reutilizável.
+
+
+### Transferegov — Transferências Especiais S1
+
+Componente: `transferegov-transferencias-especiais-offline`.
+
+Função: introduzir no núcleo multifonte uma fonte pública independente para contexto de transferências especiais, emendas, pagamentos e execução, inicialmente apenas por fixture sintética.
+
+Estado: **PR #179 / OFFLINE FIXTURE / ZERO REDE**.
+
+Origem canônica: `https://api-publica.transferegov.gestao.gov.br/`.
+
+Capacidades atuais: normalização sintética determinística, Evidence Envelope hash-only, lacunas explícitas e integração ao Gate Offline Multifonte.
+
+Limites: sem `PUBLIC_GET`, sem schema live aceito, sem correlação automática com PNCP/Portal, sem inferência adversa sobre parlamentar/ente e sem conclusão sobre entrega física ou regularidade.
+
+Recuperação: qualquer divergência de origem/campo/UF/valor falha fechado. Acesso live futuro exige componente de transporte separado, fake fetch, budgets, custódia, preflight e autorização humana específica.
