@@ -121,7 +121,7 @@ Parada imediata: escopo divergente, custódia inválida, segredo ausente, respos
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C OFFLINE INTEGRADAS; FASE D CREDENCIAL EM PR; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
+Estado: **FASES A+B+C+D OFFLINE INTEGRADAS E TESTADAS; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -165,7 +165,7 @@ Ver `docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md`. O CI canônico executa `va
 
 ### M5 Fase D — prontidão verificável da credencial Portal
 
-Estado: **CANDIDATO OFFLINE / issue #164 / nenhum novo GET**.
+Estado: **INTEGRADO E TESTADO OFFLINE / PR #165 / CI #343 E #344 VERDES / nenhum novo GET**.
 
 A Fase D separa presença, formato, procedência declarada e atividade real da credencial. O token nunca é impresso; um fingerprint SHA-256 com separação de domínio permite distinguir credenciais entre probes.
 
@@ -173,7 +173,7 @@ Antes de rede, o estado obrigatório é `ACTIVE_UNKNOWN` e `activeVerified=false
 
 Uma resposta 401 deve ser registrada como `AUTHORIZATION_NOT_ESTABLISHED`; ela não prova sozinha a causa da falha e não autoriza retry. Apenas um 2xx observado em request explicitamente autorizado pode marcar `ACCEPTED_ON_OBSERVED_REQUEST`.
 
-Ver `docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md`.
+Ver `docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md`. O CI canônico executa `validate:m5-phase-d` junto dos gates M5-A/B/C.
 
 ## Marco M5-R — Public Investigation & Referral Dossier
 
