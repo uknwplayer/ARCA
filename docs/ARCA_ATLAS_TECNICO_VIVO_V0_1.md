@@ -237,3 +237,22 @@ Capacidades atuais: normalização sintética determinística, Evidence Envelope
 Limites: sem `PUBLIC_GET`, sem schema live aceito, sem correlação automática com PNCP/Portal, sem inferência adversa sobre parlamentar/ente e sem conclusão sobre entrega física ou regularidade.
 
 Recuperação: qualquer divergência de origem/campo/UF/valor falha fechado. Acesso live futuro exige componente de transporte separado, fake fetch, budgets, custódia, preflight e autorização humana específica.
+
+
+### TCU — Acórdãos Offline S2
+
+Componente: `tcu-acordaos-offline-s2`.
+
+Função: incorporar decisões de controle externo do TCU como fonte documental nacional, inicialmente por fixture sintética e sem rede.
+
+Estado: **S2 / OFFLINE FIXTURE / ZERO REDE**.
+
+Origem canônica: `https://dados-abertos.apps.tcu.gov.br/api/acordao/recupera-acordaos`.
+
+Registro operacional: `config/public-source-registry-s2.json`; V1 e S1 permanecem congelados para reprodutibilidade.
+
+Arquitetura: Evidence Envelope aceita `BR/NATIONAL` além de `BR/UF/XX`, sem mudar a serialização dos registros antigos.
+
+Limites: acórdão exige leitura contextual; recurso, revisão ou decisão posterior podem mudar seu significado; sem inferência adversa automática, sem `PUBLIC_GET`, sem publicação.
+
+Recuperação: URL externa ao domínio TCU, data inválida, campo inesperado, snapshot incorreto ou fonte não executável falham fechado.
