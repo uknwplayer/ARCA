@@ -79,6 +79,9 @@ jobs:
       - name: Validar binding live normalizado Portal M5-I
         run: npm run validate:m5-live-normalized-binding
 
+      - name: Validar parser PNCP live observado
+        run: npm run validate:m5-pncp-live-parser
+
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 

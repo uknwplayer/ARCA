@@ -57,7 +57,8 @@
     "validate:m5-parser-admission": "node --test tests/m5-portal-parser-admission.test.mjs",
     "validate:m5-custodial-admission": "node scripts/validate-m5-custodial-normalization-admission.mjs",
     "normalize:m5-portal-custody-local": "node scripts/normalize-m5-portal-custody-local.mjs",
-    "validate:m5-live-normalized-binding": "node scripts/validate-m5-live-normalized-binding.mjs"
+    "validate:m5-live-normalized-binding": "node scripts/validate-m5-live-normalized-binding.mjs",
+    "validate:m5-pncp-live-parser": "node scripts/validate-m5-pncp-live-parser.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"
