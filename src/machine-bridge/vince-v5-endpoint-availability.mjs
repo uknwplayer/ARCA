@@ -48,6 +48,7 @@ function observation({
   source,
   surfaceReachable=false,
   wakeAcknowledged=false,
+  executionReady=false,
   routeEligible=false,
   evidence={}
 }){
@@ -71,6 +72,7 @@ function observation({
     validUntil:valid.text,
     surfaceReachable:surfaceReachable===true,
     wakeAcknowledged:wakeAcknowledged===true,
+    executionReady:executionReady===true,
     routeEligible:routeEligible===true,
     evidence:Object.freeze({...evidence}),
     authority:Object.freeze({
@@ -285,6 +287,7 @@ export async function observeVinceV5Ack({
     source:"ack",
     surfaceReachable:true,
     wakeAcknowledged:true,
+    executionReady:true,
     routeEligible:true,
     evidence:{
       operationDeclared:true,
@@ -328,7 +331,7 @@ export function selectVinceV5Route({
     const eligible=latestRecord&&
       latestRecord.item.state==="AVAILABLE"&&
       latestRecord.item.routeEligible===true&&
-      latestRecord.item.wakeAcknowledged===true
+      latestRecord.item.executionReady===true
       ?latestRecord:null;
     const latest=latestRecord?.item??null;
     return {
