@@ -27,6 +27,45 @@ function safeHash(value,label){if(typeof value!=="string"||!HASH.test(value))thr
 function safeId(value,label){if(typeof value!=="string"||!SAFE_ID.test(value))throw new Error("invalid "+label);return value}
 function safeDispatch(value,label){if(typeof value!=="string"||!DISPATCH.test(value))throw new Error("invalid "+label);return value}
 
+function recomputeCheckpointHash(checkpoint){
+  const copy=JSON.parse(JSON.stringify(checkpoint));
+  delete copy.checkpoint_record_sha256;
+  return sha256(copy);
+}
+function recomputeJobFingerprint(checkpoint){
+  return sha256(checkpoint.job);
+}
+function recomputeMissionSha256(checkpoint){
+  const m=checkpoint.mission;
+  const body={
+    schema:"arca.vince-pathfinder-mission.v0.1",
+    identity:"vince",
+    mission_id:m.mission_id,
+    objective:m.objective,
+    checkpoint_sha256:m.checkpoint_sha256,
+    profile:m.profile,
+    target_os:m.target_os,
+    required_capabilities:[...m.required_capabilities].sort(),
+    permissions:{
+      public_only:true,
+      secrets_allowed:false,
+      core_mutation_allowed:false,
+      trust_modify_allowed:false,
+      merge_allowed:false,
+      shell_arbitrary_allowed:false
+    },
+    proof_required:[
+      "dispatch-reference",
+      "executor-identity",
+      "semantic-result-sha256",
+      "accepted-receipt"
+    ],
+    return_route:m.return_route,
+    human_review_required:true
+  };
+  return sha256(body);
+}
+
 export function validateVinceRecoveryPair({checkpoint,proof}={}){
   if(!plain(checkpoint)||checkpoint.schema!=="arca.vince-recovery-checkpoint.v0.3")
     throw new Error("VINCE_SIGNED_RECOVERY_CHECKPOINT_INVALID");
@@ -37,6 +76,12 @@ export function validateVinceRecoveryPair({checkpoint,proof}={}){
   safeHash(checkpoint.mission_sha256,"mission sha256");
   safeHash(checkpoint.job_fingerprint,"job fingerprint");
   safeHash(checkpoint.checkpoint_record_sha256,"checkpoint record sha256");
+  if(recomputeCheckpointHash(checkpoint)!==checkpoint.checkpoint_record_sha256)
+    throw new Error("VINCE_SIGNED_RECOVERY_CHECKPOINT_HASH_MISMATCH");
+  if(recomputeJobFingerprint(checkpoint)!==checkpoint.job_fingerprint)
+    throw new Error("VINCE_SIGNED_RECOVERY_JOB_FINGERPRINT_MISMATCH");
+  if(recomputeMissionSha256(checkpoint)!==checkpoint.mission_sha256)
+    throw new Error("VINCE_SIGNED_RECOVERY_MISSION_HASH_MISMATCH");
   safeDispatch(checkpoint.dispatch_external_id,"dispatch external id");
   safeDispatch(checkpoint.dispatch_correlation_id,"dispatch correlation id");
   if(checkpoint.dispatch_external_id!==checkpoint.dispatch_correlation_id)
