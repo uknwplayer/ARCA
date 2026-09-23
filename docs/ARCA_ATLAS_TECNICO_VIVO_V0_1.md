@@ -346,7 +346,7 @@ Componente: `m5-h-portal-custodial-normalization-offline`.
 
 Função: aplicar o parser M5-F aos bytes reais já custodiais somente depois de uma decisão M5-G hash-bound, sem rede de fonte, sem novo GET, sem publicação e sem correlação.
 
-Estado: **AUTORIZAÇÃO HUMANA REGISTRADA / EXECUTOR LOCAL-ONLY IMPLEMENTADO / LIVE AINDA NÃO EXECUTADO**.
+Estado: **EXECUTADO COM SUCESSO / NORMALIZAÇÃO LIVE CUSTODIAL CONCLUÍDA / SEM NOVO GET / SEM CORRELAÇÃO**.
 
 Candidato admitido: `0bcf1806c2480b2f82f8efff43e67436460043375d302fb6fcf44c80ec3e97f9`.
 
@@ -362,8 +362,29 @@ Antes de normalizar, revalida candidato, decisão, parser contract, schema, enve
 
 A saída real será imediatamente resselada em um novo envelope privado. A prova sanitizada não contém valores, nomes ou bytes brutos.
 
-Fronteira atual: envelope/passphrase live ainda não estão co-localizados no mesmo ambiente sem transporte de rede. Portanto, a normalização live não foi executada.
+Execução real: run `35931108034`, revisão `bcb0c7064df3294bf31520053de8ab893a71e2fa`. O envelope criptografado já existente foi transportado do GitHub, aberto com Secret, revalidado, normalizado, resselado e persistido no cofre privado. `normalizationSha256=f7306be0478fb603a5fe70957eeb15bf337b7b4db51f6eacbaf699c89f7bcfa7`; novo envelope `6cb8513dab0505611e7f376398ca9c2e334131c58265b818fe1b73e8bc72cbcb`; plaintext não publicado.
 
-Recuperação: materializar a custódia localmente sem rede do executor ou obter autorização separada para transporte de custódia privada via GitHub. Novo GET Portal continua desnecessário e proibido.
+Recuperação: qualquer divergência futura deve parar no binding/prova; não rerodar aquisição Portal por causa de falha downstream.
 
 Runbook: `docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md`.
+
+
+### M5-I — binding live normalizado Portal
+
+Componente: `m5-i-portal-live-normalized-binding`.
+
+Função: transformar a prova M5-H em uma fonte Portal live normalizada compatível com a Fase B, preservando separadamente a custódia original e a custódia derivada.
+
+Estado: **IMPLEMENTADO EM BRANCH / NORMALIZAÇÃO LIVE COMPROVADA / CORRELAÇÃO BLOQUEADA**.
+
+Captura original: run `35917902630`, envelope `d398da542596a7ad387f0d1c5bbe2b9e201e00e1f812507a7e2c97b16d421db5`, receipt `1ed2cadf58f1a3213271387400e3015089c24c690b7e1c948eb63d056c564cbc`.
+
+Normalização: run `35931108034`, `normalizationSha256=f7306be0478fb603a5fe70957eeb15bf337b7b4db51f6eacbaf699c89f7bcfa7`, envelope derivado `6cb8513dab0505611e7f376398ca9c2e334131c58265b818fe1b73e8bc72cbcb`, store receipt `39671a927032514d89e474cb81f61215745db88b858f3d43115daf265ee794a6`.
+
+Saídas: `custodyInput`, `sourceBinding` e `derivedNormalization`, todos sem valores brutos.
+
+Limites: `correlationAuthorized=false`, `publicationAuthorized=false`, nenhum novo GET, nenhum classificador.
+
+Recuperação: binding adulterado ou cadeia incompleta falha fechado. Não colapsar captura original e derivação normalizada no mesmo envelope.
+
+Runbook: `docs/ARCA_M5_PORTAL_LIVE_NORMALIZED_BINDING_V0_1.md`.
