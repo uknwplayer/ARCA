@@ -99,7 +99,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 Estado: **PR #179 / OFFLINE FIXTURE / ZERO REDE**.
 
-O novo ambiente oficial de APIs de Dados Abertos do Transferegov.br passa a ser a terceira fonte executável do núcleo offline, começando por Transferências Especiais. O descriptor `br.transferegov.public` aponta para `https://api-publica.transferegov.gestao.gov.br/`, permanece sem `PUBLIC_GET` e aceita somente `OFFLINE_FIXTURE`.
+O novo ambiente oficial de APIs de Dados Abertos do Transferegov.br passa a ser a terceira fonte executável do núcleo offline no snapshot `config/public-source-registry-s1.json`, começando por Transferências Especiais. O registro histórico V1 permanece congelado para preservar as provas M0/M1. No snapshot S1, `br.transferegov.public` aponta para `https://api-publica.transferegov.gestao.gov.br/`, permanece sem `PUBLIC_GET` e aceita somente `OFFLINE_FIXTURE`.
 
 Entregas V0.1:
 
