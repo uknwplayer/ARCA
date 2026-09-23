@@ -1,0 +1,78 @@
+name: ARCA M5-H — normalizacao custodial Gate 046
+run-name: M5-H normalize Gate 046 — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'portal-custodial-normalization-gate046-*'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  normalize-custody:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão autorizada
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar admissão humana M5-H
+        run: npm run validate:m5-custodial-admission
+
+      - name: Transportar somente o envelope criptografado do Gate 046
+        uses: actions/download-artifact@v4
+        with:
+          name: portal-related-documents-35917902630
+          path: artifacts/source
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 35917902630
+
+      - name: Normalizar custódia localmente sem Portal
+        env:
+          ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/normalize-m5-portal-custody-local.mjs \
+            --envelope artifacts/source/portal-related-documents.envelope.json \
+            --output artifacts/normalized
+
+      - name: Persistir envelope normalizado no cofre privado
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+        run: |
+          set -euo pipefail
+          node scripts/persist-m5-normalization-private.mjs \
+            --envelope artifacts/normalized/portal-normalization.envelope.json \
+            --proof artifacts/normalized/portal-normalization-proof.json \
+            | tee artifacts/normalized/private-store-receipt.json
+
+      - name: Publicar somente prova sanitizada
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-h-proof-${{ github.run_id }}
+          path: |
+            artifacts/normalized/portal-normalization-proof.json
+            artifacts/normalized/private-store-receipt.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Limpar material custodial do workspace
+        if: always()
+        run: rm -rf artifacts/source artifacts/normalized/portal-normalization.envelope.json
