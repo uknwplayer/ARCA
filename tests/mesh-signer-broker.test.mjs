@@ -56,7 +56,8 @@ test("vault-backed broker exposes only public identity metadata",async()=>{
     "receipt",
     "request-evidence",
     "cognitive-substitution-receipt",
-    "reconciled-failover-receipt"
+    "reconciled-failover-receipt",
+    "vince-recovery-receipt"
   ]);
   const serialized=JSON.stringify(broker);
   assert.equal(serialized.includes("vault://"),false);
@@ -66,6 +67,7 @@ test("vault-backed broker exposes only public identity metadata",async()=>{
   assert.equal(typeof broker.signRequestEvidence,"function");
   assert.equal(typeof broker.signCognitiveSubstitutionReceipt,"function");
   assert.equal(typeof broker.signReconciledFailoverReceipt,"function");
+  assert.equal(typeof broker.signVinceRecoveryReceipt,"function");
   assert.equal(typeof broker.signStatement,"undefined");
 });
 
