@@ -853,7 +853,7 @@
       "nome": "M5 Fase D — Prontidão verificável da credencial Portal",
       "tipo": "seguranca_investigacao",
       "finalidade": "Separar presença/formato/proveniência do token de sua atividade real, sem expor o segredo.",
-      "estado": "candidato_offline",
+      "estado": "integrado_testado_offline",
       "localizacao": [
         "src/investigation/portal-credential-readiness.mjs",
         "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
