@@ -286,7 +286,13 @@ async function main(){
   try{
     const result=await runPortalRelatedDocumentsProbe({preflightOnly:process.argv.includes("--preflight-only")});
     if(result.status==="PREFLIGHT_READY"){
-      process.stdout.write(JSON.stringify({status:result.status,scopeHash:result.scopeHash})+"\n");
+      process.stdout.write(JSON.stringify({
+        status:result.status,
+        scopeHash:result.scopeHash,
+        credentialActiveState:result.credentialReadiness.activeState,
+        credentialFingerprintSha256:result.credentialReadiness.credentialFingerprintSha256,
+        readyForExplicitAuthorization:result.credentialReadiness.readyForExplicitAuthorization
+      })+"\n");
       return;
     }
     process.stdout.write(JSON.stringify({
