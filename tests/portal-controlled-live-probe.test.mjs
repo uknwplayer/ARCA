@@ -7,6 +7,8 @@ import {createHash} from "node:crypto";
 import {mkdtemp,rm,mkdir} from "node:fs/promises";
 import {buildDurableCustodyReceipt} from "../src/machine-bridge/durable-private-custody.mjs";
 import {buildM4ControlledScopeV02} from "../src/investigation/m4-controlled-scope.mjs";
+import {assessPortalCredentialReadiness} from "../src/investigation/portal-credential-readiness.mjs";
+import {buildPortalIsolatedPreflightAttestation} from "../src/investigation/portal-preflight-attestation.mjs";
 import {openCustodyEnvelope} from "../src/machine-bridge/encrypted-custody-envelope.mjs";
 import {runPortalRelatedDocumentsProbe} from "../scripts/arca-portal-related-documents-live-probe.mjs";
 
@@ -23,16 +25,34 @@ function stableStringify(value){
   return "{"+Object.keys(value).sort().map(key=>JSON.stringify(key)+":"+stableStringify(value[key])).join(",")+"}";
 }
 function validEnv(overrides={}){
+  const receivedAt="2026-09-23T11:00:00.000Z";
   const scope=buildM4ControlledScopeV02({source:"PORTAL",confirmation:"PORTAL_DOCUMENT_GET_ONLY",
     revision,documentCode,maxBytes:65536,timeoutMs:30000});
+  const readiness=assessPortalCredentialReadiness({
+    apiKey,
+    provenance:"OFFICIAL_EMAIL_REGISTRATION",
+    receivedAt
+  });
+  const preflight=buildPortalIsolatedPreflightAttestation({
+    revision,
+    scopeHash:scope.scopeSha256,
+    documentCodeSha256:scope.scope.documentCodeSha256,
+    credentialFingerprintSha256:readiness.credentialFingerprintSha256,
+    credentialProvenance:readiness.provenance,
+    credentialReceivedAt:readiness.receivedAt,
+    custodyRepositoryHash:sha256(vaultRepository),
+    custodyBranch:"main"
+  });
   return {
     ARCA_PORTAL_CONFIRMATION:"PORTAL_DOCUMENT_GET_ONLY",
     ARCA_PORTAL_DOCUMENT_CODE:documentCode,
     ARCA_PORTAL_API_KEY:apiKey,
     ARCA_PORTAL_TOKEN_PROVENANCE:"OFFICIAL_EMAIL_REGISTRATION",
-    ARCA_PORTAL_TOKEN_RECEIVED_AT:"2026-09-23T11:00:00.000Z",
+    ARCA_PORTAL_TOKEN_RECEIVED_AT:receivedAt,
     ARCA_PORTAL_CUSTODY_PASSPHRASE:passphrase,
     ARCA_PORTAL_SCOPE_SHA256:scope.scopeSha256,
+    ARCA_PORTAL_PREFLIGHT_SHA256:preflight.preflightSha256,
+    ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256:readiness.credentialFingerprintSha256,
     ARCA_CUSTODY_VAULT_REPOSITORY:vaultRepository,
     ARCA_CUSTODY_VAULT_TOKEN:"synthetic-vault-token-0123456789",
     ARCA_CUSTODY_VAULT_BRANCH:"main",
@@ -45,7 +65,18 @@ function portalResponse(body,{status=200,contentType="application/json"}={}){
   const bytes=Buffer.isBuffer(body)?body:Buffer.from(typeof body==="string"?body:JSON.stringify(body));
   return new Response(bytes,{status,headers:{"content-type":contentType}});
 }
-function fakeCustodyBackend({preflight={ready:true,private:true},failPersist=false,failStatus=false,badReceipt=false}={}){
+function fakeCustodyBackend({
+  preflight={
+    ready:true,
+    private:true,
+    repositoryHash:sha256(vaultRepository),
+    branch:"main",
+    headSha:"c".repeat(40)
+  },
+  failPersist=false,
+  failStatus=false,
+  badReceipt=false
+}={}){
   const calls=[];
   return {
     calls,
@@ -97,7 +128,10 @@ test("Portal probe refuses invalid authorization and private custody before a Po
     {GITHUB_SHA:"not-a-revision"},
     {ARCA_PORTAL_TOKEN_PROVENANCE:""},
     {ARCA_PORTAL_TOKEN_PROVENANCE:"GOVBR_LOGIN"},
-    {ARCA_PORTAL_TOKEN_RECEIVED_AT:""}
+    {ARCA_PORTAL_TOKEN_RECEIVED_AT:""},
+    {ARCA_PORTAL_PREFLIGHT_SHA256:"0".repeat(64)},
+    {ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256:"1".repeat(64)},
+    {ARCA_PORTAL_API_KEY:"rotated-synthetic-portal-api-key-999999999"}
   ]){
     const spy=fetchSpy([]);
     await assert.rejects(()=>runPortalRelatedDocumentsProbe({
@@ -129,6 +163,11 @@ test("Portal probe preflight validates scope and private custody without creatin
   assert.equal(result.credentialReadiness.activeVerified,false);
   assert.equal(result.credentialReadiness.networkUsed,false);
   assert.equal(result.credentialReadiness.tokenIncluded,false);
+  assert.match(result.authorizationBinding.preflightSha256,/^[a-f0-9]{64}$/);
+  assert.equal(
+    result.authorizationBinding.credentialFingerprintSha256,
+    validEnv().ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256
+  );
   assert.equal(JSON.stringify(result).includes(apiKey),false);
   assert.deepEqual(backend.calls.map(call=>call.type),["preflight"]);
   assert.equal(spy.calls.length,0);
@@ -156,6 +195,11 @@ test("Portal probe persists, seals exact original bytes and emits only a sanitiz
   assert.equal(result.proof.credentialObservation.observationState,"ACCEPTED_ON_OBSERVED_REQUEST");
   assert.equal(result.proof.credentialObservation.activeVerified,true);
   assert.equal(result.proof.credentialReadiness.activeState,"ACTIVE_UNKNOWN");
+  assert.equal(result.proof.authorizationBinding.preflightSha256,validEnv().ARCA_PORTAL_PREFLIGHT_SHA256);
+  assert.equal(
+    result.proof.authorizationBinding.credentialFingerprintSha256,
+    validEnv().ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256
+  );
   assert.equal(JSON.stringify(result.proof).includes(apiKey),false);
   assert.equal(result.proof.captureStatus,"CAPTURED_AND_SEALED");
   assert.equal(result.proof.validationStatus,"VALIDATED");
