@@ -325,6 +325,22 @@ Próximo gate: M5-G de admissão custodial, vinculando parser + Gate 046 + decis
 
 Ver `docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md` e checkpoint 047.
 
+### M5-G — admissão da normalização custodial
+
+Estado: **IMPLEMENTADO EM BRANCH / SEM REDE / SEM ABRIR CUSTÓDIA / DECISÃO HUMANA PENDENTE**.
+
+O M5-G separa parser testado de permissão para aplicá-lo aos bytes reais. O candidato de admissão vincula revisão, parser contract hash, `observedSchemaSha256`, envelope, receipt, response hash e scope do Gate 046.
+
+Estado inicial obrigatório: `AWAITING_HUMAN_ADMISSION`.
+
+Uma futura decisão `ADMIT_FOR_CUSTODIAL_NORMALIZATION` habilita somente normalização privada offline. Ela não autoriza rede, novo GET, publicação ou correlação.
+
+O preflight é disparado por branch `portal-parser-admission-preflight-*` e não usa secrets.
+
+Próximo passo: merge → gerar candidato na revisão final → obter decisão humana explícita vinculada ao `candidateSha256`.
+
+Ver `docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md` e checkpoint 048.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
