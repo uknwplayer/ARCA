@@ -72,12 +72,13 @@
       "id": "br.transferegov.public",
       "publisher": "Transferegov.br",
       "sourceClass": "public_transfers_and_agreements",
-      "accessMethod": "official_public_api",
-      "canonicalPublicUrl": "https://api-publica.transferegov.gestao.gov.br/",
+      "accessMethod": "official_public_portal",
+      "canonicalPublicUrl": "https://www.gov.br/transferegov/pt-br",
       "allowedOrigins": [
-        "https://api-publica.transferegov.gestao.gov.br"
+        "https://www.gov.br"
       ],
       "formats": [
+        "CATALOG",
         "CSV",
         "JSON"
       ],
@@ -90,17 +91,13 @@
         ]
       },
       "temporalCoverage": {
-        "kind": "module-dependent"
+        "kind": "dataset-dependent"
       },
-      "adapterStatus": "ACTIVE",
-      "executableModes": [
-        "OFFLINE_FIXTURE"
-      ],
-      "updateProfile": "module-dependent",
+      "adapterStatus": "DECLARED_ONLY",
+      "executableModes": [],
+      "updateProfile": "dataset-dependent",
       "limitations": [
-        "offline-fixture-only-until-live-schema-is-accepted",
         "requires-program-specific-correlation",
-        "transfer-or-payment-does-not-prove-procurement-link",
         "physical-execution-may-require-sector-source"
       ]
     },
