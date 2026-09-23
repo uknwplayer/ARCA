@@ -102,6 +102,10 @@ export function validateVinceRecoveryPair({checkpoint,proof}={}){
   safeHash(proof.result_sha256,"result sha256");
   safeHash(proof.accepted_receipt_sha256,"accepted receipt sha256");
   safeHash(proof.proof_sha256,"recovery proof sha256");
+  const proofBody=JSON.parse(JSON.stringify(proof));
+  delete proofBody.proof_sha256;
+  if(sha256(proofBody)!==proof.proof_sha256)
+    throw new Error("VINCE_SIGNED_RECOVERY_PROOF_HASH_MISMATCH");
   if(proof.network_dispatch_performed!==false||
      proof.automatic_retry_performed!==false||
      proof.failover_authorized!==false||
