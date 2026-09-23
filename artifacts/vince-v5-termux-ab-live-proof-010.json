@@ -1,0 +1,85 @@
+{
+  "format": "arca-vince-v5-termux-ab-live-proof-010-v1",
+  "version": 1,
+  "date": "2026-09-23",
+  "probeIssue": 143,
+  "channel": {
+    "repository": "uknwplayer/ARCA",
+    "branch": "vince-v41-termux-channel"
+  },
+  "workers": {
+    "A": {
+      "nodeId": "vince-termux-android-1",
+      "keyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1",
+      "pinPath": "config/vince-v4.1/trusted-workers/vince-termux-android-1.json"
+    },
+    "B": {
+      "nodeId": "vince-termux-android-2",
+      "keyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0",
+      "pinPath": "config/vince-v4.1/trusted-workers/vince-termux-android-2.json"
+    }
+  },
+  "phase1": {
+    "routeObservedAt": "2026-09-23T09:19:36.274Z",
+    "readyA": {
+      "path": "remote-jobs/v5/presence/vince-termux-android-1/1790155051521-c271d7214007ff0b.json",
+      "gitBlobSha": "fd023ada1e074319e04d73b8a8f2adf0a0e377bc",
+      "presenceSha256": "c271d7214007ff0b2709f72873e91cc0c1a5f19e4b66a754dccb31fa8efd3acf",
+      "observedAt": "2026-09-23T09:17:31.521Z",
+      "state": "READY"
+    },
+    "readyB": {
+      "path": "remote-jobs/v5/presence/vince-termux-android-2/1790155035057-1e2358be85bb2454.json",
+      "gitBlobSha": "0045f57d93191635757f0682d22513e2d5012a70",
+      "presenceSha256": "1e2358be85bb24547c30617bd328edce8a146232acc21fdb7553d85ae8c4182d",
+      "observedAt": "2026-09-23T09:17:15.057Z",
+      "state": "READY"
+    },
+    "result": {
+      "state": "AVAILABLE",
+      "candidateCount": 2,
+      "eligibleCount": 2,
+      "selectedEndpointId": "vince-termux-android-1",
+      "dispatchPerformed": false
+    }
+  },
+  "phase2": {
+    "routeObservedAt": "2026-09-23T09:22:11.190Z",
+    "withdrawnA": {
+      "path": "remote-jobs/v5/presence/vince-termux-android-1/1790155266166-1333d57c5f6704bb.json",
+      "gitBlobSha": "fd592275cf2e13ce2aa5642f13d3f67a5d0ac374",
+      "presenceSha256": "1333d57c5f6704bb7ac86cab8a6b2e469cc7e7798a4a4cf145224aa7537f9529",
+      "observedAt": "2026-09-23T09:21:06.166Z",
+      "state": "WITHDRAWN"
+    },
+    "readyBReusedFromPhase1": true,
+    "result": {
+      "aState": "INCONCLUSIVE",
+      "aReason": "SIGNED_PRESENCE_WITHDRAWN",
+      "bState": "AVAILABLE",
+      "bReason": "CRYPTOGRAPHIC_READY_LEASE",
+      "candidateCount": 2,
+      "eligibleCount": 1,
+      "selectedEndpointId": "vince-termux-android-2",
+      "dispatchPerformed": false
+    }
+  },
+  "safety": {
+    "workUsed": false,
+    "replitUsed": false,
+    "githubActionsUsedAsExecutor": false,
+    "edgeStewardActivated": false,
+    "authorityExpanded": false,
+    "missionDispatched": false
+  },
+  "interpretation": {
+    "proved": "logical route selection and controlled A-to-B failover across two independently keyed Termux worker identities",
+    "notProved": [
+      "physical-device failover",
+      "24/7 daemon/service",
+      "automatic mission dispatch",
+      "mission execution after route selection",
+      "multi-device resilience"
+    ]
+  }
+}
