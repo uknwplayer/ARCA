@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V4.1 Candidate Attestation Verifier integrado**
+Checkpoint: **2026-09-23 / Vince V4.1 Termux Worker One-Shot canônico**
 
-Estado: **Vince V4 live-proven limitado; V4.1 verifier candidato integrado/testado offline; reconciliação com worker Replit bloqueada apenas pela cota; Portal em 401; Edge congelado**
+Estado: **Vince V4 live-proven limitado; V4.1 verifier + worker Termux one-shot canônicos; live probe #130 aguarda identidade pública; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 027 — Vince V4.1 Candidate Attestation Verifier](ARCA_HANDOFF_CHECKPOINT_2026-09-23_027.md). A PR #127 integrou verifier Ed25519 candidato com challenge 32-byte, pinning explícito e replay protection; CI `35826141926` e pós-merge `35826260790` verdes. O contrato remoto Replit não foi inspecionado após a implementação porque a cota gratuita diária foi atingida. Nenhuma private key foi provisionada ou solicitada.
+Handoff mais recente: [checkpoint 028 — Vince V4.1 Termux Worker One-Shot](ARCA_HANDOFF_CHECKPOINT_2026-09-23_028.md). A PR #129 integrou o worker Android/Termux one-shot, CI `35827384616` e pós-merge `35827476094` verdes. Branch `vince-v41-termux-channel` criada e issue #130 pré-registrada. Nenhuma request live foi publicada; o próximo gate é o usuário gerar a identidade Ed25519 local e publicar somente a identidade pública.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
