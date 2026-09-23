@@ -7,6 +7,7 @@ const ENVELOPE_SCHEMA="arca.encrypted-custody-envelope.v0.1";
 const LIVE_PROOF_SCHEMA="arca.pncp-controlled-live-probe.v0.1";
 const PORTAL_LIVE_PROOF_SCHEMA="arca.portal-controlled-live-probe.v0.1";
 const PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA="arca.portal-related-documents-controlled-probe.v0.2";
+const PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03="arca.portal-related-documents-controlled-probe.v0.3";
 const MAX_ENVELOPE_BYTES=60*1024*1024;
 const SAFE_REPOSITORY=/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const SAFE_BRANCH=/^[A-Za-z0-9._-]{1,128}$/;
@@ -73,20 +74,40 @@ function proofHasForbiddenKey(value){
     /^(?:documentCode|apiKey|token|authorization|responseBody|requestUrl|fullUrl|personName|beneficiaryName|favorecido)$/i.test(key)||
     proofHasForbiddenKey(item));
 }
+function portalHttpMetaValid(proof,{final=false}={}){
+  const status=proof?.httpStatus;
+  if(!Number.isSafeInteger(status)||status<200||status>599||(status>=300&&status<400))return false;
+  if(proof.httpStatusClass!==`${Math.floor(status/100)}xx`)return false;
+  const ok=status>=200&&status<300;
+  if(ok)return !Object.hasOwn(proof,"httpFailureCode");
+  if(!/^ARCA_PORTAL_HTTP_(?:BAD_REQUEST|UNAUTHORIZED|RATE_LIMITED|SERVER_ERROR|ERROR)$/.test(proof.httpFailureCode??""))
+    return false;
+  if(final&&proof.failureCode!==proof.httpFailureCode)return false;
+  return true;
+}
+
 function validPortalStatusProof(envelope,proof){
-  if(proof?.schema!==PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA||
+  const v03=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03;
+  const statusOk=v03?portalHttpMetaValid(proof,{final:true}):proof?.httpStatusClass==="2xx";
+  const non2xx=v03&&proof.httpStatusClass!=="2xx";
+  const validationOk=non2xx
+    ?proof.probeStatus==="FAILED"&&proof.validationStatus==="NOT_APPLICABLE"&&
+      !Object.hasOwn(proof,"recordCount")
+    :(["VALIDATED","FAILED"].includes(proof?.validationStatus)&&
+      (proof.validationStatus==="VALIDATED"?(proof.probeStatus==="SUCCEEDED"):proof.probeStatus==="FAILED"));
+  const minBytes=v03?0:1;
+  if(![PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(proof?.schema)||
      !["SUCCEEDED","FAILED"].includes(proof.probeStatus)||
      proof.captureStatus!=="CAPTURED_AND_SEALED"||
-     !["VALIDATED","FAILED"].includes(proof.validationStatus)||
-     (proof.validationStatus==="VALIDATED"&&proof.probeStatus!=="SUCCEEDED")||
-     (proof.validationStatus==="FAILED"&&proof.probeStatus!=="FAILED")||
+     !["VALIDATED","FAILED","NOT_APPLICABLE"].includes(proof.validationStatus)||
+     !validationOk||
      proof.repository!==envelope?.repository||proof.revision!==envelope?.revision||
      proof.scopeHash!==envelope?.scopeHash||proof.contractId!=="PORTAL_EXPENSE_RELATED_DOCUMENTS"||
-     proof.httpStatusClass!=="2xx"||proof.responseBytesSha256!==proof.resultHash||
+     !statusOk||proof.responseBytesSha256!==proof.resultHash||
      !SAFE_SHA256.test(proof.resultHash??"")||
-     !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<1||proof.responseByteCount>65536||
+     !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<minBytes||proof.responseByteCount>65536||
      (proof.validationStatus==="VALIDATED"&&(!Number.isSafeInteger(proof.recordCount)||proof.recordCount<0||proof.recordCount>25))||
-     (proof.validationStatus==="FAILED"&&Object.hasOwn(proof,"recordCount"))||
+     ((proof.validationStatus==="FAILED"||proof.validationStatus==="NOT_APPLICABLE")&&Object.hasOwn(proof,"recordCount"))||
      proof.custody?.encrypted!==true||proof.custody?.plaintextPublished!==false||
      proof.custody?.envelopeHash!==sha256(JSON.stringify(envelope))||
      proof.durableCustody?.required!==true||
@@ -111,25 +132,27 @@ export function buildDurableCustodyReceipt({
      envelope?.plaintextIncluded!==false)
     throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_INVALID");
   const portalV02=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA;
-  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA].includes(proof?.schema)||
-     (portalV02
+  const portalV03=proof?.schema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03;
+  const portalRelated=portalV02||portalV03;
+  if(![LIVE_PROOF_SCHEMA,PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(proof?.schema)||
+     (portalRelated
        ?(proof?.probeStatus!=="CAPTURING"||proof?.captureStatus!=="CAPTURED_AND_SEALED"||proof?.validationStatus!=="PENDING")
        :proof?.status!=="CAPTURED_AND_SEALED")||
      proof?.networkUsed!==true||
      proof?.custody?.encrypted!==true||
      proof?.custody?.plaintextPublished!==false||
-     ((proof.schema===PORTAL_LIVE_PROOF_SCHEMA||portalV02)&&(
+     ((proof.schema===PORTAL_LIVE_PROOF_SCHEMA||portalRelated)&&(
        proof.humanReviewRequired!==true||
        proof.anomalyIsNotIrregularity!==true||
        proof.classifierEmittedSignals!==false||
        proof.investigationIngressUsed!==false||
        proof.automaticAdversePublication!==false))||
-     (portalV02&&(proof.probeStatus!=="CAPTURING"||proof.captureStatus!=="CAPTURED_AND_SEALED"||
+     (portalRelated&&(proof.probeStatus!=="CAPTURING"||proof.captureStatus!=="CAPTURED_AND_SEALED"||
        proof.validationStatus!=="PENDING"||proof.scopeHash!==envelope.scopeHash||
        proof.contractId!=="PORTAL_EXPENSE_RELATED_DOCUMENTS"||
-       proof.httpStatusClass!=="2xx"||
+       (portalV03?!portalHttpMetaValid(proof):proof.httpStatusClass!=="2xx")||
        proof.responseBytesSha256!==proof.resultHash||
-       !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<1||proof.responseByteCount>65536||
+       !Number.isSafeInteger(proof.responseByteCount)||proof.responseByteCount<(portalV03?0:1)||proof.responseByteCount>65536||
        proofHasForbiddenKey(proof))))
     throw new Error("ARCA_DURABLE_CUSTODY_PROOF_INVALID");
 
@@ -155,13 +178,13 @@ export function buildDurableCustodyReceipt({
   const branch=safeBranch(vaultBranch);
   if(!Number.isSafeInteger(envelope.fileCount)||envelope.fileCount<1||envelope.fileCount>1000)
     throw new Error("ARCA_DURABLE_CUSTODY_INVALID_FILE_COUNT");
-  if(!Number.isSafeInteger(envelope.totalBytes)||envelope.totalBytes<1||envelope.totalBytes>50*1024*1024)
+  if(!Number.isSafeInteger(envelope.totalBytes)||envelope.totalBytes<(portalV03?0:1)||envelope.totalBytes>50*1024*1024)
     throw new Error("ARCA_DURABLE_CUSTODY_INVALID_TOTAL_BYTES");
 
   const base={
     schema:DURABLE_CUSTODY_RECEIPT_SCHEMA,
-    ...([PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA].includes(proof.schema)?{proofSchema:proof.schema}:{}),
-    ...(portalV02?{captureProofHash:sha256(stableStringify(proof))}:{}),
+    ...([PORTAL_LIVE_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(proof.schema)?{proofSchema:proof.schema}:{}),
+    ...(portalRelated?{captureProofHash:sha256(stableStringify(proof))}:{}),
     status:"STORED_PRIVATE",
     storage:"github-private-repository",
     vaultRepository:repo,
@@ -277,7 +300,7 @@ export function createGitHubPrivateCustodyBackend({
       if(envelopeBytes.byteLength>MAX_ENVELOPE_BYTES)
         throw new Error("ARCA_DURABLE_CUSTODY_ENVELOPE_TOO_LARGE");
       const receiptBytes=Buffer.from(stableStringify(receipt)+"\n","utf8");
-      const captureProofBytes=receipt.proofSchema===PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA
+      const captureProofBytes=[PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(receipt.proofSchema)
         ?Buffer.from(stableStringify(proof)+"\n","utf8"):null;
       const prefix=receipt.envelopeHash.slice(0,2);
       const envelopePath=`custody/${prefix}/${receipt.envelopeHash}.envelope.json`;
@@ -406,7 +429,7 @@ export function createGitHubPrivateCustodyBackend({
       validatePublicSafety(receipt);
       if(receipt?.envelopeHash!==envelopeHash||
          receipt?.vaultRepository!==repo||receipt?.vaultBranch!==targetBranch||
-         receipt?.proofSchema!==PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA||
+         ![PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA,PORTAL_RELATED_DOCUMENTS_PROOF_SCHEMA_V03].includes(receipt?.proofSchema)||
          receipt?.captureProofHash!==sha256(stableStringify(captureProof))||
          storedCaptureProof.sha!==gitBlobSha(Buffer.from(stableStringify(captureProof)+"\n","utf8"))||
          storedReceiptHash!==proof.durableCustody.receiptHash||
@@ -417,7 +440,8 @@ export function createGitHubPrivateCustodyBackend({
          proof.scopeHash!==captureProof.scopeHash||proof.resultHash!==captureProof.resultHash||
          proof.responseBytesSha256!==captureProof.responseBytesSha256||
          proof.responseByteCount!==captureProof.responseByteCount||
-         proof.contractId!==captureProof.contractId||proof.httpStatusClass!==captureProof.httpStatusClass)
+         proof.contractId!==captureProof.contractId||proof.httpStatusClass!==captureProof.httpStatusClass||
+         proof.httpStatus!==captureProof.httpStatus||proof.httpFailureCode!==captureProof.httpFailureCode)
         throw new Error("ARCA_DURABLE_CUSTODY_STATUS_PROOF_CAPTURE_BINDING_INVALID");
 
       if(existingProof){
