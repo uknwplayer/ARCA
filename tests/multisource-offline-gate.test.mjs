@@ -20,11 +20,11 @@ const queueRoot=()=>fs.mkdtempSync(path.join(os.tmpdir(),"arca-multisource-gate-
 const clock=()=>new Date("2026-09-21T13:00:00.000Z");
 const run=(extra={})=>runMultisourceOfflineGate({registry:registry(),fixture:fixture(),queueRoot:queueRoot(),clock,...extra});
 
-test("registry declares multiple national sources with three offline adapters",()=>{
+test("registry v1 preserves the two historical offline adapters",()=>{
   const sources=registry();
   assert.ok(sources.sources.length>=8);
   assert.deepEqual(sources.executable().map(source=>source.id),[
-    "br.pncp.public-api","br.portal-transparencia.download-despesas","br.transferegov.public"
+    "br.pncp.public-api","br.portal-transparencia.download-despesas"
   ]);
   assert.ok(sources.sources.every(source=>source.coverage.country==="BR"&&source.coverage.municipalityDefault===null));
   assert.ok(sources.sources.filter(source=>source.adapterStatus==="DECLARED_ONLY").every(source=>source.executableModes.length===0));
