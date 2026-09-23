@@ -785,7 +785,7 @@
       "nome": "M5 Fase C — Observador estrutural do schema Portal",
       "tipo": "investigacao",
       "finalidade": "Observar a estrutura real de uma resposta Portal 2xx já custodial sem expor valores nem admitir parser automaticamente.",
-      "estado": "integrado_testado_offline",
+      "estado": "integrado_testado_com_schema_financeiro_observado_live",
       "localizacao": [
         "src/investigation/m5-portal-schema-observer.mjs",
         "docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md"
@@ -804,7 +804,8 @@
       "saidas": [
         "observacao estrutural sanitizada",
         "hash do schema observado",
-        "decisao humana de review"
+        "decisao humana de review",
+        "schema financeiro observado live no Gate 046"
       ],
       "capabilities": [
         "observacao de raiz",
@@ -821,7 +822,8 @@
         "sem publicacao"
       ],
       "healthCheck": [
-        "npm run validate:m5-phase-c"
+        "npm run validate:m5-phase-c",
+        "observedSchemaSha256 79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6"
       ],
       "modosDeFalha": [
         "UTF-8 invalido",
@@ -876,7 +878,8 @@
         "observação pós-request",
         "observação live AUTHORIZATION_NOT_ESTABLISHED",
         "observação live ACCEPTED_ON_OBSERVED_REQUEST",
-        "activeVerified=true no run 35910916588"
+        "activeVerified=true no run 35910916588",
+        "HTTP 200 financeiro observado no run 35917902630"
       ],
       "capabilities": [
         "fingerprint de credencial",
@@ -891,7 +894,8 @@
       ],
       "healthCheck": [
         "npm run validate:m5-phase-d",
-        "run 35910916588 HTTP 200"
+        "run 35910916588 HTTP 200",
+        "run 35917902630 documentos-relacionados HTTP 200"
       ],
       "modosDeFalha": [
         "proveniência ausente",
@@ -1199,7 +1203,7 @@
       "nome": "M5 Fase E — Binding do preflight ao probe live",
       "tipo": "seguranca_investigacao",
       "finalidade": "Impedir reutilização de autorização quando revisão, documento, credencial ou cofre mudarem.",
-      "estado": "integrado_testado_offline",
+      "estado": "integrado_testado_com_binding_live_financeiro",
       "localizacao": [
         "src/investigation/portal-preflight-attestation.mjs",
         "scripts/arca-portal-related-documents-live-probe.mjs",
@@ -1234,7 +1238,8 @@
         "sem segredo no digest"
       ],
       "healthCheck": [
-        "npm run validate:m5-phase-e"
+        "npm run validate:m5-phase-e",
+        "Gate 046 preflight 35916999807 + live 35917902630"
       ],
       "modosDeFalha": [
         "preflight mismatch",
@@ -1525,6 +1530,87 @@
         "maxRequests=1",
         "retries=0",
         "plaintextPublished=false",
+        "STORED_PRIVATE",
+        "humanReviewRequired=true"
+      ]
+    },
+    {
+      "id": "m5-gate-046-portal-related-documents-2xx",
+      "nome": "Gate 046 — Primeiro 2xx financeiro Portal",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Obter e custodiar o primeiro retorno 2xx de documentos-relacionados com uma única requisição e zero retries.",
+      "estado": "concluido_http_200_schema_observado_autorizacao_consumida",
+      "localizacao": [
+        ".github/workflows/arca-portal-related-documents-preflight-push.yml",
+        ".github/workflows/arca-portal-related-documents-live-push.yml",
+        "scripts/arca-portal-related-documents-scope-hash.mjs",
+        "scripts/arca-portal-related-documents-live-probe.mjs",
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md"
+      ],
+      "dependeDe": [
+        "m5-d-prontidao-credencial-portal",
+        "m5-e-preflight-binding",
+        "m5-c-observador-schema-portal",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "autorização humana específica",
+        "Gate 046 preflight válido",
+        "documento via secret",
+        "credencial via secret",
+        "cofre privado"
+      ],
+      "saidas": [
+        "HTTP 200 sanitizado",
+        "1 registro / 440 bytes",
+        "schema estrutural observado",
+        "prova custodial privada"
+      ],
+      "capabilities": [
+        "binding preflight/revisão/credencial/scope",
+        "GET one-shot",
+        "zero retries",
+        "custódia antes de interpretação",
+        "observação estrutural sem valores"
+      ],
+      "limites": [
+        "autorização consumida",
+        "sem rerun",
+        "parserAdmitted=false",
+        "sem normalização",
+        "sem correlação",
+        "sem publicação"
+      ],
+      "healthCheck": [
+        "preflight run 35916999807 success",
+        "live run 35917902630 success",
+        "observedSchemaSha256=79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6"
+      ],
+      "modosDeFalha": [
+        "binding divergente",
+        "HTTP não-2xx",
+        "budget excedido",
+        "schema drift",
+        "custódia indisponível"
+      ],
+      "recuperacao": [
+        "não repetir automaticamente",
+        "usar bytes já custodiais para parser offline",
+        "novo Gate + nova autorização apenas para futura aquisição"
+      ],
+      "fallback": "parar no schema observado e manter parser não admitido",
+      "riscoDeReexecucao": "alto; run live não deve ser rerodado",
+      "runbook": [
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md"
+      ],
+      "seguranca": [
+        "maxRequests=1",
+        "retries=0",
+        "plaintextPublished=false",
+        "valuesIncluded=false",
         "STORED_PRIVATE",
         "humanReviewRequired=true"
       ]
