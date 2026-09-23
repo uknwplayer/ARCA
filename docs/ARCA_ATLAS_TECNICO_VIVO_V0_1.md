@@ -181,3 +181,12 @@ Princípios: deny-by-default, capability catalog, identidade criptográfica, rep
 Decisão: **Device Agent é o caminho preferencial para o operador atual**. Runtime Autônomo Local permanece congelado até solicitação explícita do usuário.
 
 Documento canônico: `docs/ARCA_DEVICE_AGENT_RUNTIME_LOCAL_V0_1.md`.
+
+
+### ARCA AI Gateway / OpenAI-compatible
+
+Estado: **planejado/congelado até solicitação explícita do usuário**.
+
+Função futura: oferecer uma interface única para modelos remotos ou locais, começando potencialmente pela OpenAI API sem servidor próprio. Deve manter capability discovery, trust separado, budget/custo e fallback por provider.
+
+Documento canônico: `docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md`.
