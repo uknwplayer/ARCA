@@ -23,13 +23,14 @@ Arquivos principais:
 - `src/investigation/transferegov-special-transfers-offline-adapter.mjs`;
 - `examples/multisource-offline-fixtures/transferegov-special-transfers-sp-mg-v1.json`;
 - `tests/transferegov-special-transfers-offline-adapter.test.mjs`;
-- `config/public-source-registry-v1.json`;
+- `config/public-source-registry-s1.json`;
+- `config/public-source-registry-v1.json` preservado como snapshot histórico;
 - `src/investigation/multisource-offline-gate.mjs`;
 - `docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md`.
 
 ## Estado da fonte
 
-`br.transferegov.public`:
+`br.transferegov.public` no snapshot `public-source-registry-s1.json`:
 
 - origem canônica: `https://api-publica.transferegov.gestao.gov.br/`;
 - acesso: `official_public_api`;
@@ -37,6 +38,8 @@ Arquivos principais:
 - modo executável: somente `OFFLINE_FIXTURE`;
 - formatos declarados: JSON/CSV;
 - rede: bloqueada nesta entrega.
+
+O registro V1 permanece sem alteração operacional para preservar os digests históricos de M0/M1. A primeira execução do CI após promover a fonte diretamente em V1 detectou corretamente essa quebra de reprodutibilidade; a correção passou a usar snapshot S1.
 
 ## Segurança
 
