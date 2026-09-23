@@ -1,0 +1,43 @@
+name: ARCA Portal — Gate 046 preflight documentos relacionados
+run-name: Gate 046 preflight — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'portal-preflight-related-documents-*'
+
+permissions:
+  contents: read
+
+jobs:
+  gate-046-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obter revisão candidata
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Executar preflight isolado sem GET ao Portal
+        env:
+          ARCA_PORTAL_PREFLIGHT_CONFIRMATION: PORTAL_PREFLIGHT_ONLY
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: OFFICIAL_EMAIL_REGISTRATION
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: 2026-09-23T01:41:18.000Z
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/arca-portal-isolated-preflight.mjs
