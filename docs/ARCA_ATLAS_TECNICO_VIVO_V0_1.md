@@ -166,3 +166,14 @@ Componente: `portal-isolated-preflight`.
 Função: validar fingerprint/proveniência da credencial, scope e cofre privado sem possuir capability de request ao endpoint do Portal.
 
 Recuperação: qualquer falha mantém rede Portal não autorizada. Corrigir metadado, secret ou cofre e repetir somente o preflight. O quarto GET continua em gate humano separado.
+
+
+### ARCA Device Agent / Runtime Autônomo Local
+
+Estado: **planejado/congelado**.
+
+Função futura: expor capabilities locais explícitas do dispositivo ao plano de controle do ARCA, com três níveis separados de autoridade: ARCA-only, Termux e Device.
+
+A variante Runtime Autônomo Local poderá executar modelo, memória, scheduler e ferramentas em infraestrutura controlada pelo operador. Isso cria independência operacional da nuvem, mas não constitui transferência da instância/modelo hospedado pelo ChatGPT para o dispositivo.
+
+Princípios: deny-by-default, capability catalog, identidade criptográfica, replay protection, revogação, kill switch, watchdog, budgets de recurso e auditoria.

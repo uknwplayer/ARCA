@@ -245,6 +245,78 @@ Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; 
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
+### Futuro — ARCA Device Agent / Runtime Autônomo Local
+
+Estado: **PLANEJADO / CONGELADO / NÃO COMPETE COM M5**.
+
+Objetivo: permitir que o dispositivo do operador exponha capabilities locais explícitas ao ARCA sem transformar o telefone em shell irrestrito e, em uma variante futura, permitir execução autônoma local independente da nuvem.
+
+Níveis de autoridade planejados:
+
+1. **Nível 1 — ARCA only**
+   - health/status do ARCA;
+   - start/stop/restart de workers allowlisted;
+   - leitura de logs do ARCA;
+   - Git pull/status em caminhos autorizados;
+   - leitura/escrita somente em diretórios ARCA allowlisted.
+
+2. **Nível 2 — Termux**
+   - capabilities Linux adicionais explicitamente cadastradas;
+   - processos, rede, arquivos e diagnósticos dentro do sandbox/ambiente Termux;
+   - sem shell arbitrário por padrão;
+   - deny-by-default e revisão para expansão de capabilities.
+
+3. **Nível 3 — Device**
+   - app/serviço Android próprio para capabilities específicas do dispositivo;
+   - integração futura com APIs do Android e, quando apropriado, Accessibility/serviços equivalentes;
+   - permissões separadas por capability;
+   - nenhuma equivalência automática a controle total do aparelho.
+
+Arquitetura operacional planejada:
+
+```text
+ChatGPT/operador
+      ↓
+Machine Bridge / Vince
+      ↓
+ARCA Device Agent
+      ↓
+catálogo de capabilities
+      ↓
+Termux / ARCA / Android
+      ↓
+resultado assinado + auditoria
+```
+
+O Device Agent deve possuir:
+
+- identidade criptográfica própria;
+- capability catalog versionado;
+- autorização deny-by-default;
+- revogação;
+- replay protection;
+- leases/expiração;
+- watchdog;
+- limites de CPU/RAM/bateria/temperatura;
+- modo ocioso opcional;
+- logs auditáveis;
+- kill switch local;
+- atualização assinada;
+- recuperação fail-closed;
+- separação entre controle do ARCA e controle do dispositivo.
+
+#### Runtime Autônomo Local
+
+Variante futura para independência operacional da nuvem:
+
+- **modo híbrido**: modelo/assistente em nuvem decide; Device Agent executa localmente;
+- **modo local**: um modelo de pesos abertos/localmente executável roda no dispositivo ou servidor próprio;
+- **modo soberano**: memória, ferramentas, scheduler, policies, watchdog e modelo rodam em infraestrutura controlada pelo operador.
+
+Regra conceitual: um modelo local independente **não é a mesma instância do ChatGPT transferida para o telefone**. É outro runtime/modelo, ainda que possa reutilizar protocolos, memória exportável permitida, Atlas, policies e estilo operacional do ARCA.
+
+Pré-condição para descongelamento: núcleo ARCA funcional e decisão humana explícita. A implementação deve começar no Nível 1 e só avançar de autoridade após provas e revisão.
+
 ### Vince — Scout / Broker / Pathfinder / Recovery Agent
 
 #### Futuro: Vince Discovery Global / Connectivity Investigator

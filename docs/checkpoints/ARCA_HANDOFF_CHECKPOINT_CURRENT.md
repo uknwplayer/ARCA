@@ -37,6 +37,14 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 - **M7-CIV — Inteligência cívica documental**: planejado para projetos de lei, atividade legislativa e histórico público institucional/judicial/administrativo de agentes públicos. O ARCA avaliará confiabilidade de fonte/evidência, não “confiabilidade” de pessoas; processos, acusações, condenações, absolvições e sanções serão estados distintos e nunca convertidos automaticamente em culpa.
 - Essas frentes não alteram o caminho crítico M5.
 
+## Frente futura registrada — ARCA Device Agent / Runtime Autônomo Local
+
+- Planejado e congelado; não compete com M5.
+- Níveis futuros: ARCA-only → Termux → Device.
+- Capability catalog, deny-by-default, identidade, replay protection, revogação, watchdog, budgets e kill switch.
+- Variante local soberana poderá rodar modelo/memória/scheduler/tools em infraestrutura do operador.
+- Isso não é transferência da instância ChatGPT hospedada para o telefone; é um runtime/modelo local separado que pode interoperar com o ARCA.
+
 ## Retomada imediata
 
 M5 continua o caminho crítico. Fases A, B, C e D estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até um token obtido pelo fluxo oficial ser submetido a preflight e houver autorização explícita nova, continuar apenas com preparação fail-closed. Atividade real da credencial permanece ACTIVE_UNKNOWN até observação da própria API.
