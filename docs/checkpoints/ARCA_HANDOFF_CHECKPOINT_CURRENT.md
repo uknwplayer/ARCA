@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Gate 042 — quarto GET retornou 401 e foi custodial; diagnóstico offline ativo**
+Checkpoint: **2026-09-23 / Gate 043 — Transferegov offline adicionado enquanto Gate 042 aguarda CGU**
 
-Estado: **M5 Fases A+B+C+D+E integradas/testadas; quarto GET Portal executado exatamente uma vez no run 35886041113 e retornou HTTP 401; resposta de 169 bytes selada e armazenada em custódia privada; retries=0; credencial continua sem atividade comprovada; primeiro 2xx Portal segue pendente; nenhuma nova tentativa autorizada; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Gate 042 do Portal permanece em diagnóstico sem novo GET; suporte da CGU acionado; em paralelo, PR #179 adiciona Transferegov Transferências Especiais como terceiro adaptador offline do núcleo multifonte; zero rede Transferegov; primeiro 2xx Portal segue pendente; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 042 — quarto GET retornou 401 e foi custodial; diagnóstico offline ativo](ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md). O run `35886041113` executou exatamente um GET na revisão `268c8e385d8345d5a02ce2fd3350b1ea1088481a`, após preflight/binding válidos, recebeu HTTP 401 e encerrou sem retry. A resposta foi criptografada e persistida em custódia privada; nenhum plaintext foi publicado. A autorização daquele GET foi consumida e não existe nova autorização de rede.
+Handoff mais recente: [checkpoint 043 — expansão multifonte com Transferegov offline](ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md). O Gate 042 do Portal continua preservado e sem autorização para novo GET. Em paralelo, o PR #179 promove `br.transferegov.public` para `ACTIVE/OFFLINE_FIXTURE`, apontando ao novo ambiente oficial de APIs e adicionando fixture sintética, Evidence Envelopes hash-only e testes fail-closed. Nenhuma chamada live ao Transferegov foi executada.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. Fases A, B, C, D e E estão integradas e testadas. O quarto GET controlado foi executado no run `35886041113`: o binding passou, houve exatamente uma requisição, HTTP 401, `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, `retries=0`, e a resposta foi selada/custodiada. O fingerprint da credencial usada coincide com a chave do e-mail oficial mais recente. O contrato HTTP atual foi revalidado offline: host/rota e header `chave-api-dados` estão coerentes com a documentação oficial. **Não há nova autorização de rede.** O próximo passo é diagnóstico offline/suporte do Portal; qualquer nova tentativa exigirá novo Gate 040, revisão dos novos hashes e nova autorização humana explícita.
+M5 continua o caminho crítico, mas o bloqueio do Portal não paralisa a expansão de fontes. O Gate 042 segue aguardando resposta técnica da CGU, sem nova autorização de rede. Em paralelo, o Transferegov entra no núcleo multifonte somente em fixture offline pelo PR #179. O próximo avanço dessa fonte é concluir CI/revisão/merge; depois TCU, Siconfi, CEIS/CNEP, DOU e FNDE podem seguir o mesmo padrão. Qualquer `PUBLIC_GET` futuro continua exigindo contrato live, budgets, custódia e autorização humana específica.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_039.md`;
@@ -205,7 +206,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 042. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 043. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
