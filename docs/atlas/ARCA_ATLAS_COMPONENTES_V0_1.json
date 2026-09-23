@@ -913,6 +913,72 @@
         "networkAuthorized=false",
         "humanAuthorizationRequired=true"
       ]
+    },
+    {
+      "id": "portal-isolated-preflight",
+      "nome": "Gate 040 — Preflight Portal isolado sem captura",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Validar credencial, escopo e cofre sem capability de request ao Portal.",
+      "estado": "candidato",
+      "localizacao": [
+        "scripts/arca-portal-isolated-preflight.mjs",
+        ".github/workflows/arca-portal-isolated-preflight.yml"
+      ],
+      "dependeDe": [
+        "m5-d-prontidao-credencial-portal",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "token via secret",
+        "proveniência",
+        "instante de recebimento",
+        "documento via secret",
+        "revisão"
+      ],
+      "saidas": [
+        "fingerprint",
+        "scopeHash",
+        "estado ACTIVE_UNKNOWN",
+        "custodyReady"
+      ],
+      "capabilities": [
+        "preflight de credencial",
+        "derivação de scope",
+        "preflight de cofre"
+      ],
+      "limites": [
+        "sem transporte Portal",
+        "sem GET Portal",
+        "sem retry",
+        "sem autorização de rede"
+      ],
+      "healthCheck": [
+        "npm run validate:portal-isolated-preflight"
+      ],
+      "modosDeFalha": [
+        "secret ausente",
+        "proveniência inválida",
+        "timestamp inválido",
+        "cofre indisponível"
+      ],
+      "recuperacao": [
+        "corrigir entrada",
+        "reexecutar somente preflight",
+        "nova autorização humana separada para GET"
+      ],
+      "fallback": "rede Portal bloqueada",
+      "riscoDeReexecucao": "baixo; não executa request Portal",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
+      ],
+      "seguranca": [
+        "portalRequestCapabilityPresent=false",
+        "portalNetworkAuthorized=false",
+        "tokenIncluded=false"
+      ]
     }
   ]
 }
