@@ -5,6 +5,7 @@ import {verifyV41AttestedResult} from "../src/machine-bridge/vince-v4-1-attestat
 import {
   appendV41AcceptedChallenge,
   createV41DurableChallengeLedger,
+  hasV41AcceptedChallenge,
   validateV41AcceptedChallengeRegistry,
   v41ChallengeSha256
 } from "../src/machine-bridge/vince-v4-1-durable-challenge-registry.mjs";
@@ -52,6 +53,8 @@ if(pin.policy?.action!=="git-status"||
   throw new Error("VINCE_V41_PIN_POLICY_INVALID");
 
 validateV41AcceptedChallengeRegistry(registry);
+if(hasV41AcceptedChallenge(registry,request?.challenge))
+  throw new Error("VINCE_V41_CHALLENGE_REPLAY");
 const challengeLedger=createV41DurableChallengeLedger(registry);
 const proof=verifyV41AttestedResult({
   request,
