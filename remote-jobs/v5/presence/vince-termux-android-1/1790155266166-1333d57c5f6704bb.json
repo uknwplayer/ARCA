@@ -1,0 +1,22 @@
+{
+  "format": "arca-vince-v5-termux-presence-v1",
+  "version": 1,
+  "workerKind": "termux-android",
+  "nodeId": "vince-termux-android-1",
+  "keyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1",
+  "publicKeySpki": "MCowBQYDK2VwAyEAB407ZL5Z8ac37QzBN9P4jQcXSBsmtuXBQNX6ioqUc0k=",
+  "state": "WITHDRAWN",
+  "observedAt": "2026-09-23T09:21:06.166Z",
+  "validUntil": "2026-09-23T09:36:06.166Z",
+  "capabilities": [
+    "git-status"
+  ],
+  "authority": {
+    "trustGranted": false,
+    "codeMutation": false,
+    "canonicalWrite": false,
+    "executionAuthority": false
+  },
+  "presenceSha256": "1333d57c5f6704bb7ac86cab8a6b2e469cc7e7798a4a4cf145224aa7537f9529",
+  "signature": "cAHukxDqYXeSoDvaq9dYkj5PbfrJee4oUQnjw2RV3LNEZ3dwuKy6ThO6yZrBY3bZCz8elixpwhGi-T99AEh8DA"
+}
