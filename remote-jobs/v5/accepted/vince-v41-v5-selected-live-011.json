@@ -1,0 +1,20 @@
+{
+  "format": "arca-vince-v5-v4.1.1-selected-acceptance-v1",
+  "version": 1,
+  "jobId": "vince-v41-v5-selected-live-011",
+  "selectedEndpointId": "vince-termux-android-2",
+  "selectedWorkerKeyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0",
+  "dispatchSha256": "e9a8f79b0ee421bd51ff88cab29b36f81c58723ba7c0b6134be7fc62df747532",
+  "routeProofSha256": "39a68b500a6f91c00d1c5aecfcacc408b6d416b77f276f1aee784df1cc56c721",
+  "requestSha256": "e6fe5cfb8f2df3f2dde12e8a9dd31b4cef5c00a48388c7d6c9af2623762ce0ec",
+  "resultSha256": "f01be6a3d6b31d143d6c11094ab0a2903d0bd8a83e4fed1247d3e7a795e471e6",
+  "attestationProofSha256": "6c4f1915c6d369be62e29ff844d779fafdcd289be25e2a128a2c07439982b5cc",
+  "challengeSha256": "be3bcb7f25e8fe56567d1d84473e895ee8a9c8bc09078a988fe125754ecb5f8e",
+  "durableRegistryBlobSha": "b18090023ec01f292a1216d07a989ecdd87de779",
+  "acceptedAt": "2026-09-23T10:09:59.940Z",
+  "state": "ATTESTED_VERIFIED_SELECTED_RESULT_DURABLY_CONSUMED",
+  "automaticRetryPerformed": false,
+  "automaticFailoverPerformed": false,
+  "authorityExpanded": false,
+  "acceptanceSha256": "7fa32564fcf88461e26daf0a92f6efd74d3154b7f6e2bce93aee189dfbaf16a0"
+}
