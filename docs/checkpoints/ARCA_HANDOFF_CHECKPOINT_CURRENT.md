@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V4.1 Termux Worker One-Shot canônico**
+Checkpoint: **2026-09-23 / Vince V4.1 Termux Live Attestation Proof 006 verificado**
 
-Estado: **Vince V4 live-proven limitado; V4.1 verifier + worker Termux one-shot canônicos; live probe #130 aguarda identidade pública; Portal em 401; Edge congelado**
+Estado: **Vince V4.1 live-proven em Android/Termux com identidade Ed25519 pinada; attestation verificada; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 028 — Vince V4.1 Termux Worker One-Shot](ARCA_HANDOFF_CHECKPOINT_2026-09-23_028.md). A PR #129 integrou o worker Android/Termux one-shot, CI `35827384616` e pós-merge `35827476094` verdes. Branch `vince-v41-termux-channel` criada e issue #130 pré-registrada. Nenhuma request live foi publicada; o próximo gate é o usuário gerar a identidade Ed25519 local e publicar somente a identidade pública.
+Handoff mais recente: [checkpoint 029 — Vince V4.1 Termux Live Attestation Proof 006](ARCA_HANDOFF_CHECKPOINT_2026-09-23_029.md). A issue #130 concluiu com `ATTESTED_VERIFIED_RESULT` no run `35830210570`; request `7874056b…`, result `30e869b6…`, proof `5112d8a0…`. Identidade Ed25519 do Termux foi pinada antes do dispatch. Próximo hardening recomendado: V4.1.1 durable control-plane challenge consumption.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
