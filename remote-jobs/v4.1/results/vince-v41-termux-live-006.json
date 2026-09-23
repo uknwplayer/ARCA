@@ -1,0 +1,28 @@
+{
+  "format": "arca-vince-v4.1-result",
+  "protocolVersion": "4.1",
+  "jobId": "vince-v41-termux-live-006",
+  "action": "git-status",
+  "challenge": "YXpWOfxbSuk14TSAxfWXEvx0PVR3pEgFOInzWo7UMQw",
+  "requestSha256": "7874056b43bc02e545da44d5d2bdb82f031f9a5b31e1961b2c41d264d211665a",
+  "startedAt": "2026-09-23T07:07:48.356Z",
+  "finishedAt": "2026-09-23T07:07:48.488Z",
+  "status": "completed",
+  "exitCode": 0,
+  "timedOut": false,
+  "stdout": "## main...origin/main\n",
+  "stderr": "",
+  "stdoutTruncated": false,
+  "stderrTruncated": false,
+  "gitBranch": "main",
+  "gitHead": "11f07a0debc60af113c9f3e3951d055e1d170250",
+  "gitDirty": false,
+  "workerIdentity": {
+    "nodeId": "vince-termux-android-1",
+    "algorithm": "Ed25519",
+    "publicKeySpki": "MCowBQYDK2VwAyEAB407ZL5Z8ac37QzBN9P4jQcXSBsmtuXBQNX6ioqUc0k=",
+    "keyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1"
+  },
+  "resultSha256": "30e869b62157178b1fabf245b80a0d2e49e759daa125f52bb58959518ccf3de6",
+  "signature": "7QtIFo_vod6IlcKfi3GB5OTWdyqofO7dmmO96lPpLVJnZQGROd1ScxJ6WvDlAfSv2L6_c8EaUFL4hGnDGVSDAg"
+}
