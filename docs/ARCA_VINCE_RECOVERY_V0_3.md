@@ -1,6 +1,6 @@
 # ARCA — Vince Recovery V0.3
 
-Status: **IMPLEMENTAÇÃO CANDIDATA; LIVE PROBE 003 PENDENTE**.
+Status: **CANÔNICO; LIVE PROBE 003 VERIFIED**.
 
 ## Objetivo
 
@@ -66,7 +66,7 @@ Falha do original também não autoriza retry automático.
 
 ## Live Probe 003
 
-Issue: #115.
+Issue: #115 — concluída. Control-plane workflow: `35810698274`; original Satellite A run: `35810708455`.
 
 O workflow usa dois jobs separados:
 
@@ -86,4 +86,4 @@ Critério de sucesso:
 
 ## Limite
 
-V0.3 prova recovery quando o resultado original pode ser reencontrado por um DispatchRef durável. Não prova ainda recuperação quando o provider perde sua própria evidência ou quando existe efeito externo não idempotente impossível de consultar.
+Resultado live: dois runners distintos provaram `one dispatch -> checkpoint -> fresh runner -> original result`, com `network_dispatch_performed=false`, `automatic_retry_performed=false`, `failover_authorized=false` e zero execução em Satellite B. V0.3 prova recovery quando o resultado original pode ser reencontrado por um DispatchRef durável. Não prova ainda recuperação quando o provider perde sua própria evidência ou quando existe efeito externo não idempotente impossível de consultar.
