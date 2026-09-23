@@ -167,7 +167,7 @@ M5-R não altera o caminho crítico atual. O gate imediato é corrigir a autenti
 
 ## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
 
-Estado: **REGISTRADA NO ROADMAP; IMPLEMENTAÇÃO FORA DO CAMINHO CRÍTICO ATUAL**.
+Estado: **VINCE V0.1 IMPLEMENTADO E LIVE-PROVEN EM ROTA SATÉLITE LIMITADA; EDGE STEWARD CONTINUA CONGELADO**.
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
@@ -193,10 +193,10 @@ Se o mesmo processo não puder retornar, a continuidade poderá ser reconstruíd
 
 Fases propostas:
 
-- V0: especificação, threat model e contratos de envelope/retorno;
-- V1: descoberta + capability routing sem execução;
-- V2: probe/ACK/resultado por rota allowlisted;
-- V3: checkpoint, recuperação e failover reconciliado;
+- V0: **IMPLEMENTADO** — envelope, permissões, checkpoint, ACK e prova reconciliada;
+- V1: **LIVE-PROVEN LIMITADO** — discovery/ranking baseado no registry canônico para rotas allowlisted;
+- V2: **LIVE-PROVEN LIMITADO** — probe/ACK/resultado em `github-satellite-linux`, runs `35808000764` / `35808010876`;
+- V3: **PRÓXIMO GATE** — checkpoint, recuperação e failover reconciliado sem duplicação;
 - V4: prova entre ambientes independentes com evidência de ida, execução e retorno.
 - V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
 
@@ -217,7 +217,7 @@ Relação com Vince:
 
 Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
 
-Aceite futuro da linha V/E: provas separadas de descoberta, ida/retorno, recuperação sem duplicação e presença móvel limitada; todas com identidade, hashes, checkpoints, evidência e revisão humana onde aplicável.
+Aceite parcial alcançado para Vince V0.1/V1/V2 na rota satélite: discovery, ida, ACK, execução, retorno e hashes foram provados sem expansão de autoridade. Próximo aceite é V3 recovery/failover sem duplicação. Presença móvel/Edge permanece futura.
 
 ## Marco M6 — Expansão territorial gradual
 
