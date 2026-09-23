@@ -8,7 +8,7 @@ import {createPortalRelatedDocumentsTransport} from "../src/investigation/portal
 import {sealCustodyDirectory,openCustodyEnvelope} from "../src/machine-bridge/encrypted-custody-envelope.mjs";
 import {createGitHubPrivateCustodyBackend} from "../src/machine-bridge/durable-private-custody.mjs";
 
-export const PORTAL_RELATED_DOCUMENTS_PROBE_SCHEMA="arca.portal-related-documents-controlled-probe.v0.2";
+export const PORTAL_RELATED_DOCUMENTS_PROBE_SCHEMA="arca.portal-related-documents-controlled-probe.v0.3";
 const DTO_FIELDS=new Set([
   "data","fase","documento","documentoResumido","especie","orgaoSuperior",
   "orgaoVinculado","unidadeGestora","elementoDespesa","favorecido","valor"
@@ -104,7 +104,7 @@ export async function runPortalRelatedDocumentsProbe({
   if(!/^[a-f0-9]{64}$/.test(expectedScopeHash)||scope.scopeSha256!==expectedScopeHash)
     throw new Error("ARCA_PORTAL_SCOPE_HASH_MISMATCH");
 
-  const transport=createPortalRelatedDocumentsTransport({fetchImpl,apiKey,timeoutMs:30000,maxBytes:65536});
+  const transport=createPortalRelatedDocumentsTransport({fetchImpl,apiKey,timeoutMs:30000,maxBytes:65536,captureHttpErrors:true});
   let custody=durableCustodyBackend;
   if(!custody){
     const vaultRepository=repositoryName(env.ARCA_CUSTODY_VAULT_REPOSITORY);
@@ -153,6 +153,7 @@ export async function runPortalRelatedDocumentsProbe({
       throw new Error("ARCA_PORTAL_CUSTODY_SEAL_FAILED");
     }
     const envelopeHash=sha256(JSON.stringify(envelope));
+    const httpStatusClass=`${Math.floor(captured.status/100)}xx`;
     const captureProof={
       schema:PORTAL_RELATED_DOCUMENTS_PROBE_SCHEMA,
       probeStatus:"CAPTURING",
@@ -163,7 +164,9 @@ export async function runPortalRelatedDocumentsProbe({
       scopeHash:scope.scopeSha256,
       scope:scope.scope,
       contractId:"PORTAL_EXPENSE_RELATED_DOCUMENTS",
-      httpStatusClass:"2xx",
+      httpStatus:captured.status,
+      httpStatusClass,
+      ...(captured.httpErrorCode?{httpFailureCode:captured.httpErrorCode}:{}),
       resultHash:responseBytesSha256,
       responseBytesSha256,
       responseByteCount:responseBytes.byteLength,
@@ -196,25 +199,31 @@ export async function runPortalRelatedDocumentsProbe({
 
     let recordCount=null;
     let failureCode=null;
-    try{
-      let bodyText;
-      try{bodyText=new TextDecoder("utf-8",{fatal:true}).decode(reopenedBytes)}
-      catch{throw new Error("ARCA_PORTAL_UTF8_INVALID")}
-      let parsed;
-      try{parsed=JSON.parse(bodyText)}
-      catch{throw new Error("ARCA_PORTAL_JSON_INVALID")}
-      recordCount=validateDtoRecords(parsed);
-    }catch(error){
-      const code=String(error?.message??"");
-      failureCode=/^ARCA_PORTAL_(?:UTF8_INVALID|JSON_INVALID|DTO_ARRAY_REQUIRED|DTO_SCHEMA_INVALID|RECORD_BUDGET_EXCEEDED)$/.test(code)
-        ?code:"ARCA_PORTAL_VALIDATION_FAILED";
-      recordCount=null;
+    let validationStatus="NOT_APPLICABLE";
+    if(captured.ok){
+      try{
+        let bodyText;
+        try{bodyText=new TextDecoder("utf-8",{fatal:true}).decode(reopenedBytes)}
+        catch{throw new Error("ARCA_PORTAL_UTF8_INVALID")}
+        let parsed;
+        try{parsed=JSON.parse(bodyText)}
+        catch{throw new Error("ARCA_PORTAL_JSON_INVALID")}
+        recordCount=validateDtoRecords(parsed);
+      }catch(error){
+        const code=String(error?.message??"");
+        failureCode=/^ARCA_PORTAL_(?:UTF8_INVALID|JSON_INVALID|DTO_ARRAY_REQUIRED|DTO_SCHEMA_INVALID|RECORD_BUDGET_EXCEEDED)$/.test(code)
+          ?code:"ARCA_PORTAL_VALIDATION_FAILED";
+        recordCount=null;
+      }
+      validationStatus=failureCode?"FAILED":"VALIDATED";
+    }else{
+      failureCode=captured.httpErrorCode??"ARCA_PORTAL_HTTP_ERROR";
     }
 
     const finalProof={
       ...captureProof,
       probeStatus:failureCode?"FAILED":"SUCCEEDED",
-      validationStatus:failureCode?"FAILED":"VALIDATED",
+      validationStatus,
       ...(failureCode?{failureCode}:{recordCount}),
       durableCustody
     };
