@@ -11,7 +11,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Protocolo de agentes e AIE | sim | sim | parcial | não | testes de capacidades, guardrails e runtime | avaliação prolongada e SLOs |
 | Fila investigativa compartilhada | sim | sim | não | não | PRs #56–#57 | operação contínua e telemetria |
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
-| Vince Pathfinder/Recovery V0.4 | sim | sim | sim para V1–V3.1; V3.2 offline | não | PR #110/#113/#116/#118; runs 35808000764 / 35809204841 / 35810698274; signed-identity CI 35811942932 | V4 entre ambientes independentes; signer persistente para V3.2-live |
+| Vince Pathfinder/Recovery V0.4 + V4 gate | sim | sim | sim para V1–V3.1; V3.2 offline; V4 inconclusivo | não | PR #110/#113/#116/#118/#120/#122; issue #121 | corrigir Replit Contents write e concluir retorno V4; signer persistente V3.2-live |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
 | Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
 | Correlação PNCP ↔ execução financeira M2/M5-A | sim, M2 sintético + M5 gate pré-correlação | sim | não | não | PR #79 + #94; M5 pós-merge 35799032982 | duas entradas live normalizadas e custodiais |
