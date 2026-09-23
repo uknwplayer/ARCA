@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-22 / fronteira pré-live preparada; M5 Fase A e preview Portal integrados**
+Checkpoint: **2026-09-23 / primeiro GET Portal executado; autenticação rejeitada**
 
-Estado: **M4a/M4b, M5 Fase A e preview offline Portal integrados; nenhuma execução Portal live**
+Estado: **M4a/M4b e M5 Fase A integrados; primeiro GET Portal ocorreu, mas falhou por autenticação antes de captura/custódia validada**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 016 — fronteira pré-live preparada](ARCA_HANDOFF_CHECKPOINT_2026-09-22_016.md). M4b, M5 Fase A e o preview offline do manifesto Portal estão canônicos e com CI pós-merge verde. Nenhum GET Portal real foi executado. O próximo gate é escolher um documento público real, gerar/revisar seu manifesto offline e então obter autorização explícita separada para um único GET.
+Handoff mais recente: [checkpoint 017 — primeiro GET Portal alcançado, autenticação rejeitada](ARCA_HANDOFF_CHECKPOINT_2026-09-23_017.md). O preflight passou e um único GET foi executado no run `35802699058`, mas o Portal respondeu `ARCA_PORTAL_HTTP_UNAUTHORIZED`. Nenhum artefato live validado foi produzido; issue #97 foi fechada e a autorização consumida.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é escolher um documento público real, gerar o manifesto sem rede e revisar seu `scopeHash`; o GET continua separado e explicitamente autorizado, conforme checkpoint 016. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é corrigir/renovar a autenticação da API do Portal e só então registrar nova autorização one-shot. Não repetir o GET da issue #97; ela foi consumida e fechada. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 
@@ -144,7 +144,7 @@ Não alegar:
 
 ## Próximo trabalho recomendado — M4 condicionado
 
-M4b, M5 Fase A e o Portal Manifest Preview estão integrados e verdes. O próximo passo é usar um documento público real somente no preview offline, sem rede, antes de qualquer autorização live. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
+M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Portal alcançou a API, mas recebeu `UNAUTHORIZED`; o próximo passo é resolver autenticação e solicitar nova autorização limitada. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
 
 ## Instruções de retomada para um chat com contexto limitado
 
