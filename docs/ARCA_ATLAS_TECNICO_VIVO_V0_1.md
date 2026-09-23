@@ -230,6 +230,8 @@ Estado: **PR #179 / OFFLINE FIXTURE / ZERO REDE**.
 
 Origem canônica: `https://api-publica.transferegov.gestao.gov.br/`.
 
+Registro operacional: `config/public-source-registry-s1.json`. O `public-source-registry-v1.json` permanece congelado para reprodutibilidade das provas históricas.
+
 Capacidades atuais: normalização sintética determinística, Evidence Envelope hash-only, lacunas explícitas e integração ao Gate Offline Multifonte.
 
 Limites: sem `PUBLIC_GET`, sem schema live aceito, sem correlação automática com PNCP/Portal, sem inferência adversa sobre parlamentar/ente e sem conclusão sobre entrega física ou regularidade.
