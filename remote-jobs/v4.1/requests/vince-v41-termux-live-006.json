@@ -1,0 +1,8 @@
+{
+  "format": "arca-vince-v4.1-job",
+  "protocolVersion": "4.1",
+  "jobId": "vince-v41-termux-live-006",
+  "action": "git-status",
+  "expiresAt": "2026-09-23T10:00:00.000Z",
+  "challenge": "YXpWOfxbSuk14TSAxfWXEvx0PVR3pEgFOInzWo7UMQw"
+}
