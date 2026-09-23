@@ -1,0 +1,33 @@
+name: ARCA Portal API key diagnostic 003
+
+on:
+  push:
+    branches:
+      - ops/portal-api-key-diagnostic-003
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose-api-key:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Diagnose API key shape without revealing it
+        env:
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+        run: |
+          node - <<'NODE'
+          const {createHash}=require("node:crypto");
+          const v=process.env.ARCA_PORTAL_API_KEY ?? "";
+          const h=createHash("sha256").update(v).digest("hex");
+          const oldHash="3fe0c493d2900b6fef0cff1878213a916622e6a2e7b4a93bead2c76bd18ae1d6";
+          console.log(JSON.stringify({
+            secretPresent:v.length>0,
+            length:v.length,
+            changedFromPreviouslyExposedKey:h!==oldHash,
+            hasWhitespace:/\s/.test(v)
+          }));
+          if(!v.length) process.exitCode=2;
+          if(h===oldHash) process.exitCode=3;
+          NODE
