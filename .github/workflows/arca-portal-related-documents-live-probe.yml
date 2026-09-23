@@ -12,6 +12,14 @@ on:
         description: SHA-256 do escopo v0.2 revisado
         required: true
         type: string
+      preflight_sha256:
+        description: SHA-256 da atestação do Gate 040 revisada
+        required: true
+        type: string
+      credential_fingerprint_sha256:
+        description: Fingerprint SHA-256 da credencial exibido pelo Gate 040
+        required: true
+        type: string
       token_provenance:
         description: Deve ser exatamente OFFICIAL_EMAIL_REGISTRATION
         required: true
@@ -47,6 +55,8 @@ jobs:
         env:
           ARCA_PORTAL_CONFIRMATION: ${{ inputs.confirmation }}
           ARCA_PORTAL_SCOPE_SHA256: ${{ inputs.scope_sha256 }}
+          ARCA_PORTAL_PREFLIGHT_SHA256: ${{ inputs.preflight_sha256 }}
+          ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256: ${{ inputs.credential_fingerprint_sha256 }}
           ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
           ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
           ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
@@ -63,6 +73,8 @@ jobs:
         env:
           ARCA_PORTAL_CONFIRMATION: ${{ inputs.confirmation }}
           ARCA_PORTAL_SCOPE_SHA256: ${{ inputs.scope_sha256 }}
+          ARCA_PORTAL_PREFLIGHT_SHA256: ${{ inputs.preflight_sha256 }}
+          ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256: ${{ inputs.credential_fingerprint_sha256 }}
           ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
           ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
           ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
