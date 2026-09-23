@@ -1,0 +1,29 @@
+{
+  "format": "arca-vince-v5-v4.1.1-selected-dispatch-v1",
+  "version": 1,
+  "jobId": "vince-v41-v5-selected-live-011",
+  "action": "git-status",
+  "selectedEndpointId": "vince-termux-android-2",
+  "selectedWorkerKeyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0",
+  "requestSha256": "e6fe5cfb8f2df3f2dde12e8a9dd31b4cef5c00a48388c7d6c9af2623762ce0ec",
+  "routeProofSha256": "39a68b500a6f91c00d1c5aecfcacc408b6d416b77f276f1aee784df1cc56c721",
+  "routePath": "remote-jobs/v5/routes/vince-v41-v5-selected-live-011.json",
+  "presencePaths": [
+    "remote-jobs/v5/presence/vince-termux-android-1/1790157937227-4a60dd3c59fca7c0.json",
+    "remote-jobs/v5/presence/vince-termux-android-2/1790157947289-b59b63b2563479b2.json"
+  ],
+  "createdAt": "2026-09-23T10:07:47.131Z",
+  "expiresAt": "2026-09-23T10:22:47.131Z",
+  "policy": {
+    "automaticRetryAllowed": false,
+    "automaticFailoverAllowed": false,
+    "exactlyOneEligibleRequired": true
+  },
+  "authority": {
+    "trustGranted": false,
+    "codeMutation": false,
+    "canonicalWrite": false,
+    "executionAuthority": false
+  },
+  "dispatchSha256": "e9a8f79b0ee421bd51ff88cab29b36f81c58723ba7c0b6134be7fc62df747532"
+}
