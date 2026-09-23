@@ -1,0 +1,52 @@
+name: ARCA Vince V4.1 Termux Verify 006
+run-name: Vince V4.1 Termux live verify 006
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: >-
+      github.event.issue.number == 130 &&
+      github.event.issue.state == 'open' &&
+      github.event.comment.user.login == 'uknwplayer' &&
+      github.event.comment.body == 'ARCA_VINCE_V41_TERMUX_VERIFY_006'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+
+      - name: Fetch dedicated Termux channel
+        run: |
+          git fetch --no-tags origin vince-v41-termux-channel:refs/remotes/origin/vince-v41-termux-channel
+
+      - name: Materialize request and result from channel
+        run: |
+          mkdir -p artifacts/channel
+          git show origin/vince-v41-termux-channel:remote-jobs/v4.1/requests/vince-v41-termux-live-006.json > artifacts/channel/request.json
+          git show origin/vince-v41-termux-channel:remote-jobs/v4.1/results/vince-v41-termux-live-006.json > artifacts/channel/result.json
+
+      - name: Verify pinned Termux attestation
+        run: |
+          node scripts/arca-vince-v41-verify-termux-live.mjs             --request artifacts/channel/request.json             --result artifacts/channel/result.json             --pin config/vince-v4.1/trusted-workers/vince-termux-android-1.json             --proof-output artifacts/vince-v41-termux-live-proof-006.json
+
+      - name: Upload proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vince-v41-termux-live-proof-006-${{ github.run_id }}
+          path: artifacts/vince-v41-termux-live-proof-006.json
+          if-no-files-found: ignore
+          retention-days: 14
