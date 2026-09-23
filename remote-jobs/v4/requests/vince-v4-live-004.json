@@ -1,7 +1,0 @@
-{
-  "format": "arca-vince-v4-job",
-  "protocolVersion": 4,
-  "jobId": "vince-v4-live-004",
-  "action": "git-status",
-  "expiresAt": "2026-09-23T03:36:00.000Z"
-}
