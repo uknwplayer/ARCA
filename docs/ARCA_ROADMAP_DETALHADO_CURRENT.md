@@ -302,6 +302,29 @@ Próximo passo: fixture sintética baseada somente na estrutura observada → pa
 
 Ver `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`.
 
+### M5-F — parser offline do schema financeiro Portal
+
+Estado: **IMPLEMENTADO EM BRANCH / FIXTURE SINTÉTICA / LIVE NORMALIZATION BLOQUEADA**.
+
+Âncora: `observedSchemaSha256=79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6`, derivado do Gate 046.
+
+O parser V1 exige exatamente os 11 campos observados e todos como string. Ele normaliza apenas fixtures sintéticas, com datas `DD/MM/AAAA` ou ISO, valores BRL com vírgula decimal e fases Empenho/Liquidação/Pagamento. Campo ausente/adicional, fase não reconhecida, valor/data incompatíveis ou hash de schema divergente falham fechado.
+
+Segurança:
+
+- `executionMode=SYNTHETIC_FIXTURE` é o único modo aceito;
+- `CUSTODIAL_LIVE` é recusado;
+- `liveNormalizationAuthorized=false`;
+- nenhuma inferência de identidade a partir de texto livre;
+- rede/publicação/achado adverso desligados;
+- revisão humana obrigatória.
+
+Validação: `npm run validate:m5-portal-parser`.
+
+Próximo gate: M5-G de admissão custodial, vinculando parser + Gate 046 + decisão humana antes de reabrir/normalizar os bytes live. Nenhum novo GET é necessário.
+
+Ver `docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md` e checkpoint 047.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
