@@ -292,9 +292,15 @@ class VincePathfinderTests(unittest.TestCase):
             ))
         value=mission()
         journal=DispatchJournal()
-        unsafe_ref=DispatchRef("a","sat-a","d"*40,"d"*40)
+        unsafe_ref=DispatchRef(
+            executor_id="sat-a",provider_family="a",
+            external_id="d"*40,correlation_id="d"*40
+        )
         journal.record_attempt(value.job(),executor_id="sat-a",provider_family="a",outcome="TRANSIENT_FAILURE",ref=unsafe_ref)
-        good_ref=DispatchRef("b","sat-b","e"*40,"e"*40)
+        good_ref=DispatchRef(
+            executor_id="sat-b",provider_family="b",
+            external_id="e"*40,correlation_id="e"*40
+        )
         journal.record_attempt(value.job(),executor_id="sat-b",provider_family="b",outcome="DISPATCHED",ref=good_ref)
         journal.record(value.job(),good_ref)
         ranked=CostAwareScheduler(registry).rank(value.job())
