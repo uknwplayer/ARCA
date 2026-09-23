@@ -13,7 +13,10 @@ import {
   M5_PORTAL_RELATED_DOCUMENTS_PARSER_CONTRACT_SHA256
 } from "../src/investigation/m5-portal-related-documents-parser.mjs";
 import {runPortalCustodialNormalizationOffline} from "../src/investigation/m5-portal-custodial-normalization.mjs";
-import {sha256} from "../src/investigation/public-source-contract.mjs";
+import {createHash} from "node:crypto";
+
+const sha256Bytes=value=>createHash("sha256").update(value).digest("hex");
+const sha256Text=value=>createHash("sha256").update(value).digest("hex");
 
 const passphrase="synthetic-m5-h-passphrase-0123456789";
 const sourceRecords=[{
@@ -45,9 +48,9 @@ function setup(){
     liveRunId:"synthetic-run",
     observedSchemaSha256:GATE046_OBSERVED_SCHEMA_SHA256,
     parserContractSha256:M5_PORTAL_RELATED_DOCUMENTS_PARSER_CONTRACT_SHA256,
-    custodyEnvelopeSha256:sha256(JSON.stringify(envelope)),
+    custodyEnvelopeSha256:sha256Text(JSON.stringify(envelope)),
     custodyReceiptSha256:"2".repeat(64),
-    responseBytesSha256:sha256(bytes),
+    responseBytesSha256:sha256Bytes(bytes),
     scopeSha256:"3".repeat(64)
   });
   const decision=recordPortalParserAdmissionDecision({
@@ -105,5 +108,5 @@ test("M5-H recusa envelope, response ou schema divergente",()=>{
     envelope,passphrase,
     candidate:{...candidate,responseBytesSha256:"f".repeat(64)},
     decision
-  }),/ADMISSION_DECISION_INTEGRITY_INVALID|RESPONSE_HASH_MISMATCH/);
+  }),/CANDIDATE_HASH_MISMATCH|ADMISSION_DECISION_INTEGRITY_INVALID|RESPONSE_HASH_MISMATCH/);
 });
