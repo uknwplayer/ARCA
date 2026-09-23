@@ -5,7 +5,7 @@ Checkpoint: **2026-09-23 / Vince V5 Termux A/B Live Proof 010 verificado**
 Estado: **Vince V5 Termux A/B live-proven: A+B READY selecionou A; A WITHDRAWN transferiu a rota para B; zero dispatch; Work opcional; Replit somente histórico; V4.1.1 preservado; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 032 — Vince V5 Termux A/B Foundation](ARCA_HANDOFF_CHECKPOINT_2026-09-23_032.md). A PR #144 integrou o caminho V5 sem dependência operacional de Work/Replit: dois workers Termux podem publicar leases `READY/WITHDRAWN` assinadas por Ed25519; o Vince verifica pin, assinatura e freshness e seleciona rota com `dispatchPerformed:false`. Commit canônico `49b7afb348ad651829d593203de35715d27e7758`; CI da PR `35839970387` verde e CI pós-merge `35840109710` verde. O Probe 010 está pré-registrado na issue #143 e aguarda criar/publicar a identidade B no Termux antes da prova live. Work permanece endpoint opcional; a prova 008 continua válida historicamente.
+Handoff mais recente: [checkpoint 033 — Vince V5 Termux A/B Live Proof 010](ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md). O Probe 010 passou em duas fases reais no Android/Termux: com A e B em `READY`, ambos ficaram `AVAILABLE` e A foi selecionado por evidência mais recente; depois A publicou `WITHDRAWN`, ficou `INCONCLUSIVE / SIGNED_PRESENCE_WITHDRAWN`, B permaneceu `AVAILABLE` e foi selecionado. `dispatchPerformed:false` nas duas fases. Prova detalhada em `docs/ARCA_VINCE_V5_TERMUX_AB_LIVE_PROOF_010.md` e evidência estruturada em `artifacts/vince-v5-termux-ab-live-proof-010.json`.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -39,13 +39,14 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md`;
-2. `docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`;
-3. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md`;
-4. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
-5. `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`;
-6. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md` para histórico M3;
-7. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md`;
+3. `docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`;
+4. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md`;
+5. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
+6. `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`;
+7. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md` para histórico M3;
+8. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
 
 ## Resultado entregue no M2
 
