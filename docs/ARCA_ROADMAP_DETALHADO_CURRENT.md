@@ -121,7 +121,7 @@ Parada imediata: escopo divergente, custódia inválida, segredo ausente, respos
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C+D OFFLINE INTEGRADAS E TESTADAS; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
+Estado: **FASES A+B+C+D+E OFFLINE INTEGRADAS E TESTADAS; GATE 040 IMPLEMENTADO/TESTADO E AGUARDANDO PROVA OPERACIONAL; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -177,7 +177,7 @@ Ver `docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md`. O CI canônico executa `
 
 ### Gate 040 — preflight Portal isolado sem captura
 
-Estado: **CANDIDATO / issue #167 / sem GET Portal**.
+Estado: **IMPLEMENTADO E TESTADO OFFLINE / PR #168 / CI #348 E #349 VERDES / PROVA OPERACIONAL COM SECRETS REAIS PENDENTE / sem GET Portal**.
 
 Objetivo: validar a credencial, o escopo derivado e a disponibilidade do cofre em um workflow que não possui etapa de captura nem importa o transporte do Portal.
 
@@ -204,7 +204,7 @@ Mesmo sucesso neste gate **não autoriza o quarto GET**.
 
 ### M5 Fase E — binding do preflight ao probe live
 
-Estado: **CANDIDATO OFFLINE / issue #172 / nenhum quarto GET**.
+Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
 
 A Fase E amarra o workflow live ao resultado exato do Gate 040. O preflight passa a emitir `preflightSha256`, e o probe live exige `scope_sha256 + preflight_sha256 + credential_fingerprint_sha256`.
 
@@ -212,7 +212,7 @@ Antes de qualquer request, o probe recalcula a atestação a partir da revisão,
 
 Isso impede reutilizar uma autorização depois de trocar token, documento, revisão ou cofre.
 
-Ver `docs/ARCA_M5_PORTAL_PREFLIGHT_BINDING_V0_1.md`.
+Ver `docs/ARCA_M5_PORTAL_PREFLIGHT_BINDING_V0_1.md`. O CI canônico executa `validate:m5-phase-e` junto de M5-A/B/C/D e do validador do Gate 040.
 
 ## Marco M5-R — Public Investigation & Referral Dossier
 
