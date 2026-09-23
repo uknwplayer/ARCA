@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince Crash Recovery Live Proof 003 verificado**
+Checkpoint: **2026-09-23 / Vince Recovery Signed Identity V0.4 canônico**
 
-Estado: **Vince V0.3 canônico; V3.1 live-proven para recovery pós-crash sem redispatch; Portal segue em 401; Edge Steward congelado**
+Estado: **Vince V0.4 canônico; V3.1 live-proven e V3.2 signed-identity hardening testado offline; Portal segue em 401; Edge Steward congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 021 — Vince Pathfinder Live Proof 001](ARCA_HANDOFF_CHECKPOINT_2026-09-23_021.md). O run `35808000764` selecionou `github-satellite-linux`, recebeu ACK de fila, observou execução remota no run `35808010876` e reconciliou `VERIFIED_RESULT`, sem mutação do Core, trust ou autoridade. Portal permanece no estado do checkpoint 020; nenhum quarto GET está autorizado.
+Handoff mais recente: [checkpoint 024 — Vince Recovery Signed Identity V0.4](ARCA_HANDOFF_CHECKPOINT_2026-09-23_024.md). A PR #118 integrou rehash cruzado Python→JS, Execution Identity create-only e recibo Mesh Ed25519 de recovery com operação fechada no Signer Broker. CI PR `35811942932` e pós-merge `35812109997` verdes. V3.2 ainda não tem signer operacional persistente live; V4 é o próximo marco funcional.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
