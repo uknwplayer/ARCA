@@ -661,6 +661,124 @@
       "seguranca": [
         "human review"
       ]
+    },
+    {
+      "id": "produto-governanca-interface",
+      "nome": "Produto, governança, interface e acesso",
+      "tipo": "produto_governanca",
+      "finalidade": "Preparar políticas, interface pública, Painel do Criador e modelo de acesso após o núcleo estar funcional.",
+      "estado": "congelado_ate_arca_funcional",
+      "localizacao": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "dependeDe": [
+        "nucleo-core-event-store",
+        "fronteira-publicacao",
+        "atlas-tecnico-vivo"
+      ],
+      "chamadoPor": [],
+      "entradas": [
+        "estado funcional do ARCA",
+        "decisao humana de descongelamento"
+      ],
+      "saidas": [
+        "politica de privacidade",
+        "politica de seguranca",
+        "termos de uso",
+        "frontend",
+        "painel do criador",
+        "decisao sobre login"
+      ],
+      "capabilities": [
+        "planejamento futuro"
+      ],
+      "limites": [
+        "nao competir com nucleo",
+        "nao implementar antes do descongelamento explicito"
+      ],
+      "healthCheck": [
+        "nao aplicavel enquanto congelado"
+      ],
+      "modosDeFalha": [
+        "governanca prematura",
+        "superficie publica antes de controles"
+      ],
+      "recuperacao": [
+        "manter congelado e retornar ao nucleo"
+      ],
+      "fallback": "nenhum",
+      "riscoDeReexecucao": "nao aplicavel",
+      "runbook": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "seguranca": [
+        "privacy-by-design",
+        "least privilege",
+        "human review"
+      ]
+    },
+    {
+      "id": "m7-civ-inteligencia-civica",
+      "nome": "M7-CIV Inteligência cívica documental",
+      "tipo": "investigacao_futura",
+      "finalidade": "Reconstruir atividade legislativa e histórico público institucional, judicial e administrativo com proveniência verificável.",
+      "estado": "planejado_nao_critico",
+      "localizacao": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "dependeDe": [
+        "nucleo-core-event-store",
+        "fila-investigativa",
+        "fronteira-publicacao"
+      ],
+      "chamadoPor": [],
+      "entradas": [
+        "fontes oficiais legislativas",
+        "fontes judiciais publicas",
+        "fontes administrativas publicas"
+      ],
+      "saidas": [
+        "timeline documental",
+        "relacoes verificadas",
+        "estados processuais",
+        "contraprovas"
+      ],
+      "capabilities": [
+        "historico legislativo",
+        "historico institucional",
+        "historico judicial publico",
+        "historico administrativo publico"
+      ],
+      "limites": [
+        "sem score de confiabilidade de pessoa",
+        "sem inferencia de culpa",
+        "sem dados sigilosos"
+      ],
+      "healthCheck": [
+        "futuro contrato de fonte e testes sinteticos"
+      ],
+      "modosDeFalha": [
+        "homonimo",
+        "estado processual desatualizado",
+        "fonte incompleta",
+        "retificacao"
+      ],
+      "recuperacao": [
+        "preservar proveniencia",
+        "revalidar fonte primaria",
+        "revisao humana"
+      ],
+      "fallback": "PUBLIC_TRAIL_END ou NOT_OBSERVED conforme contrato",
+      "riscoDeReexecucao": "baixo quando leitura e deduplicacao sao idempotentes",
+      "runbook": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "seguranca": [
+        "fonte oficial prioritaria",
+        "estados epistêmicos",
+        "proteção contra homonimos",
+        "sem ranking politico"
+      ]
     }
   ]
 }
