@@ -6,6 +6,7 @@ import {
   TERMUX_V41_DEFAULT_IDENTITY_DIR,
   initTermuxV41Identity,
   loadTermuxV41Identity,
+  publishTermuxV41Identity,
   runTermuxV41OneShot
 } from "../src/machine-bridge/vince-v4-1-termux-worker.mjs";
 
@@ -24,6 +25,7 @@ function usage(){
     "  doctor",
     "  init-identity [--node-id ID] [--identity-dir DIR]",
     "  show-identity [--identity-dir DIR]",
+    "  publish-identity [--identity-dir DIR] [--channel-repo OWNER/REPO] [--channel-branch BRANCH]",
     "  once --job-id ID [--repo-path DIR] [--identity-dir DIR]",
     "       [--channel-repo OWNER/REPO] [--channel-branch BRANCH]",
     "",
@@ -82,6 +84,19 @@ async function main(){
     console.log(JSON.stringify({
       status:"PUBLIC_IDENTITY",
       identity:loaded.identity,
+      privateKeyPrinted:false
+    },null,2));
+    return 0;
+  }
+
+  if(command==="publish-identity"){
+    const result=await publishTermuxV41Identity({
+      identityDirectory,
+      channelRepository:value(args,"--channel-repo",TERMUX_V41_DEFAULT_CHANNEL_REPO),
+      channelBranch:value(args,"--channel-branch",TERMUX_V41_DEFAULT_CHANNEL_BRANCH)
+    });
+    console.log(JSON.stringify({
+      ...result,
       privateKeyPrinted:false
     },null,2));
     return 0;
