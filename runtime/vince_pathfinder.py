@@ -10,6 +10,7 @@ from runtime.executor_mesh import (
     AcceptedExecutionReceipt,
     CostAwareScheduler,
     DispatchDecision,
+    DispatchJournal,
     ExecutorMeshDispatcher,
     ExecutorRegistry,
     JobRequest,
@@ -19,6 +20,7 @@ from runtime.executor_mesh import (
 VINCE_MISSION_SCHEMA = "arca.vince-pathfinder-mission.v0.1"
 VINCE_DISCOVERY_SCHEMA = "arca.vince-route-discovery.v0.1"
 VINCE_PROOF_SCHEMA = "arca.vince-pathfinder-proof.v0.1"
+VINCE_FAILOVER_PROOF_SCHEMA = "arca.vince-pathfinder-failover-proof.v0.2"
 _SAFE_ID = re.compile(r"^[A-Za-z0-9_.-]{1,96}$")
 _SAFE_SHA256 = re.compile(r"^[a-f0-9]{64}$")
 
@@ -162,6 +164,36 @@ class VincePathfinderProof:
     proof_sha256: str
 
 
+@dataclass(frozen=True)
+class VinceAttemptEvidence:
+    executor_id: str
+    provider_family: str
+    outcome: str
+    has_dispatch_ref: bool
+
+
+@dataclass(frozen=True)
+class VinceFailoverProof:
+    schema: str
+    mission_id: str
+    mission_sha256: str
+    checkpoint_sha256: str
+    attempt_history: tuple[VinceAttemptEvidence, ...]
+    failed_executor_id: str
+    selected_executor_id: str
+    failover_reason: str
+    failover_safe: bool
+    duplicate_dispatch_detected: bool
+    accepted_executor_id: str
+    result_sha256: str
+    accepted_receipt_sha256: str
+    human_review_required: bool
+    core_mutation_performed: bool
+    trust_modified: bool
+    authority_expanded: bool
+    proof_sha256: str
+
+
 class VincePathfinder:
     def __init__(self, registry: ExecutorRegistry):
         self.registry = registry
@@ -221,6 +253,65 @@ class VincePathfinder:
         if receipt.provider_family != decision.ref.provider_family:
             raise ValueError("VINCE_RESULT_PROVIDER_MISMATCH")
         return self._proof(mission, decision, receipt=receipt)
+
+
+    def reconcile_failover(
+        self,
+        mission: VinceMission,
+        decision: DispatchDecision,
+        receipt: AcceptedExecutionReceipt,
+        journal: DispatchJournal,
+    ) -> VinceFailoverProof:
+        final = self.reconcile(mission, decision, receipt)
+        attempts = journal.attempt_history(mission.job())
+        if len(attempts) != 2:
+            raise ValueError("VINCE_FAILOVER_ATTEMPT_COUNT_INVALID")
+        first, second = attempts
+        if first.outcome != "TRANSIENT_FAILURE" or first.ref is not None:
+            raise ValueError("VINCE_FAILOVER_FIRST_ATTEMPT_NOT_SAFE")
+        if second.outcome != "DISPATCHED" or second.ref is None:
+            raise ValueError("VINCE_FAILOVER_SECOND_ATTEMPT_NOT_DISPATCHED")
+        if second.ref != decision.ref:
+            raise ValueError("VINCE_FAILOVER_DISPATCH_REF_MISMATCH")
+        if first.executor_id == second.executor_id:
+            raise ValueError("VINCE_FAILOVER_EXECUTOR_NOT_CHANGED")
+        if receipt.executor_id != second.executor_id:
+            raise ValueError("VINCE_FAILOVER_RECEIPT_EXECUTOR_MISMATCH")
+        dispatch_refs = [attempt.ref for attempt in attempts if attempt.ref is not None]
+        duplicate = len(dispatch_refs) != 1
+        if duplicate:
+            raise ValueError("VINCE_FAILOVER_DUPLICATE_DISPATCH")
+        evidence = tuple(
+            VinceAttemptEvidence(
+                executor_id=attempt.executor_id,
+                provider_family=attempt.provider_family,
+                outcome=attempt.outcome,
+                has_dispatch_ref=attempt.ref is not None,
+            )
+            for attempt in attempts
+        )
+        material = {
+            "schema": VINCE_FAILOVER_PROOF_SCHEMA,
+            "mission_id": mission.mission_id,
+            "mission_sha256": mission.envelope()["mission_sha256"],
+            "checkpoint_sha256": mission.checkpoint_sha256,
+            "attempt_history": [asdict(item) for item in evidence],
+            "failed_executor_id": first.executor_id,
+            "selected_executor_id": second.executor_id,
+            "failover_reason": "TRANSIENT_FAILURE_BEFORE_DISPATCH_ACCEPTANCE",
+            "failover_safe": True,
+            "duplicate_dispatch_detected": False,
+            "accepted_executor_id": receipt.executor_id,
+            "result_sha256": receipt.result_sha256,
+            "accepted_receipt_sha256": final.accepted_receipt_sha256,
+            "human_review_required": True,
+            "core_mutation_performed": False,
+            "trust_modified": False,
+            "authority_expanded": False,
+        }
+        instance = dict(material)
+        instance["attempt_history"] = evidence
+        return VinceFailoverProof(**instance, proof_sha256=_sha256_json(material))
 
     def _proof(
         self,
