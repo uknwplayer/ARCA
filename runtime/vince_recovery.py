@@ -22,6 +22,7 @@ from runtime.vince_pathfinder import VinceMission
 VINCE_RECOVERY_CHECKPOINT_SCHEMA = "arca.vince-recovery-checkpoint.v0.3"
 VINCE_RECOVERY_PROOF_SCHEMA = "arca.vince-recovery-proof.v0.3"
 _HASH = re.compile(r"^[a-f0-9]{64}$")
+_DISPATCH_HASH = re.compile(r"^(?:[a-f0-9]{40}|[a-f0-9]{64})$")
 
 
 def _stable(value: object) -> str:
@@ -60,7 +61,7 @@ class VinceRecoveryCheckpoint:
             raise ValueError("VINCE_RECOVERY_MISSION_HASH_INVALID")
         if not _HASH.fullmatch(self.job_fingerprint):
             raise ValueError("VINCE_RECOVERY_JOB_FINGERPRINT_INVALID")
-        if not _HASH.fullmatch(self.dispatch_external_id) or not _HASH.fullmatch(self.dispatch_correlation_id):
+        if not _DISPATCH_HASH.fullmatch(self.dispatch_external_id) or not _DISPATCH_HASH.fullmatch(self.dispatch_correlation_id):
             raise ValueError("VINCE_RECOVERY_DISPATCH_REF_INVALID")
         if self.dispatch_external_id != self.dispatch_correlation_id:
             raise ValueError("VINCE_RECOVERY_CORRELATION_INVALID")
