@@ -10,6 +10,7 @@ import {
   initTermuxV41Identity,
   inspectGitStatus,
   loadTermuxV41Identity,
+  publishTermuxV41Identity,
   runTermuxV41OneShot
 } from "../src/machine-bridge/vince-v4-1-termux-worker.mjs";
 import {
@@ -119,6 +120,31 @@ test("Termux git-status uses a bounded real git repository without shell semanti
     const dirty=inspectGitStatus({repoPath:repo});
     assert.equal(dirty.gitDirty,true);
     assert.match(dirty.stdout,/dirty\.txt/);
+  });
+});
+
+
+test("public identity publication contains no private key material",async()=>{
+  await withTemp(async root=>{
+    const dir=join(root,"identity");
+    await initTermuxV41Identity({directory:dir,nodeId:"vince-termux-publish"});
+    const calls=[];
+    const channelClient={
+      async createJson(call){calls.push(call);return {ok:true}}
+    };
+    const result=await publishTermuxV41Identity({
+      identityDirectory:dir,
+      channelRepository:"uknwplayer/ARCA",
+      channelBranch:"vince-v41-termux-channel",
+      channelClient
+    });
+    assert.equal(result.status,"PUBLIC_IDENTITY_PUBLISHED");
+    assert.equal(calls.length,1);
+    assert.equal(calls[0].path,"remote-jobs/v4.1/identities/vince-termux-publish.json");
+    const serialized=JSON.stringify(calls[0].value);
+    assert.equal(serialized.includes("PRIVATE KEY"),false);
+    assert.equal(serialized.includes("privateKey"),false);
+    assert.equal(calls[0].value.identity.nodeId,"vince-termux-publish");
   });
 });
 
