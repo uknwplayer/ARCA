@@ -61,6 +61,9 @@ jobs:
       - name: Run M5 Phase B post-custody gate
         run: npm run validate:m5-phase-b
 
+      - name: Run M5 Phase C Portal schema observation gate
+        run: npm run validate:m5-phase-c
+
       - name: Verify repository and approved custody pilot
         shell: bash
         run: |
