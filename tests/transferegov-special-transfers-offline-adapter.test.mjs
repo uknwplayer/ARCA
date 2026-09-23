@@ -14,7 +14,7 @@ import {
   runMultisourceOfflineGate
 } from "../src/investigation/multisource-offline-gate.mjs";
 
-const registry=()=>loadPublicSourceRegistry(path.join(process.cwd(),"config/public-source-registry-v1.json"));
+const registry=()=>loadPublicSourceRegistry(path.join(process.cwd(),"config/public-source-registry-s1.json"));
 const fixture=()=>loadOfflineFixture(path.join(process.cwd(),"examples/multisource-offline-fixtures/transferegov-special-transfers-sp-mg-v1.json"));
 const queueRoot=()=>fs.mkdtempSync(path.join(os.tmpdir(),"arca-transferegov-s1-"));
 const clock=()=>new Date("2026-09-23T16:40:00.000Z");
