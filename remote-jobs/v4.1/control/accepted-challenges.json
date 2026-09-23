@@ -1,0 +1,16 @@
+{
+  "format": "arca-vince-v4.1-accepted-challenge-registry",
+  "version": 1,
+  "entries": [
+    {
+      "acceptedAt": "2026-09-23T07:09:13.000Z",
+      "challengeSha256": "e64bc409b87cb7abb175f51c84de48651af29c94c4beb8ca294e79c6a9da59cd",
+      "missionId": "vince-v41-termux-live-006",
+      "requestSha256": "7874056b43bc02e545da44d5d2bdb82f031f9a5b31e1961b2c41d264d211665a",
+      "resultSha256": "30e869b62157178b1fabf245b80a0d2e49e759daa125f52bb58959518ccf3de6",
+      "proofSha256": "5112d8a007da47d94beb2e1a3d98d3f506a19c4a538f3502032dad16aa3bfd2a",
+      "workerNodeId": "vince-termux-android-1",
+      "workerKeyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1"
+    }
+  ]
+}
