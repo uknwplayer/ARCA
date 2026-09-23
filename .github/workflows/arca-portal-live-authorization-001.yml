@@ -1,0 +1,75 @@
+name: ARCA Portal live authorization 001
+run-name: Portal live authorization 001 from issue #97
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arca-portal-live-auth-001
+  cancel-in-progress: false
+
+jobs:
+  controlled-live-probe:
+    if: >-
+      github.event.issue.number == 97 &&
+      github.event.issue.state == 'open' &&
+      github.event.comment.user.login == 'uknwplayer' &&
+      github.event.comment.body == 'ARCA_PORTAL_LIVE_AUTHORIZATION_001_EXECUTE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the reviewed canonical revision
+        uses: actions/checkout@v4
+        with:
+          ref: 3e05951fa543f359451208cf410705a0dcfb34e1
+          persist-credentials: false
+
+      - name: Set up Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Preflight exact reviewed scope and private custody
+        env:
+          ARCA_PORTAL_CONFIRMATION: PORTAL_DOCUMENT_GET_ONLY
+          ARCA_PORTAL_SCOPE_SHA256: 4a2c6b3809f6b17ae5ca5e94c965ef02e148a6fe31e429e889c71f97d183b8a3
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          GITHUB_REPOSITORY: uknwplayer/ARCA
+          GITHUB_SHA: 3e05951fa543f359451208cf410705a0dcfb34e1
+        run: node scripts/arca-portal-related-documents-live-probe.mjs --preflight-only
+
+      - name: Capture exactly one bounded Portal response
+        env:
+          ARCA_PORTAL_CONFIRMATION: PORTAL_DOCUMENT_GET_ONLY
+          ARCA_PORTAL_SCOPE_SHA256: 4a2c6b3809f6b17ae5ca5e94c965ef02e148a6fe31e429e889c71f97d183b8a3
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          GITHUB_REPOSITORY: uknwplayer/ARCA
+          GITHUB_SHA: 3e05951fa543f359451208cf410705a0dcfb34e1
+        run: node scripts/arca-portal-related-documents-live-probe.mjs
+
+      - name: Upload encrypted envelope and sanitized proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-live-auth-001-${{ github.run_id }}
+          path: |
+            artifacts/portal-related-documents.envelope.json
+            artifacts/portal-related-documents-proof.json
+          if-no-files-found: error
+          retention-days: 7
