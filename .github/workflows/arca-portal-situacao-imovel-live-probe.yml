@@ -2,28 +2,29 @@ name: ARCA Portal — probe controlado situacao-imovel
 run-name: Probe situacao-imovel — ${{ github.run_id }}
 
 on:
-  create:
+  push:
+    branches:
+      - 'portal-live-situacao-imovel-*'
 
 permissions:
   contents: read
 
 jobs:
   controlled-probe:
-    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'portal-live-situacao-imovel-')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Obter a revisão autorizada
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.ref }}
+          ref: ${{ github.ref }}
           persist-credentials: false
 
       - name: Extrair binding sanitizado do nome do branch
         shell: bash
         run: |
           set -euo pipefail
-          ref='${{ github.event.ref }}'
+          ref='${{ github.ref_name }}'
           if [[ "$ref" =~ ^portal-live-situacao-imovel-p([a-f0-9]{64})-c([a-f0-9]{64})$ ]]; then
             echo "ARCA_PORTAL_PREFLIGHT_SHA256=${BASH_REMATCH[1]}" >> "$GITHUB_ENV"
             echo "ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256=${BASH_REMATCH[2]}" >> "$GITHUB_ENV"
