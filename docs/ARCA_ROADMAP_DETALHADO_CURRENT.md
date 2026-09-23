@@ -200,7 +200,7 @@ Fases propostas:
 - V3.1: **LIVE-PROVEN LIMITADO** — recovery em runner novo a partir de checkpoint durável e DispatchRef original, sem redispatch; runs `35810698274` / `35810708455`;
 - V3.2: **IMPLEMENTADO / TESTADO OFFLINE** — checkpoint/proof revalidados no Machine Bridge, Execution Identity create-only e recibo Ed25519 em domínio dedicado; prova live aguarda signer persistente;
 - V4: **LIVE-PROVEN LIMITADO** — `vince-v4-live-005` atravessou GitHub/ARCA → Replit → GitHub e foi verificado canonicamente; request `c069…`, result `3ded…`, proof `daea9c2c…`; worker attestation ainda é false;
-- V4.1: **PRÓXIMO GATE** — identidade persistente do worker Replit + challenge/nonce + resultado assinado e trust pinning.
+- V4.1: **VERIFIER CANDIDATO IMPLEMENTADO / TESTADO OFFLINE** — challenge 32-byte, Ed25519, identidade pinada e replay protection; contrato remoto Replit ainda precisa ser reconciliado após reset de cota antes de qualquer live.
 - V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
 
 Dependência Work atual: o plano de execução canônico existe, mas a ligação nativa do evento GitHub do ChatGPT Work ao repositório `uknwplayer/ARCA` ainda não foi provada. Ver PR #90 (probe de liveness) e PR #91 (migração do gatilho). Vince deverá tratar Work como endpoint candidato até existir ACK canônico recente.
@@ -220,7 +220,7 @@ Relação com Vince:
 
 Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
 
-Aceite parcial alcançado para Vince V0.1–V0.4 + V4: discovery, ACK, execução, retorno, failover, recovery pós-crash e uma rota heterogênea GitHub↔Replit foram provados; V3.2 signed identity foi testado em CI. Próximo gate é V4.1 com attestation criptográfica persistente do worker remoto. Presença móvel/Edge permanece futura.
+Aceite parcial alcançado para Vince V0.1–V0.4 + V4: discovery, ACK, execução, retorno, failover, recovery pós-crash e uma rota heterogênea GitHub↔Replit foram provados; V3.2 signed identity foi testado em CI. Próximo gate é reconciliar o contrato V4.1 do Replit com o verifier candidato já canônico e só então executar attestation live com identidade persistente. Presença móvel/Edge permanece futura.
 
 ## Marco M6 — Expansão territorial gradual
 

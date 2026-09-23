@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V4 Live Proof 005 verificado**
+Checkpoint: **2026-09-23 / Vince V4.1 Candidate Attestation Verifier integrado**
 
-Estado: **Vince V4 live-proven limitado GitHub/ARCA ↔ Replit; hashes/correlação/proveniência verificados; worker attestation criptográfica pendente; Portal em 401; Edge congelado**
+Estado: **Vince V4 live-proven limitado; V4.1 verifier candidato integrado/testado offline; reconciliação com worker Replit bloqueada apenas pela cota; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 026 — Vince V4 Live Proof 005](ARCA_HANDOFF_CHECKPOINT_2026-09-23_026.md). A missão `vince-v4-live-005` atravessou o canal V4 canônico até o Replit, executou `git-status`, retornou resultado estruturado e passou no verificador ARCA em CI `35814497158`. Request `c069…`, result `3ded…`, proof `daea9c2c…`. A prova é de transporte/execução/retorno heterogêneo; `cryptographicWorkerAttestation=false` permanece explícito.
+Handoff mais recente: [checkpoint 027 — Vince V4.1 Candidate Attestation Verifier](ARCA_HANDOFF_CHECKPOINT_2026-09-23_027.md). A PR #127 integrou verifier Ed25519 candidato com challenge 32-byte, pinning explícito e replay protection; CI `35826141926` e pós-merge `35826260790` verdes. O contrato remoto Replit não foi inspecionado após a implementação porque a cota gratuita diária foi atingida. Nenhuma private key foi provisionada ou solicitada.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
