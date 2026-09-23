@@ -70,6 +70,9 @@ jobs:
       - name: Executar parser Portal offline M5-F
         run: npm run validate:m5-portal-parser
 
+      - name: Executar gate M5-G de admissão do parser Portal
+        run: npm run validate:m5-parser-admission
+
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 
