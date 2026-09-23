@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Gate 046 — primeiro 2xx financeiro Portal em `documentos-relacionados`**
+Checkpoint: **2026-09-23 / Checkpoint 047 — parser financeiro Portal implementado offline**
 
-Estado: **Transferegov S1 e TCU Acórdãos S2 integrados; autenticação Portal comprovada no Gate 045; Gate 046 preflight run 35916999807 passou sem rede e live run 35917902630 executou exatamente 1 GET autorizado a `/api-de-dados/despesas/documentos-relacionados`, retornando HTTP 200, 1 registro, 440 bytes, `VALIDATED`, `SCHEMA_OBSERVED`, `retries=0` e `STORED_PRIVATE`; autorização consumida; nenhum novo GET Portal autorizado; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Gate 046 concluído com HTTP 200 financeiro, 1 registro e schema live observado; parser V1 do Portal implementado somente em fixture sintética e preso ao `observedSchemaSha256=79f6c837...666f6`; drift/data/valor/fase testados fail-closed; `liveNormalizationAuthorized=false`; nenhum byte live reaberto nesta etapa; nenhum novo GET Portal autorizado; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 046 — primeiro 2xx financeiro Portal em `documentos-relacionados`](ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md). O Gate 046 preflight run `35916999807` vinculou revisão, documento, fingerprint e cofre sem rede. Sob autorização específica, o live run `35917902630` executou exatamente um GET na mesma revisão e recebeu HTTP 200, 1 registro e 440 bytes. A resposta foi selada/custodiada antes da observação estrutural; o M5-C registrou `SCHEMA_OBSERVED` sem valores e `parserAdmitted=false`. A autorização foi consumida e nenhum novo GET está autorizado.
+Handoff mais recente: [checkpoint 047 — parser financeiro Portal implementado offline](ARCA_HANDOFF_CHECKPOINT_2026-09-23_047.md). O parser V1 foi construído a partir da estrutura sanitizada do Gate 046, usa fixture 100% sintética e falha fechado em schema hash, campos, data, valor e fase. O modo live permanece explicitamente bloqueado: `CUSTODIAL_LIVE` não é aceito e os bytes reais do run `35917902630` não foram reabertos nesta etapa.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. O primeiro 2xx de `documentos-relacionados` foi obtido e custodialmente validado no run `35917902630`. O próximo passo é totalmente offline: congelar fixture sintética baseada apenas no schema observado, implementar/revisar parser e normalizador, testar drift e somente então admitir dados financeiros custodiais na Fase B. Transferegov S1 e TCU S2 estão integrados; Siconfi S3 continua na fila. Qualquer novo `PUBLIC_GET` exige novo Gate e nova autorização humana específica.
+M5 continua o caminho crítico. O primeiro 2xx financeiro está custodial e o parser V1 já existe em modo sintético. O próximo passo é criar o gate de admissão da normalização custodial: vincular parser + schema hash + envelope/receipt do Gate 046 + decisão humana, reabrir os bytes apenas em ambiente privado, normalizar e produzir `normalizationSha256`; só depois a Fase B poderá receber `normalizationState=NORMALIZED`. Nenhuma rede é necessária.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_047.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md`;
@@ -209,7 +210,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 046. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 047. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
