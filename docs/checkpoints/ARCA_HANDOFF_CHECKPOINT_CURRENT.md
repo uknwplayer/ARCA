@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V5 Termux A/B Live Proof 010 verificado**
+Checkpoint: **2026-09-23 / Vince Probe 011 selected one-shot live-proven**
 
-Estado: **Vince V5 Termux A/B live-proven: A+B READY selecionou A; A WITHDRAWN transferiu a rota para B; zero dispatch; Work opcional; Replit somente histórico; V4.1.1 preservado; Portal em 401; Edge congelado**
+Estado: **Vince V5→V4.1.1 live-proven: seleção única de B, dispatch pinado, 1 git-status, resultado Ed25519, consumo durável por CAS e replay rejeitado sem reexecução; Work opcional; Replit histórico; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 033 — Vince V5 Termux A/B Live Proof 010](ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md). O Probe 010 passou em duas fases reais no Android/Termux: com A e B em `READY`, ambos ficaram `AVAILABLE` e A foi selecionado por evidência mais recente; depois A publicou `WITHDRAWN`, ficou `INCONCLUSIVE / SIGNED_PRESENCE_WITHDRAWN`, B permaneceu `AVAILABLE` e foi selecionado. `dispatchPerformed:false` nas duas fases. Prova detalhada em `docs/ARCA_VINCE_V5_TERMUX_AB_LIVE_PROOF_010.md` e evidência estruturada em `artifacts/vince-v5-termux-ab-live-proof-010.json`.
+Handoff mais recente: [checkpoint 034 — Vince Probe 011 Selected One-Shot](ARCA_HANDOFF_CHECKPOINT_2026-09-23_034.md). O Vince selecionou B como único worker elegível, vinculou route/request/dispatch por hash e identidade, executou exatamente um `git-status`, verificou o resultado Ed25519, consumiu o challenge por CAS/read-after-write e rejeitou replay com `workerReexecuted:false`. Prova detalhada em `docs/ARCA_VINCE_V5_V411_LIVE_PROOF_011.md` e evidência estruturada em `artifacts/vince-v5-v411-live-proof-011.json`.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-Vince: o Probe 010 Termux A/B está live-proven. O próximo gate recomendado é ligar a seleção V5 já provada à execução one-shot V4.1.1 já provada: selecionar exatamente um worker, emitir exatamente um request `git-status`, receber resultado Ed25519, verificar contra o pin e consumir o challenge de forma durável. Sem retry/failover automático nesse gate; qualquer substituição após falha deve exigir reconciliação explícita para impedir execução duplicada. Work continua opcional; Replit não participa do caminho operacional; Edge Steward permanece congelado.
+Vince: o Probe 011 está live-proven. Seleção V5 e execução V4.1.1 agora estão ligadas em um fluxo fail-closed: exatamente um elegível, dispatch pinado, um único `git-status`, attestation Ed25519, consumo durável por CAS e replay rejeitado sem reexecução. O próximo avanço não deve ampliar para shell arbitrário. Para resiliência, o próximo gate Vince é redundância física multi-device; alternativamente, retornar ao caminho investigativo M5. Work continua opcional; Replit não participa do caminho operacional; Edge Steward permanece congelado.
 
 O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
@@ -39,14 +39,15 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md`;
-3. `docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`;
-4. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md`;
-5. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
-6. `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`;
-7. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md` para histórico M3;
-8. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_034.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md`;
+3. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md`;
+4. `docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`;
+5. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md`;
+6. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
+7. `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`;
+8. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md` para histórico M3;
+9. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
 
 ## Resultado entregue no M2
 
@@ -151,7 +152,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 033. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 034. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

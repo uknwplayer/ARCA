@@ -1,0 +1,63 @@
+{
+  "format": "arca-vince-v5-v411-live-proof-011-v1",
+  "version": 1,
+  "date": "2026-09-23",
+  "issue": 150,
+  "missionId": "vince-v41-v5-selected-live-011",
+  "selectedEndpointId": "vince-termux-android-2",
+  "selectedWorkerKeyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0",
+  "route": {
+    "candidateCount": 2,
+    "eligibleCount": 1,
+    "selectedEndpointId": "vince-termux-android-2",
+    "routeProofSha256": "39a68b500a6f91c00d1c5aecfcacc408b6d416b77f276f1aee784df1cc56c721",
+    "gitBlobSha": "6ccd2550190271ed665048f97441071422e6766b"
+  },
+  "request": {
+    "sha256": "e6fe5cfb8f2df3f2dde12e8a9dd31b4cef5c00a48388c7d6c9af2623762ce0ec",
+    "gitBlobSha": "5ec9a5ae2a3f8100bea31dba83fca8f928e6ff1b",
+    "action": "git-status"
+  },
+  "dispatch": {
+    "sha256": "e9a8f79b0ee421bd51ff88cab29b36f81c58723ba7c0b6134be7fc62df747532",
+    "gitBlobSha": "eb8d9176cdec3956d171d6a7af261d0907469e6a",
+    "automaticRetryAllowed": false,
+    "automaticFailoverAllowed": false,
+    "exactlyOneEligibleRequired": true
+  },
+  "result": {
+    "sha256": "f01be6a3d6b31d143d6c11094ab0a2903d0bd8a83e4fed1247d3e7a795e471e6",
+    "gitBlobSha": "722dfd80fb9bec2c5af807bb72d527ff4dffc319",
+    "gitHead": "88a8ce42fabf8dd8814c78842a9570b3327728ca",
+    "gitBranch": "main",
+    "gitDirty": false,
+    "exitCode": 0
+  },
+  "acceptance": {
+    "attestationProofSha256": "6c4f1915c6d369be62e29ff844d779fafdcd289be25e2a128a2c07439982b5cc",
+    "challengeSha256": "be3bcb7f25e8fe56567d1d84473e895ee8a9c8bc09078a988fe125754ecb5f8e",
+    "registryBlobSha": "b18090023ec01f292a1216d07a989ecdd87de779",
+    "acceptedAt": "2026-09-23T10:09:59.940Z",
+    "acceptanceSha256": "7fa32564fcf88461e26daf0a92f6efd74d3154b7f6e2bce93aee189dfbaf16a0",
+    "gitBlobSha": "0a35deb15b533b39bccf8a4cf77d230694450818"
+  },
+  "replay": {
+    "status": "DURABLE_REPLAY_REJECTED",
+    "workerReexecuted": false,
+    "registryDurable": true
+  },
+  "safety": {
+    "workUsed": false,
+    "replitUsed": false,
+    "githubActionsUsedAsExecutor": false,
+    "automaticRetryPerformed": false,
+    "automaticFailoverPerformed": false,
+    "authorityExpanded": false,
+    "shellArbitrary": false
+  },
+  "limits": {
+    "physicalRedundancyProved": false,
+    "daemon24x7Proved": false,
+    "multiDeviceFailoverProved": false
+  }
+}

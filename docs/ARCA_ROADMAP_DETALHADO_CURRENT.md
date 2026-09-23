@@ -235,13 +235,13 @@ Aceite parcial alcançado para Vince V0.1–V0.4 + V4.1.1 + V5 A/B live: discove
 
 ### V5→V4.1.1 — selected one-shot execution
 
-Estado: **CANDIDATO EM PR / PROBE 011 PRÉ-REGISTRADO NA ISSUE #150 / LIVE PENDENTE**.
+Estado: **LIVE-PROVEN / PROBE 011 CONCLUÍDO / SELECTED ONE-SHOT + DURABLE REPLAY**.
 
-Próximo gate integra seleção e execução sem Work/Replit. Ele exige exatamente um endpoint V5 elegível, cria um dispatch vinculado a nodeId/fingerprint/request hash, faz o Termux selecionado revalidar o vínculo antes de `git-status`, verifica o resultado Ed25519 e consome o challenge por CAS no registry V4.1.1. O controle live roda no Termux; Actions permanece apenas CI.
+O Probe 011 integrou seleção e execução sem Work/Replit: A ficou `WITHDRAWN`, B foi o único elegível, o dispatch foi vinculado a nodeId/fingerprint/request hash/route hash, B executou exatamente um `git-status`, o resultado Ed25519 foi verificado e o challenge foi consumido por CAS/read-after-write no registry V4.1.1.
 
-Não há retry/failover automático depois do dispatch. Qualquer falha exige reconciliação humana antes de novo request, para evitar execução duplicada.
+Replay posterior foi rejeitado com `workerReexecuted:false`. Continua sem retry/failover automático depois do dispatch. Qualquer falha exige reconciliação humana antes de novo request, para evitar execução duplicada. Próximo gate Vince recomendado: redundância física multi-device; não ampliar capability para shell arbitrário.
 
-Ver `docs/ARCA_VINCE_V5_V411_SELECTED_ONESHOT_GATE_V0_1.md`.
+Ver `docs/ARCA_VINCE_V5_V411_SELECTED_ONESHOT_GATE_V0_1.md` e `docs/ARCA_VINCE_V5_V411_LIVE_PROOF_011.md`.
 
 ## Marco M6 — Expansão territorial gradual
 
