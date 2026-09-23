@@ -60,6 +60,20 @@ test("V5 accepts explicit heartbeat unavailable but generic probe errors stay in
   assert.equal(unknown.reason,"HEARTBEAT_ERROR");
 });
 
+test("V5 accepts GitHub-style ACK timestamps without fractional seconds",async()=>{
+  const registry=registryWith({
+    ack:async()=>({
+      acknowledged:true,
+      observedAt:"2026-09-23T07:59:30Z"
+    })
+  });
+  const observation=await observeVinceV5Ack({
+    registry,endpointId:"work",ackInput:{wakeId:WAKE_ID},now:NOW,maxAckAgeMs:120_000
+  });
+  assert.equal(observation.state,"AVAILABLE");
+  assert.equal(observation.evidence.ackObservedAt,"2026-09-23T07:59:30.000Z");
+});
+
 test("V5 recent correlated ACK makes a route temporarily eligible",async()=>{
   const registry=registryWith({
     ack:async()=>({
@@ -124,6 +138,29 @@ test("V5 route selection filters capability and requires a fresh AVAILABLE ACK o
   assert.equal(route.eligibleCount,2);
   assert.equal(route.dispatchPerformed,false);
   assert.equal(route.authority.executionAuthority,false);
+});
+
+test("V5 newer negative evidence overrides an older still-fresh ACK",async()=>{
+  const registry=registryWith({ack:async()=>({acknowledged:true,observedAt:"2026-09-23T07:59:00.000Z"})});
+  const available=await observeVinceV5Ack({
+    registry,endpointId:"work",ackInput:{wakeId:WAKE_ID},now:NOW,maxAckAgeMs:180_000
+  });
+  const newer=Object.freeze({
+    ...available,
+    state:"UNREACHABLE",
+    reason:"EXPLICIT_HEARTBEAT_UNAVAILABLE",
+    source:"heartbeat",
+    observedAt:"2026-09-23T08:00:30.000Z",
+    validUntil:"2026-09-23T08:01:30.000Z",
+    routeEligible:false,
+    wakeAcknowledged:false
+  });
+  const route=selectVinceV5Route({
+    registry,capability:"reasoning",observations:[available,newer],now:"2026-09-23T08:00:45.000Z"
+  });
+  assert.equal(route.state,"INCONCLUSIVE");
+  assert.equal(route.selectedEndpointId,null);
+  assert.equal(route.candidates[0].latestState,"UNREACHABLE");
 });
 
 test("V5 refuses to fabricate a route when only heartbeat evidence exists",async()=>{
