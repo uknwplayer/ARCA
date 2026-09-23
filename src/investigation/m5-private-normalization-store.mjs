@@ -32,7 +32,12 @@ function token(value){
 }
 function encoded(path){return path.split("/").map(encodeURIComponent).join("/")}
 function validProof(proof,envelope){
-  if(proof?.schema!=="arca.m5-portal-custodial-normalization-proof.v1"||
+  if(envelope?.schema!=="arca.encrypted-custody-envelope.v0.1"||
+     envelope?.status!=="SEALED"||
+     envelope?.algorithm!=="AES-256-GCM"||
+     envelope?.plaintextIncluded!==false||
+     !SAFE_SHA64.test(envelope?.contentRootHash??"")||
+     proof?.schema!=="arca.m5-portal-custodial-normalization-proof.v1"||
      proof?.status!=="NORMALIZED_CUSTODIAL_OFFLINE"||
      proof?.sourceNetworkUsed!==false||
      proof?.portalRequestUsed!==false||
@@ -45,7 +50,10 @@ function validProof(proof,envelope){
      !SAFE_SHA64.test(proof?.normalizationSha256??"")||
      !SAFE_SHA64.test(proof?.normalizedEnvelopeSha256??"")||
      !SAFE_SHA64.test(proof?.proofSha256??"")||
-     proof.normalizedEnvelopeSha256!==sha256(JSON.stringify(envelope)))
+     !SAFE_SHA64.test(proof?.normalizedContentRootSha256??"")||
+     proof.normalizedEnvelopeSha256!==sha256(JSON.stringify(envelope))||
+     proof.normalizedContentRootSha256!==envelope.contentRootHash||
+     (proof.executorRevision!==undefined&&!SAFE_SHA40.test(proof.executorRevision)))
     throw new Error("ARCA_M5_H_STORE_PROOF_INVALID");
 }
 
