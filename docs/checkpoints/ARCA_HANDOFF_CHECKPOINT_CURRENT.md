@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V5 Work Read-only Availability Proof 008 verificado**
+Checkpoint: **2026-09-23 / Vince V5 Termux A/B Foundation integrada**
 
-Estado: **Vince V5 foundation integrada e live-proven em observação read-only: superfície GitHub/PR do Work alcançável, executor Work INCONCLUSIVE e não roteável sem ACK recente; V4.1.1 preservado; Portal em 401; Edge congelado**
+Estado: **Vince V5 Termux A/B integrado e testado: presença Ed25519 READY/WITHDRAWN, freshness fail-closed e seleção de rota sem dispatch; prova live A/B pendente; Work é opcional; Replit é apenas histórico; V4.1.1 preservado; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 031 — Vince V5 Work Read-only Availability Proof 008](ARCA_HANDOFF_CHECKPOINT_2026-09-23_031.md). A PR #137 integrou o modelo V5 de disponibilidade/roteamento e a PR #139 integrou o probe read-only. O run `35833356337` observou a PR #90 sem wake: `surfaceReachable:true`, estado `INCONCLUSIVE / SURFACE_REACHABLE_EXECUTION_UNPROVEN`, 1 candidato, 0 elegíveis, `selectedEndpointId:null` e `dispatchPerformed:false`. Work continua candidato e não deve ser promovido para `AVAILABLE` sem ACK recente correlacionado.
+Handoff mais recente: [checkpoint 032 — Vince V5 Termux A/B Foundation](ARCA_HANDOFF_CHECKPOINT_2026-09-23_032.md). A PR #144 integrou o caminho V5 sem dependência operacional de Work/Replit: dois workers Termux podem publicar leases `READY/WITHDRAWN` assinadas por Ed25519; o Vince verifica pin, assinatura e freshness e seleciona rota com `dispatchPerformed:false`. Commit canônico `49b7afb348ad651829d593203de35715d27e7758`; CI da PR `35839970387` verde e CI pós-merge `35840109710` verde. O Probe 010 está pré-registrado na issue #143 e aguarda criar/publicar a identidade B no Termux antes da prova live. Work permanece endpoint opcional; a prova 008 continua válida historicamente.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-Vince: V5 foundation está canônica e a primeira observação live read-only passou. O heartbeat da PR #90 prova somente que a superfície GitHub configurada é alcançável; como não há ACK recente correlacionado, o Work permanece `INCONCLUSIVE`, não elegível e nenhuma rota foi disparada. O worker Termux V4.1.1 continua preservado com attestation/replay durável. Próximo gate V5 para Work: wake + ACK correlacionado em prova separada; não inferir disponibilidade pelo heartbeat. Edge Steward permanece congelado.
+Vince: o caminho prioritário passa a ser V5 Termux A/B. A identidade A live-proven (`vince-termux-android-1`) deve ser preservada; criar B em diretório separado, publicar somente sua identidade pública, revisar/pinar B e então executar o Probe 010 em duas fases: A+B `READY` com seleção sem dispatch; depois A `WITHDRAWN` e B `READY`, exigindo seleção de B. Isso prova failover lógico entre workers/identidades, não tolerância à perda física do telefone. Work não bloqueia o Vince e Replit não participa do caminho operacional. Edge Steward permanece congelado.
 
 O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
