@@ -1,0 +1,14 @@
+{
+  "schema": "arca.m5-portal-parser-admission-authorization.v1",
+  "candidateSha256": "0bcf1806c2480b2f82f8efff43e67436460043375d302fb6fcf44c80ec3e97f9",
+  "candidateRevision": "df9a3f29e5d824c8ed39914e7133551edec044e8",
+  "decision": "ADMIT_FOR_CUSTODIAL_NORMALIZATION",
+  "reviewerRef": "human-review:operator-chat-authorization",
+  "reviewedAt": "2026-09-23T22:27:00.000Z",
+  "constraints": {
+    "sourceNetworkAuthorized": false,
+    "newPortalGetAuthorized": false,
+    "publicationAuthorized": false,
+    "correlationAuthorized": false
+  }
+}
