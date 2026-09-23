@@ -1,8 +1,8 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince Controlled Failover Live Proof 002 verificado**
+Checkpoint: **2026-09-23 / Vince Crash Recovery Live Proof 003 verificado**
 
-Estado: **Vince V0.2 canônico; V3 limitado live-proven para failover pré-aceitação sem duplicação; Portal segue em 401; Edge Steward congelado**
+Estado: **Vince V0.3 canônico; V3.1 live-proven para recovery pós-crash sem redispatch; Portal segue em 401; Edge Steward congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
 Handoff mais recente: [checkpoint 021 — Vince Pathfinder Live Proof 001](ARCA_HANDOFF_CHECKPOINT_2026-09-23_021.md). O run `35808000764` selecionou `github-satellite-linux`, recebeu ACK de fila, observou execução remota no run `35808010876` e reconciliou `VERIFIED_RESULT`, sem mutação do Core, trust ou autoridade. Portal permanece no estado do checkpoint 020; nenhum quarto GET está autorizado.
