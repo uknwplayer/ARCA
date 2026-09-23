@@ -71,7 +71,7 @@ The ARCA V4 verifier independently checks:
 
 The canonical V4 proof hash is:
 
-`4b4bdc2fe101ba502cdb42a2dd9244bafed997c17581a2f8c3959702987a9e39`
+`daea9c2cb9bf6cb25aa947ac16fd6af8b83a016ff8e8235b031a657b6e80e95e`
 
 ## What this proves
 
