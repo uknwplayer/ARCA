@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import {createHash} from "node:crypto";
 import {canonicalJson,sha256} from "./public-source-contract.mjs";
 import {openCustodyEnvelope,sealCustodyDirectory} from "../machine-bridge/encrypted-custody-envelope.mjs";
 import {observePortalJsonSchema} from "./m5-portal-schema-observer.mjs";
@@ -34,6 +35,9 @@ function exactDecision(candidate,decision){
 }
 function envelopeHash(envelope){
   return sha256(JSON.stringify(envelope));
+}
+function sha256Bytes(bytes){
+  return createHash("sha256").update(bytes).digest("hex");
 }
 function decodeRecords(bytes){
   let text;
@@ -83,7 +87,7 @@ export function runPortalCustodialNormalizationOffline({
      payload.files[0].path!=="response.bin")
     throw new Error("ARCA_M5_H_CUSTODY_PAYLOAD_INVALID");
   const responseBytes=Buffer.from(payload.files[0].data,"base64");
-  if(sha256(responseBytes)!==candidate.responseBytesSha256)
+  if(sha256Bytes(responseBytes)!==candidate.responseBytesSha256)
     throw new Error("ARCA_M5_H_RESPONSE_HASH_MISMATCH");
 
   const observation=observePortalJsonSchema({
