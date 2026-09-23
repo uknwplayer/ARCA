@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Checkpoint 047 — parser financeiro Portal implementado offline**
+Checkpoint: **2026-09-23 / Checkpoint 048 — gate M5-G de admissão do parser implementado**
 
-Estado: **Gate 046 concluído com HTTP 200 financeiro, 1 registro e schema live observado; parser V1 do Portal implementado somente em fixture sintética e preso ao `observedSchemaSha256=79f6c837...666f6`; drift/data/valor/fase testados fail-closed; `liveNormalizationAuthorized=false`; nenhum byte live reaberto nesta etapa; nenhum novo GET Portal autorizado; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Gate 046 concluído e parser M5-F implementado/testado em fixture sintética; M5-G agora implementa um candidato hash-bound de admissão da normalização custodial, sem Secret, sem abrir o cofre e sem rede; decisão humana específica ainda pendente; nenhum byte live reaberto; nenhum novo GET Portal autorizado; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 047 — parser financeiro Portal implementado offline](ARCA_HANDOFF_CHECKPOINT_2026-09-23_047.md). O parser V1 foi construído a partir da estrutura sanitizada do Gate 046, usa fixture 100% sintética e falha fechado em schema hash, campos, data, valor e fase. O modo live permanece explicitamente bloqueado: `CUSTODIAL_LIVE` não é aceito e os bytes reais do run `35917902630` não foram reabertos nesta etapa.
+Handoff mais recente: [checkpoint 048 — gate M5-G de admissão do parser](ARCA_HANDOFF_CHECKPOINT_2026-09-23_048.md). O M5-G vincula revisão + parser contract + schema Gate 046 + envelope/receipt/response/scope e produz um candidato `AWAITING_HUMAN_ADMISSION`. Nenhum valor live é lido. Mesmo uma futura admissão autoriza somente normalização custodial offline; rede, publicação e correlação permanecem bloqueadas.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. O primeiro 2xx financeiro está custodial e o parser V1 já existe em modo sintético. O próximo passo é criar o gate de admissão da normalização custodial: vincular parser + schema hash + envelope/receipt do Gate 046 + decisão humana, reabrir os bytes apenas em ambiente privado, normalizar e produzir `normalizationSha256`; só depois a Fase B poderá receber `normalizationState=NORMALIZED`. Nenhuma rede é necessária.
+M5 continua o caminho crítico. O gate de admissão M5-G já está implementado; o próximo passo, após CI/merge, é gerar o candidato canônico na revisão final e obter decisão humana explícita vinculada ao `candidateSha256`. Somente se admitido será permitido reabrir privadamente os bytes custodiais do Gate 046 e normalizá-los. Nenhuma rede é necessária.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_047.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_048.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_047.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md`;
@@ -210,7 +211,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 047. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 048. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

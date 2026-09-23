@@ -4,10 +4,28 @@ export const M5_PORTAL_RELATED_DOCUMENTS_PARSER_SCHEMA="arca.m5-portal-related-d
 export const M5_PORTAL_RELATED_DOCUMENTS_NORMALIZATION_SCHEMA="arca.m5-portal-related-documents-normalization.v1";
 export const GATE046_OBSERVED_SCHEMA_SHA256="79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6";
 
-const EXPECTED_FIELDS=Object.freeze([
+export const M5_PORTAL_RELATED_DOCUMENTS_EXPECTED_FIELDS=Object.freeze([
   "data","documento","documentoResumido","elementoDespesa","especie","fase",
   "favorecido","orgaoSuperior","orgaoVinculado","unidadeGestora","valor"
 ]);
+
+export const M5_PORTAL_RELATED_DOCUMENTS_PARSER_CONTRACT=Object.freeze({
+  schema:"arca.m5-portal-related-documents-parser-contract.v1",
+  parserVersion:"v1",
+  observedSchemaSha256:GATE046_OBSERVED_SCHEMA_SHA256,
+  expectedFields:M5_PORTAL_RELATED_DOCUMENTS_EXPECTED_FIELDS,
+  acceptedDateFormats:Object.freeze(["YYYY-MM-DD","DD/MM/YYYY"]),
+  acceptedCurrency:"BRL",
+  acceptedDecimalSeparator:",",
+  acceptedPhases:Object.freeze(["EMPENHO","LIQUIDACAO","PAGAMENTO"]),
+  liveNormalizationAuthorized:false,
+  identityInferencesMade:false,
+  publicationAuthorized:false,
+  humanReviewRequired:true
+});
+
+export const M5_PORTAL_RELATED_DOCUMENTS_PARSER_CONTRACT_SHA256=
+  sha256(canonicalJson(M5_PORTAL_RELATED_DOCUMENTS_PARSER_CONTRACT));
 
 function text(value,field,max=800){
   if(typeof value!=="string")throw new Error(`ARCA_M5_PORTAL_PARSER_INVALID_${field}`);
@@ -20,7 +38,7 @@ function exactRecord(record){
   if(!record||typeof record!=="object"||Array.isArray(record))
     throw new Error("ARCA_M5_PORTAL_PARSER_RECORD_INVALID");
   const keys=Object.keys(record).sort();
-  const expected=[...EXPECTED_FIELDS].sort();
+  const expected=[...M5_PORTAL_RELATED_DOCUMENTS_EXPECTED_FIELDS].sort();
   if(JSON.stringify(keys)!==JSON.stringify(expected))
     throw new Error("ARCA_M5_PORTAL_PARSER_SCHEMA_DRIFT");
 }

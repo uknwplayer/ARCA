@@ -1,0 +1,34 @@
+name: ARCA M5-G — preflight de admissão do parser Portal
+run-name: M5-G parser admission — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'portal-parser-admission-preflight-*'
+
+permissions:
+  contents: read
+
+jobs:
+  admission-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obter revisão candidata
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Gerar candidato sanitizado sem abrir custódia
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/prepare-m5-portal-parser-admission.mjs
