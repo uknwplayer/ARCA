@@ -1,0 +1,61 @@
+name: ARCA M5 — observador estrutural PNCP custodial
+run-name: PNCP custody schema observer — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'pncp-custody-schema-observer-*'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Transportar apenas envelope criptografado PNCP existente
+        uses: actions/download-artifact@v4
+        with:
+          name: pncp-controlled-live-proof-35547609136
+          path: artifacts/source
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 35547609136
+
+      - name: Observar estrutura sem valores
+        env:
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/observe-m5-pncp-custody-structure.mjs \
+            --envelope artifacts/source/pncp-live-custody.envelope.json \
+            --output artifacts/pncp-structure-observation.json
+
+      - name: Publicar somente observação sanitizada
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-pncp-structure-${{ github.run_id }}
+          path: artifacts/pncp-structure-observation.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Limpar envelope do workspace
+        if: always()
+        run: rm -rf artifacts/source
