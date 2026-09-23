@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Gate 044 — TCU Acórdãos offline S2; Gate 042 aguarda CGU**
+Checkpoint: **2026-09-23 / Gate 045 — autenticação Portal comprovada por `situacao-imovel` HTTP 200**
 
-Estado: **Transferegov S1 integrado na main; Gate 042 do Portal permanece aguardando CGU sem novo GET; TCU Acórdãos S2 implementado em branch como quarta fonte pública offline, com jurisdição BR/NATIONAL e zero rede; primeiro 2xx Portal segue pendente; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Transferegov S1 e TCU Acórdãos S2 integrados na main; CGU confirmou que a chave Portal estava inativada e a ativou; Gate 040-SI run 35910828041 passou sem rede; run 35910916588 executou exatamente 1 GET autorizado a `/api-de-dados/situacao-imovel`, retornou HTTP 200, `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, `retries=0` e `STORED_PRIVATE`; autorização consumida; `documentos-relacionados` continua sem novo GET autorizado; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 044 — TCU Acórdãos offline S2](ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md). A PR #179/Transferegov S1 está integrada e o CI pós-merge `35895334779` passou. O S2 cria `public-source-registry-s2.json`, ativa `br.tcu.open-data` somente em `OFFLINE_FIXTURE`, amplia Evidence Envelope de forma compatível para `BR/NATIONAL` e adiciona fixture/testes/validador de Acórdãos. Nenhuma chamada live ao TCU ou novo GET Portal foi executado.
+Handoff mais recente: [checkpoint 045 — autenticação Portal comprovada por `situacao-imovel` 2xx](ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md). A CGU confirmou que a chave estava inativada e foi ativada. Depois de Gate 040-SI válido no run `35910828041`, o run `35910916588` executou exatamente um GET ao endpoint de validação recomendado pela CGU e recebeu HTTP 200. A chave ficou comprovada como aceita naquela requisição; a resposta foi selada e armazenada em custódia privada. A autorização foi consumida. A intermitência de `documentos-relacionados` permanece um problema separado e nenhum request a esse endpoint está autorizado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,11 +67,11 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico, mas o bloqueio do Portal não paralisa a expansão de fontes. O Gate 042 segue aguardando resposta técnica da CGU, sem nova autorização de rede. Transferegov S1 já está integrado; TCU Acórdãos S2 é a expansão atual e permanece offline. Depois dele, a fila é Siconfi, CEIS/CNEP, DOU e FNDE. Qualquer `PUBLIC_GET` futuro continua exigindo contrato live, budgets, custódia e autorização humana específica.
+M5 continua o caminho crítico. O bloqueio geral de autenticação do Portal foi resolvido: a chave atual foi aceita em request real no run `35910916588`. Isso não equivale a um 2xx de `documentos-relacionados`; a própria CGU relatou intermitência nesse endpoint. Transferegov S1 e TCU S2 estão integrados; a próxima expansão pública offline é Siconfi S3. Qualquer novo `PUBLIC_GET` continua exigindo contrato live, budgets, custódia, Gate vigente e nova autorização humana específica.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O Gate 040 isolado já foi executado com os secrets reais e sua saída sanitizada foi revisada; atividade real da credencial só poderá ser observada pela própria API em um GET explicitamente autorizado. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O Gate 040 isolado já foi executado com os secrets reais e sua saída sanitizada foi revisada; atividade real da credencial foi comprovada no run `35910916588` por HTTP 200 em `/api-de-dados/situacao-imovel`. Essa autorização foi consumida. Não executar novo GET Portal sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
@@ -207,7 +208,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 044. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 045. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
