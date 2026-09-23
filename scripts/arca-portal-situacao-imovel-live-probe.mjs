@@ -74,6 +74,11 @@ export async function runPortalSituacaoImovelProbe({env=process.env,fetchImpl=gl
     }else failureCode=captured.httpErrorCode??"ARCA_PORTAL_HTTP_ERROR";
     const finalProof={...captureProof,probeStatus:failureCode?"FAILED":"SUCCEEDED",validationStatus,...(failureCode?{failureCode}:{recordCount}),durableCustody:durable};
     const validationStored=await custody.persistStatusProof({envelope,proof:finalProof});
+    const expectedValidationProofHash=sha(stable(finalProof));
+    if(!["STORED_PRIVATE","ALREADY_STORED_PRIVATE"].includes(validationStored?.status)||
+       validationStored.proofHash!==expectedValidationProofHash||
+       !/^[a-f0-9]{40}$/.test(validationStored.vaultCommitSha??""))
+      throw new Error("ARCA_PORTAL_SI_CUSTODY_STATUS_NOT_STORED");
     const proof={...finalProof,durableCustody:{...durable,validationProofHash:validationStored.proofHash,validationVaultCommitRefHash:sha(validationStored.vaultCommitSha)}};
     const dir=path.resolve(outputDir??path.join(process.cwd(),"artifacts")); write(path.join(dir,"portal-situacao-imovel.envelope.json"),JSON.stringify(envelope,null,2)+"\n");write(path.join(dir,"portal-situacao-imovel-proof.json"),JSON.stringify(proof,null,2)+"\n");
     return {status:failureCode?"FAILED":"SUCCEEDED",proof};
