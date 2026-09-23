@@ -97,7 +97,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; três GETs Portal retornaram 401; HTTP Error Custody V0.3 integrada; nenhum quarto GET autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
+Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; quatro GETs Portal retornaram 401; o quarto ocorreu no run `35886041113` com binding Gate 040 válido, exatamente 1 request, zero retry e custódia privada durável; nenhum quinto GET autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
 
 Pré-condições:
 
@@ -115,13 +115,13 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live ocorreram sob autorizações #97, #101 e #104 e todos retornaram `UNAUTHORIZED`; o terceiro já usou token novo confirmado offline. A PR #107 integrou custódia criptográfica de respostas HTTP de erro. A emissão do token pelo fluxo oficial de cadastro/recebimento por e-mail foi confirmada e o Gate 040 passou operacionalmente no run `35884318441`, sem GET Portal. O próximo avanço exige nova autorização humana explícita antes de qualquer quarto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
+Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live anteriores ocorreram sob autorizações #97, #101 e #104 e retornaram `UNAUTHORIZED`. Depois, a chave oficial mais recente foi validada byte-a-byte por fingerprint, o Gate 040 foi refeito na revisão `268c8e3`, e o quarto GET autorizado ocorreu no run `35886041113`: HTTP 401, exatamente 1 request, `retries=0`, resposta selada e `STORED_PRIVATE`. O próximo avanço não é outro retry: exige diagnóstico offline/suporte e, se ainda necessário, novo Gate 040 + nova autorização humana explícita para qualquer quinto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C+D+E OFFLINE INTEGRADAS E TESTADAS; GATE 040 COM PROVA OPERACIONAL CONCLUÍDA SEM GET PORTAL; CADEIA LIVE AINDA AGUARDA AUTORIZAÇÃO EXPLÍCITA DO QUARTO GET E PRIMEIRO 2xx PORTAL**.
+Estado: **FASES A+B+C+D+E INTEGRADAS E TESTADAS; QUARTO GET CONTROLADO EXECUTADO E CUSTODIADO COM HTTP 401; PRIMEIRO 2xx PORTAL AINDA PENDENTE; GATE 042 EM DIAGNÓSTICO OFFLINE; NENHUM QUINTO GET AUTORIZADO**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -188,7 +188,7 @@ Prova operacional sanitizada:
 - `custodyReady=true`, `custodyPrivate=true`;
 - `portalNetworkUsed=false`, `portalNetworkAuthorized=false`, `portalRequestCapabilityPresent=false`.
 
-O próximo gate continua sendo humano e separado: autorização explícita para exatamente um GET vinculado a esses três hashes.
+Esse conjunto de hashes foi consumido pelo quarto GET do run `35886041113`. Como qualquer alteração documental posterior muda a revisão, ele passa a ser histórico. Qualquer novo request exigirá novo Gate 040 e nova autorização humana separada.
 
 Objetivo: validar a credencial, o escopo derivado e a disponibilidade do cofre em um workflow que não possui etapa de captura nem importa o transporte do Portal.
 
@@ -212,6 +212,23 @@ Mesmo sucesso neste gate **não autoriza o quarto GET**.
 `scripts/arca-portal-isolated-preflight.mjs`
 
 `npm run validate:portal-isolated-preflight`
+
+### Gate 042 — diagnóstico offline do quarto 401
+
+Estado: **ATIVO / ZERO NOVO GET / ISSUE #176**.
+
+O run `35886041113` provou a cadeia de autorização/binding/custódia, mas o Portal respondeu HTTP 401. A prova sanitizada registrou `AUTHORIZATION_NOT_ESTABLISHED`, `credentialInvalidProven=false`, 169 bytes de resposta, `retries=0` e `STORED_PRIVATE`.
+
+Revalidação offline atual:
+- chave usada no Secret coincide com a chave do e-mail oficial mais recente por fingerprint;
+- header enviado é `chave-api-dados`;
+- endpoint `/api-de-dados/despesas/documentos-relacionados` segue publicado no Swagger oficial;
+- método é GET e o host é o oficial;
+- não há evidência suficiente para atribuir causa específica ao 401.
+
+Próximo caminho: suporte técnico da CGU com dossiê sanitizado e, se for necessário um teste diferencial futuro, preparar/autorizar separadamente um único GET de endpoint básico oficial, como `/api-de-dados/orgaos-siafi?pagina=1`, para distinguir falha global de autenticação de problema específico de endpoint. Nenhuma execução é autorizada por este plano.
+
+Ver `docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md` e issue #176.
 
 ### M5 Fase E — binding do preflight ao probe live
 

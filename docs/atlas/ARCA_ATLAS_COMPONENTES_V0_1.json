@@ -853,7 +853,7 @@
       "nome": "M5 Fase D — Prontidão verificável da credencial Portal",
       "tipo": "seguranca_investigacao",
       "finalidade": "Separar presença/formato/proveniência do token de sua atividade real, sem expor o segredo.",
-      "estado": "integrado_testado_offline",
+      "estado": "integrado_testado_com_observacao_live_401",
       "localizacao": [
         "src/investigation/portal-credential-readiness.mjs",
         "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
@@ -873,7 +873,8 @@
       "saidas": [
         "fingerprint sanitizado",
         "estado ACTIVE_UNKNOWN",
-        "observação pós-request"
+        "observação pós-request",
+        "observação live AUTHORIZATION_NOT_ESTABLISHED"
       ],
       "capabilities": [
         "fingerprint de credencial",
@@ -906,7 +907,8 @@
       "fallback": "ACTIVE_UNKNOWN / AUTHORIZATION_NOT_ESTABLISHED",
       "riscoDeReexecucao": "nenhum retry automático; nova tentativa exige gate explícito",
       "runbook": [
-        "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
+        "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md",
+        "docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md"
       ],
       "seguranca": [
         "tokenIncluded=false",
@@ -1248,6 +1250,72 @@
         "transporte criado somente após binding",
         "humanAuthorizationRequired=true",
         "token fora do digest"
+      ]
+    },
+    {
+      "id": "m5-gate-042-portal-401-diagnostico",
+      "nome": "Gate 042 — Diagnóstico offline do quarto 401 Portal",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Consolidar o quarto 401 custodial, revalidar contrato de autenticação e preparar suporte sem novo request Portal.",
+      "estado": "ativo_zero_novo_get",
+      "localizacao": [
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md",
+        "docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md"
+      ],
+      "dependeDe": [
+        "m5-d-prontidao-credencial-portal",
+        "m5-e-preflight-binding",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "prova sanitizada do run 35886041113",
+        "documentação oficial",
+        "implementação do transporte",
+        "fingerprint validado"
+      ],
+      "saidas": [
+        "diagnóstico offline",
+        "dossiê sanitizado de suporte",
+        "gate para eventual teste diferencial futuro"
+      ],
+      "capabilities": [
+        "análise offline",
+        "comparação de contrato",
+        "preparo de suporte"
+      ],
+      "limites": [
+        "zero GET Portal",
+        "zero retry",
+        "sem token",
+        "sem corpo plaintext",
+        "sem inferir causa específica de 401"
+      ],
+      "healthCheck": [
+        "issue #176 atualizada",
+        "checkpoint 042 presente"
+      ],
+      "modosDeFalha": [
+        "retry cego",
+        "atribuição indevida de token inválido",
+        "exposição de segredo"
+      ],
+      "recuperacao": [
+        "suporte técnico",
+        "novo Gate 040 se houver futuro request",
+        "nova autorização humana explícita"
+      ],
+      "fallback": "manter Portal live bloqueado",
+      "riscoDeReexecucao": "nenhum request no Gate 042",
+      "runbook": [
+        "docs/ARCA_PORTAL_401_SUPPORT_DOSSIER_2026-09-23.md"
+      ],
+      "seguranca": [
+        "networkAuthorized=false",
+        "retryAuthorized=false",
+        "humanAuthorizationRequired=true"
       ]
     }
   ]
