@@ -1,0 +1,22 @@
+{
+  "format": "arca-vince-v5-termux-presence-v1",
+  "version": 1,
+  "workerKind": "termux-android",
+  "nodeId": "vince-termux-android-1",
+  "keyFingerprint": "c6e1853d99e52875bd7bf019237ea470f1dc166a345d0a359408e39e0ec120b1",
+  "publicKeySpki": "MCowBQYDK2VwAyEAB407ZL5Z8ac37QzBN9P4jQcXSBsmtuXBQNX6ioqUc0k=",
+  "state": "READY",
+  "observedAt": "2026-09-23T09:17:31.521Z",
+  "validUntil": "2026-09-23T09:32:31.521Z",
+  "capabilities": [
+    "git-status"
+  ],
+  "authority": {
+    "trustGranted": false,
+    "codeMutation": false,
+    "canonicalWrite": false,
+    "executionAuthority": false
+  },
+  "presenceSha256": "c271d7214007ff0b2709f72873e91cc0c1a5f19e4b66a754dccb31fa8efd3acf",
+  "signature": "2oy88IDjS5J2Mki1KftBo5v-EmAj6-Lja6_0V5NEq_0fLiKLNFSx4bwdFlx5E5LDONWAkf28boW9a2Di-5aFDg"
+}
