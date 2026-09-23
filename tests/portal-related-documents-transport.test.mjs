@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import {createHash} from "node:crypto";
 import {createPortalRelatedDocumentsTransport} from "../src/investigation/portal-related-documents-transport.mjs";
 
 const apiKey="synthetic-portal-api-key-0123456789";
@@ -69,6 +70,18 @@ test("Portal transport maps HTTP failures to fixed errors without leaking body o
     assert.equal(error.message.includes(documentCode),false);
     return true;
   });
+});
+
+test("Portal transport can capture a bounded HTTP error only when explicitly enabled",async()=>{
+  const raw=Buffer.from(JSON.stringify({error:"synthetic unauthorized"}));
+  const response=streamedResponse({status:401,chunks:[raw]});
+  const transport=createPortalRelatedDocumentsTransport({apiKey,captureHttpErrors:true,fetchImpl:async()=>response});
+  const result=await transport.fetchRelatedDocuments({documentCode});
+  assert.equal(result.status,401);
+  assert.equal(result.ok,false);
+  assert.equal(result.httpErrorCode,"ARCA_PORTAL_HTTP_UNAUTHORIZED");
+  assert.deepEqual(result.bodyBytes,raw);
+  assert.equal(result.responseBytesSha256,createHash("sha256").update(raw).digest("hex"));
 });
 
 test("Portal transport refuses a second attempt and redirect responses",async()=>{
