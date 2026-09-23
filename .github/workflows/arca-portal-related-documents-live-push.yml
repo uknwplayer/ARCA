@@ -1,0 +1,95 @@
+name: ARCA Portal — Gate 046 live documentos relacionados
+run-name: Gate 046 live — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'portal-live-related-documents-p*-c*'
+
+permissions:
+  contents: read
+
+jobs:
+  controlled-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obter a revisão autorizada
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Extrair binding revisado do nome do branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          ref='${{ github.ref_name }}'
+          if [[ "$ref" =~ ^portal-live-related-documents-p([a-f0-9]{64})-c([a-f0-9]{64})$ ]]; then
+            echo "ARCA_PORTAL_PREFLIGHT_SHA256=${BASH_REMATCH[1]}" >> "$GITHUB_ENV"
+            echo "ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256=${BASH_REMATCH[2]}" >> "$GITHUB_ENV"
+          else
+            echo "ARCA_PORTAL_RELATED_DOCUMENTS_BRANCH_BINDING_INVALID" >&2
+            exit 1
+          fi
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Derivar scope hash sem expor o documento
+        env:
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/arca-portal-related-documents-scope-hash.mjs >> "$GITHUB_ENV"
+
+      - name: Revalidar Gate 046 antes da rede
+        env:
+          ARCA_PORTAL_CONFIRMATION: PORTAL_DOCUMENT_GET_ONLY
+          ARCA_PORTAL_SCOPE_SHA256: ${{ env.ARCA_PORTAL_SCOPE_SHA256 }}
+          ARCA_PORTAL_PREFLIGHT_SHA256: ${{ env.ARCA_PORTAL_PREFLIGHT_SHA256 }}
+          ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256: ${{ env.ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256 }}
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: OFFICIAL_EMAIL_REGISTRATION
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: 2026-09-23T01:41:18.000Z
+          ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/arca-portal-related-documents-live-probe.mjs --preflight-only
+
+      - name: Executar exatamente um GET autorizado
+        env:
+          ARCA_PORTAL_CONFIRMATION: PORTAL_DOCUMENT_GET_ONLY
+          ARCA_PORTAL_SCOPE_SHA256: ${{ env.ARCA_PORTAL_SCOPE_SHA256 }}
+          ARCA_PORTAL_PREFLIGHT_SHA256: ${{ env.ARCA_PORTAL_PREFLIGHT_SHA256 }}
+          ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256: ${{ env.ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256 }}
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: OFFICIAL_EMAIL_REGISTRATION
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: 2026-09-23T01:41:18.000Z
+          ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/arca-portal-related-documents-live-probe.mjs
+
+      - name: Enviar envelope criptografado e prova sanitizada
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-related-documents-${{ github.run_id }}
+          path: |
+            artifacts/portal-related-documents.envelope.json
+            artifacts/portal-related-documents-proof.json
+          if-no-files-found: ignore
+          retention-days: 7
