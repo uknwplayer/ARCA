@@ -243,6 +243,68 @@ Replay posterior foi rejeitado com `workerReexecuted:false`. Continua sem retry/
 
 Ver `docs/ARCA_VINCE_V5_V411_SELECTED_ONESHOT_GATE_V0_1.md` e `docs/ARCA_VINCE_V5_V411_LIVE_PROOF_011.md`.
 
+### FUTURE PATCH — Vince Controlled Self-Improvement
+
+Estado: **CONGELADO ATÉ A CONCLUSÃO DO ARCA**.
+
+Objetivo futuro: permitir que Vince use histórico operacional verificável para propor melhorias de política sem modificar a si mesmo de forma irrestrita.
+
+Arquitetura prevista:
+
+```text
+VINCE EXPERIENCE STORE
+        │
+        ├─ sucessos
+        ├─ falhas
+        ├─ latência
+        ├─ disponibilidade
+        ├─ custo
+        ├─ categorias de erro
+        └─ recuperação necessária
+                │
+                ▼
+       POLICY CANDIDATE
+                │
+       replay/simulação histórica
+                │
+       comparação com política vigente
+                │
+          HUMAN REVIEW
+           │         │
+         rejeita   admite
+                     │
+                     ▼
+             policy versionada
+```
+
+Escopo permitido quando descongelado:
+
+1. registrar experiência operacional objetiva por executor/rota;
+2. calcular métricas de confiabilidade, latência, custo, falhas e recuperação;
+3. gerar **candidatos** de política de seleção;
+4. testar candidatos contra histórico/replay antes de qualquer adoção;
+5. preservar explicação, evidência e diferença em relação à policy anterior;
+6. exigir revisão humana para promoção da policy;
+7. versionar e permitir rollback;
+8. nunca converter autoalegação de agente em trust.
+
+Fora de escopo:
+
+- autoedição irrestrita de código;
+- alteração autônoma de pesos/policies em produção;
+- expansão automática de capabilities;
+- criação autônoma de trust;
+- shell arbitrário;
+- modificação de `main`;
+- bypass de revisão humana;
+- treino/modificação de pesos de modelo;
+- mudança de política investigativa sem gate específico.
+
+Pré-condição para descongelamento: **ARCA concluído conforme os marcos vigentes e decisão humana explícita de reabrir este patch**.
+
+Até lá, Vince permanece no estado live-proven do Probe 011 e nenhuma implementação deste patch deve competir com M5, M5-R, M6–M9 ou demais entregas do núcleo.
+
+
 ## Marco M6 — Expansão territorial gradual
 
 Ordem operacional:
