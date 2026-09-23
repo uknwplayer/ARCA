@@ -115,13 +115,13 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live ocorreram sob autorizações #97, #101 e #104 e todos retornaram `UNAUTHORIZED`; o terceiro já usou token novo confirmado offline. A PR #107 integrou custódia criptográfica de respostas HTTP de erro. Próximo avanço exige confirmar a emissão/ativação do token pelo fluxo oficial Gov.br/e-mail e nova autorização explícita antes de qualquer quarto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
+Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Três GETs live ocorreram sob autorizações #97, #101 e #104 e todos retornaram `UNAUTHORIZED`; o terceiro já usou token novo confirmado offline. A PR #107 integrou custódia criptográfica de respostas HTTP de erro. Próximo avanço exige confirmar a emissão do token pelo fluxo oficial de cadastro de e-mail e recebimento por e-mail e nova autorização explícita antes de qualquer quarto GET. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C OFFLINE INTEGRADAS E TESTADAS; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
+Estado: **FASES A+B+C OFFLINE INTEGRADAS; FASE D CREDENCIAL EM PR; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -162,6 +162,18 @@ Integração canônica no probe M4b:
 Se houver schema drift, os bytes continuam custodiais e a estrutura pode ser registrada para revisão, mas nenhum parser é adaptado automaticamente. Mesmo uma revisão `APPROVE_FOR_PARSER_DESIGN` não autoriza implementação, normalização, nova rede ou publicação.
 
 Ver `docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md`. O CI canônico executa `validate:m5-phase-c` junto de M5-A e M5-B.
+
+### M5 Fase D — prontidão verificável da credencial Portal
+
+Estado: **CANDIDATO OFFLINE / issue #164 / nenhum novo GET**.
+
+A Fase D separa presença, formato, procedência declarada e atividade real da credencial. O token nunca é impresso; um fingerprint SHA-256 com separação de domínio permite distinguir credenciais entre probes.
+
+Antes de rede, o estado obrigatório é `ACTIVE_UNKNOWN` e `activeVerified=false`. A procedência exigida é `OFFICIAL_EMAIL_REGISTRATION`, conforme o fluxo oficial atual de cadastro de e-mail e recebimento do token.
+
+Uma resposta 401 deve ser registrada como `AUTHORIZATION_NOT_ESTABLISHED`; ela não prova sozinha a causa da falha e não autoriza retry. Apenas um 2xx observado em request explicitamente autorizado pode marcar `ACCEPTED_ON_OBSERVED_REQUEST`.
+
+Ver `docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md`.
 
 ## Marco M5-R — Public Investigation & Referral Dossier
 
