@@ -167,7 +167,7 @@ M5-R não altera o caminho crítico atual. O gate imediato é corrigir a autenti
 
 ## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
 
-Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; V4 HETEROGÊNEO GITHUB↔REPLIT LIVE-PROVEN LIMITADO; V4.1 TERMUX ATTESTED LIVE-PROVEN; V4.1.1 DURABLE REPLAY LIVE-PROVEN; EDGE STEWARD CONGELADO**.
+Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; V4 HETEROGÊNEO GITHUB↔REPLIT LIVE-PROVEN LIMITADO; V4.1 TERMUX ATTESTED LIVE-PROVEN; V4.1.1 DURABLE REPLAY LIVE-PROVEN; V5 AVAILABILITY FOUNDATION + WORK READ-ONLY LIVE-PROVEN; EDGE STEWARD CONGELADO**.
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
@@ -202,9 +202,9 @@ Fases propostas:
 - V4: **LIVE-PROVEN LIMITADO** — `vince-v4-live-005` atravessou GitHub/ARCA → Replit → GitHub e foi verificado canonicamente; request `c069…`, result `3ded…`, proof `daea9c2c…`; worker attestation ainda é false;
 - V4.1: **LIVE-PROVEN LIMITADO** — Android/Termux one-shot com identidade Ed25519 pinada, challenge, resultado assinado e `ATTESTED_VERIFIED_RESULT`; run `35830210570`, proof `5112d8a0…`.
 - V4.1.1: **LIVE-PROVEN / CONCLUÍDO** — registry durável de challenges aceitos, preflight replay fail-closed, compare-and-swap pelo blob SHA e read-after-write; PR #134, commit `384895a`; replay proof run `35832175245` rejeitou a prova 006 em processo novo com `VINCE_V41_CHALLENGE_REPLAY`, `DURABLE_REPLAY_REJECTED` e `workerReexecuted:false`.
-- V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
+- V5: **FOUNDATION INTEGRADA / READ-ONLY LIVE-PROVEN** — estados `AVAILABLE/UNREACHABLE/INCONCLUSIVE`, freshness de ACK, precedência da observação mais nova e route selection sem dispatch; PR #137, commit `cc2a5c4`. O probe 008 na PR #90, run `35833356337`, observou `surfaceReachable:true` mas classificou Work como `INCONCLUSIVE / SURFACE_REACHABLE_EXECUTION_UNPROVEN`, com 0 rotas elegíveis e nenhum dispatch.
 
-Dependência Work atual: o plano de execução canônico existe, mas a ligação nativa do evento GitHub do ChatGPT Work ao repositório `uknwplayer/ARCA` ainda não foi provada. Ver PR #90 (probe de liveness) e PR #91 (migração do gatilho). Vince deverá tratar Work como endpoint candidato até existir ACK canônico recente.
+Dependência Work atual: a superfície GitHub/PR configurada foi comprovada alcançável em modo read-only, mas a ligação nativa do evento GitHub ao ChatGPT Work no repositório `uknwplayer/ARCA` ainda não possui ACK canônico recente. Ver PR #90, issue #138 e proof 008. Vince deve manter Work como endpoint candidato, não `AVAILABLE`, até existir wake + ACK correlacionado dentro da janela de freshness.
 
 Limites: sem varredura arbitrária, abuso de credenciais, shell genérico, expansão automática de rede/autoridade, merge, `main.write`, `trust.modify`, publicação investigativa ou acesso a fontes protegidas por inferência.
 
@@ -221,7 +221,7 @@ Relação com Vince:
 
 Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
 
-Aceite parcial alcançado para Vince V0.1–V0.4 + V4.1.1: discovery, ACK, execução, retorno, failover, recovery pós-crash, rota heterogênea GitHub↔Replit, attestation Ed25519 no Termux e rejeição durável de replay no plano de controle foram provados; V3.2 signed identity foi testado em CI. V4.1.1 fechou o gap de ledger process-local. O próximo gate funcional é V5 endpoint availability/routing. Replit deixou de ser dependência para attestation forte. Presença móvel/Edge permanece futura.
+Aceite parcial alcançado para Vince V0.1–V0.4 + V4.1.1 + V5 foundation: discovery, ACK, execução, retorno, failover, recovery pós-crash, rota heterogênea GitHub↔Replit, attestation Ed25519 no Termux, rejeição durável de replay e classificação live read-only de disponibilidade foram provados. V5 recusou corretamente transformar heartbeat de superfície em executor disponível. Próximo gate para Work é obter um ACK canônico recente em prova de wake separada; até lá, route selection deve continuar `INCONCLUSIVE`. Replit deixou de ser dependência para attestation forte. Presença móvel/Edge permanece futura.
 
 ## Marco M6 — Expansão territorial gradual
 
