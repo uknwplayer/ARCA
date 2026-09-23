@@ -385,6 +385,22 @@ Próximo passo: integrar o M5-I e abrir gate separado para correlação document
 
 Ver `docs/ARCA_M5_PORTAL_LIVE_NORMALIZED_BINDING_V0_1.md` e checkpoint 050.
 
+### M5-J — observação e parser PNCP live
+
+Estado: **OBSERVAÇÃO LIVE CONCLUÍDA / PARSER V1 EM BRANCH / ZERO NOVO GET PNCP**.
+
+A custódia histórica PNCP do run `35547609136` foi reaberta no run `35932200063` exclusivamente para observação estrutural.
+
+Resultado: 3 arquivos, 6289 bytes, `observedStructureSha256=4a00de8f61190819cc6e172f45438dcb22dc1c952430fc7a1c79f2cc0dcfabb9`, sem valores ou bytes crus publicados.
+
+A página de descoberta contém 2 contratações e campos de órgão, unidade, modalidade, datas, objeto, situação e valor estimado. **Não contém fornecedor/adjudicatário.**
+
+O parser PNCP V1 normaliza somente fixture sintética nesta etapa e fixa `supplierObserved=false`, evitando criar ponte de identidade que a fonte não forneceu.
+
+Próximo passo: merge → gate de admissão → normalização custodial dos 2 registros já capturados → binding PNCP para Fase B. Nenhum novo GET é necessário.
+
+Ver `docs/ARCA_M5_PNCP_LIVE_PARSER_V0_1.md` e checkpoint 051.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
