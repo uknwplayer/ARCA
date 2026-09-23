@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / terceiro GET Portal executado; autenticação rejeitada mesmo com token novo**
+Checkpoint: **2026-09-23 / autenticação Portal diagnosticada; custódia HTTP V0.3 integrada**
 
-Estado: **M4a/M4b e M5 Fase A integrados; três GETs Portal autorizados ocorreram e todos falharam por autenticação; terceiro já usou token novo confirmado offline**
+Estado: **M4a/M4b e M5 Fase A integrados; três GETs Portal retornaram 401; probe V0.3 agora custodia respostas HTTP de erro; nenhum quarto GET autorizado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 019 — terceiro GET Portal rejeitado mesmo com token novo](ARCA_HANDOFF_CHECKPOINT_2026-09-23_019.md). O terceiro preflight passou e o GET foi executado no run `35804888834`, mas o Portal respondeu `ARCA_PORTAL_HTTP_UNAUTHORIZED` mesmo após confirmação offline de que a API key foi realmente trocada. Issues #97, #101 e #104 estão fechadas/consumidas.
+Handoff mais recente: [checkpoint 020 — diagnóstico de autenticação + custódia HTTP V0.3](ARCA_HANDOFF_CHECKPOINT_2026-09-23_020.md). Três GETs autorizados retornaram `401`; o terceiro já usou token novo. A PR #107 integrou custódia limitada de respostas 4xx/5xx para que futuras falhas também deixem evidência criptográfica. Nenhum quarto GET está autorizado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -25,7 +25,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é revisar a ativação/validade do cadastro e da chave no serviço oficial do Portal. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 

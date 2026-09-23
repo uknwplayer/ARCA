@@ -14,7 +14,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
 | Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
 | Correlação PNCP ↔ execução financeira M2/M5-A | sim, M2 sintético + M5 gate pré-correlação | sim | não | não | PR #79 + #94; M5 pós-merge 35799032982 | duas entradas live normalizadas e custodiais |
-| Portal da Transparência / captura M4b | sim, fixture + transporte + preview offline | sim | parcial: 3 GETs alcançados, auth rejeitada | não | PR #88/#95/#99/#102/#105; runs 35802699058 / 35803859734 / 35804888834 | validar ativação/validade da API key, obter 2xx custodial e schema real |
+| Portal da Transparência / captura M4b | sim, fixture + transporte + preview + custódia HTTP V0.3 | sim | parcial: 3 GETs 401; 4xx/5xx futuros custodiais | não | PR #88/#95/#99/#102/#105/#107; CI 35806024751 | confirmar token oficial ativo, obter 2xx custodial e schema real |
 | Aquisição PNCP controlada | sim | sim | sim | não | runs 35544888070 e 35547609136 | expansão gradual e orçamento operacional |
 | Disponibilidade da fonte | sim | sim | parcial | não | PR #71 | política de retentativa/alerta em serviço |
 | Classificador de sinais | parcial | sim, sintético | não | não | fixtures e testes | precisão/recall e calibração em dados reais |
