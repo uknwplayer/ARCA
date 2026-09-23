@@ -1,0 +1,63 @@
+{
+  "schema": "arca.multisource-offline-fixture.v1",
+  "pilotId": "transferegov-special-transfers-offline-s1-001",
+  "timeWindow": "2026",
+  "shards": [
+    {
+      "sourceId": "br.transferegov.public",
+      "uf": "SP",
+      "status": "AVAILABLE",
+      "records": [
+        {
+          "record": {
+            "transferId": "TE-FIXTURE-SP-001",
+            "amendmentCode": "EMENDA-FIXTURE-001",
+            "beneficiaryEntityCode": "ENTE-FICTICIO-SP-001",
+            "beneficiaryName": "MUNICIPIO FICTICIO SP",
+            "beneficiaryUf": "SP",
+            "beneficiaryMunicipalityCode": "3500000",
+            "authorRef": "PARLAMENTAR:FIXTURE:001",
+            "year": 2026,
+            "amountCents": 150000000,
+            "paidAmountCents": 75000000,
+            "status": "EXECUCAO",
+            "updatedAt": "2026-09-01T12:00:00.000Z"
+          },
+          "sourceUrl": "https://api-publica.transferegov.gestao.gov.br/",
+          "retrievedAt": "2026-09-23T16:30:00.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId": "br.transferegov.public",
+      "uf": "MG",
+      "status": "AVAILABLE",
+      "records": [
+        {
+          "record": {
+            "transferId": "TE-FIXTURE-MG-001",
+            "amendmentCode": "EMENDA-FIXTURE-002",
+            "beneficiaryEntityCode": "ENTE-FICTICIO-MG-001",
+            "beneficiaryName": "MUNICIPIO FICTICIO MG",
+            "beneficiaryUf": "MG",
+            "beneficiaryMunicipalityCode": "3100000",
+            "authorRef": "PARLAMENTAR:FIXTURE:002",
+            "year": 2026,
+            "amountCents": 220000000,
+            "paidAmountCents": 220000000,
+            "status": "PAGO",
+            "updatedAt": "2026-09-02T15:30:00.000Z"
+          },
+          "sourceUrl": "https://api-publica.transferegov.gestao.gov.br/",
+          "retrievedAt": "2026-09-23T16:31:00.000Z"
+        }
+      ]
+    },
+    {
+      "sourceId": "br.transferegov.public",
+      "uf": "BA",
+      "status": "SOURCE_UNAVAILABLE",
+      "reason": "synthetic-source-unavailable"
+    }
+  ]
+}

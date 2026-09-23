@@ -20,7 +20,7 @@ const queueRoot=()=>fs.mkdtempSync(path.join(os.tmpdir(),"arca-multisource-gate-
 const clock=()=>new Date("2026-09-21T13:00:00.000Z");
 const run=(extra={})=>runMultisourceOfflineGate({registry:registry(),fixture:fixture(),queueRoot:queueRoot(),clock,...extra});
 
-test("registry declares multiple national sources with two offline adapters",()=>{
+test("registry v1 preserves the two historical offline adapters",()=>{
   const sources=registry();
   assert.ok(sources.sources.length>=8);
   assert.deepEqual(sources.executable().map(source=>source.id),[
@@ -92,7 +92,7 @@ test("network and publication are fail-closed",async()=>{
 
 test("non-implemented declared source cannot be executed",async()=>{
   const changed=fixture();
-  changed.shards[0].sourceId="br.transferegov.public";
+  changed.shards[0].sourceId="br.tcu.open-data";
   await assert.rejects(()=>runMultisourceOfflineGate({registry:registry(),fixture:changed,queueRoot:queueRoot(),clock}),/ADAPTER_NOT_IMPLEMENTED/);
 });
 
