@@ -245,6 +245,15 @@ export async function persistVinceRecoveryExecutionIdentity({
      finalStatus.latestAttempt.resultHash!==binding.resultSha256)
     throw new Error("VINCE_SIGNED_RECOVERY_EXECUTION_NOT_COMPLETED");
 
+  const completionHash=sha256({
+    format:"arca-execution-attempt-completion-v1",
+    version:1,
+    executionId:finalStatus.identity.executionId,
+    attemptId:finalStatus.latestAttempt.attempt.attemptId,
+    attemptHash:finalStatus.latestAttempt.attempt.recordHash,
+    resultHash:finalStatus.latestAttempt.resultHash,
+    completedAt:finalStatus.latestAttempt.completedAt
+  });
   return Object.freeze({
     format:ARCA_VINCE_RECOVERY_IDENTITY_FORMAT,
     version:1,
@@ -252,7 +261,7 @@ export async function persistVinceRecoveryExecutionIdentity({
     contract,
     identity:finalStatus.identity,
     attempt:finalStatus.latestAttempt.attempt,
-    completionHash:finalStatus.latestAttempt.completion.recordHash,
+    completionHash,
     executionState:finalStatus.state,
     identityStore:store
   });
