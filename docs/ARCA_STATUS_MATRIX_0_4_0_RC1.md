@@ -6,6 +6,9 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 
 | Componente | Implementado | Testado | Prova ao vivo | Produção | Evidência | Falta principal |
 |---|---:|---:|---:|---:|---|---|
+| Atlas Técnico Vivo | sim, V0.1 | documental | n/a | não | `docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md` + inventário JSON | manter atualizado em toda mudança arquitetural significativa |
+| Política de idioma pt-BR | sim | documental | n/a | n/a | `docs/ARCA_POLITICA_IDIOMA_PT_BR.md` | migrar históricos em inglês gradualmente |
+| Vince Discovery Global | planejado | não | não | não | `docs/ARCA_VINCE_DISCOVERY_GLOBAL_V0_1.md` | implementar depois sem competir com M5; discovery mundial incluindo China |
 | Core e event store | sim | sim | n/a | parcial | suíte integral; TRACE e cadeia SHA-256 | auditoria independente |
 | Workbench/Creator | sim | sim | parcial | não | testes de interface e controle | autenticação/UX comunitária/implantação |
 | Protocolo de agentes e AIE | sim | sim | parcial | não | testes de capacidades, guardrails e runtime | avaliação prolongada e SLOs |
