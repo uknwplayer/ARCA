@@ -199,9 +199,12 @@ class VincePathfinder:
             raise RuntimeError("VINCE_NO_ADMISSIBLE_ROUTE")
         return dispatcher.dispatch(mission.job())
 
+    def acknowledge(self, mission: VinceMission, decision: DispatchDecision) -> VincePathfinderProof:
+        return self._proof(mission, decision, receipt=None)
+
     def dispatch(self, mission: VinceMission, dispatcher: ExecutorMeshDispatcher) -> VincePathfinderProof:
         decision = self.dispatch_decision(mission, dispatcher)
-        return self._proof(mission, decision, receipt=None)
+        return self.acknowledge(mission, decision)
 
     def reconcile(
         self,
