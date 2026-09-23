@@ -1,0 +1,11 @@
+{
+  "format": "arca-vince-v4.1-worker-identity",
+  "protocolVersion": "4.1",
+  "workerKind": "termux-android",
+  "identity": {
+    "nodeId": "vince-termux-android-2",
+    "algorithm": "Ed25519",
+    "publicKeySpki": "MCowBQYDK2VwAyEAgbkP6f+JzJU/tkxiegUVaGsdjh2W1alZ7W12JyA2VpA=",
+    "keyFingerprint": "52c4131a111f7aab509556af7efc574afe326898bd8ae75742882028742cacc0"
+  }
+}
