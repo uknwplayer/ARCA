@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / M10 congelado e M7-CIV planejado**
+Checkpoint: **2026-09-23 / M5 Fase C observação de schema integrada**
 
-Estado: **M5 Fases A+B offline integradas: gate pré-correlação + caminho pós-custódia até HUMAN_REVIEW; M5 live ainda não aceito; Portal segue sem primeiro 2xx/schema real; Vince Probe 011 estável; Edge e self-improvement congelados**
+Estado: **M5 Fases A+B+C offline integradas: pré-correlação + pós-custódia + observação estrutural do schema Portal; M5 live ainda não aceito; Portal segue sem primeiro 2xx real; Vince Probe 011 estável; Edge/self-improvement/M10 congelados**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 037 — Produto/Governança congelados e Inteligência Cívica Documental planejada](ARCA_HANDOFF_CHECKPOINT_2026-09-23_037.md). O roadmap agora preserva M10 congelado até o ARCA estar funcional e M7-CIV como futura investigação documental de atividade legislativa e registros públicos, sem score de confiabilidade de pessoas.
+Handoff mais recente: [checkpoint 038 — M5 Fase C observação estrutural do schema Portal](ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md). A PR #162 integrou um observador pós-custódia que registra somente raiz/campos/tipos/presença e hashes, sem valores. Schema drift deixa de exigir nova captura: os bytes custodiais podem ser reutilizados para revisão. Nenhum parser/normalização é admitido automaticamente.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -39,7 +39,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 é novamente o caminho crítico. Fases A e B estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado, custodiar a resposta, observar o schema real e só então construir/revisar o parser que alimentará a Fase B. **Não executar quarto GET por inferência.** Até haver token oficialmente ativo + autorização explícita nova, continuar apenas com preparação fail-closed que não invente schema live.
+M5 continua o caminho crítico. Fases A, B e C estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até haver token oficialmente ativo + autorização explícita nova, continuar apenas com preparação fail-closed que não invente schema live.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -55,7 +55,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_037.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_037.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_036.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_034.md`;
@@ -172,7 +173,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 037. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 038. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

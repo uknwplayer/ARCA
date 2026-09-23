@@ -121,7 +121,7 @@ Parada imediata: escopo divergente, custódia inválida, segredo ausente, respos
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B OFFLINE INTEGRADAS; FASE C OBSERVADOR DE SCHEMA EM PR; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
+Estado: **FASES A+B+C OFFLINE INTEGRADAS E TESTADAS; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -151,17 +151,17 @@ O bloqueio live permanece o mesmo: obter um primeiro 2xx Portal autorizado, cust
 
 ### M5 Fase C — observação estrutural do schema Portal
 
-Estado: **CANDIDATO OFFLINE / issue #161 / nenhum novo GET**.
+Estado: **INTEGRADO E TESTADO OFFLINE / PR #162 / CI #339 E #340 VERDES / nenhum novo GET**.
 
 A Fase C prepara o primeiro 2xx real do Portal para observação segura antes da normalização. Ela opera somente depois da custódia e produz um resumo estrutural sem valores: raiz, campos, tipos, presença e hashes vinculados ao scope, resposta, envelope e recibo.
 
-Integração planejada no probe M4b:
+Integração canônica no probe M4b:
 
 `2xx → custódia verificada → reabertura byte a byte → observação estrutural → validação DTO atual`.
 
 Se houver schema drift, os bytes continuam custodiais e a estrutura pode ser registrada para revisão, mas nenhum parser é adaptado automaticamente. Mesmo uma revisão `APPROVE_FOR_PARSER_DESIGN` não autoriza implementação, normalização, nova rede ou publicação.
 
-Ver `docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md`.
+Ver `docs/ARCA_M5_PORTAL_SCHEMA_OBSERVATION_V0_1.md`. O CI canônico executa `validate:m5-phase-c` junto de M5-A e M5-B.
 
 ## Marco M5-R — Public Investigation & Referral Dossier
 
