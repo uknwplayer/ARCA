@@ -341,6 +341,24 @@ Próximo passo: merge → gerar candidato na revisão final → obter decisão h
 
 Ver `docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md` e checkpoint 048.
 
+### M5-H — normalização custodial offline admitida
+
+Estado: **AUTORIZAÇÃO HUMANA REGISTRADA / EXECUTOR LOCAL-ONLY IMPLEMENTADO / LIVE AINDA NÃO EXECUTADO**.
+
+Candidato admitido: `0bcf1806c2480b2f82f8efff43e67436460043375d302fb6fcf44c80ec3e97f9`.
+
+A decisão autoriza somente normalização custodial offline do Gate 046 e mantém rede de fonte, novo GET, publicação e correlação proibidos.
+
+O executor `m5-portal-custodial-normalization.mjs` valida candidato, decisão, parser contract, schema, envelope, receipt, response hash e scope antes de abrir o envelope. Depois reexecuta o observador M5-C e somente então aplica o parser.
+
+O CLI `normalize-m5-portal-custody-local.mjs` não baixa dados nem possui transporte Portal/GitHub. Ele exige envelope + passphrase já presentes localmente.
+
+Fronteira atual: envelope e passphrase live estão na infraestrutura privada GitHub/Actions. A execução não foi feita porque buscá-los seria transporte de rede, incompatível com a leitura estrita da autorização atual `sem rede`.
+
+Próximo passo: co-localizar custódia localmente ou obter autorização separada para transporte privado da custódia. Nenhum novo GET Portal é necessário.
+
+Ver `docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md` e checkpoint 049.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
