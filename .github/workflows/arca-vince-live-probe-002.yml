@@ -1,0 +1,55 @@
+name: ARCA Vince Live Probe 002
+run-name: Vince Pathfinder failover live probe 002
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arca-vince-live-probe-002
+  cancel-in-progress: false
+
+jobs:
+  vince-failover:
+    if: >-
+      github.event.issue.number == 112 &&
+      github.event.issue.state == 'open' &&
+      github.event.comment.user.login == 'uknwplayer' &&
+      github.event.comment.body == 'ARCA_VINCE_LIVE_PROBE_002_EXECUTE'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run Vince controlled failover proof
+        env:
+          ARCA_GITHUB_DISPATCH_TOKEN: ${{ secrets.ARCA_SATELLITE_DISPATCH_TOKEN }}
+          ARCA_CONTROL_REPOSITORY: ${{ github.repository }}
+        run: |
+          PYTHONPATH=. python scripts/arca-vince-pathfinder-probe.py \
+            --mission-id vince-live-002 \
+            --force-satellite \
+            --fail-satellite-a \
+            --collect-timeout 240 \
+            --poll-seconds 3 \
+            --output artifacts/vince-pathfinder-failover-live-proof.json
+
+      - name: Upload Vince failover proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vince-pathfinder-failover-live-002-${{ github.run_id }}
+          path: artifacts/vince-pathfinder-failover-live-proof.json
+          if-no-files-found: ignore
+          retention-days: 14
