@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V4 heterogêneo preparado; tentativa 004 inconclusiva**
+Checkpoint: **2026-09-23 / Vince V4 Live Proof 005 verificado**
 
-Estado: **Vince V0.4 + V4 gate/verifier canônicos; Replit V4 isolado preparado; probe 004 bloqueado por Contents write 403; Portal em 401; Edge congelado**
+Estado: **Vince V4 live-proven limitado GitHub/ARCA ↔ Replit; hashes/correlação/proveniência verificados; worker attestation criptográfica pendente; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 025 — Vince V4 heterogêneo preparado; tentativa 004 inconclusiva](ARCA_HANDOFF_CHECKPOINT_2026-09-23_025.md). PR #120 integrou o gate V4 e PR #122 o verificador Replit. O job `vince-v4-live-004` foi lido e executado localmente no Replit, mas a publicação do resultado falhou por HTTP 403 `Resource not accessible by personal access token`; nenhum result foi aceito, nenhum retry/failover ocorreu. A correção atual é conceder somente Contents read/write ao canal V4 canônico.
+Handoff mais recente: [checkpoint 026 — Vince V4 Live Proof 005](ARCA_HANDOFF_CHECKPOINT_2026-09-23_026.md). A missão `vince-v4-live-005` atravessou o canal V4 canônico até o Replit, executou `git-status`, retornou resultado estruturado e passou no verificador ARCA em CI `35814497158`. Request `c069…`, result `3ded…`, proof `daea9c2c…`. A prova é de transporte/execução/retorno heterogêneo; `cryptographicWorkerAttestation=false` permanece explícito.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
