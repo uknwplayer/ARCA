@@ -1,0 +1,323 @@
+{
+  "schema": "arca.m5-phase-b-fixture.v1",
+  "manifestInput": {
+    "operationalQuestion": "Os documentos publicados permitem reconciliar a contratação selecionada com a execução financeira no período?",
+    "questionKind": "DOCUMENT_RECONCILIATION",
+    "jurisdiction": "BR/FEDERAL",
+    "timeWindow": {
+      "start": "2026-01-01",
+      "end": "2026-01-31"
+    },
+    "subjectRef": "subject:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "sourceScopes": {
+      "PNCP": {
+        "scopeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "PORTAL": {
+        "scopeSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    },
+    "budgets": {
+      "maxSources": 2,
+      "maxAgentReports": 2,
+      "maxCorrelationRelations": 8,
+      "retries": 0
+    },
+    "stopConditions": [
+      "BUDGET_EXCEEDED",
+      "CORRELATION_WITHOUT_EVIDENCE",
+      "CUSTODY_INVALID",
+      "PROTECTED_DATA_REQUIRED",
+      "PUBLICATION_ATTEMPTED",
+      "SCHEMA_DRIFT_UNREVIEWED",
+      "SCOPE_DIVERGENCE"
+    ],
+    "humanReviewRequired": true,
+    "publicationEnabled": false
+  },
+  "custodyInputs": [
+    {
+      "source": "PNCP",
+      "scopeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "custody": {
+        "status": "VERIFIED",
+        "private": true,
+        "envelopeSha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "receiptSha256": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "normalizationState": "NORMALIZED"
+    },
+    {
+      "source": "PORTAL",
+      "scopeSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "custody": {
+        "status": "VERIFIED",
+        "private": true,
+        "envelopeSha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "receiptSha256": "7777777777777777777777777777777777777777777777777777777777777777"
+      },
+      "normalizationState": "NORMALIZED"
+    }
+  ],
+  "sourceBindings": {
+    "PNCP": {
+      "source": "PNCP",
+      "custodyEnvelopeSha256": "4444444444444444444444444444444444444444444444444444444444444444",
+      "custodyReceiptSha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "observedSchemaSha256": "8888888888888888888888888888888888888888888888888888888888888888",
+      "normalizationSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "normalizationState": "NORMALIZED"
+    },
+    "PORTAL": {
+      "source": "PORTAL",
+      "custodyEnvelopeSha256": "6666666666666666666666666666666666666666666666666666666666666666",
+      "custodyReceiptSha256": "7777777777777777777777777777777777777777777777777777777777777777",
+      "observedSchemaSha256": "9999999999999999999999999999999999999999999999999999999999999999",
+      "normalizationSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "normalizationState": "NORMALIZED"
+    }
+  },
+  "correlationFixture": {
+    "schema": "arca.financial-correlation-fixture.v1",
+    "pilotId": "m5-phase-b-post-custody-001",
+    "timeWindow": "2026-01-01/2026-01-31",
+    "payments": [
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "documentCode": "M5-PAYMENT-001",
+        "issuedAt": "2026-01-20",
+        "amountCents": 125050,
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-A",
+          "provenanceRef": "m5:payment-001#agency"
+        },
+        "beneficiaryIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-A",
+          "provenanceRef": "m5:payment-001#beneficiary"
+        },
+        "provenanceRefs": [
+          "m5:payment-001#document",
+          "m5:payment-001#date",
+          "m5:payment-001#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      },
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "documentCode": "M5-PAYMENT-002",
+        "issuedAt": "2026-01-22",
+        "amountCents": 98000,
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-B",
+          "provenanceRef": "m5:payment-002#agency"
+        },
+        "beneficiaryIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-B",
+          "provenanceRef": "m5:payment-002#beneficiary"
+        },
+        "provenanceRefs": [
+          "m5:payment-002#document",
+          "m5:payment-002#date",
+          "m5:payment-002#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      },
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "documentCode": "M5-PAYMENT-003",
+        "issuedAt": "2026-01-24",
+        "amountCents": 50000,
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-C",
+          "provenanceRef": "m5:payment-003#agency"
+        },
+        "beneficiaryIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-C",
+          "provenanceRef": "m5:payment-003#beneficiary"
+        },
+        "provenanceRefs": [
+          "m5:payment-003#document",
+          "m5:payment-003#date",
+          "m5:payment-003#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      }
+    ],
+    "commitmentImpacts": [
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "dataset": "Despesas_Pagamento_EmpenhosImpactados",
+        "paymentDocumentCode": "M5-PAYMENT-001",
+        "commitmentCode": "M5-NE-001",
+        "subitem": "01",
+        "paidAmountCents": 80000,
+        "provenanceRefs": [
+          "m5:impact-001#payment",
+          "m5:impact-001#commitment",
+          "m5:impact-001#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      },
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "dataset": "Despesas_Pagamento_EmpenhosImpactados",
+        "paymentDocumentCode": "M5-PAYMENT-001",
+        "commitmentCode": "M5-NE-002",
+        "subitem": "02",
+        "paidAmountCents": 45050,
+        "provenanceRefs": [
+          "m5:impact-002#payment",
+          "m5:impact-002#commitment",
+          "m5:impact-002#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      },
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "dataset": "Despesas_Pagamento_EmpenhosImpactados",
+        "paymentDocumentCode": "M5-PAYMENT-002",
+        "commitmentCode": "M5-NE-003",
+        "subitem": "01",
+        "paidAmountCents": 98000,
+        "provenanceRefs": [
+          "m5:impact-003#payment",
+          "m5:impact-003#commitment",
+          "m5:impact-003#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      },
+      {
+        "sourceId": "br.portal-transparencia.download-despesas",
+        "dataset": "Despesas_Pagamento_EmpenhosImpactados",
+        "paymentDocumentCode": "M5-PAYMENT-003",
+        "commitmentCode": "M5-NE-004",
+        "subitem": "01",
+        "paidAmountCents": 50000,
+        "provenanceRefs": [
+          "m5:impact-004#payment",
+          "m5:impact-004#commitment",
+          "m5:impact-004#amount",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ]
+      }
+    ],
+    "procurements": [
+      {
+        "sourceId": "br.pncp.public-api",
+        "recordKey": "pncp:m5:confirmed",
+        "publishedAt": "2026-01-05",
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-A",
+          "provenanceRef": "m5:pncp-confirmed#agency"
+        },
+        "supplierIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-A",
+          "provenanceRef": "m5:pncp-confirmed#supplier"
+        },
+        "provenanceRefs": [
+          "m5:pncp-confirmed#record",
+          "m5:pncp-confirmed#date",
+          "custody:PNCP:sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        ]
+      },
+      {
+        "sourceId": "br.pncp.public-api",
+        "recordKey": "pncp:m5:candidate",
+        "publishedAt": "2026-01-06",
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-B",
+          "provenanceRef": "m5:pncp-candidate#agency"
+        },
+        "supplierIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-B",
+          "provenanceRef": "m5:pncp-candidate#supplier"
+        },
+        "provenanceRefs": [
+          "m5:pncp-candidate#record",
+          "m5:pncp-candidate#date",
+          "custody:PNCP:sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        ]
+      },
+      {
+        "sourceId": "br.pncp.public-api",
+        "recordKey": "pncp:m5:conflicting",
+        "publishedAt": "2026-01-08",
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-C",
+          "provenanceRef": "m5:pncp-conflicting#agency"
+        },
+        "supplierIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-C",
+          "provenanceRef": "m5:pncp-conflicting#supplier"
+        },
+        "provenanceRefs": [
+          "m5:pncp-conflicting#record",
+          "m5:pncp-conflicting#date",
+          "custody:PNCP:sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        ]
+      },
+      {
+        "sourceId": "br.pncp.public-api",
+        "recordKey": "pncp:m5:not-observed",
+        "publishedAt": "2026-01-10",
+        "agencyIdentifier": {
+          "namespace": "FIXTURE_ORG",
+          "value": "ORG-D",
+          "provenanceRef": "m5:pncp-not-observed#agency"
+        },
+        "supplierIdentifier": {
+          "namespace": "FIXTURE_SUPPLIER",
+          "value": "SUPPLIER-D",
+          "provenanceRef": "m5:pncp-not-observed#supplier"
+        },
+        "provenanceRefs": [
+          "m5:pncp-not-observed#record",
+          "m5:pncp-not-observed#date",
+          "custody:PNCP:sha256:4444444444444444444444444444444444444444444444444444444444444444"
+        ]
+      }
+    ],
+    "strongBindings": [
+      {
+        "commitmentCode": "M5-NE-001",
+        "procurementRecordKey": "pncp:m5:confirmed",
+        "basis": "EXPLICIT_PUBLIC_RELATION_FIXTURE",
+        "provenanceRefs": [
+          "m5:bridge-confirmed#relation",
+          "custody:PNCP:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ],
+        "conflictRefs": []
+      },
+      {
+        "commitmentCode": "M5-NE-004",
+        "procurementRecordKey": "pncp:m5:conflicting",
+        "basis": "EXPLICIT_PUBLIC_RELATION_FIXTURE",
+        "provenanceRefs": [
+          "m5:bridge-conflicting#relation",
+          "custody:PNCP:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "custody:PORTAL:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+        ],
+        "conflictRefs": [
+          "m5:counterevidence-conflicting#record"
+        ]
+      }
+    ]
+  }
+}
