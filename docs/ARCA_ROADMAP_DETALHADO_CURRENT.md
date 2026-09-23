@@ -167,7 +167,7 @@ M5-R não altera o caminho crítico atual. O gate imediato é corrigir a autenti
 
 ## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
 
-Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; V4 GATE/VERIFIER CANÔNICOS E REPLIT PREPARADO, MAS RESULT RETURN BLOQUEADO POR AUTORIZAÇÃO; EDGE STEWARD CONGELADO**.
+Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; V4 HETEROGÊNEO GITHUB↔REPLIT LIVE-PROVEN LIMITADO; EDGE STEWARD CONGELADO**.
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
@@ -199,7 +199,8 @@ Fases propostas:
 - V3: **LIVE-PROVEN LIMITADO** — failover A→B após falha transitória pré-aceitação, sem DispatchRef em A e sem duplicação; runs `35809204841` / `35809214584`;
 - V3.1: **LIVE-PROVEN LIMITADO** — recovery em runner novo a partir de checkpoint durável e DispatchRef original, sem redispatch; runs `35810698274` / `35810708455`;
 - V3.2: **IMPLEMENTADO / TESTADO OFFLINE** — checkpoint/proof revalidados no Machine Bridge, Execution Identity create-only e recibo Ed25519 em domínio dedicado; prova live aguarda signer persistente;
-- V4: **EM PROGRESSO** — gate e verificador GitHub→Replit canônicos; worker Replit isolado implementado; probe 004 inconclusivo porque a escrita do result foi rejeitada por HTTP 403. Próximo gate: corrigir Contents write no canal V4 e executar nova missão one-shot.
+- V4: **LIVE-PROVEN LIMITADO** — `vince-v4-live-005` atravessou GitHub/ARCA → Replit → GitHub e foi verificado canonicamente; request `c069…`, result `3ded…`, proof `daea9c2c…`; worker attestation ainda é false;
+- V4.1: **PRÓXIMO GATE** — identidade persistente do worker Replit + challenge/nonce + resultado assinado e trust pinning.
 - V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
 
 Dependência Work atual: o plano de execução canônico existe, mas a ligação nativa do evento GitHub do ChatGPT Work ao repositório `uknwplayer/ARCA` ainda não foi provada. Ver PR #90 (probe de liveness) e PR #91 (migração do gatilho). Vince deverá tratar Work como endpoint candidato até existir ACK canônico recente.
@@ -219,7 +220,7 @@ Relação com Vince:
 
 Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
 
-Aceite parcial alcançado para Vince V0.1–V0.4: discovery, ida, ACK, execução, retorno, failover pré-aceitação e recovery pós-crash foram live-proven; o hardening V3.2 com Execution Identity e recibo Mesh assinado foi provado em CI. Próximo marco funcional é V4 entre ambientes independentes. Presença móvel/Edge permanece futura.
+Aceite parcial alcançado para Vince V0.1–V0.4 + V4: discovery, ACK, execução, retorno, failover, recovery pós-crash e uma rota heterogênea GitHub↔Replit foram provados; V3.2 signed identity foi testado em CI. Próximo gate é V4.1 com attestation criptográfica persistente do worker remoto. Presença móvel/Edge permanece futura.
 
 ## Marco M6 — Expansão territorial gradual
 
