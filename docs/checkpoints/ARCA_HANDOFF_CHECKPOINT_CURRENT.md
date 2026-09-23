@@ -5,7 +5,7 @@ Checkpoint: **2026-09-23 / Gate 043 — Transferegov offline adicionado enquanto
 Estado: **Gate 042 do Portal permanece em diagnóstico sem novo GET; suporte da CGU acionado; em paralelo, PR #179 adiciona Transferegov Transferências Especiais como terceiro adaptador offline do núcleo multifonte; zero rede Transferegov; primeiro 2xx Portal segue pendente; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 043 — expansão multifonte com Transferegov offline](ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md). O Gate 042 do Portal continua preservado e sem autorização para novo GET. Em paralelo, o PR #179 promove `br.transferegov.public` para `ACTIVE/OFFLINE_FIXTURE`, apontando ao novo ambiente oficial de APIs e adicionando fixture sintética, Evidence Envelopes hash-only e testes fail-closed. Nenhuma chamada live ao Transferegov foi executada.
+Handoff mais recente: [checkpoint 043 — expansão multifonte com Transferegov offline](ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md). O Gate 042 do Portal continua preservado e sem autorização para novo GET. Em paralelo, o PR #179 cria o snapshot `public-source-registry-s1.json`, onde `br.transferegov.public` fica `ACTIVE/OFFLINE_FIXTURE`, preservando o registro V1 e seus digests históricos; também adiciona fixture sintética, Evidence Envelopes hash-only e testes fail-closed. Nenhuma chamada live ao Transferegov foi executada.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
