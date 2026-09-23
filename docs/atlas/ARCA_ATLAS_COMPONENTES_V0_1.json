@@ -847,6 +847,72 @@
         "humanReviewRequired=true",
         "parserAdmitted=false"
       ]
+    },
+    {
+      "id": "m5-d-prontidao-credencial-portal",
+      "nome": "M5 Fase D — Prontidão verificável da credencial Portal",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Separar presença/formato/proveniência do token de sua atividade real, sem expor o segredo.",
+      "estado": "candidato_offline",
+      "localizacao": [
+        "src/investigation/portal-credential-readiness.mjs",
+        "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
+      ],
+      "dependeDe": [
+        "m4-aquisicao-controlada",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "m4-aquisicao-controlada"
+      ],
+      "entradas": [
+        "token secreto",
+        "proveniência declarada",
+        "data de recebimento"
+      ],
+      "saidas": [
+        "fingerprint sanitizado",
+        "estado ACTIVE_UNKNOWN",
+        "observação pós-request"
+      ],
+      "capabilities": [
+        "fingerprint de credencial",
+        "gate de proveniência",
+        "classificação conservadora de HTTP"
+      ],
+      "limites": [
+        "não verifica atividade offline",
+        "não imprime token",
+        "não autoriza rede",
+        "não autoriza retry"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-phase-d"
+      ],
+      "modosDeFalha": [
+        "proveniência ausente",
+        "metadado inválido",
+        "401",
+        "403",
+        "429",
+        "5xx"
+      ],
+      "recuperacao": [
+        "revisar fluxo oficial",
+        "revisar configuração",
+        "preservar fingerprint/status",
+        "nova autorização antes de novo GET"
+      ],
+      "fallback": "ACTIVE_UNKNOWN / AUTHORIZATION_NOT_ESTABLISHED",
+      "riscoDeReexecucao": "nenhum retry automático; nova tentativa exige gate explícito",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_CREDENTIAL_READINESS_V0_1.md"
+      ],
+      "seguranca": [
+        "tokenIncluded=false",
+        "networkAuthorized=false",
+        "humanAuthorizationRequired=true"
+      ]
     }
   ]
 }
