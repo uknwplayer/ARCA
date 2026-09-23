@@ -167,7 +167,7 @@ M5-R não altera o caminho crítico atual. O gate imediato é corrigir a autenti
 
 ## Linha paralela V/E — Vince Pathfinder + ARCA Edge Steward
 
-Estado: **VINCE V0.2 IMPLEMENTADO; V1/V2 E V3 PRÉ-ACEITAÇÃO LIVE-PROVEN; EDGE STEWARD CONTINUA CONGELADO**.
+Estado: **VINCE V0.3 IMPLEMENTADO; V1/V2, V3 PRÉ-ACEITAÇÃO E V3.1 RECOVERY PÓS-CRASH LIVE-PROVEN; EDGE STEWARD CONTINUA CONGELADO**.
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
@@ -197,7 +197,8 @@ Fases propostas:
 - V1: **LIVE-PROVEN LIMITADO** — discovery/ranking baseado no registry canônico para rotas allowlisted;
 - V2: **LIVE-PROVEN LIMITADO** — probe/ACK/resultado em `github-satellite-linux`, runs `35808000764` / `35808010876`;
 - V3: **LIVE-PROVEN LIMITADO** — failover A→B após falha transitória pré-aceitação, sem DispatchRef em A e sem duplicação; runs `35809204841` / `35809214584`;
-- V3.1: **PRÓXIMO GATE** — recovery pós-crash/estado incerto com checkpoint durável, sem reexecução quando houver aceitação possível;
+- V3.1: **LIVE-PROVEN LIMITADO** — recovery em runner novo a partir de checkpoint durável e DispatchRef original, sem redispatch; runs `35810698274` / `35810708455`;
+- V3.2: **HARDENING OPCIONAL** — vincular checkpoint V0.3 à Execution Identity/Reconciled Failover assinada do Machine Bridge;
 - V4: prova entre ambientes independentes com evidência de ida, execução e retorno.
 - V5: integrar disponibilidade observada de Execution Endpoints, incluindo ChatGPT Work quando houver event-trigger canônico comprovado; ausência de ACK deve produzir estado `UNREACHABLE/INCONCLUSIVE`, nunca suposição de disponibilidade ou não execução.
 
@@ -218,7 +219,7 @@ Relação com Vince:
 
 Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
 
-Aceite parcial alcançado para Vince V0.1/V0.2: discovery, ida, ACK, execução, retorno e failover pré-aceitação A→B foram provados sem expansão de autoridade e sem duplicação. Próximo aceite é V3.1: recovery de estado incerto/pós-crash sem reexecução. Presença móvel/Edge permanece futura.
+Aceite parcial alcançado para Vince V0.1–V0.3: discovery, ida, ACK, execução, retorno, failover pré-aceitação e recovery pós-crash por DispatchRef durável foram provados sem expansão de autoridade e sem duplicação. Próximo marco funcional é V4 entre ambientes independentes; V3.2 pode endurecer a prova com Execution Identity assinada. Presença móvel/Edge permanece futura.
 
 ## Marco M6 — Expansão territorial gradual
 
