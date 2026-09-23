@@ -156,9 +156,9 @@ Componente: `m5-d-prontidao-credencial-portal`.
 
 Função: separar token presente/formato/proveniência de atividade real. Produz fingerprint sanitizado e mantém `ACTIVE_UNKNOWN` até observação da própria API.
 
-Observação live atual: após a CGU confirmar que a chave estava inativada e ativá-la, o run `35910916588` retornou HTTP 200 em `/api-de-dados/situacao-imovel`. Estado: `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, `credentialInvalidProven=false`, exatamente 1 request, `retries=0` e custódia privada. O fingerprint canônico continua `37c90b46b7e1a4fcf699aee3f94979829cb044d13979cfbf05a229cd869a8092`. O 401 histórico do run `35886041113` permanece preservado como evidência anterior à ativação.
+Observação live atual: após a ativação confirmada pela CGU, o Gate 045 comprovou a chave em `/situacao-imovel` e o Gate 046 comprovou o endpoint financeiro. O run `35917902630` retornou HTTP 200 em `/api-de-dados/despesas/documentos-relacionados`, com `ACCEPTED_ON_OBSERVED_REQUEST`, `activeVerified=true`, 1 registro, 440 bytes, `retries=0` e custódia privada. O fingerprint canônico permanece `37c90b46b7e1a4fcf699aee3f94979829cb044d13979cfbf05a229cd869a8092`.
 
-Recuperação: em falhas futuras, preservar status e fingerprint e exigir nova autorização antes de qualquer tentativa. A atividade atual da chave está comprovada apenas no request 2xx observado; não inferir a saúde de outros endpoints a partir dele.
+Recuperação: em falhas futuras, preservar status/fingerprint e exigir nova autorização antes de qualquer tentativa. O endpoint financeiro respondeu 2xx nesta observação, mas isso não autoriza retries nem garante disponibilidade permanente.
 
 
 ### Gate 040 — preflight Portal isolado
@@ -275,3 +275,24 @@ Custódia: envelope `ef6bcd5e0c75ba8fa9638780bbf8fbbe5a3402ce3b0a68ab251e3338daf
 Limite: o resultado prova que a chave atual foi aceita nessa requisição. Não prova a disponibilidade de `/despesas/documentos-relacionados`, nem autoriza repetir qualquer endpoint.
 
 Recuperação: qualquer novo GET requer novo escopo, Gate atual e autorização humana explícita. O run `35910916588` não deve ser rerodado.
+
+
+### Gate 046 — primeiro 2xx financeiro Portal
+
+Componente: `m5-gate-046-portal-related-documents-2xx`.
+
+Função: obter e custodiar o primeiro retorno 2xx de `/api-de-dados/despesas/documentos-relacionados` sob binding exato, orçamento de uma única requisição e zero retries.
+
+Estado: **CONCLUÍDO / HTTP 200 / 1 REGISTRO / SCHEMA OBSERVADO / AUTORIZAÇÃO CONSUMIDA**.
+
+Preflight: run `35916999807`, revisão `44b2dd9b5bc25c216d9b599fb552ea0fbb063c5f`, `scopeHash=38637de67d7f7eb5a5fc57fa327069c20857bd7ae7ed62b8072312a2fad37eb1`, `preflightSha256=1e07709d9fbdbcc079fb2e6f244784714ddf075b09bf5502b151afacb639f99f`, zero rede.
+
+Live: run `35917902630`, mesma revisão, exatamente 1 GET, HTTP 200, 1 registro, 440 bytes, `VALIDATED`, `ACCEPTED_ON_OBSERVED_REQUEST`, `retries=0`, `STORED_PRIVATE`.
+
+Estrutura observada: array de 1 objeto com `data`, `documento`, `documentoResumido`, `elementoDespesa`, `especie`, `fase`, `favorecido`, `orgaoSuperior`, `orgaoVinculado`, `unidadeGestora` e `valor`, todos strings na observação atual. `valuesIncluded=false`, `rawBytesIncluded=false`, `normalizationPerformed=false`, `parserAdmitted=false`.
+
+Custódia: envelope `d398da542596a7ad387f0d1c5bbe2b9e201e00e1f812507a7e2c97b16d421db5`; receipt `1ed2cadf58f1a3213271387400e3015089c24c690b7e1c948eb63d056c564cbc`; schema hash `79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6`.
+
+Próximo passo: parser/normalizador offline baseado na estrutura observada, com fixture sintética e testes de drift. Nenhum novo GET é necessário.
+
+Recuperação: não rerodar o run `35917902630`; qualquer futura aquisição exige novo Gate e autorização humana.

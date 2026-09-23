@@ -165,7 +165,7 @@ Parada imediata: escopo divergente, custódia inválida, segredo ausente, respos
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASES A+B+C+D+E INTEGRADAS E TESTADAS; AUTENTICAÇÃO PORTAL COMPROVADA POR HTTP 200 EM `/situacao-imovel` NO RUN `35910916588`; PRIMEIRO 2xx DE `documentos-relacionados`/DADO FINANCEIRO AINDA PENDENTE; GATE 042 RESOLVIDO QUANTO À ATIVAÇÃO DA CHAVE; GATE 045 REGISTRADO; NENHUM NOVO GET AUTORIZADO**.
+Estado: **FASES A+B+C+D+E INTEGRADAS E TESTADAS; AUTENTICAÇÃO PORTAL COMPROVADA NO GATE 045; PRIMEIRO 2xx DE `documentos-relacionados` OBTIDO NO GATE 046 / RUN `35917902630`; 1 REGISTRO, 440 BYTES, SCHEMA OBSERVADO, CUSTÓDIA PRIVADA; PARSER AINDA NÃO ADMITIDO; NENHUM NOVO GET AUTORIZADO**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -190,7 +190,7 @@ A Fase B implementa e testa o trecho `pre-correlation READY → bundle normaliza
 
 Ela não executa rede e registra explicitamente `m5Accepted:false`. Dados normalizados só entram no correlator se carregarem as âncoras dos envelopes de custódia; bridges fortes exigem proveniência das duas fontes. Ver `docs/ARCA_M5_POST_CUSTODY_CORRELATION_V0_1.md`.
 
-O bloqueio de autenticação foi removido pelo HTTP 200 do run `35910916588`. O bloqueio live específico do M5 agora é obter, sob nova autorização, um primeiro 2xx de `documentos-relacionados`, custodiar essa resposta, observar o schema financeiro real, construir/revisar o parser correspondente e só depois alimentar a Fase B com evidência live. O CI canônico agora executa explicitamente `validate:m5-phase-a` e `validate:m5-phase-b`.
+O bloqueio de autenticação foi removido no Gate 045 e o primeiro 2xx de `documentos-relacionados` foi obtido no Gate 046. O bloqueio atual do M5 é exclusivamente offline: admitir um parser/normalizador compatível com o schema observado, provar fail-closed em drift e somente então alimentar a Fase B com evidência live já custodial. O CI canônico agora executa explicitamente `validate:m5-phase-a` e `validate:m5-phase-b`.
 
 
 ### M5 Fase C — observação estrutural do schema Portal
@@ -287,6 +287,20 @@ Probe live: run `35910916588`, mesma revisão, exatamente 1 GET, HTTP 200, `ACCE
 Conclusão: a chave atual funciona. Isso não comprova a disponibilidade do endpoint `documentos-relacionados`, que a CGU informou estar intermitente. A autorização deste probe foi consumida. Qualquer próximo GET requer novo Gate e nova autorização humana explícita.
 
 Ver `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md`.
+
+### Gate 046 — primeiro 2xx financeiro do Portal
+
+Estado: **CONCLUÍDO / HTTP 200 / SCHEMA OBSERVADO / AUTORIZAÇÃO CONSUMIDA**.
+
+Preflight canônico: run `35916999807`, revisão `44b2dd9b5bc25c216d9b599fb552ea0fbb063c5f`, `scopeHash=38637de67d7f7eb5a5fc57fa327069c20857bd7ae7ed62b8072312a2fad37eb1`, `preflightSha256=1e07709d9fbdbcc079fb2e6f244784714ddf075b09bf5502b151afacb639f99f`, zero rede.
+
+Probe live: run `35917902630`, mesma revisão, exatamente 1 GET a `/api-de-dados/despesas/documentos-relacionados`, HTTP 200, 1 registro, 440 bytes, `VALIDATED`, `ACCEPTED_ON_OBSERVED_REQUEST`, `retries=0`, resposta selada e `STORED_PRIVATE`.
+
+O observador M5-C registrou um array com 1 objeto e os campos `data`, `documento`, `documentoResumido`, `elementoDespesa`, `especie`, `fase`, `favorecido`, `orgaoSuperior`, `orgaoVinculado`, `unidadeGestora` e `valor`, todos observados como string. Valores e bytes crus não foram publicados; normalização não foi feita; `parserAdmitted=false`.
+
+Próximo passo: fixture sintética baseada somente na estrutura observada → parser/normalizador offline → testes de drift/data/valor → revisão humana → admissão na Fase B. Nenhum novo GET é necessário para essa etapa.
+
+Ver `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`.
 
 ### M5 Fase E — binding do preflight ao probe live
 
