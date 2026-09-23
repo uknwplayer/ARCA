@@ -18,8 +18,8 @@ Página oficial de anúncio/documentação:
 
 A V0.1 não faz rede. Ela fornece:
 
-- descriptor atualizado de `br.transferegov.public`;
-- `adapterStatus=ACTIVE`;
+- snapshot expandido em `config/public-source-registry-s1.json`, preservando `public-source-registry-v1.json` como registro histórico;
+- descriptor `br.transferegov.public` com `adapterStatus=ACTIVE` somente no snapshot S1;
 - único modo executável: `OFFLINE_FIXTURE`;
 - adaptador estrito para fixture sintética de Transferências Especiais;
 - normalização determinística;
@@ -70,3 +70,7 @@ Antes de qualquer acesso real:
 7. custodiar a resposta antes de qualquer normalização/correlação.
 
 A integração offline não autoriza rede.
+
+## Compatibilidade histórica
+
+`config/public-source-registry-v1.json` permanece congelado com o estado usado pelas provas M0/M1. O snapshot S1 ativa Transferegov sem alterar os digests históricos. Novas expansões devem seguir o mesmo princípio: novo snapshot de registro em vez de reescrever a base que já participou de atestações.
