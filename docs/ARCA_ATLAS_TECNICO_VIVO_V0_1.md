@@ -338,3 +338,32 @@ Limite: mesmo uma admissão mantém `networkAuthorized=false`, `publicationAutho
 Recuperação: hash divergente, revisão diferente ou binding incompatível falham fechado. Não abrir custódia nem adaptar parser automaticamente.
 
 Runbook: `docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md`.
+
+
+### M5-H — normalização custodial offline
+
+Componente: `m5-h-portal-custodial-normalization-offline`.
+
+Função: aplicar o parser M5-F aos bytes reais já custodiais somente depois de uma decisão M5-G hash-bound, sem rede de fonte, sem novo GET, sem publicação e sem correlação.
+
+Estado: **AUTORIZAÇÃO HUMANA REGISTRADA / EXECUTOR LOCAL-ONLY IMPLEMENTADO / LIVE AINDA NÃO EXECUTADO**.
+
+Candidato admitido: `0bcf1806c2480b2f82f8efff43e67436460043375d302fb6fcf44c80ec3e97f9`.
+
+Decisão: `ADMIT_FOR_CUSTODIAL_NORMALIZATION`.
+
+Executor: `src/investigation/m5-portal-custodial-normalization.mjs`.
+
+CLI: `scripts/normalize-m5-portal-custody-local.mjs`.
+
+O executor exige envelope e passphrase já locais. Não possui download, fetch, HTTP, transporte Portal ou transporte GitHub.
+
+Antes de normalizar, revalida candidato, decisão, parser contract, schema, envelope, receipt, response hash e scope. Depois reabre a custódia, reexecuta o observador M5-C e aplica o parser somente se o schema continuar idêntico.
+
+A saída real será imediatamente resselada em um novo envelope privado. A prova sanitizada não contém valores, nomes ou bytes brutos.
+
+Fronteira atual: envelope/passphrase live ainda não estão co-localizados no mesmo ambiente sem transporte de rede. Portanto, a normalização live não foi executada.
+
+Recuperação: materializar a custódia localmente sem rede do executor ou obter autorização separada para transporte de custódia privada via GitHub. Novo GET Portal continua desnecessário e proibido.
+
+Runbook: `docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md`.

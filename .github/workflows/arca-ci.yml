@@ -73,6 +73,9 @@ jobs:
       - name: Executar gate M5-G de admissão do parser Portal
         run: npm run validate:m5-parser-admission
 
+      - name: Validar admissão humana M5-H para normalização custodial
+        run: npm run validate:m5-custodial-admission
+
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 

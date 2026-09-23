@@ -1692,7 +1692,7 @@
       "nome": "M5-G — Admissão da normalização custodial",
       "tipo": "seguranca_investigacao",
       "finalidade": "Vincular parser, schema e custódia live antes de permitir normalização privada.",
-      "estado": "implementado_branch_decisao_humana_pendente",
+      "estado": "candidato_canonico_admitido_normalizacao_offline",
       "localizacao": [
         "src/investigation/m5-portal-parser-admission.mjs",
         "scripts/prepare-m5-portal-parser-admission.mjs",
@@ -1718,7 +1718,9 @@
       "saidas": [
         "candidato AWAITING_HUMAN_ADMISSION",
         "candidateSha256",
-        "decisao humana hash-bound"
+        "decisao humana hash-bound",
+        "candidate 0bcf1806...e97f9 admitido",
+        "decisão ADMIT_FOR_CUSTODIAL_NORMALIZATION"
       ],
       "capabilities": [
         "binding deterministico",
@@ -1730,7 +1732,10 @@
         "sem rede",
         "sem publicacao",
         "sem correlacao",
-        "sem auto-admissao"
+        "sem auto-admissao",
+        "networkAuthorized=false",
+        "publicationAuthorized=false",
+        "correlationAuthorized=false"
       ],
       "healthCheck": [
         "npm run validate:m5-parser-admission",
@@ -1758,6 +1763,87 @@
         "publicationAuthorized=false",
         "correlationAuthorized=false",
         "humanAdmissionRequired=true"
+      ]
+    },
+    {
+      "id": "m5-h-portal-custodial-normalization-offline",
+      "nome": "M5-H — Normalização custodial offline",
+      "tipo": "investigacao_normalizacao",
+      "finalidade": "Normalizar bytes reais já custodiais somente após admissão humana hash-bound e sem rede de fonte.",
+      "estado": "autorizado_executor_local_only_live_pendente",
+      "localizacao": [
+        "src/investigation/m5-portal-custodial-normalization.mjs",
+        "scripts/normalize-m5-portal-custody-local.mjs",
+        "scripts/validate-m5-custodial-normalization-admission.mjs",
+        "config/m5-portal-parser-admission-gate046.json",
+        "docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-f-portal-related-documents-parser-offline",
+        "m5-g-portal-parser-admission",
+        "m5-gate-046-portal-related-documents-2xx"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "envelope criptografado local",
+        "passphrase local",
+        "candidateSha256 admitido",
+        "decisionSha256",
+        "parser contract",
+        "schema hash"
+      ],
+      "saidas": [
+        "normalizationSha256",
+        "novo envelope privado normalizado",
+        "prova sanitizada sem valores"
+      ],
+      "capabilities": [
+        "reabertura local de custodia",
+        "revalidacao de hashes",
+        "reobservacao do schema",
+        "normalizacao fail-closed",
+        "reselagem privada"
+      ],
+      "limites": [
+        "sem download",
+        "sem HTTP",
+        "sem Portal GET",
+        "sem publicacao",
+        "sem correlacao",
+        "execucao live ainda nao realizada"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-custodial-admission",
+        "node --test tests/m5-portal-custodial-normalization.test.mjs"
+      ],
+      "modosDeFalha": [
+        "candidate hash mismatch",
+        "decision integrity mismatch",
+        "envelope hash mismatch",
+        "response hash mismatch",
+        "observed schema mismatch",
+        "parser drift"
+      ],
+      "recuperacao": [
+        "manter custodia fechada",
+        "co-localizar envelope e passphrase",
+        "ou obter autorizacao separada para transporte privado"
+      ],
+      "fallback": "não executar normalização live",
+      "riscoDeReexecucao": "baixo em fixture; live depende de custodia local e decisão válida",
+      "runbook": [
+        "docs/ARCA_M5_CUSTODIAL_NORMALIZATION_OFFLINE_V0_1.md"
+      ],
+      "seguranca": [
+        "sourceNetworkUsed=false",
+        "portalRequestUsed=false",
+        "publicationAttempted=false",
+        "correlationAttempted=false",
+        "normalizedValuesIncludedInProof=false",
+        "rawBytesIncludedInProof=false",
+        "humanReviewRequired=true"
       ]
     }
   ]
