@@ -34,3 +34,10 @@ test("Portal authorization 001 has no schedule, push or pull-request trigger",()
   assert.doesNotMatch(workflow,/^\s+(schedule|push|pull_request|workflow_dispatch):/m);
   assert.match(workflow,/cancel-in-progress:\s*false/);
 });
+
+
+test("Portal authorization 001 binds probe revision to the checked-out commit",()=>{
+  assert.match(workflow,/GITHUB_SHA="\$\(git rev-parse HEAD\)" node scripts\/arca-portal-related-documents-live-probe\.mjs --preflight-only/);
+  assert.match(workflow,/GITHUB_SHA="\$\(git rev-parse HEAD\)" node scripts\/arca-portal-related-documents-live-probe\.mjs/);
+  assert.doesNotMatch(workflow,/^\s+GITHUB_SHA:\s*3e05951fa543f359451208cf410705a0dcfb34e1\s*$/m);
+});

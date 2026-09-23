@@ -47,8 +47,7 @@ jobs:
           ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
           ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
           GITHUB_REPOSITORY: uknwplayer/ARCA
-          GITHUB_SHA: 3e05951fa543f359451208cf410705a0dcfb34e1
-        run: node scripts/arca-portal-related-documents-live-probe.mjs --preflight-only
+        run: GITHUB_SHA="$(git rev-parse HEAD)" node scripts/arca-portal-related-documents-live-probe.mjs --preflight-only
 
       - name: Capture exactly one bounded Portal response
         env:
@@ -61,8 +60,7 @@ jobs:
           ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
           ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
           GITHUB_REPOSITORY: uknwplayer/ARCA
-          GITHUB_SHA: 3e05951fa543f359451208cf410705a0dcfb34e1
-        run: node scripts/arca-portal-related-documents-live-probe.mjs
+        run: GITHUB_SHA="$(git rev-parse HEAD)" node scripts/arca-portal-related-documents-live-probe.mjs
 
       - name: Upload encrypted envelope and sanitized proof
         uses: actions/upload-artifact@v4
