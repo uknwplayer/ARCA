@@ -317,3 +317,24 @@ Limites: exatamente os 11 campos observados; campo ausente/adicional, formato de
 Recuperação: corrigir apenas fixture/contrato ou abrir gate M5-G separado para admissão da normalização custodial. Não executar novo GET por causa de falha do parser.
 
 Runbook: `docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md`.
+
+
+### M5-G — admissão da normalização custodial
+
+Componente: `m5-g-portal-parser-admission`.
+
+Função: separar parser implementado/testado da autorização para aplicá-lo aos bytes reais já custodiais do Gate 046.
+
+Estado: **IMPLEMENTADO EM BRANCH / SEM REDE / SEM ABRIR CUSTÓDIA / DECISÃO HUMANA PENDENTE**.
+
+Binding: revisão + parser contract hash + schema Gate 046 + envelope + receipt + response hash + scope.
+
+Saída inicial: candidato `AWAITING_HUMAN_ADMISSION` com `candidateSha256`, sem bytes ou valores.
+
+Decisões humanas possíveis: `ADMIT_FOR_CUSTODIAL_NORMALIZATION`, `REJECT_PARSER`, `HOLD_FOR_MORE_EVIDENCE`.
+
+Limite: mesmo uma admissão mantém `networkAuthorized=false`, `publicationAuthorized=false` e `correlationAuthorized=false`. Apenas a normalização custodial offline poderá ser liberada.
+
+Recuperação: hash divergente, revisão diferente ou binding incompatível falham fechado. Não abrir custódia nem adaptar parser automaticamente.
+
+Runbook: `docs/ARCA_M5_PORTAL_PARSER_ADMISSION_V0_1.md`.
