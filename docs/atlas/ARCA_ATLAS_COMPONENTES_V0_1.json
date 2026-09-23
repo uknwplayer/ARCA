@@ -1614,6 +1614,77 @@
         "STORED_PRIVATE",
         "humanReviewRequired=true"
       ]
+    },
+    {
+      "id": "m5-f-portal-related-documents-parser-offline",
+      "nome": "M5-F — Parser financeiro Portal offline",
+      "tipo": "investigacao_normalizacao",
+      "finalidade": "Implementar parser fail-closed do schema financeiro observado no Gate 046 sem aplicar bytes live.",
+      "estado": "implementado_branch_fixture_sintetica_live_bloqueado",
+      "localizacao": [
+        "src/investigation/m5-portal-related-documents-parser.mjs",
+        "tests/m5-portal-related-documents-parser.test.mjs",
+        "scripts/validate-m5-portal-parser.mjs",
+        "docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-c-observador-schema-portal",
+        "m5-gate-046-portal-related-documents-2xx"
+      ],
+      "chamadoPor": [
+        "ci-principal"
+      ],
+      "entradas": [
+        "fixture sintetica com 11 campos",
+        "observedSchemaSha256 do Gate 046"
+      ],
+      "saidas": [
+        "normalizacao sintetica deterministica",
+        "normalizationSha256",
+        "refs SHA-256 de texto"
+      ],
+      "capabilities": [
+        "parse de data",
+        "parse BRL",
+        "normalizacao de fase",
+        "detecção de schema drift"
+      ],
+      "limites": [
+        "somente SYNTHETIC_FIXTURE",
+        "CUSTODIAL_LIVE recusado",
+        "sem rede",
+        "sem publicação",
+        "sem inferência de identidade"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-portal-parser",
+        "node --test tests/m5-portal-related-documents-parser.test.mjs"
+      ],
+      "modosDeFalha": [
+        "schema hash divergente",
+        "campo extra ou ausente",
+        "data incompatível",
+        "valor incompatível",
+        "fase desconhecida",
+        "budget de registros excedido"
+      ],
+      "recuperacao": [
+        "manter live bloqueado",
+        "revisar parser/fixture",
+        "M5-G separado para admissão custodial"
+      ],
+      "fallback": "não normalizar bytes live",
+      "riscoDeReexecucao": "baixo em fixture; sem rede e determinístico",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md"
+      ],
+      "seguranca": [
+        "liveNormalizationAuthorized=false",
+        "networkUsed=false",
+        "publicationAttempted=false",
+        "humanReviewRequired=true",
+        "adverseFinding=false"
+      ]
     }
   ]
 }
