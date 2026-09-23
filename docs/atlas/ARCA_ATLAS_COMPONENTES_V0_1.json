@@ -979,6 +979,144 @@
         "portalNetworkAuthorized=false",
         "tokenIncluded=false"
       ]
+    },
+    {
+      "id": "arca-device-agent",
+      "nome": "ARCA Device Agent",
+      "tipo": "execucao_futura",
+      "finalidade": "Expor capabilities locais explícitas do ARCA, Termux e Android ao plano de controle, sem shell irrestrito.",
+      "estado": "planejado_congelado",
+      "localizacao": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "dependeDe": [
+        "vince-pathfinder",
+        "machine-bridge",
+        "atlas-tecnico-vivo"
+      ],
+      "chamadoPor": [
+        "vince-pathfinder"
+      ],
+      "entradas": [
+        "dispatch autorizado",
+        "policy",
+        "capability id"
+      ],
+      "saidas": [
+        "resultado assinado",
+        "telemetria sanitizada",
+        "prova"
+      ],
+      "capabilities": [
+        "ARCA-only futuro",
+        "Termux allowlisted futuro",
+        "Device capabilities futuras"
+      ],
+      "limites": [
+        "deny-by-default",
+        "sem shell arbitrario por padrao",
+        "sem autoridade implícita"
+      ],
+      "healthCheck": [
+        "futuro doctor local",
+        "watchdog",
+        "heartbeat"
+      ],
+      "modosDeFalha": [
+        "daemon parado",
+        "policy divergente",
+        "replay",
+        "budget de recurso excedido",
+        "permissao Android ausente"
+      ],
+      "recuperacao": [
+        "restart controlado",
+        "revalidar policy",
+        "fail-closed",
+        "kill switch local"
+      ],
+      "fallback": "retornar ao one-shot/manual",
+      "riscoDeReexecucao": "alto para ações mutáveis; usar challenge/replay registry/idempotência",
+      "runbook": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "seguranca": [
+        "capability catalog",
+        "revogacao",
+        "leases",
+        "watchdog",
+        "budgets",
+        "assinatura"
+      ]
+    },
+    {
+      "id": "arca-runtime-autonomo-local",
+      "nome": "ARCA Runtime Autônomo Local",
+      "tipo": "ia_local_futura",
+      "finalidade": "Permitir execução autônoma local de modelo/memória/scheduler/ferramentas em infraestrutura controlada pelo operador.",
+      "estado": "planejado_congelado",
+      "localizacao": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "dependeDe": [
+        "arca-device-agent",
+        "atlas-tecnico-vivo"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "modelo local compatível",
+        "policies",
+        "memória permitida",
+        "Atlas",
+        "tools"
+      ],
+      "saidas": [
+        "decisões locais",
+        "missões",
+        "resultados auditáveis"
+      ],
+      "capabilities": [
+        "inferência local futura",
+        "memória local",
+        "scheduler local",
+        "tool use local"
+      ],
+      "limites": [
+        "não é transferência da instância ChatGPT",
+        "depende de hardware/modelo/licença",
+        "autoridade continua policy-bound"
+      ],
+      "healthCheck": [
+        "future local model smoke test",
+        "watchdog",
+        "resource monitor"
+      ],
+      "modosDeFalha": [
+        "OOM",
+        "thermal throttling",
+        "modelo incapaz",
+        "corrupção de estado",
+        "loop autônomo"
+      ],
+      "recuperacao": [
+        "watchdog",
+        "rollback",
+        "modelo menor",
+        "manual takeover"
+      ],
+      "fallback": "modo híbrido/nuvem ou operação manual",
+      "riscoDeReexecucao": "dependente das tools; exigir idempotência e replay protection",
+      "runbook": [
+        "docs/ARCA_ROADMAP_DETALHADO_CURRENT.md"
+      ],
+      "seguranca": [
+        "sandbox",
+        "budgets",
+        "kill switch",
+        "human override"
+      ]
     }
   ]
 }
