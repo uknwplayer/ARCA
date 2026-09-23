@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince V4.1 Termux Live Attestation Proof 006 verificado**
+Checkpoint: **2026-09-23 / Vince V4.1.1 Durable Control-Plane Replay Proof verificado**
 
-Estado: **Vince V4.1 live-proven em Android/Termux com identidade Ed25519 pinada; attestation verificada; Portal em 401; Edge congelado**
+Estado: **Vince V4.1.1 live-proven: Termux com Ed25519 pinada + challenge aceito durável + replay em novo verifier falha fechado; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 029 — Vince V4.1 Termux Live Attestation Proof 006](ARCA_HANDOFF_CHECKPOINT_2026-09-23_029.md). A issue #130 concluiu com `ATTESTED_VERIFIED_RESULT` no run `35830210570`; request `7874056b…`, result `30e869b6…`, proof `5112d8a0…`. Identidade Ed25519 do Termux foi pinada antes do dispatch. Próximo hardening recomendado: V4.1.1 durable control-plane challenge consumption.
+Handoff mais recente: [checkpoint 030 — Vince V4.1.1 Durable Control-Plane Replay Proof](ARCA_HANDOFF_CHECKPOINT_2026-09-23_030.md). A PR #134 integrou o registry durável e o consumo com compare-and-swap; a PR #135 adicionou o gatilho read-only da prova. O run `35832175245` reprocessou a prova histórica 006 em um verifier novo e observou `VINCE_V41_CHALLENGE_REPLAY` / `DURABLE_REPLAY_REJECTED`, com `workerReexecuted:false`. V4.1.1 está concluído; próximo gate Vince: V5 endpoint availability/routing.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -24,6 +24,8 @@ CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853
 CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
 ## Retomada imediata
+
+Vince: V4.1.1 está concluído e canônico. O worker Termux V4.1 permanece one-shot, a identidade Ed25519 continua pinada e o plano de controle agora persiste challenges aceitos no canal dedicado. A prova de replay em processo novo passou sem reexecutar o celular. Próximo gate funcional: V5 endpoint availability/routing, mantendo Edge Steward congelado.
 
 O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 

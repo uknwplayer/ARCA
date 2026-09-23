@@ -1,6 +1,6 @@
 # ARCA — Matriz de estado 0.4.0-rc.1
 
-Data de corte: 2026-09-22. Referência de entrada: `d10d8516ec05c8e1c8378159ed6459da966a61fb`.
+Data de corte: 2026-09-23. Referência de entrada Vince V4.1.1: `ed892ba47057f39608028a7032636c0a756802f5`.
 
 Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada e registrada; não significa produção.
 
@@ -11,7 +11,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Protocolo de agentes e AIE | sim | sim | parcial | não | testes de capacidades, guardrails e runtime | avaliação prolongada e SLOs |
 | Fila investigativa compartilhada | sim | sim | não | não | PRs #56–#57 | operação contínua e telemetria |
 | Malha executora | sim | sim | sim | não | run 35539487516, 4/4 filhos | resiliência prolongada e governança |
-| Vince Pathfinder/Recovery V0.4 + V4/V4.1 | sim | sim | sim para V1–V4.1 limitado | não | PR #110/#113/#116/#118/#120/#122/#124/#127/#129/#132; issue #130; run `35830210570`; proof `5112d8a0…` | V4.1.1 durable control-plane replay ledger; V5 endpoint availability; signer V3.2-live |
+| Vince Pathfinder/Recovery V0.4 + V4/V4.1.1 | sim | sim | sim para V1–V4.1.1 limitado | não | PR #110/#113/#116/#118/#120/#122/#124/#127/#129/#132/#134/#135; runs `35830210570` e `35832175245`; proof `5112d8a0…`; durable replay `DURABLE_REPLAY_REJECTED` | V5 endpoint availability/routing; signer V3.2-live |
 | Observador PNCP nacional | sim | sim | parcial | não | PRs #58–#60; 27 UFs offline | agenda 24/7 e métricas reais |
 | Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
 | Correlação PNCP ↔ execução financeira M2/M5-A | sim, M2 sintético + M5 gate pré-correlação | sim | não | não | PR #79 + #94; M5 pós-merge 35799032982 | duas entradas live normalizadas e custodiais |
