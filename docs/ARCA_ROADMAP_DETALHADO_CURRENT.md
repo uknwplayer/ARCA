@@ -87,7 +87,7 @@ Aceite: execução determinística e relatório sanitizado, [PR #81](https://git
 
 ## Marco M4 — Live controlado de uma fonte por vez
 
-Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; primeiro GET Portal executado, mas rejeitado por autenticação antes de captura validada**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
+Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; dois GETs Portal executados, ambos rejeitados por autenticação; token atual ainda é o previamente exposto**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
 
 Pré-condições:
 
@@ -105,7 +105,7 @@ Ordem:
 4. validar custódia antes de classificar;
 5. emitir somente recibos sanitizados.
 
-Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. O primeiro GET live ocorreu sob autorização #97 e retornou `UNAUTHORIZED`; uma nova tentativa depende de autenticação corrigida e nova autorização explícita. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
+Entrega M4b canônica: contrato oficial, transporte limitado, custódia privada durável e workflow manual estão integrados. A Fase A do M5 acrescenta manifesto PNCP+Portal e gate de custódia/normalização antes da correlação. O Portal Manifest Preview gera `scope_sha256` e hash do documento sem rede e sem API key/custody secrets. Dois GETs live ocorreram sob autorizações #97 e #101 e ambos retornaram `UNAUTHORIZED`; diagnóstico confirmou que o secret atual ainda usa o token previamente exposto. Próxima tentativa exige token realmente novo e nova autorização explícita. A API do Portal cobre execução federal; fontes estaduais/municipais exigem conectores próprios.
 
 Parada imediata: escopo divergente, custódia inválida, segredo ausente, resposta excessiva, ambiguidade de reexecução ou tentativa de publicação.
 
