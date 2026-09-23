@@ -157,3 +157,12 @@ Componente: `m5-d-prontidao-credencial-portal`.
 Função: separar token presente/formato/proveniência de atividade real. Produz fingerprint sanitizado e mantém `ACTIVE_UNKNOWN` até observação da própria API.
 
 Recuperação: em 401, preservar status e fingerprint, revisar emissão/configuração/documentação e exigir nova autorização antes de qualquer nova tentativa. Nunca concluir causa específica apenas pelo código HTTP.
+
+
+### Gate 040 — preflight Portal isolado
+
+Componente: `portal-isolated-preflight`.
+
+Função: validar fingerprint/proveniência da credencial, scope e cofre privado sem possuir capability de request ao endpoint do Portal.
+
+Recuperação: qualquer falha mantém rede Portal não autorizada. Corrigir metadado, secret ou cofre e repetir somente o preflight. O quarto GET continua em gate humano separado.
