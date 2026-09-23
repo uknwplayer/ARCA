@@ -1326,7 +1326,8 @@
       "estado": "pr_179_offline_fixture_zero_rede",
       "localizacao": [
         "src/investigation/transferegov-special-transfers-offline-adapter.mjs",
-        "docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md"
+        "docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md",
+        "config/public-source-registry-s1.json"
       ],
       "dependeDe": [
         "nucleo-core-event-store",
@@ -1336,7 +1337,8 @@
         "multisource-offline-gate"
       ],
       "entradas": [
-        "fixture sintetica de transferencias especiais"
+        "fixture sintetica de transferencias especiais",
+        "snapshot de registro S1"
       ],
       "saidas": [
         "Evidence Envelopes hash-only",
@@ -1378,7 +1380,8 @@
         "networkEnabled=false",
         "publicationEnabled=false",
         "humanReviewRequired=true",
-        "adverseFinding=false"
+        "adverseFinding=false",
+        "registry-v1-preserved-for-historical-digests"
       ]
     }
   ]
