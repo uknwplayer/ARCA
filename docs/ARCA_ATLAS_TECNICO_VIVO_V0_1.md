@@ -190,3 +190,12 @@ Estado: **planejado/congelado até solicitação explícita do usuário**.
 Função futura: oferecer uma interface única para modelos remotos ou locais, começando potencialmente pela OpenAI API sem servidor próprio. Deve manter capability discovery, trust separado, budget/custo e fallback por provider.
 
 Documento canônico: `docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md`.
+
+
+### M5-E — binding do preflight ao probe live
+
+Componente: `m5-e-preflight-binding`.
+
+Função: vincular o live probe ao estado sanitizado e revisado do Gate 040. Mudança de revisão, documento, credencial ou cofre invalida o digest antes da criação do transporte Portal.
+
+Recuperação: gerar novo preflight, revisar novos hashes e exigir nova autorização humana; nunca adaptar/reutilizar autorização automaticamente.

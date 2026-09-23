@@ -50,7 +50,8 @@
     "validate:m5-phase-b": "node scripts/validate-m5-phase-b.mjs",
     "validate:m5-phase-c": "node scripts/validate-m5-phase-c.mjs",
     "validate:m5-phase-d": "node --test tests/portal-credential-readiness.test.mjs tests/portal-credential-readiness-workflow.test.mjs tests/portal-controlled-live-probe.test.mjs",
-    "validate:portal-isolated-preflight": "node --test tests/portal-isolated-preflight.test.mjs"
+    "validate:portal-isolated-preflight": "node --test tests/portal-isolated-preflight.test.mjs",
+    "validate:m5-phase-e": "node --test tests/portal-preflight-attestation.test.mjs tests/portal-isolated-preflight.test.mjs tests/portal-controlled-live-probe.test.mjs tests/portal-credential-readiness-workflow.test.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"

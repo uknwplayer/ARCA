@@ -1184,6 +1184,70 @@
         "segredo fora do repositório",
         "ativação humana"
       ]
+    },
+    {
+      "id": "m5-e-preflight-binding",
+      "nome": "M5 Fase E — Binding do preflight ao probe live",
+      "tipo": "seguranca_investigacao",
+      "finalidade": "Impedir reutilização de autorização quando revisão, documento, credencial ou cofre mudarem.",
+      "estado": "candidato_offline",
+      "localizacao": [
+        "src/investigation/portal-preflight-attestation.mjs",
+        "scripts/arca-portal-related-documents-live-probe.mjs",
+        "docs/ARCA_M5_PORTAL_PREFLIGHT_BINDING_V0_1.md"
+      ],
+      "dependeDe": [
+        "portal-isolated-preflight",
+        "m5-d-prontidao-credencial-portal",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "m4-aquisicao-controlada"
+      ],
+      "entradas": [
+        "scope hash",
+        "preflight hash",
+        "credential fingerprint",
+        "estado atual dos secrets"
+      ],
+      "saidas": [
+        "authorizationBinding sanitizado",
+        "bloqueio fail-closed em mismatch"
+      ],
+      "capabilities": [
+        "digest deterministico",
+        "binding de credencial",
+        "binding de scope/revision/custodia"
+      ],
+      "limites": [
+        "não concede autorização de rede",
+        "sem retry automático",
+        "sem segredo no digest"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-phase-e"
+      ],
+      "modosDeFalha": [
+        "preflight mismatch",
+        "fingerprint mismatch",
+        "scope mismatch",
+        "custodia alterada"
+      ],
+      "recuperacao": [
+        "novo Gate 040",
+        "nova revisão humana",
+        "nova autorização explícita"
+      ],
+      "fallback": "0 request Portal",
+      "riscoDeReexecucao": "zero retry; autorização anterior não é reutilizável após drift",
+      "runbook": [
+        "docs/ARCA_M5_PORTAL_PREFLIGHT_BINDING_V0_1.md"
+      ],
+      "seguranca": [
+        "transporte criado somente após binding",
+        "humanAuthorizationRequired=true",
+        "token fora do digest"
+      ]
     }
   ]
 }

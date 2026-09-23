@@ -9,6 +9,10 @@ import {sealCustodyDirectory,openCustodyEnvelope} from "../src/machine-bridge/en
 import {createGitHubPrivateCustodyBackend} from "../src/machine-bridge/durable-private-custody.mjs";
 import {observePortalJsonSchema} from "../src/investigation/m5-portal-schema-observer.mjs";
 import {assessPortalCredentialReadiness,observePortalCredentialOutcome} from "../src/investigation/portal-credential-readiness.mjs";
+import {
+  buildPortalIsolatedPreflightAttestation,
+  verifyPortalPreflightBinding
+} from "../src/investigation/portal-preflight-attestation.mjs";
 
 export const PORTAL_RELATED_DOCUMENTS_PROBE_SCHEMA="arca.portal-related-documents-controlled-probe.v0.3";
 const DTO_FIELDS=new Set([
@@ -111,7 +115,6 @@ export async function runPortalRelatedDocumentsProbe({
   if(!/^[a-f0-9]{64}$/.test(expectedScopeHash)||scope.scopeSha256!==expectedScopeHash)
     throw new Error("ARCA_PORTAL_SCOPE_HASH_MISMATCH");
 
-  const transport=createPortalRelatedDocumentsTransport({fetchImpl,apiKey,timeoutMs:30000,maxBytes:65536,captureHttpErrors:true});
   let custody=durableCustodyBackend;
   if(!custody){
     const vaultRepository=repositoryName(env.ARCA_CUSTODY_VAULT_REPOSITORY);
@@ -129,10 +132,38 @@ export async function runPortalRelatedDocumentsProbe({
   const preflight=await custody.preflight();
   if(preflight?.ready!==true||preflight?.private!==true)
     throw new Error("ARCA_PORTAL_CUSTODY_PREFLIGHT_FAILED");
+
+  const preflightAttestation=buildPortalIsolatedPreflightAttestation({
+    revision:codeRevision,
+    scopeHash:scope.scopeSha256,
+    documentCodeSha256:scope.scope.documentCodeSha256,
+    credentialFingerprintSha256:credentialReadiness.credentialFingerprintSha256,
+    credentialProvenance:credentialReadiness.provenance,
+    credentialReceivedAt:credentialReadiness.receivedAt,
+    custodyRepositoryHash:preflight.repositoryHash,
+    custodyBranch:preflight.branch
+  });
+  const verifiedPreflight=verifyPortalPreflightBinding({
+    attestation:preflightAttestation,
+    expectedPreflightSha256:env.ARCA_PORTAL_PREFLIGHT_SHA256,
+    expectedCredentialFingerprintSha256:env.ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256
+  });
+  const authorizationBinding=Object.freeze({
+    preflightSha256:verifiedPreflight.preflightSha256,
+    credentialFingerprintSha256:verifiedPreflight.credentialFingerprintSha256,
+    scopeHash:verifiedPreflight.scopeHash,
+    revision:verifiedPreflight.revision
+  });
+
   if(preflightOnly)return Object.freeze({
     status:"PREFLIGHT_READY",
     scopeHash:scope.scopeSha256,
-    credentialReadiness
+    credentialReadiness,
+    authorizationBinding
+  });
+
+  const transport=createPortalRelatedDocumentsTransport({
+    fetchImpl,apiKey,timeoutMs:30000,maxBytes:65536,captureHttpErrors:true
   });
 
   const resolvedOutputDir=path.resolve(outputDir??env.ARCA_PORTAL_LIVE_OUTPUT_DIR??path.join(process.cwd(),"artifacts"));
@@ -179,6 +210,7 @@ export async function runPortalRelatedDocumentsProbe({
       scopeHash:scope.scopeSha256,
       scope:scope.scope,
       contractId:"PORTAL_EXPENSE_RELATED_DOCUMENTS",
+      authorizationBinding,
       credentialReadiness,
       credentialObservation,
       httpStatus:captured.status,
@@ -291,7 +323,8 @@ async function main(){
         scopeHash:result.scopeHash,
         credentialActiveState:result.credentialReadiness.activeState,
         credentialFingerprintSha256:result.credentialReadiness.credentialFingerprintSha256,
-        readyForExplicitAuthorization:result.credentialReadiness.readyForExplicitAuthorization
+        readyForExplicitAuthorization:result.credentialReadiness.readyForExplicitAuthorization,
+        preflightSha256:result.authorizationBinding.preflightSha256
       })+"\n");
       return;
     }
@@ -300,6 +333,7 @@ async function main(){
       probeStatus:result.proof.probeStatus,
       credentialState:result.proof.credentialObservation.observationState,
       credentialFingerprintSha256:result.proof.credentialReadiness.credentialFingerprintSha256,
+      preflightSha256:result.proof.authorizationBinding.preflightSha256,
       validationStatus:result.proof.validationStatus,
       scopeHash:result.proof.scopeHash,
       envelopeHash:result.proof.custody.envelopeHash,
