@@ -1,0 +1,59 @@
+name: ARCA Vince V4.1.1 Replay Proof 006
+
+run-name: Vince V4.1.1 durable replay rejection 006
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replay-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CHANNEL_BRANCH: vince-v41-termux-channel
+      JOB_ID: vince-v41-termux-live-006
+      REGISTRY_PATH: remote-jobs/v4.1/control/accepted-challenges.json
+      PIN_PATH: config/vince-v4.1/trusted-workers/vince-termux-android-1.json
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+
+      - name: Fetch dedicated Termux channel
+        run: |
+          git fetch --no-tags origin "$CHANNEL_BRANCH:refs/remotes/origin/$CHANNEL_BRANCH"
+
+      - name: Materialize historical accepted proof inputs
+        run: |
+          mkdir -p artifacts/channel
+          git show "origin/$CHANNEL_BRANCH:remote-jobs/v4.1/requests/$JOB_ID.json" > artifacts/channel/request.json
+          git show "origin/$CHANNEL_BRANCH:remote-jobs/v4.1/results/$JOB_ID.json" > artifacts/channel/result.json
+          git show "origin/$CHANNEL_BRANCH:$REGISTRY_PATH" > artifacts/channel/accepted-challenges.json
+
+      - name: Prove durable replay rejection
+        run: |
+          set +e
+          OUTPUT="$(node scripts/arca-vince-v411-verify-termux-live.mjs             --request artifacts/channel/request.json             --result artifacts/channel/result.json             --pin "$PIN_PATH"             --registry artifacts/channel/accepted-challenges.json             --proof-output artifacts/should-not-exist-proof.json             --registry-output artifacts/should-not-exist-registry.json 2>&1)"
+          RC=$?
+          set -e
+
+          printf '%s\n' "$OUTPUT"
+          if [[ "$RC" -eq 0 ]]; then
+            echo "replay was unexpectedly accepted" >&2
+            exit 3
+          fi
+          if ! grep -q "VINCE_V41_CHALLENGE_REPLAY" <<<"$OUTPUT"; then
+            echo "expected durable replay rejection was not observed" >&2
+            exit 4
+          fi
+
+          echo '{"status":"DURABLE_REPLAY_REJECTED","missionId":"vince-v41-termux-live-006","workerReexecuted":false,"registryDurable":true}'

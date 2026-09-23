@@ -1,0 +1,115 @@
+name: ARCA Vince V4.1.1 Durable Challenge Consumption
+
+run-name: Vince V4.1.1 durable consume ${{ inputs.job_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: V4.1 mission id already present in the dedicated Termux channel
+        required: true
+        default: vince-v41-termux-live-006
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  consume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CHANNEL_BRANCH: vince-v41-termux-channel
+      REGISTRY_PATH: remote-jobs/v4.1/control/accepted-challenges.json
+      PIN_PATH: config/vince-v4.1/trusted-workers/vince-termux-android-1.json
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+
+      - name: Validate mission id
+        env:
+          JOB_ID: ${{ inputs.job_id }}
+        run: |
+          if [[ ! "$JOB_ID" =~ ^vince-v41-[A-Za-z0-9._-]{1,96}$ ]]; then
+            echo "invalid V4.1 mission id" >&2
+            exit 2
+          fi
+
+      - name: Fetch dedicated Termux channel
+        run: |
+          git fetch --no-tags origin "$CHANNEL_BRANCH:refs/remotes/origin/$CHANNEL_BRANCH"
+
+      - name: Materialize request result and durable registry
+        env:
+          JOB_ID: ${{ inputs.job_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/channel
+          git show "origin/$CHANNEL_BRANCH:remote-jobs/v4.1/requests/$JOB_ID.json" > artifacts/channel/request.json
+          git show "origin/$CHANNEL_BRANCH:remote-jobs/v4.1/results/$JOB_ID.json" > artifacts/channel/result.json
+
+          if git cat-file -e "origin/$CHANNEL_BRANCH:$REGISTRY_PATH" 2>/dev/null; then
+            git show "origin/$CHANNEL_BRANCH:$REGISTRY_PATH" > artifacts/channel/accepted-challenges.json
+            echo "REGISTRY_EXISTS=true" >> "$GITHUB_ENV"
+            echo "REGISTRY_BLOB_SHA=$(git rev-parse "origin/$CHANNEL_BRANCH:$REGISTRY_PATH")" >> "$GITHUB_ENV"
+          else
+            cat > artifacts/channel/accepted-challenges.json <<'JSON'
+          {
+            "format": "arca-vince-v4.1-accepted-challenge-registry",
+            "version": 1,
+            "entries": []
+          }
+          JSON
+            echo "REGISTRY_EXISTS=false" >> "$GITHUB_ENV"
+            echo "REGISTRY_BLOB_SHA=" >> "$GITHUB_ENV"
+          fi
+
+      - name: Verify attestation against durable state
+        env:
+          JOB_ID: ${{ inputs.job_id }}
+        run: |
+          node scripts/arca-vince-v411-verify-termux-live.mjs             --request artifacts/channel/request.json             --result artifacts/channel/result.json             --pin "$PIN_PATH"             --registry artifacts/channel/accepted-challenges.json             --proof-output "artifacts/vince-v411-$JOB_ID-proof.json"             --registry-output artifacts/vince-v411-next-registry.json
+
+      - name: Consume challenge with compare-and-swap
+        env:
+          JOB_ID: ${{ inputs.job_id }}
+        run: |
+          set -euo pipefail
+          CONTENT_B64="$(base64 -w0 artifacts/vince-v411-next-registry.json)"
+          if [[ "$REGISTRY_EXISTS" == "true" ]]; then
+            gh api               --method PUT               "repos/$GITHUB_REPOSITORY/contents/$REGISTRY_PATH"               -f message="ops(vince): consume V4.1 challenge $JOB_ID"               -f content="$CONTENT_B64"               -f sha="$REGISTRY_BLOB_SHA"               -f branch="$CHANNEL_BRANCH"               > artifacts/vince-v411-registry-commit.json
+          else
+            gh api               --method PUT               "repos/$GITHUB_REPOSITORY/contents/$REGISTRY_PATH"               -f message="ops(vince): initialize durable challenge registry with $JOB_ID"               -f content="$CONTENT_B64"               -f branch="$CHANNEL_BRANCH"               > artifacts/vince-v411-registry-commit.json
+          fi
+
+      - name: Read back and confirm durable consumption
+        env:
+          JOB_ID: ${{ inputs.job_id }}
+        run: |
+          set -euo pipefail
+          gh api             "repos/$GITHUB_REPOSITORY/contents/$REGISTRY_PATH?ref=$CHANNEL_BRANCH"             --jq '.content'             | tr -d '\n'             | base64 --decode             > artifacts/vince-v411-persisted-registry.json
+
+          cmp -s artifacts/vince-v411-next-registry.json artifacts/vince-v411-persisted-registry.json
+
+          node scripts/arca-vince-v411-confirm-consumption.mjs             --proof-envelope "artifacts/vince-v411-$JOB_ID-proof.json"             --registry artifacts/vince-v411-persisted-registry.json
+
+      - name: Upload V4.1.1 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vince-v411-durable-consumption-${{ inputs.job_id }}-${{ github.run_id }}
+          path: |
+            artifacts/vince-v411-*-proof.json
+            artifacts/vince-v411-next-registry.json
+            artifacts/vince-v411-persisted-registry.json
+            artifacts/vince-v411-registry-commit.json
+          if-no-files-found: ignore
+          retention-days: 14
