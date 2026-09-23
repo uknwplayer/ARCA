@@ -148,3 +148,12 @@ Componente: `m5-c-observador-schema-portal`.
 Função: receber bytes Portal já custodiais e verificados, extrair somente estrutura/tipos sem valores e vincular a observação aos hashes de custódia. Não normaliza, não publica e não admite parser automaticamente.
 
 Recuperação: se houver drift ou estrutura incompatível, preservar a observação, manter a normalização bloqueada e exigir revisão humana. Não repetir GET apenas para “tentar outro schema”.
+
+
+### M5-D — prontidão da credencial Portal
+
+Componente: `m5-d-prontidao-credencial-portal`.
+
+Função: separar token presente/formato/proveniência de atividade real. Produz fingerprint sanitizado e mantém `ACTIVE_UNKNOWN` até observação da própria API.
+
+Recuperação: em 401, preservar status e fingerprint, revisar emissão/configuração/documentação e exigir nova autorização antes de qualquer nova tentativa. Nunca concluir causa específica apenas pelo código HTTP.

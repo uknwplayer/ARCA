@@ -8,6 +8,7 @@ import {createPortalRelatedDocumentsTransport} from "../src/investigation/portal
 import {sealCustodyDirectory,openCustodyEnvelope} from "../src/machine-bridge/encrypted-custody-envelope.mjs";
 import {createGitHubPrivateCustodyBackend} from "../src/machine-bridge/durable-private-custody.mjs";
 import {observePortalJsonSchema} from "../src/investigation/m5-portal-schema-observer.mjs";
+import {assessPortalCredentialReadiness,observePortalCredentialOutcome} from "../src/investigation/portal-credential-readiness.mjs";
 
 export const PORTAL_RELATED_DOCUMENTS_PROBE_SCHEMA="arca.portal-related-documents-controlled-probe.v0.3";
 const DTO_FIELDS=new Set([
@@ -91,6 +92,11 @@ export async function runPortalRelatedDocumentsProbe({
   const documentCode=requiredSecret(env.ARCA_PORTAL_DOCUMENT_CODE,"ARCA_PORTAL_DOCUMENT_CODE_REQUIRED",80);
   const apiKey=requiredSecret(env.ARCA_PORTAL_API_KEY,"ARCA_PORTAL_API_KEY_REQUIRED",4096,20);
   const passphrase=requiredSecret(env.ARCA_PORTAL_CUSTODY_PASSPHRASE,"ARCA_PORTAL_CUSTODY_PASSPHRASE_REQUIRED",4096,24);
+  const credentialReadiness=assessPortalCredentialReadiness({
+    apiKey,
+    provenance:env.ARCA_PORTAL_TOKEN_PROVENANCE,
+    receivedAt:env.ARCA_PORTAL_TOKEN_RECEIVED_AT
+  });
   const sourceRepo=repositoryName(env.GITHUB_REPOSITORY);
   const codeRevision=revision(env.GITHUB_SHA);
   const scope=buildM4ControlledScopeV02({
@@ -123,7 +129,11 @@ export async function runPortalRelatedDocumentsProbe({
   const preflight=await custody.preflight();
   if(preflight?.ready!==true||preflight?.private!==true)
     throw new Error("ARCA_PORTAL_CUSTODY_PREFLIGHT_FAILED");
-  if(preflightOnly)return Object.freeze({status:"PREFLIGHT_READY",scopeHash:scope.scopeSha256});
+  if(preflightOnly)return Object.freeze({
+    status:"PREFLIGHT_READY",
+    scopeHash:scope.scopeSha256,
+    credentialReadiness
+  });
 
   const resolvedOutputDir=path.resolve(outputDir??env.ARCA_PORTAL_LIVE_OUTPUT_DIR??path.join(process.cwd(),"artifacts"));
   const tempBase=path.resolve(temporaryParent);
@@ -135,6 +145,10 @@ export async function runPortalRelatedDocumentsProbe({
 
   try{
     const captured=await transport.fetchRelatedDocuments({documentCode});
+    const credentialObservation=observePortalCredentialOutcome({
+      readiness:credentialReadiness,
+      httpStatus:captured.status
+    });
     const responseBytes=Buffer.from(captured.bodyBytes);
     const responseBytesSha256=sha256(responseBytes);
     if(responseBytesSha256!==captured.responseBytesSha256)
@@ -165,6 +179,8 @@ export async function runPortalRelatedDocumentsProbe({
       scopeHash:scope.scopeSha256,
       scope:scope.scope,
       contractId:"PORTAL_EXPENSE_RELATED_DOCUMENTS",
+      credentialReadiness,
+      credentialObservation,
       httpStatus:captured.status,
       httpStatusClass,
       ...(captured.httpErrorCode?{httpFailureCode:captured.httpErrorCode}:{}),
@@ -270,12 +286,20 @@ async function main(){
   try{
     const result=await runPortalRelatedDocumentsProbe({preflightOnly:process.argv.includes("--preflight-only")});
     if(result.status==="PREFLIGHT_READY"){
-      process.stdout.write(JSON.stringify({status:result.status,scopeHash:result.scopeHash})+"\n");
+      process.stdout.write(JSON.stringify({
+        status:result.status,
+        scopeHash:result.scopeHash,
+        credentialActiveState:result.credentialReadiness.activeState,
+        credentialFingerprintSha256:result.credentialReadiness.credentialFingerprintSha256,
+        readyForExplicitAuthorization:result.credentialReadiness.readyForExplicitAuthorization
+      })+"\n");
       return;
     }
     process.stdout.write(JSON.stringify({
       schema:result.proof.schema,
       probeStatus:result.proof.probeStatus,
+      credentialState:result.proof.credentialObservation.observationState,
+      credentialFingerprintSha256:result.proof.credentialReadiness.credentialFingerprintSha256,
       validationStatus:result.proof.validationStatus,
       scopeHash:result.proof.scopeHash,
       envelopeHash:result.proof.custody.envelopeHash,

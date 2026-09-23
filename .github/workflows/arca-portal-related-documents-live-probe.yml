@@ -1,15 +1,23 @@
-name: ARCA Portal related-documents controlled probe
-run-name: Portal documents probe run ${{ github.run_id }}
+name: ARCA Portal — probe controlado de documentos relacionados
+run-name: Probe Portal controlado — execução ${{ github.run_id }}
 
 on:
   workflow_dispatch:
     inputs:
       confirmation:
-        description: Exact authorization for one Portal documents GET
+        description: Autorização exata para um único GET de documentos do Portal
         required: true
         type: string
       scope_sha256:
-        description: Reviewed v0.2 scope SHA-256
+        description: SHA-256 do escopo v0.2 revisado
+        required: true
+        type: string
+      token_provenance:
+        description: Deve ser exatamente OFFICIAL_EMAIL_REGISTRATION
+        required: true
+        type: string
+      token_received_at:
+        description: Instante UTC declarado em que o token foi recebido por e-mail
         required: true
         type: string
 
@@ -21,26 +29,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Check out the reviewed revision
+      - name: Obter a revisão analisada
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
 
-      - name: Set up Node 22.18
+      - name: Preparar Node 22.18
         uses: actions/setup-node@v4
         with:
           node-version: 22.18.0
 
-      - name: Install locked dependencies
+      - name: Instalar dependências travadas
         run: npm ci
 
-      - name: Validate reviewed scope and private vault without Portal access
+      - name: Validar escopo, credencial e cofre privado sem acessar o Portal
         env:
           ARCA_PORTAL_CONFIRMATION: ${{ inputs.confirmation }}
           ARCA_PORTAL_SCOPE_SHA256: ${{ inputs.scope_sha256 }}
           ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
           ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: ${{ inputs.token_received_at }}
           ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
           ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
           ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
@@ -49,12 +59,14 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: node scripts/arca-portal-related-documents-live-probe.mjs --preflight-only
 
-      - name: Capture one bounded Portal response
+      - name: Capturar uma única resposta limitada do Portal
         env:
           ARCA_PORTAL_CONFIRMATION: ${{ inputs.confirmation }}
           ARCA_PORTAL_SCOPE_SHA256: ${{ inputs.scope_sha256 }}
           ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
           ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: ${{ inputs.token_received_at }}
           ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
           ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
           ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
@@ -63,7 +75,7 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: node scripts/arca-portal-related-documents-live-probe.mjs
 
-      - name: Upload encrypted envelope and sanitized proof
+      - name: Enviar envelope criptografado e prova sanitizada
         if: always()
         uses: actions/upload-artifact@v4
         with:
