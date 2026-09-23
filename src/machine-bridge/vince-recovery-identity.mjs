@@ -3,13 +3,14 @@ import {
   ExecutionIdentityStore
 } from "./execution-identity.mjs";
 import {
+  MESH_VINCE_RECOVERY_RECEIPT_DOMAIN,
   signMeshStatement,
   verifyMeshSignedStatement
 } from "./mesh-identity.mjs";
+export {MESH_VINCE_RECOVERY_RECEIPT_DOMAIN};
 
 export const ARCA_VINCE_RECOVERY_IDENTITY_FORMAT="arca-vince-recovery-identity-v0.4";
 export const ARCA_VINCE_RECOVERY_RECEIPT_FORMAT="arca-vince-recovery-receipt-v0.4";
-export const MESH_VINCE_RECOVERY_RECEIPT_DOMAIN="arca.mesh.vince-recovery-receipt.v1";
 
 const HASH=/^[a-f0-9]{64}$/;
 const DISPATCH=/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
