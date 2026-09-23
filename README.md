@@ -11,6 +11,13 @@ Documentos de entrada:
 - [Checkpoint atual para retomada](docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_CURRENT.md)
 - [Roadmap detalhado atual](docs/ARCA_ROADMAP_DETALHADO_CURRENT.md)
 - [Política de checkpoint](docs/ARCA_CHECKPOINT_HANDOFF_POLICY_V0_1.md)
+- [Política oficial de idioma pt-BR](docs/ARCA_POLITICA_IDIOMA_PT_BR.md)
+- [Atlas Técnico Vivo](docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md)
+- [Inventário machine-readable do Atlas](docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json)
+
+## Idioma oficial
+
+O ARCA é um projeto brasileiro. **Português brasileiro (pt-BR) é o padrão obrigatório para documentação e demais conteúdos humanos novos ou significativamente alterados.** Termos externos, campos de API/protocolo, identificadores e mensagens exatas podem permanecer no original quando necessário à compatibilidade, sempre com explicação em português.
 
 ## Modelo operacional
 
