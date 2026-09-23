@@ -139,3 +139,12 @@ O marco M10 permanece congelado até o ARCA estar funcional de ponta a ponta e h
 O módulo M7-CIV é planejado para consolidar atividade legislativa e histórico público institucional/judicial/administrativo de agentes públicos. O Atlas deverá, quando implementado, mapear adaptadores por fonte, proteção contra homônimos, estados processuais e vínculo de proveniência.
 
 Regra: o ARCA poderá avaliar confiabilidade de fonte/evidência, não reputação ou “confiabilidade” de pessoa.
+
+
+### M5-C — observação estrutural do schema Portal
+
+Componente: `m5-c-observador-schema-portal`.
+
+Função: receber bytes Portal já custodiais e verificados, extrair somente estrutura/tipos sem valores e vincular a observação aos hashes de custódia. Não normaliza, não publica e não admite parser automaticamente.
+
+Recuperação: se houver drift ou estrutura incompatível, preservar a observação, manter a normalização bloqueada e exigir revisão humana. Não repetir GET apenas para “tentar outro schema”.
