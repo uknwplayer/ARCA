@@ -233,6 +233,16 @@ Ver `docs/ARCA_VINCE_V5_TERMUX_AB_ROUTING_V0_1.md` e `docs/ARCA_VINCE_V5_TERMUX_
 
 Aceite parcial alcançado para Vince V0.1–V0.4 + V4.1.1 + V5 A/B live: discovery, ACK, execução, retorno, failover, recovery pós-crash, rota heterogênea GitHub↔Replit, attestation Ed25519 no Termux, rejeição durável de replay e classificação live read-only de disponibilidade foram provados. V5 recusou corretamente transformar heartbeat de superfície em executor disponível. Work continua endpoint opcional e pode permanecer `INCONCLUSIVE` sem bloquear o Vince. O próximo gate prioritário deixa de ser Work e passa a ser conectar seleção V5 à execução one-shot V4.1.1 com exatamente um request e consumo durável, sem retry/failover automático. Replit deixou de ser dependência operacional. Presença móvel/Edge permanece futura.
 
+### V5→V4.1.1 — selected one-shot execution
+
+Estado: **CANDIDATO EM PR / PROBE 011 PRÉ-REGISTRADO NA ISSUE #150 / LIVE PENDENTE**.
+
+Próximo gate integra seleção e execução sem Work/Replit. Ele exige exatamente um endpoint V5 elegível, cria um dispatch vinculado a nodeId/fingerprint/request hash, faz o Termux selecionado revalidar o vínculo antes de `git-status`, verifica o resultado Ed25519 e consome o challenge por CAS no registry V4.1.1. O controle live roda no Termux; Actions permanece apenas CI.
+
+Não há retry/failover automático depois do dispatch. Qualquer falha exige reconciliação humana antes de novo request, para evitar execução duplicada.
+
+Ver `docs/ARCA_VINCE_V5_V411_SELECTED_ONESHOT_GATE_V0_1.md`.
+
 ## Marco M6 — Expansão territorial gradual
 
 Ordem operacional:
