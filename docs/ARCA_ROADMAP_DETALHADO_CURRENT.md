@@ -245,6 +245,23 @@ Estado: **VINCE V0.4 IMPLEMENTADO; V1–V3.1 LIVE-PROVEN; V3.2 TESTADO OFFLINE; 
 
 Objetivo conjunto: ampliar a capacidade do ARCA de descobrir ambientes/agentes autorizados, estabelecer rotas verificáveis de execução e retorno, recuperar continuidade após falhas e manter uma presença operacional leve e recuperável, sem transformar descoberta em autoridade.
 
+### Futuro — ARCA AI Gateway / OpenAI-compatible
+
+Estado: **PLANEJADO / CONGELADO ATÉ SOLICITAÇÃO EXPLÍCITA DO USUÁRIO / NÃO COMPETE COM M5**.
+
+Objetivo: desacoplar o ARCA de um fornecedor/modelo específico. A primeira rota futura pode ser a OpenAI API, sem servidor próprio, com custo por uso e budgets explícitos. O mesmo contrato poderá futuramente apontar para modelos locais, servidores próprios ou outros providers compatíveis.
+
+Regras:
+
+- preços/modelos não são congelados no roadmap; devem ser reconsultados no momento da ativação;
+- billing da API é tratado como custo operacional separado;
+- budget por missão/período;
+- roteamento por capability/custo;
+- descoberta não concede trust;
+- nenhuma API key ou chamada é ativada por inferência.
+
+Documento canônico: `docs/ARCA_AI_GATEWAY_OPENAI_COMPATIBLE_V0_1.md`.
+
 ### Futuro — ARCA Device Agent / Runtime Autônomo Local
 
 Estado: **PLANEJADO / CONGELADO / NÃO COMPETE COM M5**. **Caminho preferencial: ARCA Device Agent. Runtime Autônomo Local permanece congelado até solicitação explícita do usuário.**
