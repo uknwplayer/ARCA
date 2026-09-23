@@ -221,6 +221,16 @@ Relação com Vince:
 
 Gate de reativação do Edge Steward: somente depois de o núcleo investigativo provar operação live real e cadeia M5 aceita, salvo decisão explícita posterior do Criador. Até lá, documentação e arquitetura podem ser preservadas, mas implementação móvel não compete com M4/M5.
 
+### V5-Termux A/B — rota sem dependência de cota
+
+Estado: **CANDIDATO EM PR / PROVA LIVE PENDENTE**.
+
+Decisão operacional: Replit passa a ser somente evidência histórica do V4 e não é dependência operacional do Vince. ChatGPT Work permanece endpoint opcional e pode ficar indisponível por cota sem bloquear o Vince. O caminho prioritário de teste V5 passa a usar dois workers Termux logicamente independentes, com identidades Ed25519 e leases de presença assinadas separadas.
+
+O gate A/B deve provar primeiro seleção sem dispatch e troca controlada A→B quando A publica `WITHDRAWN` ou perde freshness. Isso prova failover lógico entre identidades/workers; dois workers no mesmo telefone não provam tolerância à perda física do aparelho. GitHub permanece transporte/registro; Actions pode validar CI, mas não é executor obrigatório do gate.
+
+Ver `docs/ARCA_VINCE_V5_TERMUX_AB_ROUTING_V0_1.md`.
+
 Aceite parcial alcançado para Vince V0.1–V0.4 + V4.1.1 + V5 foundation: discovery, ACK, execução, retorno, failover, recovery pós-crash, rota heterogênea GitHub↔Replit, attestation Ed25519 no Termux, rejeição durável de replay e classificação live read-only de disponibilidade foram provados. V5 recusou corretamente transformar heartbeat de superfície em executor disponível. Próximo gate para Work é obter um ACK canônico recente em prova de wake separada; até lá, route selection deve continuar `INCONCLUSIVE`. Replit deixou de ser dependência para attestation forte. Presença móvel/Edge permanece futura.
 
 ## Marco M6 — Expansão territorial gradual
