@@ -296,3 +296,24 @@ Custódia: envelope `d398da542596a7ad387f0d1c5bbe2b9e201e00e1f812507a7e2c97b16d4
 Próximo passo: parser/normalizador offline baseado na estrutura observada, com fixture sintética e testes de drift. Nenhum novo GET é necessário.
 
 Recuperação: não rerodar o run `35917902630`; qualquer futura aquisição exige novo Gate e autorização humana.
+
+
+### M5-F — parser financeiro Portal offline
+
+Componente: `m5-f-portal-related-documents-parser-offline`.
+
+Função: transformar a estrutura sanitizada observada no Gate 046 em um parser determinístico, testável e fail-closed, sem rede e sem abrir bytes live.
+
+Estado: **IMPLEMENTADO EM BRANCH / FIXTURE SINTÉTICA / LIVE NORMALIZATION BLOQUEADA**.
+
+Âncora: `observedSchemaSha256=79f6c837641baf1d6b09c545fe3df836c068ce8a29ff641b6723c477bcd666f6`.
+
+Entrada permitida atual: somente `SYNTHETIC_FIXTURE`.
+
+Saída: registros sintéticos normalizados, refs SHA-256 para documento/beneficiário/órgãos, `normalizationSha256`, `identityInferencesMade=false`, `publicationAuthorized=false`.
+
+Limites: exatamente os 11 campos observados; campo ausente/adicional, formato de data/valor incompatível, fase desconhecida ou schema hash divergente falham fechado. `CUSTODIAL_LIVE` é explicitamente recusado.
+
+Recuperação: corrigir apenas fixture/contrato ou abrir gate M5-G separado para admissão da normalização custodial. Não executar novo GET por causa de falha do parser.
+
+Runbook: `docs/ARCA_M5_PORTAL_RELATED_DOCUMENTS_PARSER_V0_1.md`.
