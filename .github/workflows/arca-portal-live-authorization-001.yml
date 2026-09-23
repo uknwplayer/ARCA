@@ -1,5 +1,5 @@
-name: ARCA Portal live authorization 001
-run-name: Portal live authorization 001 from issue #97
+name: ARCA Portal live authorization 002
+run-name: Portal live authorization 002 from issue #101
 
 on:
   issue_comment:
@@ -9,16 +9,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: arca-portal-live-auth-001
+  group: arca-portal-live-auth-002
   cancel-in-progress: false
 
 jobs:
   controlled-live-probe:
     if: >-
-      github.event.issue.number == 97 &&
+      github.event.issue.number == 101 &&
       github.event.issue.state == 'open' &&
       github.event.comment.user.login == 'uknwplayer' &&
-      github.event.comment.body == 'ARCA_PORTAL_LIVE_AUTHORIZATION_001_EXECUTE'
+      github.event.comment.body == 'ARCA_PORTAL_LIVE_AUTHORIZATION_002_EXECUTE'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -65,7 +65,7 @@ jobs:
       - name: Upload encrypted envelope and sanitized proof
         uses: actions/upload-artifact@v4
         with:
-          name: portal-live-auth-001-${{ github.run_id }}
+          name: portal-live-auth-002-${{ github.run_id }}
           path: |
             artifacts/portal-related-documents.envelope.json
             artifacts/portal-related-documents-proof.json
