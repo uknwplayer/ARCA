@@ -26,7 +26,7 @@ test("Gate 046 preflight por push não contém transporte live",()=>{
 
 test("Gate 046 live exige hashes completos no branch e revalida antes do GET",()=>{
   const workflow=fs.readFileSync(".github/workflows/arca-portal-related-documents-live-push.yml","utf8");
-  assert.match(workflow,/\^portal-live-related-documents-p\(\[a-f0-9\]\{64\}\\?\)/);
+  assert.match(workflow,/portal-live-related-documents-p\(\[a-f0-9\]\{64\}\)-c\(\[a-f0-9\]\{64\}\)/);
   assert.match(workflow,/ARCA_PORTAL_PREFLIGHT_SHA256/);
   assert.match(workflow,/ARCA_PORTAL_CREDENTIAL_FINGERPRINT_SHA256/);
   assert.match(workflow,/arca-portal-related-documents-scope-hash\.mjs/);
