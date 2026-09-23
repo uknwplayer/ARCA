@@ -185,17 +185,27 @@ function ghApi(args,{runImpl=run}={}){
   return runImpl("gh",["api",...args],{timeout:30_000,maxBuffer:512*1024}).stdout;
 }
 export function makeGhChannelClient({runImpl=run}={}){
+  function decodeResponse(raw){
+    const response=JSON.parse(raw);
+    if(response?.encoding!=="base64"||typeof response.content!=="string"||
+       typeof response.sha!=="string"||!/^[a-f0-9]{40}$/.test(response.sha))
+      throw new Error("TERMUX_V41_CHANNEL_RESPONSE_INVALID");
+    return {
+      value:JSON.parse(Buffer.from(response.content.replace(/\n/g,""),"base64").toString("utf8")),
+      blobSha:response.sha
+    };
+  }
   return {
-    async readJson({repository,branch,path}){
+    async readJsonWithMeta({repository,branch,path}){
       const raw=ghApi([
         "--method","GET",
         `repos/${repository}/contents/${path}`,
         "-f",`ref=${branch}`
       ],{runImpl});
-      const response=JSON.parse(raw);
-      if(response?.encoding!=="base64"||typeof response.content!=="string")
-        throw new Error("TERMUX_V41_CHANNEL_RESPONSE_INVALID");
-      return JSON.parse(Buffer.from(response.content.replace(/\n/g,""),"base64").toString("utf8"));
+      return decodeResponse(raw);
+    },
+    async readJson(input){
+      return (await this.readJsonWithMeta(input)).value;
     },
     async createJson({repository,branch,path,message,value}){
       const content=Buffer.from(JSON.stringify(value,null,2)+"\n","utf8").toString("base64");
@@ -204,6 +214,20 @@ export function makeGhChannelClient({runImpl=run}={}){
         `repos/${repository}/contents/${path}`,
         "-f",`message=${message}`,
         "-f",`content=${content}`,
+        "-f",`branch=${branch}`
+      ],{runImpl});
+      return JSON.parse(raw);
+    },
+    async updateJsonCas({repository,branch,path,message,value,sha}){
+      if(typeof sha!=="string"||!/^[a-f0-9]{40}$/.test(sha))
+        throw new Error("TERMUX_V41_CHANNEL_CAS_SHA_INVALID");
+      const content=Buffer.from(JSON.stringify(value,null,2)+"\n","utf8").toString("base64");
+      const raw=ghApi([
+        "--method","PUT",
+        `repos/${repository}/contents/${path}`,
+        "-f",`message=${message}`,
+        "-f",`content=${content}`,
+        "-f",`sha=${sha}`,
         "-f",`branch=${branch}`
       ],{runImpl});
       return JSON.parse(raw);
@@ -248,7 +272,10 @@ export async function runTermuxV41OneShot({
   channelRepository=TERMUX_V41_DEFAULT_CHANNEL_REPO,
   channelBranch=TERMUX_V41_DEFAULT_CHANNEL_BRANCH,
   channelClient=makeGhChannelClient(),
-  clock=()=>new Date()
+  clock=()=>new Date(),
+  expectedRequestSha256=null,
+  expectedWorkerNodeId=null,
+  expectedWorkerKeyFingerprint=null
 }={}){
   safeJobId(jobId);
   const requestPath=`remote-jobs/v4.1/requests/${jobId}.json`;
@@ -259,8 +286,14 @@ export async function runTermuxV41OneShot({
     path:requestPath
   });
   if(request.jobId!==jobId)throw new Error("TERMUX_V41_REQUEST_PATH_MISMATCH");
-  validateV41Request(request,{now:clock()});
+  const {requestSha256}=validateV41Request(request,{now:clock()});
+  if(expectedRequestSha256!==null&&requestSha256!==expectedRequestSha256)
+    throw new Error("TERMUX_V41_SELECTED_REQUEST_HASH_MISMATCH");
   const loaded=await loadTermuxV41Identity({directory:identityDirectory});
+  if(expectedWorkerNodeId!==null&&loaded.identity.nodeId!==expectedWorkerNodeId)
+    throw new Error("TERMUX_V41_SELECTED_WORKER_NODE_MISMATCH");
+  if(expectedWorkerKeyFingerprint!==null&&loaded.identity.keyFingerprint!==expectedWorkerKeyFingerprint)
+    throw new Error("TERMUX_V41_SELECTED_WORKER_FINGERPRINT_MISMATCH");
   const ledger=await assertChallengeUnused(loaded.paths,request.challenge);
 
   const startedAt=clock();
@@ -290,6 +323,7 @@ export async function runTermuxV41OneShot({
     channelRepository,
     channelBranch,
     requestPath,
-    resultPath
+    resultPath,
+    requestSha256
   });
 }
