@@ -1,6 +1,6 @@
 # ARCA — Vince Pathfinder V0.2 / Controlled Failover
 
-Status: **IMPLEMENTAÇÃO CANDIDATA; LIVE PROBE 002 PENDENTE**.
+Status: **CANÔNICO; LIVE PROBE 002 VERIFIED PARA FALHA PRÉ-ACEITAÇÃO**.
 
 ## Objetivo
 
@@ -49,7 +49,7 @@ Qualquer ambiguidade falha fechada.
 
 ## Live Probe 002
 
-Issue: #112.
+Issue: #112 — concluída. Control-plane run: `35809204841`; Satellite B run: `35809214584`.
 
 O ensaio força:
 
@@ -69,4 +69,4 @@ Critério de sucesso final:
 - `core_mutation_performed=false`;
 - `trust_modified=false`.
 
-Esta prova é V3 **limitada a falha pré-aceitação**. Não equivale ainda a recovery após crash no meio de uma execução aceita.
+Resultado observado: `failover_safe=true`, `duplicate_dispatch_detected=false`, único DispatchRef em Satellite B, `VERIFIED_RESULT` e hashes recomputados. Esta prova é V3 **limitada a falha pré-aceitação**. Não equivale ainda a recovery após crash no meio de uma execução aceita.
