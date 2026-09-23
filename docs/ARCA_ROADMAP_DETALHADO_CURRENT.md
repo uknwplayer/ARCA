@@ -111,7 +111,7 @@ Parada imediata: escopo divergente, custódia inválida, segredo ausente, respos
 
 ## Marco M5 — Live correlacionado limitado
 
-Estado: **FASE A INTEGRADA; FASE B PÓS-CUSTÓDIA EM PR; CADEIA LIVE AINDA AGUARDA PRIMEIRO SCHEMA PORTAL 2xx OBSERVADO**.
+Estado: **FASES A+B OFFLINE INTEGRADAS E TESTADAS; CADEIA LIVE AINDA AGUARDA PRIMEIRO 2xx PORTAL E SCHEMA REAL OBSERVADO**.
 
 Objetivo: uma investigação técnica fechada, sem acusação e sem publicação.
 
@@ -130,13 +130,13 @@ Aceite: cadeia completa auditável e revisão humana registrada.
 
 ### M5 Fase B — post-custody correlation
 
-Estado: **CANDIDATO OFFLINE / issue #154**.
+Estado: **INTEGRADO E TESTADO OFFLINE / PR #155 / CI #328 E #329 VERDES**.
 
-A Fase B implementa o trecho `pre-correlation READY → bundle normalizado vinculado à custódia → correlação → dois analistas independentes → verificação adversarial → HUMAN_REVIEW`.
+A Fase B implementa e testa o trecho `pre-correlation READY → bundle normalizado vinculado à custódia → correlação → dois analistas independentes → verificação adversarial → HUMAN_REVIEW`.
 
 Ela não executa rede e registra explicitamente `m5Accepted:false`. Dados normalizados só entram no correlator se carregarem as âncoras dos envelopes de custódia; bridges fortes exigem proveniência das duas fontes. Ver `docs/ARCA_M5_POST_CUSTODY_CORRELATION_V0_1.md`.
 
-O bloqueio live permanece o mesmo: obter um primeiro 2xx Portal autorizado, observar o schema real, construir/revisar o parser correspondente e só depois alimentar a Fase B com evidência live.
+O bloqueio live permanece o mesmo: obter um primeiro 2xx Portal autorizado, custodiar a resposta, observar o schema real, construir/revisar o parser correspondente e só depois alimentar a Fase B com evidência live. O CI canônico agora executa explicitamente `validate:m5-phase-a` e `validate:m5-phase-b`.
 
 
 ## Marco M5-R — Public Investigation & Referral Dossier
