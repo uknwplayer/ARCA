@@ -1,0 +1,44 @@
+{
+  "schema": "arca.tcu-acordaos-offline-fixture.v1",
+  "status": "AVAILABLE",
+  "records": [
+    {
+      "record": {
+        "key": "ACORDAO-FICTICIO-001",
+        "tipo": "ACORDAO",
+        "anoAcordao": "2026",
+        "titulo": "ACORDAO FICTICIO 001",
+        "numeroAcordao": "1001/2026",
+        "colegiado": "PLENARIO FICTICIO",
+        "dataSessao": "10/09/2026",
+        "relator": "RELATOR FICTICIO A",
+        "situacao": "PUBLICADO",
+        "sumario": "REGISTRO SINTETICO PARA TESTE DE NORMALIZACAO E PROVENIENCIA.",
+        "urlArquivo": "https://dados-abertos.apps.tcu.gov.br/fixture/acordao-001.doc",
+        "urlArquivoPDF": "https://dados-abertos.apps.tcu.gov.br/fixture/acordao-001.pdf",
+        "urlAcordao": "https://contas.tcu.gov.br/fixture/acordao-001"
+      },
+      "sourceUrl": "https://dados-abertos.apps.tcu.gov.br/api/acordao/recupera-acordaos",
+      "retrievedAt": "2026-09-23T17:20:00.000Z"
+    },
+    {
+      "record": {
+        "key": "ACORDAO-FICTICIO-002",
+        "tipo": "ACORDAO",
+        "anoAcordao": "2025",
+        "titulo": "ACORDAO FICTICIO 002",
+        "numeroAcordao": "2002/2025",
+        "colegiado": "CAMARA FICTICIA",
+        "dataSessao": "15/08/2025",
+        "relator": "RELATOR FICTICIO B",
+        "situacao": "PUBLICADO",
+        "sumario": "SEGUNDO REGISTRO SINTETICO PARA TESTAR DETERMINISMO E HASHES.",
+        "urlArquivo": "https://dados-abertos.apps.tcu.gov.br/fixture/acordao-002.doc",
+        "urlArquivoPDF": "https://dados-abertos.apps.tcu.gov.br/fixture/acordao-002.pdf",
+        "urlAcordao": "https://portal.tcu.gov.br/fixture/acordao-002"
+      },
+      "sourceUrl": "https://dados-abertos.apps.tcu.gov.br/api/acordao/recupera-acordaos",
+      "retrievedAt": "2026-09-23T17:21:00.000Z"
+    }
+  ]
+}

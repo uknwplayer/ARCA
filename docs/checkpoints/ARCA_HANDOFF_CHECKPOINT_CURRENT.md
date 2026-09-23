@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Gate 043 — Transferegov offline adicionado enquanto Gate 042 aguarda CGU**
+Checkpoint: **2026-09-23 / Gate 044 — TCU Acórdãos offline S2; Gate 042 aguarda CGU**
 
-Estado: **Gate 042 do Portal permanece em diagnóstico sem novo GET; suporte da CGU acionado; em paralelo, PR #179 adiciona Transferegov Transferências Especiais como terceiro adaptador offline do núcleo multifonte; zero rede Transferegov; primeiro 2xx Portal segue pendente; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Transferegov S1 integrado na main; Gate 042 do Portal permanece aguardando CGU sem novo GET; TCU Acórdãos S2 implementado em branch como quarta fonte pública offline, com jurisdição BR/NATIONAL e zero rede; primeiro 2xx Portal segue pendente; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 043 — expansão multifonte com Transferegov offline](ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md). O Gate 042 do Portal continua preservado e sem autorização para novo GET. Em paralelo, o PR #179 cria o snapshot `public-source-registry-s1.json`, onde `br.transferegov.public` fica `ACTIVE/OFFLINE_FIXTURE`, preservando o registro V1 e seus digests históricos; também adiciona fixture sintética, Evidence Envelopes hash-only e testes fail-closed. Nenhuma chamada live ao Transferegov foi executada.
+Handoff mais recente: [checkpoint 044 — TCU Acórdãos offline S2](ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md). A PR #179/Transferegov S1 está integrada e o CI pós-merge `35895334779` passou. O S2 cria `public-source-registry-s2.json`, ativa `br.tcu.open-data` somente em `OFFLINE_FIXTURE`, amplia Evidence Envelope de forma compatível para `BR/NATIONAL` e adiciona fixture/testes/validador de Acórdãos. Nenhuma chamada live ao TCU ou novo GET Portal foi executado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico, mas o bloqueio do Portal não paralisa a expansão de fontes. O Gate 042 segue aguardando resposta técnica da CGU, sem nova autorização de rede. Em paralelo, o Transferegov entra no núcleo multifonte somente em fixture offline pelo PR #179. O próximo avanço dessa fonte é concluir CI/revisão/merge; depois TCU, Siconfi, CEIS/CNEP, DOU e FNDE podem seguir o mesmo padrão. Qualquer `PUBLIC_GET` futuro continua exigindo contrato live, budgets, custódia e autorização humana específica.
+M5 continua o caminho crítico, mas o bloqueio do Portal não paralisa a expansão de fontes. O Gate 042 segue aguardando resposta técnica da CGU, sem nova autorização de rede. Transferegov S1 já está integrado; TCU Acórdãos S2 é a expansão atual e permanece offline. Depois dele, a fila é Siconfi, CEIS/CNEP, DOU e FNDE. Qualquer `PUBLIC_GET` futuro continua exigindo contrato live, budgets, custódia e autorização humana específica.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md`;
@@ -206,7 +207,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 043. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 044. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

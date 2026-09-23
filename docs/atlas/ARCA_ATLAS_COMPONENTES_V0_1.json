@@ -1383,6 +1383,71 @@
         "adverseFinding=false",
         "registry-v1-preserved-for-historical-digests"
       ]
+    },
+    {
+      "id": "tcu-acordaos-offline-s2",
+      "nome": "TCU — Acórdãos Offline S2",
+      "tipo": "investigacao_fonte_publica",
+      "finalidade": "Adicionar decisões documentais do TCU ao núcleo por fixture nacional segura.",
+      "estado": "s2_offline_fixture_zero_rede",
+      "localizacao": [
+        "src/investigation/tcu-acordaos-offline-adapter.mjs",
+        "config/public-source-registry-s2.json",
+        "docs/ARCA_TCU_ACORDAOS_OFFLINE_S2.md"
+      ],
+      "dependeDe": [
+        "nucleo-core-event-store"
+      ],
+      "chamadoPor": [
+        "validador-tcu-s2"
+      ],
+      "entradas": [
+        "fixture sintetica de acordaos",
+        "snapshot S2"
+      ],
+      "saidas": [
+        "Evidence Envelopes hash-only BR/NATIONAL",
+        "prova S2 sanitizada"
+      ],
+      "capabilities": [
+        "normalizacao offline",
+        "jurisdicao nacional",
+        "proveniencia",
+        "validacao de URLs oficiais"
+      ],
+      "limites": [
+        "sem PUBLIC_GET",
+        "sem inferencia adversa",
+        "sem publicacao",
+        "contexto decisorio exige revisao"
+      ],
+      "healthCheck": [
+        "npm run validate:tcu-s2",
+        "node --test tests/tcu-acordaos-offline-adapter.test.mjs"
+      ],
+      "modosDeFalha": [
+        "URL fora do TCU",
+        "data invalida",
+        "campo inesperado",
+        "source desabilitada",
+        "budget excedido"
+      ],
+      "recuperacao": [
+        "corrigir fixture/contrato",
+        "manter rede bloqueada",
+        "novo gate antes de live"
+      ],
+      "fallback": "fonte indisponivel sem suspeita",
+      "riscoDeReexecucao": "baixo; somente fixture",
+      "runbook": [
+        "docs/ARCA_TCU_ACORDAOS_OFFLINE_S2.md"
+      ],
+      "seguranca": [
+        "networkUsed=false",
+        "publicationAttempted=false",
+        "humanReviewRequired=true",
+        "adverseFinding=false"
+      ]
     }
   ]
 }

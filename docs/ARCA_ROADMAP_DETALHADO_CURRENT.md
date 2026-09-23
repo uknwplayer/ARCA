@@ -117,6 +117,28 @@ Depois de S1, a sequência de expansão prevista é TCU → Siconfi → CEIS/CNE
 
 Ver `docs/ARCA_TRANSFEREGOV_SPECIAL_TRANSFERS_OFFLINE_V0_1.md` e checkpoint 043.
 
+## Linha S2 — TCU Acórdãos offline
+
+Estado: **IMPLEMENTADO EM BRANCH / OFFLINE FIXTURE / ZERO REDE**.
+
+O snapshot `config/public-source-registry-s2.json` preserva S1 e ativa `br.tcu.open-data` para `OFFLINE_FIXTURE`, usando o webservice oficial de Acórdãos do TCU.
+
+Entregas:
+
+- adaptador offline estrito para o schema documentado de Acórdãos;
+- fixture sintética nacional;
+- suporte compatível de Evidence Envelope a `BR/NATIONAL`;
+- hashes/proveniência sem material bruto;
+- teste de datas, URLs TCU, campos inesperados e source fail-closed;
+- validador `npm run validate:tcu-s2`;
+- etapa própria no CI.
+
+Limites: acórdão é contexto documental e deve ser lido com processo, situação, recursos e decisões posteriores; nunca vira automaticamente prova de irregularidade atual. S2 não habilita `PUBLIC_GET`.
+
+Depois do S2, a fila é S3 Siconfi → S4 CEIS/CNEP → S5 DOU → S6 FNDE.
+
+Ver `docs/ARCA_TCU_ACORDAOS_OFFLINE_S2.md` e checkpoint 044.
+
 ## Marco M4 — Live controlado de uma fonte por vez
 
 Estado: **M4a/M4b integrados; M5 Fase A e preview offline integrados; quatro GETs Portal retornaram 401; o quarto ocorreu no run `35886041113` com binding Gate 040 válido, exatamente 1 request, zero retry e custódia privada durável; nenhum quinto GET autorizado**. M4a: [PR #84](https://github.com/uknwplayer/ARCA/pull/84), commit [`d36df26`](https://github.com/uknwplayer/ARCA/commit/d36df26a45d736f1fdc605721426b3a8b228d4ba), CI da PR [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122) e pós-merge [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987), ambos verdes. PR #88 integrada no commit `03d1465034de1151b7add59ab2b404a14f11fe72`; CI pós-merge run `35798543860` verde. Ver [checkpoint 013](checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_013.md), `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e checkpoint 011.
