@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / M5 Fase B post-custody integrada**
+Checkpoint: **2026-09-23 / Atlas Técnico Vivo, pt-BR e Vince Discovery Global documentados**
 
 Estado: **M5 Fases A+B offline integradas: gate pré-correlação + caminho pós-custódia até HUMAN_REVIEW; M5 live ainda não aceito; Portal segue sem primeiro 2xx/schema real; Vince Probe 011 estável; Edge e self-improvement congelados**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 035 — M5 Fase B Post-Custody](ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md). A PR #155 integrou o gate pós-custódia: dados normalizados precisam permanecer vinculados aos envelopes de custódia, correlação respeita orçamento, dois analistas independentes recebem o mesmo digest, a verificação adversarial preserva conflitos/lacunas e a fila termina em `HUMAN_REVIEW`. O CI canônico agora executa `validate:m5-phase-a` e `validate:m5-phase-b`. Nenhum novo GET foi realizado e `m5Accepted:false` permanece obrigatório.
+Handoff mais recente: [checkpoint 036 — Atlas Técnico Vivo, pt-BR e Vince Discovery Global](ARCA_HANDOFF_CHECKPOINT_2026-09-23_036.md). A PR #155 integrou o gate pós-custódia: dados normalizados precisam permanecer vinculados aos envelopes de custódia, correlação respeita orçamento, dois analistas independentes recebem o mesmo digest, a verificação adversarial preserva conflitos/lacunas e a fila termina em `HUMAN_REVIEW`. O CI canônico agora executa `validate:m5-phase-a` e `validate:m5-phase-b`. Nenhum novo GET foi realizado e `m5Accepted:false` permanece obrigatório.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -49,7 +49,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_036.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_034.md`;
 3. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md`;
 4. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md`;
@@ -164,7 +165,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 035. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 036. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
