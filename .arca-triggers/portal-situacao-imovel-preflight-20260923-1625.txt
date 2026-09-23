@@ -1,0 +1,2 @@
+ARCA Portal situacao-imovel Gate 040-SI trigger
+No secrets. No network authorization embedded.
