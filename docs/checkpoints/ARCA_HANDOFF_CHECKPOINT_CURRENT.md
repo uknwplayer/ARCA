@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / M5 Fase C observação de schema integrada**
+Checkpoint: **2026-09-23 / M5 Fase D prontidão da credencial Portal integrada**
 
-Estado: **M5 Fases A+B+C offline integradas: pré-correlação + pós-custódia + observação estrutural do schema Portal; M5 live ainda não aceito; Portal segue sem primeiro 2xx real; Vince Probe 011 estável; Edge/self-improvement/M10 congelados**
+Estado: **M5 Fases A+B+C+D offline integradas: pré-correlação + pós-custódia + observação estrutural + prontidão verificável da credencial Portal; M5 live ainda não aceito; Portal segue sem primeiro 2xx real; Vince Probe 011 estável; Edge/self-improvement/M10 congelados**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 038 — M5 Fase C observação estrutural do schema Portal](ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md). A PR #162 integrou um observador pós-custódia que registra somente raiz/campos/tipos/presença e hashes, sem valores. Schema drift deixa de exigir nova captura: os bytes custodiais podem ser reutilizados para revisão. Nenhum parser/normalização é admitido automaticamente.
+Handoff mais recente: [checkpoint 039 — M5 Fase D prontidão verificável da credencial Portal](ARCA_HANDOFF_CHECKPOINT_2026-09-23_039.md). A PR #165 integrou fingerprint sanitizado, proveniência OFFICIAL_EMAIL_REGISTRATION, estado ACTIVE_UNKNOWN antes da rede e interpretação conservadora de 401/403/429/5xx. Nenhum novo GET foi executado.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -39,11 +39,11 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. Fases A, B e C estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até haver token oficialmente ativo + autorização explícita nova, continuar apenas com preparação fail-closed que não invente schema live.
+M5 continua o caminho crítico. Fases A, B, C e D estão integradas e testadas offline. O próximo bloqueio material é externo e deliberado: obter o primeiro 2xx Portal autorizado. A partir daí, a Fase C já está pronta para observar o schema real a partir dos bytes custodiais; somente após revisão humana será permitido desenhar/testar o parser que poderá alimentar a normalização e a Fase B. **Não executar quarto GET por inferência.** Até um token obtido pelo fluxo oficial ser submetido a preflight e houver autorização explícita nova, continuar apenas com preparação fail-closed. Atividade real da credencial permanece ACTIVE_UNKNOWN até observação da própria API.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial Gov.br/e-mail que a chave está efetivamente emitida/ativa e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O gate imediato é confirmar pelo fluxo oficial de cadastro de e-mail que o token foi recebido; atividade real só pode ser observada pela própria API e, se necessário, acionar o suporte técnico da API. Não executar quarto GET sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 
@@ -55,7 +55,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_039.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_037.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_036.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md`;
@@ -173,7 +174,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. O primeiro GET Por
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 038. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 039. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
