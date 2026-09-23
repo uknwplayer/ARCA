@@ -52,11 +52,14 @@ The PEM is not stored in Git or ordinary runtime configuration.
 
 The broker intentionally does not expose a generic `signStatement(payload, domain)` method.
 
-V1 exposes only:
+V1 exposes only closed, typed operations, including:
 
 - `signNodeAdvertisement(...)`;
 - `signReceipt(...)`;
-- `signRequestEvidence(...)`.
+- `signRequestEvidence(...)`;
+- `signCognitiveSubstitutionReceipt(...)`;
+- `signReconciledFailoverReceipt(...)`;
+- `signVinceRecoveryReceipt(...)`.
 
 This keeps the signing authority bounded to already-defined Mesh statement classes.
 
@@ -96,6 +99,7 @@ with a bounded purpose such as:
 mesh-sign:request-evidence:<nodeId>
 mesh-sign:receipt:<nodeId>
 mesh-sign:node-advertisement:<nodeId>
+mesh-sign:vince-recovery-receipt:<nodeId>
 ```
 
 The existing Credential Vault records `credential.used` audit events without storing the secret.
