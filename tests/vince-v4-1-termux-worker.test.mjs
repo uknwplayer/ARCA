@@ -209,3 +209,39 @@ test("one-shot worker rejects unsafe job id before any channel access",async()=>
   );
   assert.equal(reads,0);
 });
+
+
+test("one-shot selected binding rejects wrong request hash and worker before git execution",async()=>{
+  await withTemp(async root=>{
+    const repo=await makeGitRepo(root);
+    const dir=join(root,"identity");
+    await initTermuxV41Identity({directory:dir,nodeId:"vince-termux-selected"});
+    const loaded=await loadTermuxV41Identity({directory:dir});
+    const req=request("vince-v41-termux-selected-001");
+    let publications=0;
+    const channelClient={
+      async readJson(){return req},
+      async createJson(){publications++;return {ok:true}}
+    };
+    await assert.rejects(
+      ()=>runTermuxV41OneShot({
+        jobId:req.jobId,repoPath:repo,identityDirectory:dir,channelClient,
+        clock:()=>T0,
+        expectedRequestSha256:"0".repeat(64),
+        expectedWorkerNodeId:loaded.identity.nodeId,
+        expectedWorkerKeyFingerprint:loaded.identity.keyFingerprint
+      }),
+      /SELECTED_REQUEST_HASH_MISMATCH/
+    );
+    await assert.rejects(
+      ()=>runTermuxV41OneShot({
+        jobId:req.jobId,repoPath:repo,identityDirectory:dir,channelClient,
+        clock:()=>T0,
+        expectedWorkerNodeId:"another-worker",
+        expectedWorkerKeyFingerprint:loaded.identity.keyFingerprint
+      }),
+      /SELECTED_WORKER_NODE_MISMATCH/
+    );
+    assert.equal(publications,0);
+  });
+});
