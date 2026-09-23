@@ -1,0 +1,50 @@
+name: ARCA Portal — preflight isolado sem captura
+run-name: Preflight Portal isolado — execução ${{ github.run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      token_provenance:
+        description: Deve ser exatamente OFFICIAL_EMAIL_REGISTRATION
+        required: true
+        type: string
+      token_received_at:
+        description: Instante UTC declarado em que o token foi recebido por e-mail
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  preflight-isolado:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Obter a revisão analisada
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar credencial, escopo e cofre sem chamar o Portal
+        env:
+          ARCA_PORTAL_PREFLIGHT_CONFIRMATION: PORTAL_PREFLIGHT_ONLY
+          ARCA_PORTAL_DOCUMENT_CODE: ${{ secrets.ARCA_PORTAL_DOCUMENT_CODE }}
+          ARCA_PORTAL_API_KEY: ${{ secrets.ARCA_PORTAL_API_KEY }}
+          ARCA_PORTAL_TOKEN_PROVENANCE: ${{ inputs.token_provenance }}
+          ARCA_PORTAL_TOKEN_RECEIVED_AT: ${{ inputs.token_received_at }}
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: node scripts/arca-portal-isolated-preflight.mjs
