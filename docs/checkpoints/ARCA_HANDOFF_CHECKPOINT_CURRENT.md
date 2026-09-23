@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-23 / Vince Recovery Signed Identity V0.4 canônico**
+Checkpoint: **2026-09-23 / Vince V4 heterogêneo preparado; tentativa 004 inconclusiva**
 
-Estado: **Vince V0.4 canônico; V3.1 live-proven e V3.2 signed-identity hardening testado offline; Portal segue em 401; Edge Steward congelado**
+Estado: **Vince V0.4 + V4 gate/verifier canônicos; Replit V4 isolado preparado; probe 004 bloqueado por Contents write 403; Portal em 401; Edge congelado**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 024 — Vince Recovery Signed Identity V0.4](ARCA_HANDOFF_CHECKPOINT_2026-09-23_024.md). A PR #118 integrou rehash cruzado Python→JS, Execution Identity create-only e recibo Mesh Ed25519 de recovery com operação fechada no Signer Broker. CI PR `35811942932` e pós-merge `35812109997` verdes. V3.2 ainda não tem signer operacional persistente live; V4 é o próximo marco funcional.
+Handoff mais recente: [checkpoint 025 — Vince V4 heterogêneo preparado; tentativa 004 inconclusiva](ARCA_HANDOFF_CHECKPOINT_2026-09-23_025.md). PR #120 integrou o gate V4 e PR #122 o verificador Replit. O job `vince-v4-live-004` foi lido e executado localmente no Replit, mas a publicação do resultado falhou por HTTP 403 `Resource not accessible by personal access token`; nenhum result foi aceito, nenhum retry/failover ocorreu. A correção atual é conceder somente Contents read/write ao canal V4 canônico.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
