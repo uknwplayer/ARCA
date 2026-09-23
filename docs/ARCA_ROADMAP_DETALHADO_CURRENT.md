@@ -365,6 +365,68 @@ Prioridade:
 
 Cada fonte passa por: declaração → fixture offline → testes → live isolado → correlação limitada → operação gradual.
 
+
+
+### M7-CIV — Inteligência cívica e histórico documental de agentes públicos
+
+Estado: **PLANEJADO / NÃO É CAMINHO CRÍTICO / IMPLEMENTAÇÃO SOMENTE APÓS GATES DO NÚCLEO**.
+
+Relevância: alta para a finalidade investigativa do ARCA, desde que permaneça documental, reproduzível e neutra. O objetivo não é classificar pessoas como “confiáveis” ou “não confiáveis”, mas reconstruir fatos públicos verificáveis e a qualidade das evidências.
+
+Escopo futuro:
+
+1. **Projetos de lei e atividade legislativa**:
+   - autoria e coautoria;
+   - texto, ementa, temas e versões;
+   - tramitação;
+   - pareceres;
+   - emendas;
+   - votações nominais públicas;
+   - relações entre proposições;
+   - cronologia e resultado legislativo.
+
+2. **Histórico institucional de políticos e servidores/agentes públicos**:
+   - mandatos e cargos públicos;
+   - funções e órgãos;
+   - vínculos institucionais públicos;
+   - filiações partidárias quando oficialmente publicadas e relevantes ao registro histórico;
+   - atos de nomeação, exoneração, afastamento e sanções quando públicos.
+
+3. **Histórico judicial público**:
+   - somente processos e metadados legalmente públicos;
+   - classe, tribunal, movimentações, decisões e estado processual quando disponíveis;
+   - processos sigilosos ou dados protegidos permanecem fora do alcance;
+   - ausência em uma fonte nunca significa ausência de processo.
+
+4. **Histórico criminal público**:
+   - somente fatos processuais/decisões oficiais publicamente acessíveis;
+   - separar rigorosamente investigação, acusação, denúncia recebida, condenação, absolvição, arquivamento, prescrição, recurso e trânsito em julgado;
+   - nunca transformar processo ou acusação em culpa;
+   - nenhum “score criminal” ou inferência sobre caráter.
+
+5. **Histórico administrativo e de controle**:
+   - sanções administrativas oficialmente publicadas;
+   - decisões de tribunais de contas e órgãos de controle;
+   - PAD/disciplinar apenas quando legalmente público;
+   - CEAF/CEIS/CNEP e outras bases oficiais conforme pertinência e escopo legal;
+   - registrar vigência, órgão aplicador, fundamento e estado da sanção.
+
+6. **Confiabilidade**:
+   - pontuar/qualificar **fonte, documento, proveniência, consistência e vínculo**, nunca a pessoa;
+   - preservar contradições e retificações;
+   - registrar fonte primária, data, jurisdição e estado atual;
+   - não produzir ranking político, reputacional ou eleitoral.
+
+7. **Correlação futura**:
+   - relacionar projetos, votos, cargos, contratos, despesas, sanções e processos somente por identificadores e vínculos documentais fortes;
+   - correlação gera hipótese/linha de investigação, não conclusão adversa;
+   - revisão humana permanece obrigatória.
+
+Fontes candidatas prioritárias: Dados Abertos da Câmara, Dados Abertos do Senado, CNJ/DataJud, diários oficiais, TCU/TCEs/TCMs, CGU/CEAF/CEIS/CNEP e demais bases oficiais aplicáveis.
+
+Pré-condições: contrato de fonte próprio, política de dados pessoais e proteção contra homônimos, estados epistêmicos específicos, testes sintéticos, revisão jurídica/privacidade e gate humano antes de qualquer publicação.
+
+
 ## Marco M8 — Interface humana do Observador
 
 Funções:
@@ -394,6 +456,75 @@ Pendências:
 - calibração de precisão/recall;
 - plano de incidentes;
 - implantação multiusuário segura.
+
+
+
+## Marco M10 — Produto, governança, interface e acesso
+
+Estado: **CONGELADO ATÉ O ARCA ESTAR FUNCIONAL DE PONTA A PONTA E HAVER DECISÃO HUMANA EXPLÍCITA DE DESCONGELAMENTO**.
+
+Objetivo: somente após o núcleo investigativo estar funcional, transformar o ARCA em uma superfície pública/operacional madura, com governança, privacidade, segurança, interface e acesso definidos antes de qualquer abertura ampla a usuários.
+
+Entregas futuras:
+
+1. **Política de Privacidade**:
+   - finalidade e base de tratamento por categoria de dado;
+   - minimização;
+   - retenção e descarte;
+   - dados públicos versus material custodial/privado;
+   - direitos e canais de contato;
+   - transparência sobre automação e revisão humana.
+
+2. **Política de Segurança**:
+   - threat model;
+   - gestão de credenciais e segredos;
+   - segregação de funções;
+   - logging/auditoria;
+   - resposta a incidentes;
+   - recuperação;
+   - gestão de vulnerabilidades;
+   - controles de abuso e acesso indevido.
+
+3. **Termos de Uso**:
+   - escopo e finalidade do ARCA;
+   - usos permitidos e proibidos;
+   - limites das análises;
+   - distinção entre evidência pública, hipótese, estado epistêmico e conclusão oficial;
+   - responsabilidades do operador/usuário;
+   - regras para publicação, contestação e revisão.
+
+4. **Interface humana / site / frontend**:
+   - arquitetura de informação;
+   - navegação por investigações, fontes, timeline, evidências, relações e estados;
+   - visualização de proveniência e contraprovas;
+   - layout responsivo/mobile-first;
+   - acessibilidade;
+   - design inspirado em princípios de clareza e organização visual do ecossistema gov.br, **sem imitar identidade oficial, brasões, marcas ou sugerir que o ARCA seja serviço governamental**;
+   - design system próprio do ARCA em pt-BR.
+
+5. **Painel do Criador**:
+   - concluir o painel administrativo do Criador;
+   - visão de saúde do sistema;
+   - filas, agentes, workers, fontes e custos;
+   - gates de aprovação;
+   - gestão de incidentes;
+   - estado dos checkpoints/Atlas;
+   - configuração de políticas;
+   - trilha de auditoria;
+   - controles de publicação e emergência.
+
+6. **Análise de necessidade de login**:
+   - primeiro decidir se login é realmente necessário;
+   - evitar autenticação se a função puder ser pública/read-only sem conta;
+   - se login for necessário, definir papéis, menor privilégio, recuperação de conta, autenticação forte, sessões, auditoria e minimização de dados;
+   - separar observador público, colaborador/revisor e Criador/administrador;
+   - não criar banco de perfis/contas sem necessidade funcional comprovada.
+
+7. **Gate pré-lançamento**:
+   - revisão conjunta de privacidade, segurança, termos, frontend, acessibilidade, autenticação (se houver), Atlas e runbooks;
+   - nenhum lançamento público amplo antes desse gate.
+
+Regra de congelamento: nenhuma implementação desta frente deve competir com M5, M5-R, M6–M9 ou com a conclusão do núcleo. O descongelamento exige decisão humana explícita declarando o ARCA funcional de ponta a ponta.
 
 ## Regra de checkpoint por ciclo
 
