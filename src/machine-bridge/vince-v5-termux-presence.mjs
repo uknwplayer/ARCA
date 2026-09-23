@@ -18,7 +18,6 @@ import {
   loadTermuxV41Identity,
   makeGhChannelClient
 } from "./vince-v4-1-termux-worker.mjs";
-import {sha256Canonical} from "./vince-v4-replit.mjs";
 
 export const ARCA_VINCE_V5_TERMUX_PRESENCE_FORMAT="arca-vince-v5-termux-presence-v1";
 export const ARCA_VINCE_V5_TERMUX_PRESENCE_STATES=Object.freeze(["READY","WITHDRAWN"]);
@@ -28,6 +27,13 @@ const HASH=/^[a-f0-9]{64}$/;
 const STATES=new Set(ARCA_VINCE_V5_TERMUX_PRESENCE_STATES);
 const CAP=/^[A-Za-z0-9._:-]{1,128}$/;
 
+function plain(value){return !!value&&typeof value==="object"&&!Array.isArray(value)}
+function canonical(value){
+  if(Array.isArray(value))return "["+value.map(canonical).join(",")+"]";
+  if(plain(value))return "{"+Object.keys(value).sort().map(k=>JSON.stringify(k)+":"+canonical(value[k])).join(",")+"}";
+  return JSON.stringify(value);
+}
+function sha256Canonical(value){return createHash("sha256").update(Buffer.from(canonical(value),"utf8")).digest("hex")}
 function sha256Bytes(value){return createHash("sha256").update(value).digest("hex")}
 function iso(value,label){
   const text=String(value??"").trim();
@@ -180,7 +186,8 @@ export function verifyTermuxV5Presence({
   )throw new Error("VINCE_V5_TERMUX_PIN_MISMATCH");
 
   capabilities(presence.capabilities);
-  if(!presence.authority||Object.values(presence.authority).some(v=>v!==false))
+  if(!exactKeys(presence.authority,["trustGranted","codeMutation","canonicalWrite","executionAuthority"])||
+     Object.values(presence.authority).some(v=>v!==false))
     throw new Error("VINCE_V5_TERMUX_AUTHORITY_INVALID");
 
   const expectedHash=sha256Canonical(baseFromPresence(presence));
