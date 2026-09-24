@@ -544,7 +544,7 @@ Componente: `m5-n1-pncp-item-discovery`.
 
 Função: descobrir os itens das duas contratações PNCP já normalizadas sem repetir o endpoint M5-M e sem consultar resultados ainda.
 
-Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE**.
+Estado: **INTEGRADO NO MAIN / PREFLIGHT PRIVADO CONCLUÍDO / LIVE DORMENTE / CANDIDATO CANÔNICO EMITIDO**.
 
 Endpoint allowlisted:
 
@@ -576,3 +576,18 @@ M5-N2 só poderá ser derivado de itens com `temResultado=true`, e sua quantidad
 Limites: nenhum GET autorizado pelo desenho; sem fornecedor, publicação, correlação ou conclusão adversa.
 
 Runbook: `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md`.
+
+
+#### Atualização M5-N1 — preflight canônico
+
+Run: `36044350610`.
+
+- `planSha256=75b7910e40b1873a5f694c13eda1c4e00ae1b10ad52e8ebb4c36ef968b29b0b7`;
+- `candidateSha256=13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844`;
+- 2 target hashes;
+- `pagina=1`;
+- `tamanhoPagina=50`;
+- source network desligada;
+- publicação/correlação desligadas;
+- nenhum GET live executado.
+

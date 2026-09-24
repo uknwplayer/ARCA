@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 059 — M5-N1 descoberta de itens PNCP preparada**
+Checkpoint: **2026-09-24 / Checkpoint 060 — preflight M5-N1 concluído e candidato canônico emitido**
 
-Estado: **M5-M permanece encerrado em 404/404 `UNCLASSIFIED`; M5-N1 foi implementado em branch para descobrir itens das 2 contratações PNCP atuais usando `pagina=1&tamanhoPagina=50`, no máximo 2 GETs e zero retries; preflight privado e live hash-bound estão preparados; página cheia bloqueia M5-N2 por cobertura potencialmente truncada; nenhum novo GET, publicação ou correlação está autorizado; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **M5-N1 integrado no main; CI pós-merge 36044297566 verde; preflight privado 36044350610 concluiu `READY_FOR_EXPLICIT_SOURCE_AUTHORIZATION`; candidateSha256 `13816eb8...d844`; exatamente 2 alvos de itens, `pagina=1&tamanhoPagina=50`, zero retries; nenhum source GET executado; live dormente até autorização explícita; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 059 — M5-N1 descoberta de itens PNCP preparada](ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md). O novo gate abandona a repetição de `contratos/contratacao` e usa o endpoint oficial de itens. O preflight deriva privadamente exatamente 2 alvos e publica apenas hashes. O live permanece dormente até autorização explícita. O próximo M5-N2 só pode ser derivado de itens reais com `temResultado=true`, e somente se a cobertura de itens não estiver potencialmente truncada.
+Handoff mais recente: [checkpoint 060 — preflight M5-N1 concluído](ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md). O candidato canônico `13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844` representa exatamente 2 GETs de itens, um por contratação, com `pagina=1&tamanhoPagina=50`, zero retries e sem publicação/correlação. Nenhum GET foi executado. O live continua dormente até autorização humana explícita.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. O M5-N1 já implementa a primeira metade do aprofundamento `contratação → itens → resultados`: descobrir itens das duas contratações com budget fixo, sem fornecedor e sem correlação. O próximo passo é CI/merge e depois apenas o preflight privado M5-N1 para gerar o candidato canônico; nenhum source GET deve ocorrer antes da autorização explícita.
+M5 continua o caminho crítico. O M5-N1 já está integrado e o preflight privado emitiu o candidato canônico. O próximo passo é exclusivamente uma autorização humana para os 2 GETs de itens vinculados ao `candidateSha256`; depois do live, a custódia e a regra de truncamento decidirão se M5-N2 pode ser construído.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_058.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_057.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_056.md`;
@@ -222,7 +223,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 059. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 060. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
