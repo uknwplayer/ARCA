@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 061 — política GET por custo monetário e M5-N1 page10**
+Checkpoint: **2026-09-24 / Checkpoint 062 — M5-N1 auto-live revelou drift de schema e ordem de custódia corrigida**
 
-Estado: **política transversal redefinida: GET público sem custo monetário observado não exige mais autorização humana por request; GET pago exige autorização; custo desconhecido bloqueia até classificação. M5-N1 foi reduzido para `pagina=1&tamanhoPagina=10`; o candidato `13816eb8...d844` do checkpoint 060 ficou obsoleto; novo preflight/live serão executados automaticamente após CI/merge se a política de custo e os bindings passarem; publicação/correlação continuam bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **política GET por custo já integrada; preflight page10 `36050289566` emitiu candidato `8fbe4dc9...17c7b` autoexecutável; live `36050412298` executou 2 GETs/zero retries e falhou depois em `ARCA_M5_N1_RESPONSE_SHAPE_INVALID`; os corpos não foram persistidos porque o executor observava antes do persist durável; correção `GETs → seal → persist → observe` implementada em branch, com diagnóstico sanitizado de shape; nenhum retry do mesmo candidato; publicação/correlação bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 061 — política GET por custo monetário](ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md). A exigência de autorização humana por GET foi removida para APIs sem custo monetário observado. O PNCP de consulta pública passa a `AUTO_EXECUTION_ALLOWED` sob budgets/allowlists/custódia. M5-N1 usa agora `tamanhoPagina=10`; o candidato do checkpoint 060 é obsoleto e será substituído por novo preflight hash-bound.
+Handoff mais recente: [checkpoint 062 — drift de schema M5-N1 e correção custody-before-observation](ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md). O primeiro live automático page10 executou 2 GETs e zero retries, mas o observador rejeitou o shape. A captura não foi persistida por uma falha de ordem no executor. O código corrigido agora persiste a custódia antes de qualquer observação e transforma drift estrutural em prova sanitizada `SCHEMA_UNEXPECTED` em vez de perder os bytes.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -68,7 +68,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. O próximo passo é validar/mesclar a política GET por custo e o M5-N1 `tamanhoPagina=10`, gerar novo candidato na revisão final e, se o GET continuar classificado como sem custo monetário, executar automaticamente os 2 GETs controlados sem novo pedido de autorização humana. Depois do live, a custódia e a regra de truncamento decidirão se M5-N2 pode ser construído.
+M5 continua o caminho crítico. A política GET já está integrada. O próximo passo é validar/mesclar a correção de custódia M5-N1, gerar novo candidato na revisão final e executar automaticamente um novo live controlado. A captura deve ficar durável antes de qualquer parse; se o shape continuar divergente, diagnosticar offline/estruturalmente sem novo retry do mesmo candidato.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -84,7 +84,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_058.md`;
@@ -225,7 +226,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 061. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 062. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

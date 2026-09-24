@@ -2264,7 +2264,7 @@
       "nome": "M5-N1 — Descoberta PNCP de itens",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Descobrir itens e indicador temResultado das duas contratações PNCP atuais antes de qualquer consulta de resultados.",
-      "estado": "politica_get_custo_aplicada_page10_preflight_novo_pendente",
+      "estado": "live_page10_shape_inesperado_fix_custody_before_observation_branch",
       "localizacao": [
         "src/investigation/m5-n1-pncp-item-discovery-plan.mjs",
         "src/investigation/m5-n1-pncp-item-discovery-private.mjs",
@@ -2296,7 +2296,9 @@
         "candidato sanitizado hash-only",
         "futura captura de itens",
         "itemCount/itemsWithResultCount hash-only",
-        "targetCount=2"
+        "targetCount=2",
+        "preflight 36050289566 candidate=8fbe4dc9...17c7b",
+        "live 36050412298: 2 GETs, zero retries, ARCA_M5_N1_RESPONSE_SHAPE_INVALID"
       ],
       "capabilities": [
         "derivacao privada de alvos",
@@ -2306,7 +2308,9 @@
         "detecção de cobertura potencialmente truncada",
         "custodia antes de uso",
         "pagina=1 tamanhoPagina=10",
-        "autoexecucao GET sem custo monetario observado"
+        "autoexecucao GET sem custo monetario observado",
+        "persistencia duravel antes da observacao estrutural",
+        "diagnostico sanitizado de shape inesperado"
       ],
       "limites": [
         "sem consulta de resultados",
@@ -2316,7 +2320,9 @@
         "M5-N2 bloqueado se pagina cheia",
         "GET somente após candidate hash-bound e cost policy válida",
         "M5-N2 continua separado",
-        "pagina cheia com 10 itens bloqueia avanço"
+        "pagina cheia com 10 itens bloqueia avanço",
+        "candidato 8fbe4dc9...17c7b nao reutilizavel",
+        "run 36050412298 nao deixou corpos recuperaveis por falha de ordem"
       ],
       "healthCheck": [
         "npm run validate:m5-n1-item-discovery",
@@ -2332,14 +2338,15 @@
         "budget excedido",
         "response size excedido",
         "item shape inválido",
-        "pagina possivelmente truncada"
+        "pagina possivelmente truncada",
+        "response shape inesperado após HTTP 200"
       ],
       "recuperacao": [
-        "falhar fechado se cost class mudar ou ficar UNKNOWN",
-        "falhar fechado em query/budget/binding divergente",
-        "gerar novo preflight para tamanhoPagina=10",
-        "executar automaticamente somente se autoExecutionAllowed=true",
-        "bloquear M5-N2 se primeira página vier cheia"
+        "persistir envelope antes de parse",
+        "emitir SCHEMA_UNEXPECTED sem perder bytes",
+        "gerar novo candidato na revisão corrigida",
+        "executar novo live automático sob cost policy válida",
+        "não reutilizar o candidato do run falho"
       ],
       "fallback": "não consultar resultados e manter fornecedor não observado",
       "riscoDeReexecucao": "baixo no preflight; live consome autorização de fonte",

@@ -6,7 +6,7 @@ import {pathToFileURL} from "node:url";
 import {canonicalJson,sha256} from "../src/investigation/public-source-contract.mjs";
 import {deriveM5N1ItemDiscovery} from "../src/investigation/m5-n1-pncp-item-discovery-private.mjs";
 import {createM5N1ItemDiscoveryTransport} from "../src/investigation/m5-n1-pncp-item-discovery-transport.mjs";
-import {observeM5N1ItemsResponse} from "../src/investigation/m5-n1-pncp-item-response.mjs";
+import {observeM5N1ItemsResponse,diagnoseM5N1ResponseShape} from "../src/investigation/m5-n1-pncp-item-response.mjs";
 import {sealCustodyDirectory} from "../src/machine-bridge/encrypted-custody-envelope.mjs";
 import {createGitHubPrivateCustodyBackend} from "../src/machine-bridge/durable-private-custody.mjs";
 
@@ -68,35 +68,132 @@ export async function runM5N1Live({env=process.env,fetchImpl=globalThis.fetch,cu
     const pf=await store.preflight();
     if(pf?.ready!==true||pf?.private!==true)throw new Error("ARCA_M5_N1_CUSTODY_PREFLIGHT_FAILED");
 
-    const structural=executed.results.map(r=>observeM5N1ItemsResponse({
-      bytes:r.bodyBytes,httpStatus:r.status,targetSha256:r.targetSha256,pageSize:10
-    }));
-    const resultHash=sha256(canonicalJson({
-      candidateSha256:derived.candidate.candidateSha256,planSha256:derived.plan.planSha256,
-      observations:structural.map(x=>({
-        targetSha256:x.targetSha256,httpStatus:x.httpStatus,itemCount:x.itemCount,
-        itemsWithResultCount:x.itemsWithResultCount,pagePossiblyTruncated:x.pagePossiblyTruncated,
-        resultItemSetSha256:x.resultItemSetSha256,nextStageReady:x.nextStageReady
+    const captureResultHash=sha256(canonicalJson({
+      candidateSha256:derived.candidate.candidateSha256,
+      planSha256:derived.plan.planSha256,
+      responses:executed.results.map(r=>({
+        targetSha256:r.targetSha256,
+        httpStatus:r.status,
+        responseByteCount:r.responseByteCount,
+        responseBytesSha256:r.responseBytesSha256
       }))
     }));
-    const proofBase={
-      schema:"arca.m5-n1-pncp-item-discovery-proof.v1",status:"CAPTURED_AND_SEALED",
-      source:"PNCP",repository:sourceRepo,revision,candidateSha256:derived.candidate.candidateSha256,
-      planSha256:derived.plan.planSha256,resultHash,requestCount:2,retries:0,networkUsed:true,
-      observations:structural,custody:{encrypted:true,envelopeHash,contentRootHash:custodyEnvelope.contentRootHash,
-        payloadHash:custodyEnvelope.payloadHash,fileCount:custodyEnvelope.fileCount,totalBytes:custodyEnvelope.totalBytes,
-        plaintextPublished:false},
-      publicationAttempted:false,correlationAttempted:false,supplierInferenceAttempted:false,
+    const captureProof={
+      schema:"arca.pncp-controlled-live-probe.v0.1",
+      status:"CAPTURED_AND_SEALED",
+      probeKind:"M5_N1_ITEM_DISCOVERY_RAW_CAPTURE",
+      repository:sourceRepo,
+      revision,
+      scope:{kind:"M5-N1",candidateSha256:derived.candidate.candidateSha256,targetCount:2},
+      shardId:"M5-N1-PNCP-ITEM-DISCOVERY",
+      planFingerprint:derived.plan.planSha256,
+      resultHash:captureResultHash,
+      requestCount:2,
+      retries:0,
+      networkUsed:true,
+      custody:{
+        encrypted:true,
+        envelopeHash,
+        contentRootHash:custodyEnvelope.contentRootHash,
+        payloadHash:custodyEnvelope.payloadHash,
+        fileCount:custodyEnvelope.fileCount,
+        totalBytes:custodyEnvelope.totalBytes,
+        plaintextPublished:false
+      },
+      classifierEmittedSignals:false,
+      investigationIngressUsed:false,
+      automaticAdversePublication:false,
+      humanReviewRequired:true,
+      anomalyIsNotIrregularity:true
+    };
+    const stored=await store.persist({envelope:custodyEnvelope,proof:captureProof});
+    if(!["STORED","ALREADY_STORED"].includes(stored?.status))
+      throw new Error("ARCA_M5_N1_CUSTODY_PERSIST_FAILED");
+
+    const structural=executed.results.map(r=>{
+      try{
+        return Object.freeze({
+          observationState:"ITEMS_OBSERVED",
+          ...observeM5N1ItemsResponse({
+            bytes:r.bodyBytes,httpStatus:r.status,targetSha256:r.targetSha256,pageSize:10
+          }),
+          shape:null
+        });
+      }catch(error){
+        const errorCode=/^ARCA_M5_N1_[A-Z0-9_]+$/.test(String(error?.message??""))
+          ?error.message:"ARCA_M5_N1_OBSERVATION_FAILED";
+        return Object.freeze({
+          observationState:"SCHEMA_UNEXPECTED",
+          targetSha256:r.targetSha256,
+          httpStatus:r.status,
+          parsed:false,
+          itemCount:null,
+          itemsWithResultCount:null,
+          pagePossiblyTruncated:false,
+          resultItemSetSha256:null,
+          nextStageReady:false,
+          rawValuesIncluded:false,
+          errorCode,
+          shape:diagnoseM5N1ResponseShape({
+            bytes:r.bodyBytes,httpStatus:r.status,targetSha256:r.targetSha256
+          })
+        });
+      }
+    });
+    const resultHash=sha256(canonicalJson({
+      candidateSha256:derived.candidate.candidateSha256,
+      planSha256:derived.plan.planSha256,
+      captureResultHash,
+      observations:structural.map(x=>({
+        observationState:x.observationState,
+        targetSha256:x.targetSha256,
+        httpStatus:x.httpStatus,
+        itemCount:x.itemCount,
+        itemsWithResultCount:x.itemsWithResultCount,
+        pagePossiblyTruncated:x.pagePossiblyTruncated,
+        resultItemSetSha256:x.resultItemSetSha256,
+        nextStageReady:x.nextStageReady,
+        errorCode:x.errorCode??null,
+        shapeSha256:x.shape?.shapeSha256??null
+      }))
+    }));
+    const proof={
+      schema:"arca.m5-n1-pncp-item-discovery-proof.v1",
+      status:"CAPTURED_AND_SEALED",
+      source:"PNCP",
+      repository:sourceRepo,
+      revision,
+      candidateSha256:derived.candidate.candidateSha256,
+      planSha256:derived.plan.planSha256,
+      captureResultHash,
+      resultHash,
+      requestCount:2,
+      retries:0,
+      networkUsed:true,
+      observations:structural,
+      custody:{
+        encrypted:true,
+        envelopeHash,
+        contentRootHash:custodyEnvelope.contentRootHash,
+        payloadHash:custodyEnvelope.payloadHash,
+        fileCount:custodyEnvelope.fileCount,
+        totalBytes:custodyEnvelope.totalBytes,
+        plaintextPublished:false
+      },
+      durableCustody:{
+        status:stored.status==="STORED"?"STORED_PRIVATE":"ALREADY_STORED_PRIVATE",
+        receiptHash:stored.receiptHash,
+        vaultCommitRefHash:createHash("sha256").update(stored.vaultCommitSha).digest("hex"),
+        plaintextStored:false
+      },
+      publicationAttempted:false,
+      correlationAttempted:false,
+      supplierInferenceAttempted:false,
       executionAuthorizationBasis:"ZERO_MONETARY_COST_GET_POLICY",
       humanAuthorizationRequired:false,
-      humanReviewRequired:true,adverseFinding:false
+      humanReviewRequired:true,
+      adverseFinding:false
     };
-    const stored=await store.persist({envelope:custodyEnvelope,proof:proofBase});
-    if(!["STORED","ALREADY_STORED"].includes(stored?.status))throw new Error("ARCA_M5_N1_CUSTODY_PERSIST_FAILED");
-    const proof={...proofBase,durableCustody:{
-      status:stored.status==="STORED"?"STORED_PRIVATE":"ALREADY_STORED_PRIVATE",receiptHash:stored.receiptHash,
-      vaultCommitRefHash:createHash("sha256").update(stored.vaultCommitSha).digest("hex"),plaintextStored:false
-    }};
     const output=path.resolve(arg("--output"));fs.mkdirSync(path.dirname(output),{recursive:true,mode:0o700});
     fs.writeFileSync(output,JSON.stringify(proof,null,2)+"\n",{encoding:"utf8",mode:0o600,flag:"wx"});
     return proof;
@@ -109,9 +206,11 @@ async function main(){
       status:p.status,requestCount:p.requestCount,retries:p.retries,planSha256:p.planSha256,
       candidateSha256:p.candidateSha256,resultHash:p.resultHash,durableCustodyStatus:p.durableCustody.status,
       observations:p.observations.map(x=>({
-        targetSha256:x.targetSha256,httpStatus:x.httpStatus,itemCount:x.itemCount,
-        itemsWithResultCount:x.itemsWithResultCount,pagePossiblyTruncated:x.pagePossiblyTruncated,
-        resultItemSetSha256:x.resultItemSetSha256,nextStageReady:x.nextStageReady
+        observationState:x.observationState,targetSha256:x.targetSha256,httpStatus:x.httpStatus,
+        itemCount:x.itemCount,itemsWithResultCount:x.itemsWithResultCount,
+        pagePossiblyTruncated:x.pagePossiblyTruncated,resultItemSetSha256:x.resultItemSetSha256,
+        nextStageReady:x.nextStageReady,errorCode:x.errorCode??null,
+        shape:x.shape??null
       }))
     })+"\n");
   }catch(error){
