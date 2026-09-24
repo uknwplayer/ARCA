@@ -99,6 +99,9 @@ test("ARCA Termux ask passa pelo reasoning transport gate e não concede Core mu
     apiKey:"secret-value",
     model:"gpt-6-luna",
     allowExternal:true,
+    allowPaidApi:true,
+    maxRequestUsd:0.01,
+    now:"2026-09-24T20:00:00.000Z",
     requestId:"termux.ask.synthetic.1",
     fetchImpl:async(_url,init)=>{
       capturedBody=JSON.parse(init.body);
