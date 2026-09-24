@@ -98,3 +98,106 @@ test("private normalization store rejects plaintext or unsafe proof before netwo
   }),/STORE_PROOF_INVALID/);
   assert.equal(calls,0);
 });
+
+
+test("private normalization store accepts PNCP proof with pncpRequestUsed=false",async()=>{
+  const envelope={
+    schema:"arca.encrypted-custody-envelope.v0.1",
+    status:"SEALED",
+    algorithm:"AES-256-GCM",
+    plaintextIncluded:false,
+    contentRootHash:"1".repeat(64)
+  };
+  const proofBase={
+    schema:"arca.m5-pncp-custodial-normalization-proof.v1",
+    version:1,
+    status:"NORMALIZED_CUSTODIAL_OFFLINE",
+    source:"PNCP",
+    executorRevision:"a".repeat(40),
+    captureRunId:"35547609136",
+    custodyEnvelopeSha256:"2".repeat(64),
+    custodyReceiptSha256:"3".repeat(64),
+    scopeSha256:"4".repeat(64),
+    observedStructureSha256:"5".repeat(64),
+    pageFileSha256:"6".repeat(64),
+    parserContractSha256:"7".repeat(64),
+    recordCount:2,
+    normalizationSha256:"8".repeat(64),
+    normalizedEnvelopeSha256:sha256(JSON.stringify(envelope)),
+    normalizedContentRootSha256:envelope.contentRootHash,
+    supplierObserved:false,
+    sourceNetworkUsed:false,
+    pncpRequestUsed:false,
+    publicationAttempted:false,
+    correlationAttempted:false,
+    normalizedValuesIncludedInProof:false,
+    rawBytesIncludedInProof:false,
+    humanReviewRequired:true,
+    adverseFinding:false
+  };
+  const proof={...proofBase,proofSha256:sha256(JSON.stringify(proofBase))};
+  const head="c".repeat(40),baseTree="d".repeat(40),newTree="e".repeat(40),newCommit="f".repeat(40);
+  const seen=[];
+  const fetchImpl=async(url,options={})=>{
+    seen.push({url,method:options.method,body:options.body});
+    const method=options.method,pathname=new URL(url).pathname;
+    if(method==="GET"&&pathname==="/repos/owner/private-vault")return response(200,{private:true,archived:false});
+    if(method==="GET"&&pathname.endsWith("/git/ref/heads/main"))return response(200,{object:{sha:head}});
+    if(method==="GET"&&pathname.endsWith("/git/commits/"+head))return response(200,{tree:{sha:baseTree}});
+    if(method==="POST"&&pathname.endsWith("/git/blobs")){
+      const body=JSON.parse(options.body),bytes=Buffer.from(body.content,"base64");
+      return response(201,{sha:gitBlobSha(bytes)});
+    }
+    if(method==="POST"&&pathname.endsWith("/git/trees"))return response(201,{sha:newTree});
+    if(method==="POST"&&pathname.endsWith("/git/commits"))return response(201,{sha:newCommit});
+    if(method==="PATCH"&&pathname.endsWith("/git/refs/heads/main"))return response(200,{object:{sha:newCommit}});
+    return response(404,{message:"unexpected"});
+  };
+  const store=createGitHubPrivateNormalizationStore({
+    repository:"owner/private-vault",
+    targetBranch:"main",
+    githubToken:"synthetic-private-token-0123456789",
+    fetchImpl
+  });
+  const result=await store.persist({envelope,proof});
+  assert.equal(result.status,"STORED_PRIVATE");
+  assert.equal(result.commitSha,newCommit);
+  assert.equal(result.plaintextStored,false);
+  assert.match(result.receiptSha256,/^[a-f0-9]{64}$/);
+  assert.equal(seen.filter(x=>x.method==="POST"&&x.url.endsWith("/git/blobs")).length,3);
+});
+
+test("private normalization store rejects source/request flag mismatch before network",async()=>{
+  let calls=0;
+  const envelope={
+    schema:"arca.encrypted-custody-envelope.v0.1",
+    status:"SEALED",
+    algorithm:"AES-256-GCM",
+    plaintextIncluded:false,
+    contentRootHash:"1".repeat(64)
+  };
+  const proof={
+    schema:"arca.m5-pncp-custodial-normalization-proof.v1",
+    status:"NORMALIZED_CUSTODIAL_OFFLINE",
+    sourceNetworkUsed:false,
+    portalRequestUsed:false,
+    publicationAttempted:false,
+    correlationAttempted:false,
+    normalizedValuesIncludedInProof:false,
+    rawBytesIncludedInProof:false,
+    humanReviewRequired:true,
+    adverseFinding:false,
+    normalizationSha256:"2".repeat(64),
+    normalizedEnvelopeSha256:sha256(JSON.stringify(envelope)),
+    normalizedContentRootSha256:envelope.contentRootHash,
+    proofSha256:"3".repeat(64)
+  };
+  const store=createGitHubPrivateNormalizationStore({
+    repository:"owner/private-vault",
+    targetBranch:"main",
+    githubToken:"synthetic-private-token-0123456789",
+    fetchImpl:async()=>{calls++;return response(500,{})}
+  });
+  await assert.rejects(()=>store.persist({envelope,proof}),/STORE_PROOF_INVALID/);
+  assert.equal(calls,0);
+});
