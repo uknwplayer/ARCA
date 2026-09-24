@@ -9,6 +9,7 @@ import {
   ARCA_OPENAI_DEFAULT_MODEL,
   createOpenAIProviderClient
 } from "./openai-provider.ts";
+import {evaluatePaidOpenAIBudget,estimateOpenAIUsageUsd} from "./openai-paid-budget.ts";
 
 export const ARCA_TERMUX_GPT_ASK_FORMAT="arca-termux-gpt-ask-v1";
 export const ARCA_TERMUX_GPT_PROVIDER_ID="openai.responses.termux";
@@ -26,10 +27,13 @@ export async function runOpenAITermuxAsk({
   apiKey,
   model=ARCA_OPENAI_DEFAULT_MODEL,
   allowExternal=false,
+  allowPaidApi=false,
+  maxRequestUsd,
   fetchImpl=globalThis.fetch,
   timeoutMs=30000,
   maxOutputTokens=1200,
-  requestId=null
+  requestId=null,
+  now
 }={}){
   const text=message(inputMessage);
   if(allowExternal!==true){
@@ -37,6 +41,17 @@ export async function runOpenAITermuxAsk({
     error.code="ARCA_TERMUX_GPT_EXTERNAL_NOT_AUTHORIZED";
     throw error;
   }
+
+  const providerInstructions="You are connected through the ARCA reasoning boundary. Answer the user's request. Do not claim that you executed tools, changed ARCA state, or mutated the Core unless the host separately provides verified execution evidence.";
+  const budgetDecision=evaluatePaidOpenAIBudget({
+    model,
+    inputText:text,
+    instructionsText:providerInstructions,
+    maxOutputTokens,
+    allowPaidApi,
+    maxRequestUsd,
+    now
+  });
 
   const client=createOpenAIProviderClient({
     apiKey,model,fetchImpl,timeoutMs,maxOutputTokens
@@ -63,7 +78,7 @@ export async function runOpenAITermuxAsk({
   },async request=>{
     const response=await client.generateText({
       prompt:request.instruction,
-      instructions:"You are connected through the ARCA reasoning boundary. Answer the user's request. Do not claim that you executed tools, changed ARCA state, or mutated the Core unless the host separately provides verified execution evidence."
+      instructions:providerInstructions
     });
     return {
       format:ARCA_REASONING_PROVIDER_RESULT_FORMAT,
@@ -112,6 +127,9 @@ export async function runOpenAITermuxAsk({
   });
 
   const output=reasoning.output;
+  const usageAvailable=!!output?.usage&&Number.isFinite(Number(output.usage.input_tokens))&&Number.isFinite(Number(output.usage.output_tokens));
+  const usageCost=usageAvailable?estimateOpenAIUsageUsd({model:client.model,usage:output.usage}):null;
+  const accountedUsd=usageCost?.estimatedUsd??budgetDecision.conservativeMaxUsd;
   return Object.freeze({
     format:ARCA_TERMUX_GPT_ASK_FORMAT,
     version:1,
@@ -122,6 +140,17 @@ export async function runOpenAITermuxAsk({
     text:String(output?.text??""),
     usage:output?.usage??null,
     responseId:output?.responseId??null,
+    cost:Object.freeze({
+      currency:"USD",
+      pricingAsOf:budgetDecision.pricingAsOf,
+      maxRequestUsd:budgetDecision.maxRequestUsd,
+      conservativeMaxUsd:budgetDecision.conservativeMaxUsd,
+      actualEstimatedUsd:usageCost?.estimatedUsd??null,
+      accountedUsd,
+      usageAvailable,
+      billingCapGuaranteed:false,
+      exactBillingAmount:false
+    }),
     payloadHash:reasoning.payloadHash,
     transportDecisionHash:reasoning.transportDecisionHash,
     sourceNetworkUsed:true,

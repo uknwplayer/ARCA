@@ -1,13 +1,11 @@
 # ARCA — Ponte Termux ↔ GPT V0.1
 
 Data: **2026-09-24**  
-Estado: **FASE A IMPLEMENTADA EM BRANCH — `arca ask` one-shot; aguardando CI/merge; `arca chat` interativo ainda não implementado**
+Estado: **FASES A+B IMPLEMENTADAS EM BRANCH — gate monetário + `arca ask` + `arca chat`; aguardando CI/merge**
 
 ## Objetivo
 
-Permitir que o operador converse com um modelo GPT diretamente pelo Termux através das fronteiras do ARCA, sem transformar uma resposta de modelo em autoridade de execução.
-
-A primeira fase deliberadamente começa por uma pergunta única:
+Permitir conversa com GPT pelo Termux através das fronteiras do ARCA sem converter resposta de modelo em autoridade de execução.
 
 ```text
 Termux
@@ -18,6 +16,8 @@ ReasoningProviderRegistry
   ↓
 Reasoning Transport Gate
   ↓
+Paid API Budget Gate
+  ↓
 OpenAI Responses API
   ↓
 ARCA
@@ -25,7 +25,7 @@ ARCA
 Termux
 ```
 
-## Comando da Fase A
+## Fase A — `arca ask`
 
 ```bash
 export OPENAI_API_KEY='...'
@@ -33,53 +33,70 @@ export OPENAI_API_KEY='...'
 npm run arca -- ask \
   --message "Onde paramos?" \
   --model gpt-6-luna \
-  --allow-external
+  --allow-external \
+  --allow-paid-api \
+  --max-request-usd 0.01
 ```
 
-`--allow-external` é obrigatório porque a mensagem pode conter comunicação privada e será enviada a um provedor externo.
+## Fase B — `arca chat`
 
-A API key nunca entra no payload do Reasoning Registry, saída pública, log deliberado ou repositório.
+```bash
+npm run arca -- chat \
+  --model gpt-6-luna \
+  --allow-external \
+  --allow-paid-api \
+  --session-budget-usd 0.05
+```
+
+A sessão guarda histórico apenas em RAM. Comandos locais: `/status`, `/context`, `/clear`, `/help`, `/exit`.
+
+## Gate monetário
+
+Snapshot de preços: **2026-09-24**. Fonte registrada no código: documentação oficial de preços da OpenAI.
+
+Modelos inicialmente conhecidos pelo gate:
+
+- `gpt-6-luna`;
+- `gpt-6-sol`;
+- `gpt-6-astra`.
+
+O snapshot é considerado inválido depois de 30 dias sem atualização.
+
+O preflight usa o tamanho UTF-8 do prompt como limite superior conservador de tokens de entrada e soma o máximo permitido de tokens de saída. A request é bloqueada se essa estimativa ultrapassar o teto informado pelo operador.
+
+Após a resposta, o ARCA calcula uma estimativa baseada em `usage`. Isso **não representa a fatura oficial** e `billingCapGuaranteed=false`.
 
 ## Segurança
 
-- origem fixa: `https://api.openai.com`;
-- endpoint: `POST /v1/responses`;
-- redirects recusados;
+- chave somente em `OPENAI_API_KEY`;
+- origem fixa `https://api.openai.com`;
+- `POST /v1/responses`;
 - `store:false`;
-- transporte ARCA: `private-direct`, TLS, persistência efêmera;
-- mensagem classificada como `restricted/privateCommunication`;
-- envio externo exige opt-in explícito;
-- `humanReviewRequired=true`;
-- `coreMutationPerformed=false`;
-- nenhuma ferramenta é exposta ao modelo nesta fase;
-- nenhuma resposta pode autorizar a própria execução;
-- erros do provedor são sanitizados.
+- redirects recusados;
+- `private-direct`, TLS e payload efêmero;
+- `--allow-external` obrigatório;
+- `--allow-paid-api` obrigatório;
+- budget obrigatório;
+- nenhum tool grant;
+- nenhum shell;
+- nenhuma Core mutation;
+- histórico do chat somente em memória;
+- contexto automático do projeto ainda desligado.
 
-## Custos
+## O que ainda não existe
 
-O ARCA não fixa preços no código. Preços e modelos mudam. O modelo pode ser selecionado por `--model` ou `ARCA_OPENAI_MODEL`.
+- contexto automático de checkpoint/roadmap;
+- persistência de conversa;
+- chamada automática do Work;
+- ferramentas automáticas;
+- ledger durável de custo;
+- execução autônoma originada de respostas.
 
-A primeira fase limita `max_output_tokens` e retorna os contadores de uso informados pelo provedor. Um ledger monetário será uma etapa posterior, antes de automação recorrente.
+## Próximo estágio
 
-## O que esta fase não faz
+Depois do aceite/merge desta fase:
 
-- não mantém conversa multi-turno;
-- não lê automaticamente checkpoint/roadmap;
-- não chama Work;
-- não executa shell;
-- não altera o Core;
-- não aciona ferramentas;
-- não guarda o texto da conversa.
-
-## Próximo estágio — Fase B
-
-Adicionar `arca chat` interativo reutilizando o mesmo bridge:
-
-1. loop de terminal;
-2. estado de sessão controlado;
-3. comandos locais `/status`, `/context`, `/exit`;
-4. contexto ARCA opt-in e minimizado;
-5. budget de tokens/sessão;
-6. nenhuma ferramenta automática.
-
-Somente depois da Fase B deve ser discutida delegação controlada para Machine Bridge/Work.
+1. teste live mínimo no próprio Termux, somente com API key configurada pelo operador;
+2. contexto ARCA opt-in/minimizado;
+3. ledger local opcional de uso/custo;
+4. somente depois estudar delegação controlada para Work/Machine Bridge.

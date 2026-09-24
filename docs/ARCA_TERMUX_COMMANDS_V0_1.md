@@ -563,9 +563,18 @@ gh run list --limit 10
 
 ## 15. Conversação ARCA ↔ GPT pelo Termux
 
-### Fase A — pergunta única
+### Gate monetário
 
-A primeira interface de GPT pelo Termux é:
+Toda chamada OpenAI desta frente é uma operação potencialmente cobrada. Por isso há duas autorizações independentes:
+
+- `--allow-external`: autoriza enviar a mensagem ao provedor externo;
+- `--allow-paid-api`: autoriza uma chamada de API potencialmente cobrada.
+
+O ARCA também exige um teto monetário local.
+
+A tabela de preços embutida é um snapshot datado de **2026-09-24**, para processamento Standard em contexto curto, e falha fechado após 30 dias sem atualização. O cálculo é uma estimativa conservadora local e **não é um limite de faturamento garantido pelo provedor**.
+
+### `arca ask` — pergunta única
 
 ```bash
 export OPENAI_API_KEY='SUA_CHAVE'
@@ -573,98 +582,83 @@ export OPENAI_API_KEY='SUA_CHAVE'
 npm run arca -- ask \
   --message "Onde paramos?" \
   --model gpt-6-luna \
-  --allow-external
-```
-
-O comando passa por:
-
-```text
-Termux
-   ↓
-ARCA CLI
-   ↓
-ReasoningProviderRegistry
-   ↓
-Reasoning Transport Gate
-   ↓
-OpenAI Responses API
-   ↓
-ARCA
-   ↓
-Termux
-```
-
-`--allow-external` é obrigatório. Sem ele, o ARCA recusa o envio antes de criar a request.
-
-A chave é lida de `OPENAI_API_KEY` e não deve ser colocada na linha do comando, no Git ou em arquivos públicos.
-
-Modelo alternativo:
-
-```bash
-export ARCA_OPENAI_MODEL='MODELO'
-
-npm run arca -- ask \
-  --message "Explique o estado do projeto" \
-  --allow-external
-```
-
-Limite de saída personalizado:
-
-```bash
-npm run arca -- ask \
-  --message "Responda resumidamente" \
   --allow-external \
-  --max-output-tokens 600
+  --allow-paid-api \
+  --max-request-usd 0.01
 ```
 
-Para receber metadados, hashes e uso em JSON:
+O request é recusado antes da rede se:
+
+- faltar autorização externa;
+- faltar autorização monetária;
+- o modelo não possuir preço conhecido no snapshot;
+- o snapshot estiver vencido;
+- o custo máximo conservador ultrapassar `--max-request-usd`.
+
+Para metadados e estimativa de custo:
 
 ```bash
 npm run arca -- ask \
-  --message "Teste" \
+  --message "Teste curto" \
   --allow-external \
+  --allow-paid-api \
+  --max-request-usd 0.01 \
   --json
 ```
 
-Garantias da Fase A:
+### `arca chat` — sessão interativa
+
+```bash
+export OPENAI_API_KEY='SUA_CHAVE'
+
+npm run arca -- chat \
+  --model gpt-6-luna \
+  --allow-external \
+  --allow-paid-api \
+  --session-budget-usd 0.05
+```
+
+Comandos locais:
+
+```text
+/status   mostra modelo, turnos e budget estimado
+/context  mostra qual contexto está ativo
+/clear    limpa apenas o histórico em memória
+/help     mostra os comandos
+/exit     encerra a sessão
+```
+
+A conversa é mantida **somente em memória** pelo processo Termux. `/clear` apaga o histórico, mas não restaura budget já consumido.
+
+Nesta versão o contexto automático do projeto ARCA permanece desligado. O chat lembra somente as mensagens da sessão.
+
+### Limites de segurança
 
 - endpoint fixo em `https://api.openai.com/v1/responses`;
 - `store:false`;
 - redirects recusados;
 - transporte `private-direct` com TLS;
 - comunicação classificada como restrita;
-- zero ferramentas concedidas ao modelo;
-- resposta não altera o Core;
+- zero ferramentas automáticas;
+- nenhuma resposta altera o Core;
+- nenhum shell é concedido ao modelo;
 - `humanReviewRequired=true`;
 - `coreMutationPerformed=false`;
-- saída não é persistida pelo bridge.
+- a API key não entra no payload/log público;
+- o budget local é estimativo e não substitui controles de faturamento da conta.
 
 Documento técnico: `docs/ARCA_TERMUX_GPT_BRIDGE_V0_1.md`.
 
-### Fase B — chat interativo
-
-O comando pretendido:
-
-```bash
-arca chat
-```
-
-**ainda não está implementado**.
-
-A Fase B reutilizará o mesmo bridge para manter uma sessão de terminal, com comandos locais de controle, budget de sessão e contexto ARCA opt-in/minimizado.
-
 ### Fronteira com ChatGPT Work
 
-A conversa GPT pelo Termux e o Work são funções diferentes:
-
 ```text
-arca ask/chat → conversa e raciocínio interativo
-Work          → executor externo para tarefas maiores
-Vince         → descoberta/roteamento/worker
+arca ask/chat  → conversa/raciocínio
+Work           → executor externo de tarefas maiores
+Vince          → descoberta/roteamento/worker
 Machine Bridge → transporte de tarefas/resultados
 ```
 
-Uma conversa poderá futuramente solicitar uma tarefa ao Work através do ARCA, mas isso continuará sujeito aos gates de autoridade existentes.
+A conversa não recebe autoridade automática para chamar Work ou Machine Bridge.
 
 ---
 

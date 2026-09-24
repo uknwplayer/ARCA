@@ -1,7 +1,7 @@
 import { mkdir, readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { ArcaCore, prettyJson } from "../../core/src/index.ts";
-import { runOpenAITermuxAsk } from "../../agent/src/index.ts";
+import { ARCA_OPENAI_DEFAULT_MODEL, createOpenAITermuxChatSession, runOpenAITermuxAsk } from "../../agent/src/index.ts";
 
 interface ParsedArgs {
   positional: string[];
@@ -60,13 +60,77 @@ async function jsonInput(options: Record<string, any>, dataKey = "data", fileKey
   }
 }
 
+function enabled(options: Record<string, any>, key: string): boolean {
+  return options[key] === true || options[key] === "true";
+}
+
+async function runInteractiveChat(options: Record<string, any>): Promise<void> {
+  if (enabled(options, "json")) throw new Error("arca chat é interativo e não aceita --json nesta versão");
+  const apiKey = String(process.env.OPENAI_API_KEY ?? "").trim();
+  if (!apiKey) throw new Error("OPENAI_API_KEY é obrigatório para arca chat");
+  const model = textOption(options, "model") ?? (String(process.env.ARCA_OPENAI_MODEL ?? "").trim() || ARCA_OPENAI_DEFAULT_MODEL);
+  const sessionBudgetUsd = Number(textOption(options, "session-budget-usd", true));
+  const { createInterface } = await import("node:readline/promises");
+  const session = createOpenAITermuxChatSession({
+    apiKey,
+    model,
+    allowExternal: enabled(options, "allow-external"),
+    allowPaidApi: enabled(options, "allow-paid-api"),
+    sessionBudgetUsd,
+    maxOutputTokens: Number(textOption(options, "max-output-tokens") ?? "800"),
+    timeoutMs: Number(textOption(options, "timeout-ms") ?? "30000")
+  });
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  process.stdout.write([
+    "ARCA GPT — sessão Termux em memória",
+    `Modelo: ${model}`,
+    `Budget estimado da sessão: US$ ${sessionBudgetUsd}`,
+    "Comandos: /status /context /clear /help /exit",
+    ""
+  ].join("\n"));
+  try {
+    while (true) {
+      const line = String(await rl.question("> ")).trim();
+      if (!line) continue;
+      if (line === "/exit" || line === "/quit") break;
+      if (line === "/help") {
+        process.stdout.write("/status  estado e budget\n/context contexto ativo\n/clear limpa histórico em memória\n/exit encerra\n");
+        continue;
+      }
+      if (line === "/status") {
+        process.stdout.write(prettyJson(session.status));
+        continue;
+      }
+      if (line === "/context") {
+        process.stdout.write(`Contexto: histórico desta sessão somente em memória (${session.status.historyMessages} mensagens). Contexto automático do projeto ARCA ainda está desligado.\n`);
+        continue;
+      }
+      if (line === "/clear") {
+        session.clear();
+        process.stdout.write("Histórico da conversa limpo; budget consumido não foi restaurado.\n");
+        continue;
+      }
+      try {
+        const answer = await session.ask(line);
+        process.stdout.write(String(answer.text ?? "") + "\n");
+      } catch (error: any) {
+        process.stderr.write(`Erro: ${error?.message ?? error}\n`);
+        if (error?.code === "ARCA_TERMUX_CHAT_BUDGET_EXHAUSTED") break;
+      }
+    }
+  } finally {
+    rl.close();
+  }
+}
+
 function help(): string {
   return `ARCA Core CLI 0.2.0 — offline, append-only e auditável
 
 Uso:
   arca init [--home .arca]
   arca list [--home .arca]
-  arca ask --message "..." --allow-external [--model MODELO] [--max-output-tokens 1200]
+  arca ask --message "..." --allow-external --allow-paid-api --max-request-usd USD [--model MODELO]
+  arca chat --allow-external --allow-paid-api --session-budget-usd USD [--model MODELO]
   arca investigation create --question ... --objective ... --scope ... --limits ...
   arca investigation show --investigation INV-000001
   arca investigation status --investigation INV-000001
@@ -203,16 +267,20 @@ export async function main(argv: string[]): Promise<void> {
   } else if (command === "ask") {
     const apiKey = String(process.env.OPENAI_API_KEY ?? "").trim();
     if (!apiKey) throw new Error("OPENAI_API_KEY é obrigatório para arca ask");
-    const model = textOption(options, "model") ?? (String(process.env.ARCA_OPENAI_MODEL ?? "").trim() || undefined);
-    const allowExternal = options["allow-external"] === true || options["allow-external"] === "true";
+    const model = textOption(options, "model") ?? (String(process.env.ARCA_OPENAI_MODEL ?? "").trim() || ARCA_OPENAI_DEFAULT_MODEL);
     result = await runOpenAITermuxAsk({
       message: textOption(options, "message", true)!,
       apiKey,
-      ...(model ? { model } : {}),
-      allowExternal,
+      model,
+      allowExternal: enabled(options, "allow-external"),
+      allowPaidApi: enabled(options, "allow-paid-api"),
+      maxRequestUsd: Number(textOption(options, "max-request-usd", true)),
       maxOutputTokens: Number(textOption(options, "max-output-tokens") ?? "1200"),
       timeoutMs: Number(textOption(options, "timeout-ms") ?? "30000")
     });
+  } else if (command === "chat") {
+    await runInteractiveChat(options);
+    return;
   } else if (command === "investigation" && subcommand === "create") {
     result = await core.createInvestigation({
       id: textOption(options, "id"),
