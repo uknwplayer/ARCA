@@ -1,0 +1,62 @@
+name: ARCA M5-N1 — preflight descoberta de itens PNCP
+run-name: M5-N1 item discovery preflight — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'm5-n1-pncp-item-discovery-preflight-*'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão candidata
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar contrato M5-N1 sem rede de fonte
+        run: npm run validate:m5-n1-item-discovery
+
+      - name: Transportar normalização PNCP criptografada já existente
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+        run: |
+          set -euo pipefail
+          node scripts/fetch-m5-private-screening-envelope.mjs             --source PNCP             --output artifacts/private/pncp.envelope.json
+
+      - name: Gerar candidato sanitizado M5-N1
+        env:
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/proof
+          node scripts/prepare-m5-n1-pncp-item-discovery-preflight.mjs             --pncp-envelope artifacts/private/pncp.envelope.json             --output artifacts/proof/m5-n1-item-discovery-candidate.json
+
+      - name: Publicar somente candidato sanitizado
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-n1-item-discovery-candidate-${{ github.run_id }}
+          path: artifacts/proof/m5-n1-item-discovery-candidate.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Limpar material privado
+        if: always()
+        run: rm -rf artifacts/private

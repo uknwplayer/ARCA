@@ -2257,6 +2257,91 @@
         "correlationAuthorized=false",
         "humanAuthorizationRequired=true"
       ]
+    },
+    {
+      "id": "m5-n1-pncp-item-discovery",
+      "nome": "M5-N1 — Descoberta PNCP de itens",
+      "tipo": "investigacao_aquisicao_controlada",
+      "finalidade": "Descobrir itens e indicador temResultado das duas contratações PNCP atuais antes de qualquer consulta de resultados.",
+      "estado": "implementado_branch_preflight_privado_live_dormente",
+      "localizacao": [
+        "src/investigation/m5-n1-pncp-item-discovery-plan.mjs",
+        "src/investigation/m5-n1-pncp-item-discovery-private.mjs",
+        "src/investigation/m5-n1-pncp-item-discovery-transport.mjs",
+        "src/investigation/m5-n1-pncp-item-response.mjs",
+        "scripts/prepare-m5-n1-pncp-item-discovery-preflight.mjs",
+        "scripts/run-m5-n1-pncp-item-discovery-live.mjs",
+        ".github/workflows/arca-m5-n1-pncp-item-discovery-preflight.yml",
+        ".github/workflows/arca-m5-n1-pncp-item-discovery-live.yml",
+        "docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-j-pncp-live-parser",
+        "m5-m-pncp-contract-coverage",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "normalizacao PNCP privada M5-J",
+        "diagnosisSha256 M5-M 404",
+        "revisao exata",
+        "candidateSha256 no live"
+      ],
+      "saidas": [
+        "plano privado com 2 alvos",
+        "candidato sanitizado hash-only",
+        "futura captura de itens",
+        "itemCount/itemsWithResultCount hash-only"
+      ],
+      "capabilities": [
+        "derivacao privada de alvos",
+        "pagina=1 tamanhoPagina=50",
+        "maxRequests=2",
+        "retries=0",
+        "detecção de cobertura potencialmente truncada",
+        "custodia antes de uso"
+      ],
+      "limites": [
+        "nenhum GET autorizado no preflight",
+        "sem consulta de resultados",
+        "sem fornecedor",
+        "sem publicacao",
+        "sem correlacao",
+        "M5-N2 bloqueado se pagina cheia"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-n1-item-discovery",
+        "workflow M5-N1 preflight"
+      ],
+      "modosDeFalha": [
+        "envelope hash mismatch",
+        "normalization hash mismatch",
+        "query fora de pagina=1/tamanhoPagina=50",
+        "budget excedido",
+        "response size excedido",
+        "item shape inválido",
+        "pagina possivelmente truncada"
+      ],
+      "recuperacao": [
+        "falhar fechado",
+        "preservar custodia",
+        "paginar sob novo gate se primeira página estiver cheia",
+        "gerar M5-N2 somente após cobertura suficiente"
+      ],
+      "fallback": "não consultar resultados e manter fornecedor não observado",
+      "riscoDeReexecucao": "baixo no preflight; live consome autorização de fonte",
+      "runbook": [
+        "docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md"
+      ],
+      "seguranca": [
+        "sourceNetworkAuthorized=false no preflight",
+        "newPncpGetAuthorized=false no candidato",
+        "publicationAuthorized=false",
+        "correlationAuthorized=false",
+        "humanAuthorizationRequired=true"
+      ]
     }
   ]
 }
