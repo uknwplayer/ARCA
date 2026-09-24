@@ -105,7 +105,30 @@ test("arca ask returns preflight and actual estimated cost without key leakage",
   assert.equal(result.cost.billingCapGuaranteed,false);
   assert.ok(result.cost.conservativeMaxUsd<=0.01);
   assert.ok(result.cost.actualEstimatedUsd>0);
+  assert.ok(result.cost.accountedUsd>0);
+  assert.equal(result.cost.usageAvailable,true);
   assert.equal(JSON.stringify(result).includes("secret-value"),false);
+});
+
+test("arca ask accounts conservative maximum when provider omits usage",async()=>{
+  const result=await runOpenAITermuxAsk({
+    message:"Sem telemetria",
+    apiKey:"secret",
+    model:"gpt-6-luna",
+    allowExternal:true,
+    allowPaidApi:true,
+    maxRequestUsd:0.01,
+    maxOutputTokens:100,
+    now:"2026-09-24T20:00:00.000Z",
+    fetchImpl:async()=>new Response(JSON.stringify({
+      id:"resp_no_usage",
+      status:"completed",
+      output:[{type:"message",content:[{type:"output_text",text:"Resposta sem usage"}]}]
+    }),{status:200,headers:{"content-type":"application/json"}})
+  });
+  assert.equal(result.cost.usageAvailable,false);
+  assert.equal(result.cost.actualEstimatedUsd,null);
+  assert.equal(result.cost.accountedUsd,result.cost.conservativeMaxUsd);
 });
 
 test("Termux chat keeps context only in memory and enforces session budget",async()=>{
