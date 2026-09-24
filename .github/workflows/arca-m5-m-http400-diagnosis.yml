@@ -1,0 +1,52 @@
+name: ARCA M5-M — diagnóstico offline HTTP 400
+run-name: M5-M HTTP400 offline diagnosis — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'm5-m-http400-diagnosis-*'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão diagnóstica
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar diagnóstico M5-M offline
+        run: npm run validate:m5-m-http400-diagnosis
+
+      - name: Reabrir somente custódia privada dos dois 400 e classificar
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/proof
+          node scripts/run-m5-m-http400-diagnosis.mjs \
+            --output artifacts/proof/m5-m-http400-diagnosis.json
+
+      - name: Publicar somente diagnóstico sanitizado
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-m-http400-diagnosis-${{ github.run_id }}
+          path: artifacts/proof/m5-m-http400-diagnosis.json
+          if-no-files-found: error
+          retention-days: 7
