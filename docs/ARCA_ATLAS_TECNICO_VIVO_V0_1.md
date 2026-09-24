@@ -430,3 +430,26 @@ Limites: `correlationAuthorized=false`, `publicationAuthorized=false`; ausência
 Recuperação: drift de hash, record count, cobertura ou binding falha fechado. Não repetir GET para preencher lacuna; somente fonte pública adicional ou novo escopo explicitamente autorizado pode ampliar cobertura.
 
 Runbook: `docs/ARCA_M5_PNCP_LIVE_NORMALIZED_BINDING_V0_1.md`.
+
+
+### M5-K — prontidão de correlação
+
+Componente: `m5-k-correlation-readiness`.
+
+Função: avaliar apenas pelos bindings sanitizados M5-I/M5-J se existem pontes documentais suficientes para correlação forte.
+
+Estado: **IMPLEMENTADO EM BRANCH / OFFLINE / SEM ABRIR VALORES PRIVADOS / SEM CORRELAÇÃO**.
+
+Resultado: `LIMITED_CANDIDATE_SCREENING_ONLY`.
+
+Pontes fortes indisponíveis: fornecedor por cobertura PNCP, identificador forte compartilhado de órgão e referência cross-source direta.
+
+Dimensões candidatas: referência documental e texto de órgão/unidade.
+
+Dimensões fracas: data e valor.
+
+Limites: `readyForStrongCorrelation=false`, `supplierInferenceAllowed=false`, `correlationAttempted=false`, `correlationAuthorized=false`, `publicationAttempted=false`.
+
+Recuperação: ausência de ponte forte não autoriza inferência nem novo GET automático. O próximo passo permitido é triagem privada de candidatos, com saída máxima `CANDIDATE`.
+
+Runbook: `docs/ARCA_M5_CORRELATION_READINESS_V0_1.md`.

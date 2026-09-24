@@ -88,6 +88,10 @@ jobs:
       - name: Validar binding PNCP live normalizado M5-J
         run: npm run validate:m5-pncp-live-binding
 
+      - name: Validar gate M5-K de prontidão de correlação
+        run: npm run validate:m5-correlation-readiness
+
+
 
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d

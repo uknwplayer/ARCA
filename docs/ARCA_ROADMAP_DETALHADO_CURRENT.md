@@ -422,6 +422,30 @@ Próximo passo: gate offline de prontidão de correlação M5-I ↔ M5-J. Nenhum
 
 Ver `docs/ARCA_M5_PNCP_LIVE_NORMALIZED_BINDING_V0_1.md` e checkpoint 052.
 
+### M5-K — gate de prontidão de correlação
+
+Estado: **IMPLEMENTADO EM BRANCH / OFFLINE / SEM ABRIR VALORES PRIVADOS / SEM CORRELAÇÃO**.
+
+O M5-K valida M5-I e M5-J e inventaria as pontes possíveis sem abrir envelopes.
+
+Resultado estrutural: `LIMITED_CANDIDATE_SCREENING_ONLY`.
+
+Pontes fortes indisponíveis:
+
+- fornecedor: indisponível por cobertura PNCP;
+- identificador forte compartilhado de órgão: não disponível;
+- referência cross-source direta: não observada.
+
+Dimensões candidatas: referência documental e texto de órgão/unidade.
+
+Dimensões fracas: data e valor.
+
+Flags: `readyForStrongCorrelation=false`, `readyForPrivateCandidateScreening=true`, `supplierInferenceAllowed=false`, `correlationAttempted=false`.
+
+Próximo passo: M5-L — triagem privada de candidatos sobre as normalizações já custodiais. Mesmo uma coincidência futura deve permanecer `CANDIDATE` sem ponte forte.
+
+Ver `docs/ARCA_M5_CORRELATION_READINESS_V0_1.md` e checkpoint 053.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
