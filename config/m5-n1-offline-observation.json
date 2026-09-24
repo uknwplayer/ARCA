@@ -1,0 +1,29 @@
+{
+  "schema": "arca.m5-n1-offline-observation-config.v1",
+  "sourceLiveRunId": "36051395397",
+  "revision": "9f1dc3111abfc55e2aba5b2055e4a7774e2a644b",
+  "candidateSha256": "e13bb2cc94b85d599434f2287b4718f18b26136a6b6b2a97380e033e3568ecae",
+  "planSha256": "ce700d1311b6471d9308386a39df700205190cba3413d723b91507688dede2eb",
+  "custodyEnvelopeSha256": "41110be726a598a2e620a55dc65d8fb4366fc04381182c264c641f322ebc3d4b",
+  "custodyReceiptSha256": "1b0c5278dd23e904b74455f3a9ac592d81bd4ba5e875c8e6b52fb148790c84a9",
+  "vaultEnvelopePath": "custody/41/41110be726a598a2e620a55dc65d8fb4366fc04381182c264c641f322ebc3d4b.envelope.json",
+  "pageSize": 10,
+  "targets": [
+    {
+      "targetSha256": "73614257cdf4f923ea516c69ab3e252aefcccd741f6bd5a067f20bcb441502cd",
+      "fileName": "items-1-73614257cdf4.bin",
+      "observedShapeSha256": "307bb8c1c17f536705a357b921a2290ebda9a3f5d7a98ec587bec06f5d0f898b"
+    },
+    {
+      "targetSha256": "c7a84b0d7bfcc679e3f4ffc63cc6ca0123c9f16a8c9db4a3c8a5150269a24115",
+      "fileName": "items-2-c7a84b0d7bfc.bin",
+      "observedShapeSha256": "1929698e75b45b1536c0ed9bc73e0c32a0b1b1ff150305df2b8149a11899bbf8"
+    }
+  ],
+  "constraints": {
+    "sourceNetworkAuthorized": false,
+    "newPncpGetAuthorized": false,
+    "publicationAuthorized": false,
+    "correlationAuthorized": false
+  }
+}
