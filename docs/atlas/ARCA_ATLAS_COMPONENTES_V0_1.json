@@ -2156,7 +2156,7 @@
       "nome": "M5-M — Cobertura PNCP por contratos/empenhos",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Ampliar cobertura documental PNCP após M5-L sem candidato, buscando fornecedor e referências contratuais diretamente vinculadas às contratações já normalizadas.",
-      "estado": "executado_2_gets_http400_http400_custodiado_diagnostico_offline",
+      "estado": "drift_runtime_pagina_diagnosticado_correcao_pagina1_branch",
       "localizacao": [
         "src/investigation/m5-pncp-contract-coverage-plan.mjs",
         "src/investigation/m5-pncp-contract-coverage-private.mjs",
@@ -2179,7 +2179,8 @@
         "normalizacao PNCP privada M5-J",
         "screeningSha256 M5-L",
         "revisao exata",
-        "candidateSha256 no live"
+        "candidateSha256 no live",
+        "runtime query pagina=1 no alvo corrigido"
       ],
       "saidas": [
         "plano privado com 2 alvos",
@@ -2187,14 +2188,18 @@
         "futura captura custodial de contratos/empenhos",
         "run 36036733351: 2 GETs, HTTP 400 + HTTP 400, zero retries",
         "custodyEnvelopeSha256=722c2e858cfd4530b7f1531248836cf2e4a88de28e3f891bdfef5607a68f240a",
-        "durableReceiptSha256=ae9bec4cf918c878971999c85056aa7983222593618a6ce80af97b2c13e0ab23"
+        "durableReceiptSha256=ae9bec4cf918c878971999c85056aa7983222593618a6ce80af97b2c13e0ab23",
+        "diagnosisSha256=a3651eadf7af9a0f8d072a43853b5778f785447b52e91fef4a5f4bcdffa0f9de",
+        "runtimeRequiredParameter=pagina Integer"
       ],
       "capabilities": [
         "derivacao privada de alvos",
         "allowlist de host/path",
         "maxRequests=2",
         "retries=0",
-        "custodia antes de uso investigativo"
+        "custodia antes de uso investigativo",
+        "query allowlist pagina=1",
+        "detecção de drift documentação↔runtime"
       ],
       "limites": [
         "nenhum GET autorizado no preflight",
@@ -2204,12 +2209,15 @@
         "sem inferencia de fornecedor",
         "autorizacao live consumida",
         "nenhum novo GET autorizado",
-        "diagnostico somente sobre custodia existente"
+        "diagnostico somente sobre custodia existente",
+        "tamanhoPagina não presumido",
+        "candidato antigo consumido e não reutilizável"
       ],
       "healthCheck": [
         "npm run validate:m5-pncp-contract-coverage",
         "workflow M5-M preflight",
-        "run 36036733351 success"
+        "run 36036733351 success",
+        "run 36037934342 offline diagnosis success"
       ],
       "modosDeFalha": [
         "envelope hash mismatch",
@@ -2218,12 +2226,14 @@
         "host/path fora da allowlist",
         "candidate hash mismatch",
         "budget excedido",
-        "response size excedido"
+        "response size excedido",
+        "runtime exigir parâmetro adicional não observado"
       ],
       "recuperacao": [
-        "diagnosticar offline corpos HTTP 400 já custodiais",
-        "corrigir gate somente se a causa for identificada",
-        "novo preflight/candidato/autorização antes de qualquer novo GET"
+        "usar pagina=1 exatamente no novo alvo",
+        "gerar novo preflight/candidato na revisão final",
+        "exigir nova autorização antes de qualquer GET",
+        "parar sem retry se outro parâmetro runtime for exigido"
       ],
       "fallback": "sem novo GET e sem correlacao forte",
       "riscoDeReexecucao": "baixo no preflight; live consome autorizacao de fonte",
