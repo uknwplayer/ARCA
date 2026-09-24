@@ -27,8 +27,8 @@ test("M5-M transport executa exatamente 2 GETs allowlisted e zero retry",async()
   assert.equal(calls.length,2);
   assert.equal(calls[0].options.method,"GET");
   assert.equal(calls[1].options.method,"GET");
-  assert.match(calls[0].url,/^https:\/\/pncp\.gov\.br\/api\/pncp\/v1\/orgaos\/\d{14}\/contratos\/contratacao\/2026\/1$/);
-  assert.match(calls[1].url,/\/2026\/2$/);
+  assert.match(calls[0].url,/^https:\/\/pncp\.gov\.br\/api\/pncp\/v1\/orgaos\/\d{14}\/contratos\/contratacao\/2026\/1\?pagina=1$/);
+  assert.match(calls[1].url,/\/2026\/2\?pagina=1$/);
   assert.equal(out.results[0].status,200);
   assert.equal(out.results[1].status,200);
 });
@@ -56,4 +56,21 @@ test("M5-M transport captura HTTP não-2xx sem retry",async()=>{
   assert.equal(out.results[0].status,404);
   assert.equal(out.results[0].ok,false);
   assert.equal(out.results[1].status,404);
+});
+
+
+test("M5-M transport falha fechado se query divergir de pagina=1",async()=>{
+  const plan=buildM5PncpContractCoveragePlan({records:[record(1),record(2)]});
+  const bad={...plan,targets:[
+    {...plan.targets[0],query:{pagina:2}},
+    plan.targets[1]
+  ]};
+  let calls=0;
+  await assert.rejects(
+    ()=>createM5PncpContractCoverageTransport({
+      fetchImpl:async()=>{calls+=1;return new Response("[]",{status:200})}
+    }).executePlan(bad),
+    /TARGET_INVALID/
+  );
+  assert.equal(calls,0);
 });
