@@ -35,6 +35,8 @@ export * from "./autonomy-workflow-guard.ts";
 export * from "./guarded-autonomy-workflow.ts";
 export * from "./reasoning-transport-gate.ts";
 export * from "./reasoning-capability.ts";
+export * from "./openai-provider.ts";
+export * from "./openai-reasoning-bridge.ts";
 export * from "./reasoning-durable-opaque-adapter.ts";
 export * from "./reasoning-pending.ts";
 export * from "./creator-durable-reasoning.ts";
