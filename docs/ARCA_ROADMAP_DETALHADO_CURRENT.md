@@ -498,7 +498,7 @@ Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 058.
 
 ### M5-N1 — descoberta PNCP de itens
 
-Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE / ZERO NOVO GET**.
+Estado: **INTEGRADO NO MAIN / CI PÓS-MERGE VERDE / PREFLIGHT PRIVADO CONCLUÍDO / CANDIDATO CANÔNICO EMITIDO / ZERO SOURCE GET**.
 
 Motivação: o M5-M chegou a 404/404 `UNCLASSIFIED` e não deve ser repetido para forçar interpretação. A expansão documental migra para a superfície oficial de itens da própria contratação.
 
@@ -514,9 +514,9 @@ A prova sanitizada futura publica apenas contagens e hashes. Se uma página reto
 
 M5-N2 futuro: somente itens reais com `temResultado=true` poderão originar alvos para `/itens/{numeroItem}/resultados`. O número de requests desse estágio ainda não é definido e dependerá da observação M5-N1.
 
-Próximo passo: CI/merge → preflight privado → candidato canônico → autorização humana para exatamente 2 GETs de itens.
+Preflight privado `36044350610`: `candidateSha256=13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844`, 2 target hashes, source network desligada. Próximo passo: autorização humana explícita para exatamente 2 GETs de itens.
 
-Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 059.
+Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 060.
 
 ### M5 Fase E — binding do preflight ao probe live
 
