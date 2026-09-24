@@ -9,11 +9,18 @@
     "maxRequests": 2,
     "retries": 0,
     "pagina": 1,
-    "tamanhoPagina": 50,
+    "tamanhoPagina": 10,
     "maxBytesPerResponse": 524288,
-    "sourceNetworkAuthorized": false,
-    "newPncpGetAuthorized": false,
+    "sourceNetworkAuthorized": true,
+    "newPncpGetAuthorized": true,
     "publicationAuthorized": false,
-    "correlationAuthorized": false
+    "correlationAuthorized": false,
+    "humanAuthorizationRequired": false
+  },
+  "billing": {
+    "method": "GET",
+    "costClass": "NO_MONETARY_CHARGE_OBSERVED",
+    "evidenceRef": "PNCP_MANUAL_V2_6_PUBLIC_CONSULTATION",
+    "autoExecutionAllowed": true
   }
 }
