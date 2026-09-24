@@ -108,7 +108,7 @@ A prioridade imediata passa a ser uma interface de conversação pelo Termux:
 Termux → ARCA CLI/Chat Gateway → provedor de raciocínio → GPT → ARCA → Termux
 ```
 
-A **Fase A** adiciona `arca ask` para uma pergunta única via OpenAI Responses API, passando pelo `ReasoningProviderRegistry` e pelo Reasoning Transport Gate. O envio exige `--allow-external`, a chave fica em `OPENAI_API_KEY`, `store:false` é usado e nenhuma ferramenta/Core mutation é autorizada. O futuro `arca chat` interativo permanece como Fase B.
+A ponte Termux ↔ GPT possui `arca ask` e a Fase B `arca chat`. As duas passam pelo `ReasoningProviderRegistry`, Reasoning Transport Gate e gate monetário. Envio externo exige `--allow-external`; API potencialmente cobrada exige `--allow-paid-api` e budget explícito. O chat mantém histórico apenas em memória, sem ferramentas automáticas e sem Core mutation.
 
 O ChatGPT Work permanece uma função separada: pode atuar como executor externo de tarefas maiores, enquanto a nova interface Termux ↔ GPT será voltada à conversa/raciocínio interativo.
 
