@@ -563,99 +563,108 @@ gh run list --limit 10
 
 ## 15. Conversação ARCA ↔ GPT pelo Termux
 
-### Estado atual
+### Fase A — pergunta única
 
-Ainda **não existe** no ARCA um comando oficial:
-
-```bash
-arca chat
-```
-
-nem:
+A primeira interface de GPT pelo Termux é:
 
 ```bash
-npm run arca:chat
+export OPENAI_API_KEY='SUA_CHAVE'
+
+npm run arca -- ask \
+  --message "Onde paramos?" \
+  --model gpt-6-luna \
+  --allow-external
 ```
 
-Não trate esses comandos como implementados.
-
-Hoje existem peças reutilizáveis:
-
-- Creator Chat Gateway;
-- adapters de raciocínio;
-- Machine Bridge;
-- Vince/Termux;
-- Execution Endpoint;
-- checkpoint e roadmap;
-- controles de capability;
-- políticas de segurança;
-- futura abstração AI Gateway.
-
-### Objetivo da nova frente
-
-A interface desejada é:
+O comando passa por:
 
 ```text
 Termux
    ↓
 ARCA CLI
    ↓
-ARCA Chat Gateway
+ReasoningProviderRegistry
    ↓
-provedor de raciocínio
+Reasoning Transport Gate
    ↓
-GPT
+OpenAI Responses API
    ↓
 ARCA
    ↓
 Termux
 ```
 
-Uso pretendido:
+`--allow-external` é obrigatório. Sem ele, o ARCA recusa o envio antes de criar a request.
 
-```text
-~/ARCA $ arca chat
-ARCA > onde paramos?
-GPT  > ...
-ARCA > prossiga
-GPT  > ...
-```
+A chave é lida de `OPENAI_API_KEY` e não deve ser colocada na linha do comando, no Git ou em arquivos públicos.
 
-E modo de pergunta única:
+Modelo alternativo:
 
 ```bash
-arca ask "qual o estado atual do M5?"
+export ARCA_OPENAI_MODEL='MODELO'
+
+npm run arca -- ask \
+  --message "Explique o estado do projeto" \
+  --allow-external
 ```
 
-Esses comandos são **alvo de desenvolvimento**, não comandos disponíveis hoje.
+Limite de saída personalizado:
 
-### Requisitos mínimos da implementação
+```bash
+npm run arca -- ask \
+  --message "Responda resumidamente" \
+  --allow-external \
+  --max-output-tokens 600
+```
 
-A ponte Termux ↔ GPT deverá:
+Para receber metadados, hashes e uso em JSON:
 
-1. usar um provedor explícito, inicialmente compatível com OpenAI API;
-2. nunca armazenar API key no repositório;
-3. manter orçamento por chamada/sessão/período;
-4. registrar modelo/provedor/custo e hashes de entrada/saída quando aplicável;
-5. poder anexar checkpoint, estado do ARCA e capabilities autorizadas;
-6. separar conversa de autorização de ferramentas;
-7. impedir que uma resposta do modelo conceda autoridade a si própria;
-8. manter kill switch;
-9. permitir modo one-shot e sessão interativa;
-10. futuramente aceitar outros provedores ou modelo local sem mudar a interface do usuário.
+```bash
+npm run arca -- ask \
+  --message "Teste" \
+  --allow-external \
+  --json
+```
+
+Garantias da Fase A:
+
+- endpoint fixo em `https://api.openai.com/v1/responses`;
+- `store:false`;
+- redirects recusados;
+- transporte `private-direct` com TLS;
+- comunicação classificada como restrita;
+- zero ferramentas concedidas ao modelo;
+- resposta não altera o Core;
+- `humanReviewRequired=true`;
+- `coreMutationPerformed=false`;
+- saída não é persistida pelo bridge.
+
+Documento técnico: `docs/ARCA_TERMUX_GPT_BRIDGE_V0_1.md`.
+
+### Fase B — chat interativo
+
+O comando pretendido:
+
+```bash
+arca chat
+```
+
+**ainda não está implementado**.
+
+A Fase B reutilizará o mesmo bridge para manter uma sessão de terminal, com comandos locais de controle, budget de sessão e contexto ARCA opt-in/minimizado.
 
 ### Fronteira com ChatGPT Work
 
-A futura conversa GPT pelo Termux e o Work são funções diferentes:
+A conversa GPT pelo Termux e o Work são funções diferentes:
 
 ```text
-arca chat  → conversa/raciocínio interativo
-Work       → executor externo para tarefas maiores
-Vince      → descoberta/roteamento/worker
+arca ask/chat → conversa e raciocínio interativo
+Work          → executor externo para tarefas maiores
+Vince         → descoberta/roteamento/worker
 Machine Bridge → transporte de tarefas/resultados
 ```
 
-Uma conversa poderá futuramente solicitar uma tarefa ao Work através do ARCA, mas isso deverá continuar sujeito aos gates de autoridade existentes.
+Uma conversa poderá futuramente solicitar uma tarefa ao Work através do ARCA, mas isso continuará sujeito aos gates de autoridade existentes.
 
 ---
 

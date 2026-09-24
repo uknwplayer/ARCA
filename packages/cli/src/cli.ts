@@ -1,6 +1,7 @@
 import { mkdir, readFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { ArcaCore, prettyJson } from "../../core/src/index.ts";
+import { runOpenAITermuxAsk } from "../../agent/src/index.ts";
 
 interface ParsedArgs {
   positional: string[];
@@ -65,6 +66,7 @@ function help(): string {
 Uso:
   arca init [--home .arca]
   arca list [--home .arca]
+  arca ask --message "..." --allow-external [--model MODELO] [--max-output-tokens 1200]
   arca investigation create --question ... --objective ... --scope ... --limits ...
   arca investigation show --investigation INV-000001
   arca investigation status --investigation INV-000001
@@ -198,6 +200,19 @@ export async function main(argv: string[]): Promise<void> {
     result = await core.init();
   } else if (command === "list") {
     result = { home, investigations: await core.list() };
+  } else if (command === "ask") {
+    const apiKey = String(process.env.OPENAI_API_KEY ?? "").trim();
+    if (!apiKey) throw new Error("OPENAI_API_KEY é obrigatório para arca ask");
+    const model = textOption(options, "model") ?? (String(process.env.ARCA_OPENAI_MODEL ?? "").trim() || undefined);
+    const allowExternal = options["allow-external"] === true || options["allow-external"] === "true";
+    result = await runOpenAITermuxAsk({
+      message: textOption(options, "message", true)!,
+      apiKey,
+      ...(model ? { model } : {}),
+      allowExternal,
+      maxOutputTokens: Number(textOption(options, "max-output-tokens") ?? "1200"),
+      timeoutMs: Number(textOption(options, "timeout-ms") ?? "30000")
+    });
   } else if (command === "investigation" && subcommand === "create") {
     result = await core.createInvestigation({
       id: textOption(options, "id"),
@@ -288,5 +303,9 @@ export async function main(argv: string[]): Promise<void> {
     throw new Error(`Comando desconhecido: ${positional.join(" ")}\n\n${help()}`);
   }
 
+  if (command === "ask" && options.json !== true) {
+    process.stdout.write(String(result.text ?? "") + "\n");
+    return;
+  }
   process.stdout.write(options.json ? `${JSON.stringify(result)}\n` : prettyJson(result));
 }
