@@ -10,9 +10,13 @@ function rev(v){const o=String(v??"").trim().toLowerCase();if(!/^[a-f0-9]{40}$/.
 export function runM5N1Preflight({env=process.env}={}){
   const cfg=JSON.parse(fs.readFileSync(path.join(process.cwd(),"config/m5-n1-pncp-item-discovery.json"),"utf8"));
   if(cfg.constraints?.maxRequests!==2||cfg.constraints?.retries!==0||
-     cfg.constraints?.pagina!==1||cfg.constraints?.tamanhoPagina!==50||
-     cfg.constraints?.sourceNetworkAuthorized!==false||cfg.constraints?.newPncpGetAuthorized!==false||
-     cfg.constraints?.publicationAuthorized!==false||cfg.constraints?.correlationAuthorized!==false)
+     cfg.constraints?.pagina!==1||cfg.constraints?.tamanhoPagina!==10||
+     cfg.constraints?.sourceNetworkAuthorized!==true||cfg.constraints?.newPncpGetAuthorized!==true||
+     cfg.constraints?.humanAuthorizationRequired!==false||
+     cfg.constraints?.publicationAuthorized!==false||cfg.constraints?.correlationAuthorized!==false||
+     cfg.billing?.method!=="GET"||
+     cfg.billing?.costClass!=="NO_MONETARY_CHARGE_OBSERVED"||
+     cfg.billing?.autoExecutionAllowed!==true)
     throw new Error("ARCA_M5_N1_CONFIG_INVALID");
   const envelope=JSON.parse(fs.readFileSync(path.resolve(arg("--pncp-envelope")),"utf8"));
   const binding=JSON.parse(fs.readFileSync(path.join(process.cwd(),cfg.pncpBindingConfig),"utf8"));
@@ -31,9 +35,10 @@ async function main(){
     const c=runM5N1Preflight();
     process.stdout.write(JSON.stringify({
       status:c.status,targetCount:c.targetCount,planSha256:c.planSha256,candidateSha256:c.candidateSha256,
-      targetHashes:c.targetHashes,pagination:c.pagination,sourceNetworkAuthorized:c.sourceNetworkAuthorized,
-      newPncpGetAuthorized:c.newPncpGetAuthorized,publicationAuthorized:c.publicationAuthorized,
-      correlationAuthorized:c.correlationAuthorized
+      targetHashes:c.targetHashes,pagination:c.pagination,getCostPolicy:c.getCostPolicy,
+      sourceNetworkAuthorized:c.sourceNetworkAuthorized,newPncpGetAuthorized:c.newPncpGetAuthorized,
+      humanAuthorizationRequired:c.humanAuthorizationRequired,
+      publicationAuthorized:c.publicationAuthorized,correlationAuthorized:c.correlationAuthorized
     })+"\n");
   }catch(error){
     const code=/^ARCA_[A-Z0-9_]+$/.test(String(error?.message??""))?error.message:"ARCA_M5_N1_PREFLIGHT_FAILED";

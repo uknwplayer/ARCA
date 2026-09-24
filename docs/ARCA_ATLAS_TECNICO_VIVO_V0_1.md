@@ -544,11 +544,11 @@ Componente: `m5-n1-pncp-item-discovery`.
 
 Função: descobrir os itens das duas contratações PNCP já normalizadas sem repetir o endpoint M5-M e sem consultar resultados ainda.
 
-Estado: **INTEGRADO NO MAIN / PREFLIGHT PRIVADO CONCLUÍDO / LIVE DORMENTE / CANDIDATO CANÔNICO EMITIDO**.
+Estado: **POLÍTICA GET POR CUSTO APLICADA / `tamanhoPagina=10` / CANDIDATO 060 OBSOLETO / NOVO PREFLIGHT PENDENTE**.
 
 Endpoint allowlisted:
 
-`GET https://pncp.gov.br/api/pncp/v1/orgaos/{cnpj}/compras/{ano}/{sequencial}/itens?pagina=1&tamanhoPagina=50`
+`GET https://pncp.gov.br/api/pncp/v1/orgaos/{cnpj}/compras/{ano}/{sequencial}/itens?pagina=1&tamanhoPagina=10`
 
 Capacidade observável futura:
 
@@ -565,15 +565,15 @@ Orçamento:
 - `retries=0`;
 - timeout 30 s;
 - 512 KiB por resposta;
-- 50 itens por página.
+- 10 itens por página.
 
 Privacidade: CNPJ/ano/sequencial permanecem privados; candidato/preflight publica apenas hashes dos alvos.
 
-Regra de completude: se `itemCount=50`, marcar `pagePossiblyTruncated=true` e bloquear M5-N2 até paginação adicional.
+Regra de completude: se `itemCount=10`, marcar `pagePossiblyTruncated=true` e bloquear M5-N2 até paginação adicional.
 
 M5-N2 só poderá ser derivado de itens com `temResultado=true`, e sua quantidade de requests dependerá da captura M5-N1 real.
 
-Limites: nenhum GET autorizado pelo desenho; sem fornecedor, publicação, correlação ou conclusão adversa.
+Política de GET: PNCP consulta pública é `NO_MONETARY_CHARGE_OBSERVED`; `humanAuthorizationRequired=false`; `autoExecutionAllowed=true`. Sem fornecedor, publicação, correlação ou conclusão adversa.
 
 Runbook: `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md`.
 
@@ -590,4 +590,20 @@ Run: `36044350610`.
 - source network desligada;
 - publicação/correlação desligadas;
 - nenhum GET live executado.
+
+
+
+### Política de autorização de GET por custo monetário
+
+Componente: `source-get-cost-policy`.
+
+Regra vigente:
+
+- `NO_MONETARY_CHARGE_OBSERVED` → execução automática permitida dentro do gate técnico;
+- `MONETARY_COST` → autorização humana obrigatória antes do gasto;
+- `UNKNOWN` → execução bloqueada até classificação de custo, sem pedir autorização prematura.
+
+A política não concede autoridade para métodos mutáveis, publicação ou correlação.
+
+Runbook: `docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`.
 

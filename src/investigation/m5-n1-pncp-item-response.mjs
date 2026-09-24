@@ -12,7 +12,7 @@ function item(x){
   return Object.freeze({numeroItem:x.numeroItem,temResultado:x.temResultado});
 }
 
-export function observeM5N1ItemsResponse({bytes,httpStatus,targetSha256,pageSize=50}={}){
+export function observeM5N1ItemsResponse({bytes,httpStatus,targetSha256,pageSize=10}={}){
   if(httpStatus!==200)return Object.freeze({
     targetSha256,httpStatus,parsed:false,itemCount:null,itemsWithResultCount:null,
     pagePossiblyTruncated:false,resultItemSetSha256:null,nextStageReady:false,

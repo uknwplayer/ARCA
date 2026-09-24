@@ -119,7 +119,7 @@
       "id": "m4-aquisicao-controlada",
       "nome": "M4 Aquisição live controlada",
       "tipo": "investigacao",
-      "finalidade": "Executar aquisição live limitada de uma fonte por vez sob manifesto e autorização.",
+      "finalidade": "Executar aquisição live limitada por fonte sob manifesto, budgets e política de custo GET.",
       "estado": "parcial_live",
       "localizacao": [
         "src/investigation/",
@@ -141,11 +141,12 @@
         "recibo sanitizado"
       ],
       "capabilities": [
-        "GET limitado quando explicitamente autorizado"
+        "GET limitado quando explicitamente autorizado",
+        "GET controlado sob política de custo monetário"
       ],
       "limites": [
-        "sem rede por inferencia",
-        "sem publicacao"
+        "sem publicacao",
+        "sem rede sem gate técnico/cost policy"
       ],
       "healthCheck": [
         "tests/m4-controlled-scope.test.mjs"
@@ -159,8 +160,8 @@
       "recuperacao": [
         "parar",
         "registrar erro",
-        "revalidar credencial/documentacao",
-        "nova autorizacao antes de novo GET"
+        "revalidar credencial/documentacao/custo",
+        "nova autorização humana apenas se o GET tiver custo monetário"
       ],
       "fallback": "nenhum acesso alternativo protegido; procurar rota publica oficial",
       "riscoDeReexecucao": "alto se houver ambiguidade de entrega; exige reconciliacao",
@@ -2263,7 +2264,7 @@
       "nome": "M5-N1 — Descoberta PNCP de itens",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Descobrir itens e indicador temResultado das duas contratações PNCP atuais antes de qualquer consulta de resultados.",
-      "estado": "integrado_preflight_concluido_candidato_emitido_live_dormente",
+      "estado": "politica_get_custo_aplicada_page10_preflight_novo_pendente",
       "localizacao": [
         "src/investigation/m5-n1-pncp-item-discovery-plan.mjs",
         "src/investigation/m5-n1-pncp-item-discovery-private.mjs",
@@ -2287,15 +2288,14 @@
         "normalizacao PNCP privada M5-J",
         "diagnosisSha256 M5-M 404",
         "revisao exata",
-        "candidateSha256 no live"
+        "candidateSha256 no live",
+        "costClass=NO_MONETARY_CHARGE_OBSERVED"
       ],
       "saidas": [
         "plano privado com 2 alvos",
         "candidato sanitizado hash-only",
         "futura captura de itens",
         "itemCount/itemsWithResultCount hash-only",
-        "planSha256=75b7910e40b1873a5f694c13eda1c4e00ae1b10ad52e8ebb4c36ef968b29b0b7",
-        "candidateSha256=13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844",
         "targetCount=2"
       ],
       "capabilities": [
@@ -2304,21 +2304,26 @@
         "maxRequests=2",
         "retries=0",
         "detecção de cobertura potencialmente truncada",
-        "custodia antes de uso"
+        "custodia antes de uso",
+        "pagina=1 tamanhoPagina=10",
+        "autoexecucao GET sem custo monetario observado"
       ],
       "limites": [
-        "nenhum GET autorizado no preflight",
         "sem consulta de resultados",
         "sem fornecedor",
         "sem publicacao",
         "sem correlacao",
-        "M5-N2 bloqueado se pagina cheia"
+        "M5-N2 bloqueado se pagina cheia",
+        "GET somente após candidate hash-bound e cost policy válida",
+        "M5-N2 continua separado",
+        "pagina cheia com 10 itens bloqueia avanço"
       ],
       "healthCheck": [
         "npm run validate:m5-n1-item-discovery",
         "workflow M5-N1 preflight",
         "run 36044350610 preflight success",
-        "CI pós-merge 36044297566 success"
+        "CI pós-merge 36044297566 success",
+        "npm run validate:get-cost-policy"
       ],
       "modosDeFalha": [
         "envelope hash mismatch",
@@ -2330,10 +2335,11 @@
         "pagina possivelmente truncada"
       ],
       "recuperacao": [
-        "manter live dormente até autorização explícita",
-        "executar exatamente 2 GETs de itens se autorizado",
-        "custodiar antes de observar itemCount/temResultado",
-        "bloquear M5-N2 se qualquer página vier cheia"
+        "falhar fechado se cost class mudar ou ficar UNKNOWN",
+        "falhar fechado em query/budget/binding divergente",
+        "gerar novo preflight para tamanhoPagina=10",
+        "executar automaticamente somente se autoExecutionAllowed=true",
+        "bloquear M5-N2 se primeira página vier cheia"
       ],
       "fallback": "não consultar resultados e manter fornecedor não observado",
       "riscoDeReexecucao": "baixo no preflight; live consome autorização de fonte",
@@ -2346,6 +2352,66 @@
         "publicationAuthorized=false",
         "correlationAuthorized=false",
         "humanAuthorizationRequired=true"
+      ]
+    },
+    {
+      "id": "source-get-cost-policy",
+      "nome": "Política de autorização de GET por custo monetário",
+      "tipo": "governanca_execucao",
+      "finalidade": "Decidir se um GET controlado exige autorização humana com base em custo monetário, sem remover budgets, allowlists ou gates de publicação/correlação.",
+      "estado": "implementado_branch",
+      "localizacao": [
+        "src/investigation/source-get-cost-policy.mjs",
+        "tests/source-get-cost-policy.test.mjs",
+        "docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md"
+      ],
+      "dependeDe": [],
+      "chamadoPor": [
+        "gates de aquisição GET"
+      ],
+      "entradas": [
+        "method",
+        "costClass",
+        "evidenceRef"
+      ],
+      "saidas": [
+        "AUTO_EXECUTION_ALLOWED",
+        "AWAITING_HUMAN_COST_AUTHORIZATION",
+        "HOLD_FOR_COST_CLASSIFICATION"
+      ],
+      "capabilities": [
+        "GET sem custo observado sem aprovação por request",
+        "GET pago com autorização humana",
+        "bloqueio até classificar custo desconhecido"
+      ],
+      "limites": [
+        "somente GET",
+        "não autoriza POST/PUT/PATCH/DELETE",
+        "não autoriza publicação",
+        "não autoriza correlação",
+        "não altera budgets/rate limits"
+      ],
+      "healthCheck": [
+        "npm run validate:get-cost-policy"
+      ],
+      "modosDeFalha": [
+        "costClass inválido",
+        "método não GET",
+        "custo desconhecido"
+      ],
+      "recuperacao": [
+        "classificar custo",
+        "manter execução bloqueada se UNKNOWN",
+        "pedir autorização se MONETARY_COST"
+      ],
+      "fallback": "HOLD_FOR_COST_CLASSIFICATION",
+      "riscoDeReexecucao": "baixo; policy pura/determinística",
+      "runbook": [
+        "docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md"
+      ],
+      "seguranca": [
+        "fail-closed para custo UNKNOWN",
+        "humanAuthorizationRequired=true somente para GET monetariamente cobrado"
       ]
     }
   ]

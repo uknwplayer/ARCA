@@ -106,6 +106,9 @@ jobs:
       - name: Validar gate M5-N1 de descoberta de itens PNCP
         run: npm run validate:m5-n1-item-discovery
 
+      - name: Validar política de autorização GET por custo monetário
+        run: npm run validate:get-cost-policy
+
 
 
 

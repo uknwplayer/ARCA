@@ -10,7 +10,7 @@ function validTarget(t){
      typeof t?.path!=="string"||
      !/^\/api\/pncp\/v1\/orgaos\/\d{14}\/compras\/\d{4}\/\d{1,9}\/itens$/.test(t.path)||
      JSON.stringify(keys)!==JSON.stringify(["pagina","tamanhoPagina"])||
-     t.query.pagina!==1||t.query.tamanhoPagina!==50||
+     t.query.pagina!==1||t.query.tamanhoPagina!==10||
      !/^[a-f0-9]{64}$/.test(t.targetSha256??""))
     throw new Error("ARCA_M5_N1_TARGET_INVALID");
 }
@@ -35,7 +35,7 @@ export function createM5N1ItemDiscoveryTransport({
       try{
         const url=new URL(t.path,M5_N1_ORIGIN);
         url.searchParams.set("pagina","1");
-        url.searchParams.set("tamanhoPagina","50");
+        url.searchParams.set("tamanhoPagina","10");
         response=await fetchImpl(url.toString(),{
           method:"GET",headers:{accept:"application/json"},redirect:"error",signal:controller.signal
         });

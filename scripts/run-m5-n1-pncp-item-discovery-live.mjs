@@ -18,8 +18,6 @@ function repo(v){const o=String(v??"").trim();if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_
 function pass(v){return req(v,"ARCA_M5_N1_PASSPHRASE_REQUIRED",24,4096)}
 
 export async function runM5N1Live({env=process.env,fetchImpl=globalThis.fetch,custodyBackend=null}={}){
-  if(env.ARCA_M5_N1_CONFIRMATION!=="PNCP_ITEM_DISCOVERY_GET_ONLY")
-    throw new Error("ARCA_M5_N1_EXPLICIT_CONFIRMATION_REQUIRED");
   const cfg=JSON.parse(fs.readFileSync(path.join(process.cwd(),"config/m5-n1-pncp-item-discovery.json"),"utf8"));
   const envelope=JSON.parse(fs.readFileSync(path.resolve(arg("--pncp-envelope")),"utf8"));
   const binding=JSON.parse(fs.readFileSync(path.join(process.cwd(),cfg.pncpBindingConfig),"utf8"));
@@ -31,6 +29,12 @@ export async function runM5N1Live({env=process.env,fetchImpl=globalThis.fetch,cu
   });
   const expected=h64(env.ARCA_M5_N1_CANDIDATE_SHA256,"ARCA_M5_N1_CANDIDATE_REQUIRED");
   if(derived.candidate.candidateSha256!==expected)throw new Error("ARCA_M5_N1_CANDIDATE_MISMATCH");
+  if(derived.candidate.getCostPolicy?.costClass!=="NO_MONETARY_CHARGE_OBSERVED"||
+     derived.candidate.getCostPolicy?.autoExecutionAllowed!==true||
+     derived.candidate.humanAuthorizationRequired!==false||
+     derived.candidate.sourceNetworkAuthorized!==true||
+     derived.candidate.newPncpGetAuthorized!==true)
+    throw new Error("ARCA_M5_N1_COST_POLICY_NOT_EXECUTABLE");
   const executed=await createM5N1ItemDiscoveryTransport({
     fetchImpl,timeoutMs:derived.plan.budgets.timeoutMs,
     maxBytesPerResponse:derived.plan.budgets.maxBytesPerResponse,maxRequests:2
@@ -65,7 +69,7 @@ export async function runM5N1Live({env=process.env,fetchImpl=globalThis.fetch,cu
     if(pf?.ready!==true||pf?.private!==true)throw new Error("ARCA_M5_N1_CUSTODY_PREFLIGHT_FAILED");
 
     const structural=executed.results.map(r=>observeM5N1ItemsResponse({
-      bytes:r.bodyBytes,httpStatus:r.status,targetSha256:r.targetSha256,pageSize:50
+      bytes:r.bodyBytes,httpStatus:r.status,targetSha256:r.targetSha256,pageSize:10
     }));
     const resultHash=sha256(canonicalJson({
       candidateSha256:derived.candidate.candidateSha256,planSha256:derived.plan.planSha256,
@@ -83,6 +87,8 @@ export async function runM5N1Live({env=process.env,fetchImpl=globalThis.fetch,cu
         payloadHash:custodyEnvelope.payloadHash,fileCount:custodyEnvelope.fileCount,totalBytes:custodyEnvelope.totalBytes,
         plaintextPublished:false},
       publicationAttempted:false,correlationAttempted:false,supplierInferenceAttempted:false,
+      executionAuthorizationBasis:"ZERO_MONETARY_COST_GET_POLICY",
+      humanAuthorizationRequired:false,
       humanReviewRequired:true,adverseFinding:false
     };
     const stored=await store.persist({envelope:custodyEnvelope,proof:proofBase});

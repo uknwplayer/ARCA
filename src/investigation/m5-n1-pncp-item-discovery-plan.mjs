@@ -1,9 +1,10 @@
 import {canonicalJson,sha256} from "./public-source-contract.mjs";
+import {evaluateGetCostPolicy,GET_COST_CLASSES} from "./source-get-cost-policy.mjs";
 
 export const M5_N1_PLAN_SCHEMA="arca.m5-n1-pncp-item-discovery-plan.v1";
 export const M5_N1_CANDIDATE_SCHEMA="arca.m5-n1-pncp-item-discovery-candidate.v1";
 export const M5_N1_ENDPOINT_ID="PNCP_ITENS_DA_CONTRATACAO";
-export const M5_N1_QUERY=Object.freeze({pagina:1,tamanhoPagina:50});
+export const M5_N1_QUERY=Object.freeze({pagina:1,tamanhoPagina:10});
 
 const H64=/^[a-f0-9]{64}$/;
 const H40=/^[a-f0-9]{40}$/;
@@ -55,7 +56,7 @@ export function buildM5N1ItemDiscoveryPlan({records}={}){
     targets:Object.freeze(targets),
     pagination:Object.freeze({
       pagina:1,
-      tamanhoPagina:50,
+      tamanhoPagina:10,
       fullPageMeansPotentiallyTruncated:true
     }),
     budgets:Object.freeze({
@@ -63,7 +64,7 @@ export function buildM5N1ItemDiscoveryPlan({records}={}){
       retries:0,
       timeoutMs:30000,
       maxBytesPerResponse:524288,
-      maxItemsPerResponse:50
+      maxItemsPerResponse:10
     }),
     expectedCoverage:Object.freeze({
       numeroItem:true,
@@ -74,13 +75,18 @@ export function buildM5N1ItemDiscoveryPlan({records}={}){
       id:"M5-N2",
       onlyItemsWithTemResultado:true,
       requiresCompleteItemCoverage:true,
-      sourceNetworkAuthorized:false
+      requiresSeparateControlledPlan:true
     }),
-    sourceNetworkAuthorized:false,
-    newPncpGetAuthorized:false,
+    getCostPolicy:evaluateGetCostPolicy({
+      method:"GET",
+      costClass:GET_COST_CLASSES.NO_MONETARY_CHARGE_OBSERVED,
+      evidenceRef:"PNCP_MANUAL_V2_6_PUBLIC_CONSULTATION"
+    }),
+    sourceNetworkAuthorized:true,
+    newPncpGetAuthorized:true,
     publicationAuthorized:false,
     correlationAuthorized:false,
-    humanAuthorizationRequired:true
+    humanAuthorizationRequired:false
   };
   return Object.freeze({...base,planSha256:sha256(canonicalJson(base))});
 }
@@ -92,7 +98,7 @@ export function buildM5N1ItemDiscoveryCandidate({plan,revision,pncpBindingSha256
   const base={
     schema:M5_N1_CANDIDATE_SCHEMA,
     version:1,
-    status:"READY_FOR_EXPLICIT_SOURCE_AUTHORIZATION",
+    status:"READY_FOR_CONTROLLED_EXECUTION",
     revision:h40(revision,"ARCA_M5_N1_REVISION_INVALID"),
     endpointId:M5_N1_ENDPOINT_ID,
     pncpBindingSha256:h64(pncpBindingSha256,"ARCA_M5_N1_BINDING_INVALID"),
@@ -104,12 +110,13 @@ export function buildM5N1ItemDiscoveryCandidate({plan,revision,pncpBindingSha256
     pagination:plan.pagination,
     budgets:plan.budgets,
     expectedCoverage:plan.expectedCoverage,
-    sourceNetworkAuthorized:false,
-    newPncpGetAuthorized:false,
+    getCostPolicy:plan.getCostPolicy,
+    sourceNetworkAuthorized:true,
+    newPncpGetAuthorized:true,
     publicationAuthorized:false,
     correlationAuthorized:false,
     privateTargetValuesIncluded:false,
-    humanAuthorizationRequired:true
+    humanAuthorizationRequired:false
   };
   return Object.freeze({...base,candidateSha256:sha256(canonicalJson(base))});
 }

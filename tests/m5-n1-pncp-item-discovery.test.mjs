@@ -59,11 +59,11 @@ function setupPrivate(){
   return {envelope,bindingInput};
 }
 
-test("M5-N1 cria dois alvos de itens com pagina 1 e tamanho 50",()=>{
+test("M5-N1 cria dois alvos de itens com pagina 1 e tamanho 10",()=>{
   const plan=buildM5N1ItemDiscoveryPlan({records:[normalizedRecord(1),normalizedRecord(2)]});
   assert.equal(plan.targetCount,2);
   assert.deepEqual(plan.targets.map(x=>x.query),[
-    {pagina:1,tamanhoPagina:50},{pagina:1,tamanhoPagina:50}
+    {pagina:1,tamanhoPagina:10},{pagina:1,tamanhoPagina:10}
   ]);
   assert.match(plan.targets[0].path,/\/compras\/2026\/1\/itens$/);
   assert.match(plan.targets[1].path,/\/compras\/2026\/2\/itens$/);
@@ -78,9 +78,12 @@ test("M5-N1 candidato é hash-only e não expõe alvo privado",()=>{
     plan,revision:"a".repeat(40),pncpBindingSha256:"b".repeat(64),
     screeningSha256:"c".repeat(64),m5mDiagnosisSha256:"d".repeat(64)
   });
-  assert.equal(c.status,"READY_FOR_EXPLICIT_SOURCE_AUTHORIZATION");
+  assert.equal(c.status,"READY_FOR_CONTROLLED_EXECUTION");
   assert.equal(c.privateTargetValuesIncluded,false);
-  assert.equal(c.newPncpGetAuthorized,false);
+  assert.equal(c.newPncpGetAuthorized,true);
+  assert.equal(c.sourceNetworkAuthorized,true);
+  assert.equal(c.humanAuthorizationRequired,false);
+  assert.equal(c.getCostPolicy.autoExecutionAllowed,true);
   assert.equal(JSON.stringify(c).includes("12345678000191"),false);
   assert.equal(c.targetHashes.length,2);
 });
@@ -110,13 +113,13 @@ test("M5-N1 transporte usa exatamente dois GETs allowlisted",async()=>{
   const out=await createM5N1ItemDiscoveryTransport({fetchImpl}).executePlan(plan);
   assert.equal(out.requestCount,2);
   assert.equal(calls.length,2);
-  assert.match(calls[0].url,/\?pagina=1&tamanhoPagina=50$/);
-  assert.match(calls[1].url,/\?pagina=1&tamanhoPagina=50$/);
+  assert.match(calls[0].url,/\?pagina=1&tamanhoPagina=10$/);
+  assert.match(calls[1].url,/\?pagina=1&tamanhoPagina=10$/);
 });
 
 test("M5-N1 transporte falha fechado em query divergente antes da rede",async()=>{
   const plan=buildM5N1ItemDiscoveryPlan({records:[normalizedRecord(1),normalizedRecord(2)]});
-  const bad={...plan,targets:[{...plan.targets[0],query:{pagina:1,tamanhoPagina:100}},plan.targets[1]]};
+  const bad={...plan,targets:[{...plan.targets[0],query:{pagina:1,tamanhoPagina:50}},plan.targets[1]]};
   let calls=0;
   await assert.rejects(
     ()=>createM5N1ItemDiscoveryTransport({fetchImpl:async()=>{calls+=1;return new Response("{}",{status:200})}}).executePlan(bad),
@@ -140,25 +143,34 @@ test("M5-N1 observador permite próximo estágio somente com cobertura não chei
 });
 
 test("M5-N1 página cheia bloqueia M5-N2 por possível truncamento",()=>{
-  const itens=Array.from({length:50},(_,i)=>({numeroItem:i+1,temResultado:i===0}));
+  const itens=Array.from({length:10},(_,i)=>({numeroItem:i+1,temResultado:i===0}));
   const body=Buffer.from(JSON.stringify({itens}));
   const o=observeM5N1ItemsResponse({bytes:body,httpStatus:200,targetSha256:"b".repeat(64)});
-  assert.equal(o.itemCount,50);
+  assert.equal(o.itemCount,10);
   assert.equal(o.pagePossiblyTruncated,true);
   assert.equal(o.nextStageReady,false);
 });
 
 
-test("M5-N1 workflows preservam preflight sem source network e live hash-bound",()=>{
+test("M5-N1 workflows preservam preflight privado e live hash-bound sem aprovação humana de GET gratuito",()=>{
   const pre=fs.readFileSync(".github/workflows/arca-m5-n1-pncp-item-discovery-preflight.yml","utf8");
   const live=fs.readFileSync(".github/workflows/arca-m5-n1-pncp-item-discovery-live.yml","utf8");
   assert.match(pre,/m5-n1-pncp-item-discovery-preflight-\*/);
   assert.match(pre,/prepare-m5-n1-pncp-item-discovery-preflight\.mjs/);
-  assert.doesNotMatch(pre,/PNCP_ITEM_DISCOVERY_GET_ONLY/);
   assert.doesNotMatch(pre,/run-m5-n1-pncp-item-discovery-live\.mjs/);
   assert.match(live,/m5-n1-pncp-item-discovery-live-c\*/);
-  assert.match(live,/PNCP_ITEM_DISCOVERY_GET_ONLY/);
+  assert.doesNotMatch(live,/PNCP_ITEM_DISCOVERY_GET_ONLY/);
   assert.match(live,/ARCA_M5_N1_CANDIDATE_SHA256/);
   assert.match(live,/Publicar somente prova sanitizada/);
   assert.match(live,/Limpar material privado/);
+});
+
+
+test("M5-N1 aplica política global: GET público sem custo não exige autorização humana",()=>{
+  const plan=buildM5N1ItemDiscoveryPlan({records:[normalizedRecord(1),normalizedRecord(2)]});
+  assert.equal(plan.getCostPolicy.costClass,"NO_MONETARY_CHARGE_OBSERVED");
+  assert.equal(plan.getCostPolicy.autoExecutionAllowed,true);
+  assert.equal(plan.humanAuthorizationRequired,false);
+  assert.equal(plan.sourceNetworkAuthorized,true);
+  assert.equal(plan.newPncpGetAuthorized,true);
 });

@@ -496,27 +496,38 @@ Segundo live `36039677768`: exatamente 2 GETs corrigidos com `pagina=1`, zero re
 
 Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 058.
 
+### Política transversal — autorização de GET por custo monetário
+
+Estado: **VIGENTE PARA NOVAS EXECUÇÕES APÓS INTEGRAÇÃO**.
+
+- GET público sem cobrança monetária observada: `AUTO_EXECUTION_ALLOWED`, sem aprovação humana por request.
+- GET com custo monetário: `AWAITING_HUMAN_COST_AUTHORIZATION`.
+- Custo desconhecido: `HOLD_FOR_COST_CLASSIFICATION` até classificar a cobrança.
+- POST/PUT/PATCH/DELETE, publicação, correlação, secrets, budgets e rate limits continuam com controles próprios.
+
+Ver `docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`.
+
 ### M5-N1 — descoberta PNCP de itens
 
-Estado: **INTEGRADO NO MAIN / CI PÓS-MERGE VERDE / PREFLIGHT PRIVADO CONCLUÍDO / CANDIDATO CANÔNICO EMITIDO / ZERO SOURCE GET**.
+Estado: **POLÍTICA GET POR CUSTO EM APLICAÇÃO / `tamanhoPagina=10` / CANDIDATO 060 OBSOLETO / NOVO PREFLIGHT PENDENTE / GET GRATUITO SEM GATE HUMANO POR REQUEST**.
 
 Motivação: o M5-M chegou a 404/404 `UNCLASSIFIED` e não deve ser repetido para forçar interpretação. A expansão documental migra para a superfície oficial de itens da própria contratação.
 
 Endpoint:
 
-`GET /v1/orgaos/{cnpj}/compras/{ano}/{sequencial}/itens?pagina=1&tamanhoPagina=50`
+`GET /v1/orgaos/{cnpj}/compras/{ano}/{sequencial}/itens?pagina=1&tamanhoPagina=10`
 
 O Manual PNCP v2.6 seção 11.13 documenta `pagina`, `tamanhoPagina`, `numeroItem` e `temResultado`.
 
-O gate deriva exatamente 2 alvos privados, um por contratação normalizada. Budgets: `maxRequests=2`, `retries=0`, timeout 30 s, 512 KiB por resposta e até 50 itens por página.
+O gate deriva exatamente 2 alvos privados, um por contratação normalizada. Budgets: `maxRequests=2`, `retries=0`, timeout 30 s, 512 KiB por resposta e até 10 itens por página.
 
-A prova sanitizada futura publica apenas contagens e hashes. Se uma página retornar exatamente 50 itens, `pagePossiblyTruncated=true` e `nextStageReady=false`.
+A prova sanitizada futura publica apenas contagens e hashes. Se uma página retornar exatamente 10 itens, `pagePossiblyTruncated=true` e `nextStageReady=false`.
 
 M5-N2 futuro: somente itens reais com `temResultado=true` poderão originar alvos para `/itens/{numeroItem}/resultados`. O número de requests desse estágio ainda não é definido e dependerá da observação M5-N1.
 
-Preflight privado `36044350610`: `candidateSha256=13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844`, 2 target hashes, source network desligada. Próximo passo: autorização humana explícita para exatamente 2 GETs de itens.
+O preflight `36044350610` e o candidato `13816eb8...d844` ficam obsoletos por mudança da query para `tamanhoPagina=10`. Pela política `ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`, GET público sem custo monetário observado não exige autorização humana por request. Próximo passo: CI/merge → novo preflight → execução automática se cost policy/budgets/bindings passarem.
 
-Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 060.
+Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 061.
 
 ### M5 Fase E — binding do preflight ao probe live
 
