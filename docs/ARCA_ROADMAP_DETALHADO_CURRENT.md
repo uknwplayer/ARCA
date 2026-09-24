@@ -509,7 +509,7 @@ Ver `docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`.
 
 ### M5-N1 — descoberta PNCP de itens
 
-Estado: **POLÍTICA GET POR CUSTO EM APLICAÇÃO / `tamanhoPagina=10` / CANDIDATO 060 OBSOLETO / NOVO PREFLIGHT PENDENTE / GET GRATUITO SEM GATE HUMANO POR REQUEST**.
+Estado: **POLÍTICA GET INTEGRADA / PAGE10 LIVE 36050412298 EXECUTOU 2 GETS / ZERO RETRIES / SHAPE INESPERADO / CUSTÓDIA DURÁVEL NÃO PERSISTIDA POR ORDEM INCORRETA / CORREÇÃO CUSTODY-BEFORE-OBSERVATION EM BRANCH**.
 
 Motivação: o M5-M chegou a 404/404 `UNCLASSIFIED` e não deve ser repetido para forçar interpretação. A expansão documental migra para a superfície oficial de itens da própria contratação.
 
@@ -525,9 +525,9 @@ A prova sanitizada futura publica apenas contagens e hashes. Se uma página reto
 
 M5-N2 futuro: somente itens reais com `temResultado=true` poderão originar alvos para `/itens/{numeroItem}/resultados`. O número de requests desse estágio ainda não é definido e dependerá da observação M5-N1.
 
-O preflight `36044350610` e o candidato `13816eb8...d844` ficam obsoletos por mudança da query para `tamanhoPagina=10`. Pela política `ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`, GET público sem custo monetário observado não exige autorização humana por request. Próximo passo: CI/merge → novo preflight → execução automática se cost policy/budgets/bindings passarem.
+O preflight page10 `36050289566` emitiu `candidateSha256=8fbe4dc91e2ac31a3130627a9fb1d3a60cbb4eb41c60f46af61a278a23517c7b`; o live `36050412298` executou os 2 GETs e falhou depois em `ARCA_M5_N1_RESPONSE_SHAPE_INVALID`. Como a persistência durável vinha após a observação, os corpos foram perdidos no cleanup. A correção inverte a ordem para `seal → persist → observe` e adiciona diagnóstico estrutural sanitizado. Próximo passo: CI/merge → novo preflight → novo live automático.
 
-Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 061.
+Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 062.
 
 ### M5 Fase E — binding do preflight ao probe live
 
