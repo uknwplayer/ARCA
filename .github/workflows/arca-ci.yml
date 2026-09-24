@@ -103,6 +103,9 @@ jobs:
       - name: Validar diagnóstico offline M5-M HTTP 404
         run: npm run validate:m5-m-http404-diagnosis
 
+      - name: Validar gate M5-N1 de descoberta de itens PNCP
+        run: npm run validate:m5-n1-item-discovery
+
 
 
 
