@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 063 — captura M5-N1 200/200 custodial e runtime array observado**
+Checkpoint: **2026-09-24 / Checkpoint 064 — observação offline M5-N1 validou 9 itens e zero resultados**
 
-Estado: **política GET por custo vigente; M5-N1 custody-before-observation integrado; preflight `36051311684` emitiu candidato `e13bb2cc...ecae`; live `36051395397` executou 2 GETs/zero retries e recebeu HTTP 200+200, com respostas STORED_PRIVATE antes do parse; runtime observado é BARE_ARRAY com 4 e 5 elementos; parser/observador offline adaptado em branch para validar `numeroItem`/`temResultado` sem novo GET; publicação/correlação bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **M5-N1 concluído para as duas contratações atuais: live `36051395397` HTTP 200+200/STORED_PRIVATE; observação offline `36052511200` usou zero source requests, validou 9 itens (4+5), cobertura completa e `totalItemsWithResult=0`; M5-N2 não se aplica a esses itens e não deve executar GETs de resultados; política GET por custo continua vigente; publicação/correlação bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 063 — captura M5-N1 200/200 custodial e runtime array observado](ARCA_HANDOFF_CHECKPOINT_2026-09-24_063.md). O live `36051395397` executou exatamente 2 GETs gratuitos controlados, zero retries, recebeu HTTP 200+200 e persistiu a custódia antes da observação. O runtime devolveu arrays com 4 e 5 elementos, divergindo do wrapper `{itens:[...]}` esperado. A próxima etapa é exclusivamente offline sobre a custódia já existente.
+Handoff mais recente: [checkpoint 064 — observação offline M5-N1 validou 9 itens e zero resultados](ARCA_HANDOFF_CHECKPOINT_2026-09-24_064.md). O run `36052511200` reabriu somente a custódia do live `36051395397`, validou `numeroItem`/`temResultado` em 4+5 itens e encontrou `itemsWithResultCount=0` nos dois alvos. Como ambas as páginas têm menos de 10 itens, `coverageComplete=true`; M5-N2 fica `NOT_APPLICABLE` para essas duas contratações.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -68,7 +68,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. A captura M5-N1 já está durável e revelou o shape runtime BARE_ARRAY. O próximo passo é validar/mesclar o parser que aceita o array observado e executar somente a observação offline da custódia do run `36051395397`. Nenhum novo GET é necessário. Se os itens validarem e houver `temResultado=true`, então construir M5-N2 a partir dos números de itens privados.
+M5 continua o caminho crítico, mas M5-N1 esgotou esta rota para as duas contratações atuais: 9 itens válidos e nenhum com `temResultado=true`. Não construir M5-N2 nem consultar `/resultados` para esses itens. O próximo passo deve procurar outra ponte pública oficial ou ampliar a amostra de contratações sob os mesmos controles de custo/budget/custódia.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -84,7 +84,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_063.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_064.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_063.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
@@ -227,7 +228,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 063. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 064. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

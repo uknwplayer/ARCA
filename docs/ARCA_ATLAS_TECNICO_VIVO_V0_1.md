@@ -544,7 +544,7 @@ Componente: `m5-n1-pncp-item-discovery`.
 
 Função: descobrir os itens das duas contratações PNCP já normalizadas sem repetir o endpoint M5-M e sem consultar resultados ainda.
 
-Estado: **CUSTODY-BEFORE-OBSERVATION INTEGRADO / LIVE 36051395397 HTTP 200+200 / STORED_PRIVATE / RUNTIME BARE_ARRAY / OBSERVAÇÃO OFFLINE EM BRANCH**.
+Estado: **M5-N1 CONCLUÍDO PARA AS 2 CONTRATAÇÕES ATUAIS / 9 ITENS VÁLIDOS / 0 COM RESULTADO / COBERTURA COMPLETA / M5-N2 NÃO APLICÁVEL**.
 
 Endpoint allowlisted:
 
@@ -648,4 +648,23 @@ Live: `36051395397`.
 - publicação/correlação desligadas.
 
 O parser M5-N1 passa a aceitar explicitamente o wrapper documentado `OBJECT_ITENS` e o `BARE_ARRAY` observado live. A observação semântica de `numeroItem` e `temResultado` será feita offline sobre a custódia existente, sem novo GET.
+
+
+
+#### Atualização M5-N1 — observação offline concluída
+
+Run offline: `36052511200`.
+
+- `sourceRequestCount=0`;
+- `sourceNetworkUsed=false`;
+- total de itens válidos: 9;
+- alvo 1: 4 itens, 0 com resultado;
+- alvo 2: 5 itens, 0 com resultado;
+- `coverageComplete=true`;
+- `m5n2PreparationAllowed=false`;
+- `observationSha256=e4f1985833490a5676ab7183664bcf5653f295d8235598b6ad28e10ea6ff5a88`.
+
+Nenhuma das páginas atingiu o limite de 10 itens, portanto não há truncamento observado.
+
+O M5-N2 não deve consultar `/resultados` para esses nove itens, porque nenhum veio com `temResultado=true`.
 
