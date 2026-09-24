@@ -482,7 +482,7 @@ Componente: `m5-m-pncp-contract-coverage`.
 
 Função: ampliar a cobertura documental depois do M5-L sem candidato, consultando a superfície oficial PNCP de contratos/empenhos vinculados diretamente às contratações já normalizadas.
 
-Estado: **INTEGRADO E EXECUTADO / 2 GETS / HTTP 400 + HTTP 400 / CUSTÓDIA PRIVADA / DIAGNÓSTICO OFFLINE EM BRANCH**.
+Estado: **INTEGRADO/EXECUTADO COM 400+400 / DIAGNÓSTICO OFFLINE CONCLUÍDO / DRIFT `pagina` IDENTIFICADO / CORREÇÃO `pagina=1` EM BRANCH**.
 
 Endpoint allowlisted:
 
@@ -498,6 +498,15 @@ Live: o candidato `aa995fd2...c99ec` foi executado no run `36036733351`: exatame
 
 Limites: a autorização dos 2 GETs foi consumida; nenhum novo GET está autorizado. Sem publicação, sem correlação, sem inferência de fornecedor e sem conclusão adversa.
 
-Recuperação: diagnosticar offline os dois corpos HTTP 400 já custodiais. Qualquer nova tentativa de fonte exige novo preflight/candidato e nova autorização.
+Recuperação: o diagnóstico offline `36037934342` provou que o runtime exige request parameter `pagina` Integer. O gate corrigido adiciona somente `pagina=1`, mantém zero retries e exige novo preflight/candidato/autorização antes de qualquer nova tentativa.
+
+Runtime observado:
+
+- mensagem dos dois 400 com mesmo SHA-256 `c1d6bb85779fbebfd285b2e31d103f4c4b97ccf8128403e5a1db6092833f6fc2`;
+- hash corresponde exatamente à exigência genérica de `pagina` como request parameter obrigatório Integer;
+- Manual PNCP v2.6 seção 13.10 não lista esse query parameter;
+- estado: `DOCUMENTATION_RUNTIME_DRIFT_OBSERVED`;
+- correção mínima: `query={pagina:1}`;
+- `tamanhoPagina` não é inferido.
 
 Runbook: `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md`.

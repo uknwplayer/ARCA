@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import {createHash} from "node:crypto";
 import {
   M5_PNCP_CONTRACT_COVERAGE_ENDPOINT_ID,
   buildM5PncpContractCoveragePlan,
@@ -29,6 +30,10 @@ test("M5-M constrói exatamente um GET de contratos/empenhos por contratação",
   assert.deepEqual(plan.targets.map(x=>x.method),["GET","GET"]);
   assert.equal(plan.targets[0].path,"/api/pncp/v1/orgaos/12345678000191/contratos/contratacao/2026/1");
   assert.equal(plan.targets[1].path,"/api/pncp/v1/orgaos/12345678000192/contratos/contratacao/2026/2");
+  assert.deepEqual(plan.targets[0].query,{pagina:1});
+  assert.deepEqual(plan.targets[1].query,{pagina:1});
+  assert.equal(plan.runtimeCompatibility.observedRequiredParameter,"pagina");
+  assert.equal(plan.runtimeCompatibility.selectedValue,1);
   assert.equal(plan.expectedCoverage.supplierIdentifier,true);
   assert.equal(plan.expectedCoverage.procurementControlReference,true);
   assert.equal(plan.sourceNetworkAuthorized,false);
@@ -54,6 +59,20 @@ test("M5-M candidato público contém só hashes de alvos",()=>{
   const serialized=JSON.stringify(c);
   assert.equal(serialized.includes("12345678000191"),false);
   assert.equal(serialized.includes("/contratos/contratacao/"),false);
+});
+
+test("M5-M vincula correção pagina=1 à evidência runtime observada",()=>{
+  const plan=buildM5PncpContractCoveragePlan({records:[record(1),record(2)]});
+  const message="Required request parameter 'pagina' for method parameter type Integer is not present";
+  const observedHash=createHash("sha256").update(message).digest("hex");
+  assert.equal(
+    observedHash,
+    "c1d6bb85779fbebfd285b2e31d103f4c4b97ccf8128403e5a1db6092833f6fc2"
+  );
+  assert.equal(plan.runtimeCompatibility.messageSha256,observedHash);
+  assert.equal(plan.runtimeCompatibility.observedRequiredParameter,"pagina");
+  assert.equal(plan.runtimeCompatibility.selectedValue,1);
+  assert.deepEqual(plan.targets.map(x=>x.query),[{pagina:1},{pagina:1}]);
 });
 
 test("M5-M falha fechado em mais de 2 alvos, duplicata e cobertura incompatível",()=>{
