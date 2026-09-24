@@ -147,3 +147,18 @@ test("M5-N1 página cheia bloqueia M5-N2 por possível truncamento",()=>{
   assert.equal(o.pagePossiblyTruncated,true);
   assert.equal(o.nextStageReady,false);
 });
+
+
+test("M5-N1 workflows preservam preflight sem source network e live hash-bound",()=>{
+  const pre=fs.readFileSync(".github/workflows/arca-m5-n1-pncp-item-discovery-preflight.yml","utf8");
+  const live=fs.readFileSync(".github/workflows/arca-m5-n1-pncp-item-discovery-live.yml","utf8");
+  assert.match(pre,/m5-n1-pncp-item-discovery-preflight-\*/);
+  assert.match(pre,/prepare-m5-n1-pncp-item-discovery-preflight\.mjs/);
+  assert.doesNotMatch(pre,/PNCP_ITEM_DISCOVERY_GET_ONLY/);
+  assert.doesNotMatch(pre,/run-m5-n1-pncp-item-discovery-live\.mjs/);
+  assert.match(live,/m5-n1-pncp-item-discovery-live-c\*/);
+  assert.match(live,/PNCP_ITEM_DISCOVERY_GET_ONLY/);
+  assert.match(live,/ARCA_M5_N1_CANDIDATE_SHA256/);
+  assert.match(live,/Publicar somente prova sanitizada/);
+  assert.match(live,/Limpar material privado/);
+});
