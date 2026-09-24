@@ -9,7 +9,7 @@ import {buildM5PncpLiveNormalizedBinding} from "../src/investigation/m5-pncp-liv
 import {buildM5N1ItemDiscoveryPlan,buildM5N1ItemDiscoveryCandidate} from "../src/investigation/m5-n1-pncp-item-discovery-plan.mjs";
 import {deriveM5N1ItemDiscovery} from "../src/investigation/m5-n1-pncp-item-discovery-private.mjs";
 import {createM5N1ItemDiscoveryTransport} from "../src/investigation/m5-n1-pncp-item-discovery-transport.mjs";
-import {observeM5N1ItemsResponse} from "../src/investigation/m5-n1-pncp-item-response.mjs";
+import {observeM5N1ItemsResponse,diagnoseM5N1ResponseShape} from "../src/investigation/m5-n1-pncp-item-response.mjs";
 
 const passphrase="synthetic-m5-n1-passphrase-0123456789";
 
@@ -173,4 +173,30 @@ test("M5-N1 aplica política global: GET público sem custo não exige autoriza�
   assert.equal(plan.humanAuthorizationRequired,false);
   assert.equal(plan.sourceNetworkAuthorized,true);
   assert.equal(plan.newPncpGetAuthorized,true);
+});
+
+
+test("M5-N1 diagnóstico sanitizado distingue array runtime de objeto documentado",()=>{
+  const body=Buffer.from(JSON.stringify([
+    {numeroItem:1,temResultado:true},
+    {numeroItem:2,temResultado:false}
+  ]));
+  const d=diagnoseM5N1ResponseShape({
+    bytes:body,httpStatus:200,targetSha256:"c".repeat(64)
+  });
+  assert.equal(d.jsonKind,"ARRAY");
+  assert.equal(d.arrayLength,2);
+  assert.deepEqual(d.topLevelKeys,[]);
+  assert.equal(d.rawValuesIncluded,false);
+  assert.match(d.shapeSha256,/^[a-f0-9]{64}$/);
+});
+
+test("M5-N1 persiste custódia antes de observar o schema",()=>{
+  const script=fs.readFileSync("scripts/run-m5-n1-pncp-item-discovery-live.mjs","utf8");
+  const persistIndex=script.indexOf("await store.persist({envelope:custodyEnvelope,proof:captureProof})");
+  const observeIndex=script.indexOf("observeM5N1ItemsResponse({");
+  assert.ok(persistIndex>0);
+  assert.ok(observeIndex>persistIndex);
+  assert.match(script,/schema:"arca\.pncp-controlled-live-probe\.v0\.1"/);
+  assert.match(script,/SCHEMA_UNEXPECTED/);
 });
