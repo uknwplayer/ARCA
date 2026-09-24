@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 062 — M5-N1 auto-live revelou drift de schema e ordem de custódia corrigida**
+Checkpoint: **2026-09-24 / Checkpoint 063 — captura M5-N1 200/200 custodial e runtime array observado**
 
-Estado: **política GET por custo já integrada; preflight page10 `36050289566` emitiu candidato `8fbe4dc9...17c7b` autoexecutável; live `36050412298` executou 2 GETs/zero retries e falhou depois em `ARCA_M5_N1_RESPONSE_SHAPE_INVALID`; os corpos não foram persistidos porque o executor observava antes do persist durável; correção `GETs → seal → persist → observe` implementada em branch, com diagnóstico sanitizado de shape; nenhum retry do mesmo candidato; publicação/correlação bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **política GET por custo vigente; M5-N1 custody-before-observation integrado; preflight `36051311684` emitiu candidato `e13bb2cc...ecae`; live `36051395397` executou 2 GETs/zero retries e recebeu HTTP 200+200, com respostas STORED_PRIVATE antes do parse; runtime observado é BARE_ARRAY com 4 e 5 elementos; parser/observador offline adaptado em branch para validar `numeroItem`/`temResultado` sem novo GET; publicação/correlação bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 062 — drift de schema M5-N1 e correção custody-before-observation](ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md). O primeiro live automático page10 executou 2 GETs e zero retries, mas o observador rejeitou o shape. A captura não foi persistida por uma falha de ordem no executor. O código corrigido agora persiste a custódia antes de qualquer observação e transforma drift estrutural em prova sanitizada `SCHEMA_UNEXPECTED` em vez de perder os bytes.
+Handoff mais recente: [checkpoint 063 — captura M5-N1 200/200 custodial e runtime array observado](ARCA_HANDOFF_CHECKPOINT_2026-09-24_063.md). O live `36051395397` executou exatamente 2 GETs gratuitos controlados, zero retries, recebeu HTTP 200+200 e persistiu a custódia antes da observação. O runtime devolveu arrays com 4 e 5 elementos, divergindo do wrapper `{itens:[...]}` esperado. A próxima etapa é exclusivamente offline sobre a custódia já existente.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -68,7 +68,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. A política GET já está integrada. O próximo passo é validar/mesclar a correção de custódia M5-N1, gerar novo candidato na revisão final e executar automaticamente um novo live controlado. A captura deve ficar durável antes de qualquer parse; se o shape continuar divergente, diagnosticar offline/estruturalmente sem novo retry do mesmo candidato.
+M5 continua o caminho crítico. A captura M5-N1 já está durável e revelou o shape runtime BARE_ARRAY. O próximo passo é validar/mesclar o parser que aceita o array observado e executar somente a observação offline da custódia do run `36051395397`. Nenhum novo GET é necessário. Se os itens validarem e houver `temResultado=true`, então construir M5-N2 a partir dos números de itens privados.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -84,7 +84,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_063.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md`;
@@ -226,7 +227,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 062. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 063. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
