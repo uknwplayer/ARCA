@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Obter revisão autorizada
+      - name: Obter revisão controlada
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
@@ -52,7 +52,7 @@ jobs:
           set -euo pipefail
           node scripts/fetch-m5-private-screening-envelope.mjs             --source PNCP             --output artifacts/private/pncp.envelope.json
 
-      - name: Executar exatamente os 2 GETs gratuitos controlados e custodiar
+      - name: Executar automaticamente os 2 GETs públicos sem custo e custodiar
         env:
           ARCA_M5_N1_CANDIDATE_SHA256: ${{ env.ARCA_M5_N1_CANDIDATE_SHA256 }}
           ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
