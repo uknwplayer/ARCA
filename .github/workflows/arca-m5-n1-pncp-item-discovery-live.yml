@@ -52,9 +52,8 @@ jobs:
           set -euo pipefail
           node scripts/fetch-m5-private-screening-envelope.mjs             --source PNCP             --output artifacts/private/pncp.envelope.json
 
-      - name: Executar exatamente os 2 GETs de itens autorizados e custodiar
+      - name: Executar exatamente os 2 GETs gratuitos controlados e custodiar
         env:
-          ARCA_M5_N1_CONFIRMATION: PNCP_ITEM_DISCOVERY_GET_ONLY
           ARCA_M5_N1_CANDIDATE_SHA256: ${{ env.ARCA_M5_N1_CANDIDATE_SHA256 }}
           ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
           ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
