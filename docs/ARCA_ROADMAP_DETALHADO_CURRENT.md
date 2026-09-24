@@ -472,7 +472,7 @@ Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
 
 ### M5-M — cobertura PNCP por contratos/empenhos
 
-Estado: **INTEGRADO E EXECUTADO / RUN 36036733351 / 2 GETS / 0 RETRIES / HTTP 400 + HTTP 400 / CUSTÓDIA PRIVADA / DIAGNÓSTICO OFFLINE EM BRANCH**.
+Estado: **INTEGRADO/EXECUTADO COM 400+400; DIAGNÓSTICO OFFLINE CONCLUÍDO; DRIFT RUNTIME `pagina` PROVADO; CORREÇÃO `pagina=1` EM BRANCH; ZERO NOVO GET**.
 
 Motivação: o M5-L concluiu `NO_CANDIDATE_BRIDGE_OBSERVED`. Repetir a mesma triagem não aumenta evidência. O gargalo é cobertura documental.
 
@@ -492,9 +492,9 @@ Budgets fixos: `maxRequests=2`, `retries=0`, 30 s, 64 KiB por resposta e até 25
 
 O candidato canônico `aa995fd2886bc5707ff63dc6e672b3a1a5a1d6770b179122927775aa752c99ec` foi autorizado e consumido no run `36036733351`. Foram executados exatamente 2 GETs, ambos HTTP 400 com 251 bytes, zero retries. As duas respostas foram seladas e persistidas no cofre privado; nenhuma correlação/publicação ocorreu.
 
-Próximo passo: diagnóstico offline dos dois corpos já custodiais. Nenhum novo GET está autorizado. Se houver correção de rota/parâmetro, gerar novo preflight/candidato antes de qualquer nova consulta.
+Diagnóstico offline `36037934342`: o hash da mensagem dos dois 400 corresponde exatamente à exigência de request parameter `pagina` Integer. O manual público 13.10 não o lista, então o ARCA registra drift documentação↔runtime. A correção mínima adiciona somente `pagina=1`; `tamanhoPagina` não é presumido. Próximo passo: CI/merge → novo preflight privado → novo candidato → nova autorização antes de qualquer request.
 
-Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 055.
+Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 057.
 
 ### M5 Fase E — binding do preflight ao probe live
 
