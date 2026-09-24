@@ -482,7 +482,7 @@ Componente: `m5-m-pncp-contract-coverage`.
 
 Função: ampliar a cobertura documental depois do M5-L sem candidato, consultando a superfície oficial PNCP de contratos/empenhos vinculados diretamente às contratações já normalizadas.
 
-Estado: **INTEGRADO/EXECUTADO COM 400+400 / DIAGNÓSTICO OFFLINE CONCLUÍDO / DRIFT `pagina` IDENTIFICADO / CORREÇÃO `pagina=1` EM BRANCH**.
+Estado: **SEGUNDO LIVE CONCLUÍDO / `pagina=1` / 404+404 CUSTODIADOS / DIAGNÓSTICO OFFLINE UNCLASSIFIED / SEM NOVO GET**.
 
 Endpoint allowlisted:
 
@@ -498,7 +498,7 @@ Live: o candidato `aa995fd2...c99ec` foi executado no run `36036733351`: exatame
 
 Limites: a autorização dos 2 GETs foi consumida; nenhum novo GET está autorizado. Sem publicação, sem correlação, sem inferência de fornecedor e sem conclusão adversa.
 
-Recuperação: o diagnóstico offline `36037934342` provou que o runtime exige request parameter `pagina` Integer. O gate corrigido adiciona somente `pagina=1`, mantém zero retries e exige novo preflight/candidato/autorização antes de qualquer nova tentativa.
+Recuperação: o live corrigido `36039677768` consumiu exatamente 2 GETs e retornou 404/404; o diagnóstico offline `36040450553` classificou ambos como `UNCLASSIFIED`. Não repetir o mesmo endpoint nem inferir ausência de contrato. Próximo caminho: nova superfície oficial de itens/resultados de item, sempre sob novo preflight/candidato/autorização.
 
 Runtime observado:
 
@@ -510,3 +510,29 @@ Runtime observado:
 - `tamanhoPagina` não é inferido.
 
 Runbook: `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md`.
+
+
+#### Atualização M5-M — segundo live e limite probatório
+
+Run live corrigido: `36039677768`.
+
+- `pagina=1`;
+- 2 GETs exatos;
+- zero retries;
+- HTTP 404 + HTTP 404;
+- envelope privado `568f3eb1...14eb`;
+- nenhuma publicação;
+- nenhuma correlação.
+
+Diagnóstico offline: `36040450553`.
+
+- zero source requests;
+- mesmo shape e mesmo hash de mensagem;
+- mensagem relacionada a contrato;
+- nenhum marcador seguro de rota/recurso estático;
+- nenhum marcador seguro de parâmetro;
+- nenhum marcador de autenticação/forbidden;
+- classificação final `UNCLASSIFIED`.
+
+Limite: 404 não é convertido em `NO_LINKED_CONTRACT_OR_COMMITMENT_OBSERVED` sem evidência semântica suficiente.
+

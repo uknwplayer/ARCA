@@ -472,7 +472,7 @@ Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
 
 ### M5-M — cobertura PNCP por contratos/empenhos
 
-Estado: **INTEGRADO/EXECUTADO COM 400+400; DIAGNÓSTICO OFFLINE CONCLUÍDO; DRIFT RUNTIME `pagina` PROVADO; CORREÇÃO `pagina=1` EM BRANCH; ZERO NOVO GET**.
+Estado: **SEGUNDO CICLO LIVE CONCLUÍDO / `pagina=1` / 2 GETS / 0 RETRIES / 404+404 / CUSTÓDIA PRIVADA / DIAGNÓSTICO OFFLINE UNCLASSIFIED / ZERO NOVO GET APÓS O RUN**.
 
 Motivação: o M5-L concluiu `NO_CANDIDATE_BRIDGE_OBSERVED`. Repetir a mesma triagem não aumenta evidência. O gargalo é cobertura documental.
 
@@ -492,9 +492,9 @@ Budgets fixos: `maxRequests=2`, `retries=0`, 30 s, 64 KiB por resposta e até 25
 
 O candidato canônico `aa995fd2886bc5707ff63dc6e672b3a1a5a1d6770b179122927775aa752c99ec` foi autorizado e consumido no run `36036733351`. Foram executados exatamente 2 GETs, ambos HTTP 400 com 251 bytes, zero retries. As duas respostas foram seladas e persistidas no cofre privado; nenhuma correlação/publicação ocorreu.
 
-Diagnóstico offline `36037934342`: o hash da mensagem dos dois 400 corresponde exatamente à exigência de request parameter `pagina` Integer. O manual público 13.10 não o lista, então o ARCA registra drift documentação↔runtime. A correção mínima adiciona somente `pagina=1`; `tamanhoPagina` não é presumido. Próximo passo: CI/merge → novo preflight privado → novo candidato → nova autorização antes de qualquer request.
+Segundo live `36039677768`: exatamente 2 GETs corrigidos com `pagina=1`, zero retries, HTTP 404 + HTTP 404, respostas `STORED_PRIVATE`. Diagnóstico offline `36040450553`: zero source requests, mesmo shape/mensagem hash nos dois corpos, sem marcador seguro de rota, parâmetro ou acesso; classificação `UNCLASSIFIED`. Não interpretar 404 como ausência comprovada de contrato/empenho. Próximo passo: abandonar repetição deste endpoint e desenhar cobertura complementar por itens/resultados de item sob novo gate.
 
-Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 057.
+Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 058.
 
 ### M5 Fase E — binding do preflight ao probe live
 

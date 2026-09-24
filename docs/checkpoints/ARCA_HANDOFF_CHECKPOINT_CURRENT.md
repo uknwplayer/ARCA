@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 057 — drift PNCP M5-M diagnosticado e `pagina=1` incorporado**
+Checkpoint: **2026-09-24 / Checkpoint 058 — M5-M corrigido executado, 404/404 custodiados e diagnóstico offline inconclusivo**
 
-Estado: **M5-M run 36036733351 consumiu exatamente 2 GETs e recebeu 400/400, zero retries, respostas privadas; diagnóstico offline run 36037934342 provou que o runtime exige request parameter `pagina` Integer, enquanto o Manual PNCP v2.6 seção 13.10 não o lista; correção mínima `pagina=1` está implementada em branch, sem `tamanhoPagina`, sem novo GET, publicação ou correlação; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **M5-M corrigido com `pagina=1` foi executado no run 36039677768: exatamente 2 GETs, zero retries, HTTP 404 + HTTP 404, respostas seladas/STORED_PRIVATE; diagnóstico offline run 36040450553 abriu apenas a custódia e retornou UNCLASSIFIED para ambos, sem marcador seguro de rota, parâmetro ou acesso; ausência de contrato/empenho não está comprovada; nenhum novo GET, publicação ou correlação está autorizado; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 057 — drift PNCP M5-M diagnosticado e pagina=1 incorporado](ARCA_HANDOFF_CHECKPOINT_2026-09-24_057.md). O diagnóstico offline `36037934342` reabriu apenas a custódia já existente e mostrou que as duas respostas têm a mesma mensagem; o hash da mensagem corresponde exatamente à exigência Spring de request parameter obrigatório `pagina` do tipo Integer. O gate foi corrigido para vincular exclusivamente `query={pagina:1}`. O candidato anterior foi consumido e não pode ser reutilizado.
+Handoff mais recente: [checkpoint 058 — M5-M corrigido executado e 404/404 diagnosticados offline](ARCA_HANDOFF_CHECKPOINT_2026-09-24_058.md). O candidato corrigido `3905c087...ba606` foi consumido exatamente uma vez no run `36039677768`: 2 GETs, zero retries, HTTP 404 + HTTP 404, ambos custodiados. O diagnóstico `36040450553` usou zero source requests e classificou ambos como `UNCLASSIFIED`; não declarar ausência de contrato/empenho, rota inválida ou identificador inválido.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. O diagnóstico offline identificou a pré-condição runtime `pagina`; a correção mínima `pagina=1` está implementada sem nova rede. O próximo passo é CI/merge, depois novo preflight privado na revisão final para produzir novo plan/candidate/target hashes. Qualquer novo GET PNCP continua dependendo de nova autorização explícita daquele candidato.
+M5 continua o caminho crítico. O segundo ciclo M5-M já foi consumido e parou em 404/404 com causa ainda não provada. Não repetir o endpoint para forçar resultado. O próximo passo é desenhar uma superfície oficial complementar, priorizando `contratação → itens → resultados de item`, gerar novo preflight/candidato e só então solicitar nova autorização.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_057.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_058.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_057.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_056.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_055.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_054.md`;
@@ -220,7 +221,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 057. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 058. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
