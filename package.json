@@ -68,7 +68,8 @@
     "validate:m5-m-http404-diagnosis": "node --test tests/m5-m-http404-diagnosis.test.mjs",
     "validate:m5-n1-item-discovery": "node --test tests/m5-n1-pncp-item-discovery.test.mjs",
     "validate:get-cost-policy": "node --test tests/source-get-cost-policy.test.mjs",
-    "validate:m5-n1-offline-observation": "node --test tests/m5-n1-offline-observation.test.mjs"
+    "validate:m5-n1-offline-observation": "node --test tests/m5-n1-offline-observation.test.mjs",
+    "validate:m5-o1-contract-publication": "node --test tests/m5-o1-pncp-contract-publication-plan.test.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"
