@@ -1,7 +1,7 @@
 # ARCA — Ponte Termux ↔ GPT V0.1
 
 Data: **2026-09-24**  
-Estado: **FASE A — `arca ask` one-shot, offline-tested; `arca chat` interativo ainda não implementado**
+Estado: **FASE A IMPLEMENTADA EM BRANCH — `arca ask` one-shot; aguardando CI/merge; `arca chat` interativo ainda não implementado**
 
 ## Objetivo
 
@@ -25,7 +25,7 @@ ARCA
 Termux
 ```
 
-## Comando planejado nesta fase
+## Comando da Fase A
 
 ```bash
 export OPENAI_API_KEY='...'
