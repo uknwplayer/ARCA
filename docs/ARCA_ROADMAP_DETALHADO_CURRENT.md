@@ -509,7 +509,7 @@ Ver `docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`.
 
 ### M5-N1 — descoberta PNCP de itens
 
-Estado: **CUSTODY-BEFORE-OBSERVATION INTEGRADO / LIVE 36051395397 HTTP 200+200 / STORED_PRIVATE / RUNTIME BARE_ARRAY 4+5 / PARSER OFFLINE ADAPTADO EM BRANCH / ZERO NOVO GET NECESSÁRIO**.
+Estado: **M5-N1 CONCLUÍDO PARA 2 CONTRATAÇÕES / LIVE 200+200 CUSTODIAL / OBSERVAÇÃO OFFLINE 9 ITENS / 0 COM RESULTADO / COBERTURA COMPLETA / M5-N2 NÃO APLICÁVEL**.
 
 Motivação: o M5-M chegou a 404/404 `UNCLASSIFIED` e não deve ser repetido para forçar interpretação. A expansão documental migra para a superfície oficial de itens da própria contratação.
 
@@ -525,9 +525,9 @@ A prova sanitizada futura publica apenas contagens e hashes. Se uma página reto
 
 M5-N2 futuro: somente itens reais com `temResultado=true` poderão originar alvos para `/itens/{numeroItem}/resultados`. O número de requests desse estágio ainda não é definido e dependerá da observação M5-N1.
 
-O preflight corrigido `36051311684` emitiu `candidateSha256=e13bb2cc94b85d599434f2287b4718f18b26136a6b6b2a97380e033e3568ecae`. O live `36051395397` executou 2 GETs, zero retries, HTTP 200+200 e persistiu a custódia antes de observar o schema. O runtime devolveu BARE_ARRAY com 4 e 5 elementos. O parser passa a aceitar `OBJECT_ITENS` e `BARE_ARRAY`, e a próxima etapa é observação offline do envelope `41110be7...3d4b`, sem novo GET.
+O live `36051395397` executou 2 GETs, zero retries, HTTP 200+200 e persistiu a custódia. A observação offline `36052511200` validou o runtime BARE_ARRAY: 4 itens no primeiro alvo, 5 no segundo, zero itens com `temResultado=true`, nenhuma página truncada e `coverageComplete=true`. Portanto M5-N2 não deve ser criado para esses nove itens. Próximo passo: outra ponte pública oficial ou ampliação controlada da amostra.
 
-Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 063.
+Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 064.
 
 ### M5 Fase E — binding do preflight ao probe live
 
