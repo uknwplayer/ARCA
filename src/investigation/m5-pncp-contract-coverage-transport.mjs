@@ -9,9 +9,13 @@ function sha256Bytes(bytes){
   return createHash("sha256").update(bytes).digest("hex");
 }
 function validTarget(target){
+  const queryKeys=target?.query&&typeof target.query==="object"&&!Array.isArray(target.query)
+    ?Object.keys(target.query).sort():[];
   if(target?.method!=="GET"||
      typeof target?.path!=="string"||
      !/^\/api\/pncp\/v1\/orgaos\/\d{14}\/contratos\/contratacao\/\d{4}\/\d{1,9}$/.test(target.path)||
+     JSON.stringify(queryKeys)!==JSON.stringify(["pagina"])||
+     target.query.pagina!==1||
      !/^[a-f0-9]{64}$/.test(target?.targetSha256??""))
     throw new Error("ARCA_M5_M_TARGET_INVALID");
 }
@@ -43,7 +47,9 @@ export function createM5PncpContractCoverageTransport({
     try{
       let response;
       try{
-        response=await fetchImpl(new URL(target.path,M5_PNCP_CONTRACT_COVERAGE_ORIGIN).toString(),{
+        const url=new URL(target.path,M5_PNCP_CONTRACT_COVERAGE_ORIGIN);
+        url.searchParams.set("pagina","1");
+        response=await fetchImpl(url.toString(),{
           method:"GET",
           headers:{accept:"application/json"},
           redirect:"error",
