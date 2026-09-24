@@ -1,0 +1,20 @@
+{
+  "schema": "arca.m5-pncp-live-normalized-binding-input.v1",
+  "captureRunId": "35547609136",
+  "captureRevision": "b20e377f8b9b4f7831e3b4b3877913a5c35ac09e",
+  "captureScopeSha256": "1d0354ffdf1bf0971aab175eb170e9bcb05491a708daba015e8b967cdf59b084",
+  "captureEnvelopeSha256": "c707689e04d7bd091a59555d883a2d2a4d716b442b485d8b3b55efa1c65c6202",
+  "captureReceiptSha256": "ad1fd3f1c3e09637f48f8e387f47f518392246cb30338704e914bac99028e19b",
+  "observedStructureSha256": "4a00de8f61190819cc6e172f45438dcb22dc1c952430fc7a1c79f2cc0dcfabb9",
+  "pageFileSha256": "da9ae12fcea93ed85c85761b08d214f241333be5209ea15b4bda6b627e3f4afc",
+  "parserContractSha256": "c25f65c40e35a1350a446a7e28130a7b28252ecfbde4f2d792490f334e72327b",
+  "normalizationRunId": "36026221085",
+  "executorRevision": "0bc2162e42df03625dd54476344fe45966773d8f",
+  "normalizationSha256": "c91e5bce7240fa6ca127aeeb33f7a7763a891bd84c65ee1a29950e66a32b7a2d",
+  "normalizedEnvelopeSha256": "95eaf8fa048860dc2e41edcb1de043405d5e7a0a60d4183420b0fb4bf3791f33",
+  "normalizedContentRootSha256": "99cba45df309b2383e5ace89e16fd61ce31f811c84cac33ddfcc151e29a49f7b",
+  "normalizedStoreReceiptSha256": "00d024c3b7e9dfc657b2dc8705e93d2a6d2ddadde4dd55718b2c4b46833b9447",
+  "proofSha256": "450174620c2490c77953ece5a2aa20d0eec3829e6e45c9d46e4382d9773dc862",
+  "recordCount": 2,
+  "supplierObserved": false
+}
