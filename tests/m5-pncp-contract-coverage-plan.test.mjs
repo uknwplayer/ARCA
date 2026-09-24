@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import {createHash} from "node:crypto";
 import {
   M5_PNCP_CONTRACT_COVERAGE_ENDPOINT_ID,
   buildM5PncpContractCoveragePlan,
@@ -60,12 +61,18 @@ test("M5-M candidato público contém só hashes de alvos",()=>{
   assert.equal(serialized.includes("/contratos/contratacao/"),false);
 });
 
-test("M5-M candidato muda quando a query runtime muda",()=>{
+test("M5-M vincula correção pagina=1 à evidência runtime observada",()=>{
   const plan=buildM5PncpContractCoveragePlan({records:[record(1),record(2)]});
-  const original=plan.targets[0].targetSha256;
-  const target={...plan.targets[0],query:{pagina:2}};
-  delete target.targetSha256;
-  assert.notEqual(original,JSON.stringify(target));
+  const message="Required request parameter 'pagina' for method parameter type Integer is not present";
+  const observedHash=createHash("sha256").update(message).digest("hex");
+  assert.equal(
+    observedHash,
+    "c1d6bb85779fbebfd285b2e31d103f4c4b97ccf8128403e5a1db6092833f6fc2"
+  );
+  assert.equal(plan.runtimeCompatibility.messageSha256,observedHash);
+  assert.equal(plan.runtimeCompatibility.observedRequiredParameter,"pagina");
+  assert.equal(plan.runtimeCompatibility.selectedValue,1);
+  assert.deepEqual(plan.targets.map(x=>x.query),[{pagina:1},{pagina:1}]);
 });
 
 test("M5-M falha fechado em mais de 2 alvos, duplicata e cobertura incompatível",()=>{
