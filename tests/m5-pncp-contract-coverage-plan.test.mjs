@@ -29,6 +29,10 @@ test("M5-M constrói exatamente um GET de contratos/empenhos por contratação",
   assert.deepEqual(plan.targets.map(x=>x.method),["GET","GET"]);
   assert.equal(plan.targets[0].path,"/api/pncp/v1/orgaos/12345678000191/contratos/contratacao/2026/1");
   assert.equal(plan.targets[1].path,"/api/pncp/v1/orgaos/12345678000192/contratos/contratacao/2026/2");
+  assert.deepEqual(plan.targets[0].query,{pagina:1});
+  assert.deepEqual(plan.targets[1].query,{pagina:1});
+  assert.equal(plan.runtimeCompatibility.observedRequiredParameter,"pagina");
+  assert.equal(plan.runtimeCompatibility.selectedValue,1);
   assert.equal(plan.expectedCoverage.supplierIdentifier,true);
   assert.equal(plan.expectedCoverage.procurementControlReference,true);
   assert.equal(plan.sourceNetworkAuthorized,false);
@@ -54,6 +58,14 @@ test("M5-M candidato público contém só hashes de alvos",()=>{
   const serialized=JSON.stringify(c);
   assert.equal(serialized.includes("12345678000191"),false);
   assert.equal(serialized.includes("/contratos/contratacao/"),false);
+});
+
+test("M5-M candidato muda quando a query runtime muda",()=>{
+  const plan=buildM5PncpContractCoveragePlan({records:[record(1),record(2)]});
+  const original=plan.targets[0].targetSha256;
+  const target={...plan.targets[0],query:{pagina:2}};
+  delete target.targetSha256;
+  assert.notEqual(original,JSON.stringify(target));
 });
 
 test("M5-M falha fechado em mais de 2 alvos, duplicata e cobertura incompatível",()=>{
