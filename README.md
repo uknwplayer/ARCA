@@ -14,6 +14,7 @@ Documentos de entrada:
 - [Política oficial de idioma pt-BR](docs/ARCA_POLITICA_IDIOMA_PT_BR.md)
 - [Atlas Técnico Vivo](docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md)
 - [Inventário machine-readable do Atlas](docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json)
+- [Guia geral de comandos do ARCA no Termux](docs/ARCA_TERMUX_COMMANDS_V0_1.md)
 
 ## Idioma oficial
 
@@ -73,6 +74,43 @@ npm run workbench
 ```
 
 Abra `http://127.0.0.1:4317`. O servidor recusa bind não local por padrão. O modo remoto não inclui uma implantação multiusuário pronta para produção.
+
+
+## Operação pelo Termux
+
+O Android + Termux é um ambiente operacional suportado para o desenvolvimento atual do ARCA. O guia canônico de comandos está em [ARCA_TERMUX_COMMANDS_V0_1.md](docs/ARCA_TERMUX_COMMANDS_V0_1.md).
+
+Atalhos úteis:
+
+```bash
+cd ~/ARCA
+node scripts/arca-vince-v41-termux.mjs doctor
+npm run arca -- help
+npm run arca -- list
+npm run workbench
+npm run remote:call -- --help
+npm test
+npm run check:public
+gh pr list
+gh run list --limit 10
+```
+
+O worker Vince V4.1 para Termux é atualmente **one-shot**: ele executa `once --job-id ...` e encerra; esse script não possui daemon permanente.
+
+### Foco temporário de desenvolvimento — conversa ARCA ↔ GPT
+
+O trilho investigativo M5 permanece preservado, mas seu avanço está temporariamente pausado. O PR #212 deve permanecer aberto sem merge enquanto esta frente estiver ativa.
+
+A prioridade imediata passa a ser uma interface de conversação pelo Termux:
+
+```text
+Termux → ARCA CLI/Chat Gateway → provedor de raciocínio → GPT → ARCA → Termux
+```
+
+Os comandos pretendidos são `arca chat` e `arca ask`, mas **eles ainda não existem no código atual**. A implementação deverá reutilizar Creator Chat Gateway, adapters de raciocínio, Machine Bridge e controles de capability, com secrets fora do repositório, budgets explícitos e separação entre conversa e autoridade para executar ferramentas.
+
+O ChatGPT Work permanece uma função separada: pode atuar como executor externo de tarefas maiores, enquanto a nova interface Termux ↔ GPT será voltada à conversa/raciocínio interativo.
+
 
 ## Princípios invariantes
 
