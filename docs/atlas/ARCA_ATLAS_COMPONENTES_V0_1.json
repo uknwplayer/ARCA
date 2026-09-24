@@ -2150,6 +2150,86 @@
         "humanReviewRequired=true",
         "adverseFinding=false"
       ]
+    },
+    {
+      "id": "m5-m-pncp-contract-coverage",
+      "nome": "M5-M — Cobertura PNCP por contratos/empenhos",
+      "tipo": "investigacao_aquisicao_controlada",
+      "finalidade": "Ampliar cobertura documental PNCP após M5-L sem candidato, buscando fornecedor e referências contratuais diretamente vinculadas às contratações já normalizadas.",
+      "estado": "implementado_branch_preflight_privado_live_dormente",
+      "localizacao": [
+        "src/investigation/m5-pncp-contract-coverage-plan.mjs",
+        "src/investigation/m5-pncp-contract-coverage-private.mjs",
+        "src/investigation/m5-pncp-contract-coverage-transport.mjs",
+        "scripts/prepare-m5-pncp-contract-coverage-preflight.mjs",
+        "scripts/run-m5-pncp-contract-coverage-live.mjs",
+        ".github/workflows/arca-m5-pncp-contract-coverage-preflight.yml",
+        ".github/workflows/arca-m5-pncp-contract-coverage-live.yml",
+        "docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-j-pncp-live-parser",
+        "m5-l-private-candidate-screening",
+        "custodia-privada"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "normalizacao PNCP privada M5-J",
+        "screeningSha256 M5-L",
+        "revisao exata",
+        "candidateSha256 no live"
+      ],
+      "saidas": [
+        "plano privado com 2 alvos",
+        "candidato sanitizado hash-only",
+        "futura captura custodial de contratos/empenhos"
+      ],
+      "capabilities": [
+        "derivacao privada de alvos",
+        "allowlist de host/path",
+        "maxRequests=2",
+        "retries=0",
+        "custodia antes de uso investigativo"
+      ],
+      "limites": [
+        "nenhum GET autorizado no preflight",
+        "live depende de candidateSha256 e confirmacao explicita",
+        "sem publicacao",
+        "sem correlacao",
+        "sem inferencia de fornecedor"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-pncp-contract-coverage",
+        "workflow M5-M preflight"
+      ],
+      "modosDeFalha": [
+        "envelope hash mismatch",
+        "normalization hash mismatch",
+        "target duplicado",
+        "host/path fora da allowlist",
+        "candidate hash mismatch",
+        "budget excedido",
+        "response size excedido"
+      ],
+      "recuperacao": [
+        "falhar fechado",
+        "manter M5-L NO_CANDIDATE_BRIDGE_OBSERVED",
+        "gerar novo preflight somente em revisao final"
+      ],
+      "fallback": "sem novo GET e sem correlacao forte",
+      "riscoDeReexecucao": "baixo no preflight; live consome autorizacao de fonte",
+      "runbook": [
+        "docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md"
+      ],
+      "seguranca": [
+        "sourceNetworkAuthorized=false no preflight",
+        "newPncpGetAuthorized=false no candidato",
+        "publicationAuthorized=false",
+        "correlationAuthorized=false",
+        "humanAuthorizationRequired=true"
+      ]
     }
   ]
 }

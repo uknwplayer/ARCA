@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 054 — triagem privada M5-L concluída sem candidato**
+Checkpoint: **2026-09-24 / Checkpoint 055 — Gate M5-M de cobertura PNCP contratos/empenhos preparado**
 
-Estado: **Portal M5-I e PNCP M5-J normalizados; Gate M5-K classificou o estado como `LIMITED_CANDIDATE_SCREENING_ONLY`; M5-L executado no run 36028937585 avaliou 2 pares e encontrou 0 candidatos/0 confirmados, sem qualquer dimensão documental, textual, temporal ou monetária coincidente; nenhum novo GET, nenhuma correlação forte e nenhuma publicação de valores; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Portal M5-I e PNCP M5-J normalizados; M5-L concluiu `NO_CANDIDATE_BRIDGE_OBSERVED`; a documentação oficial PNCP v2.6 foi usada para selecionar a superfície `contratos/contratacao`, que fornece fornecedor + referência direta da contratação + contrato/empenho; M5-M está implementado em branch com preflight privado, live hash-bound, máximo 2 GETs e zero retries; nenhum novo GET PNCP foi executado; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 054 — triagem privada M5-L concluída sem candidato](ARCA_HANDOFF_CHECKPOINT_2026-09-24_054.md). O run `36028937585` abriu apenas as normalizações privadas já custodiais, comparou os 2 pares possíveis e retornou `NO_CANDIDATE_BRIDGE_OBSERVED`: `candidateCount=0`, `confirmedCount=0`, `strongBridgeObserved=false`. Em ambos os pares, referência documental, texto de órgão/unidade, janela de 30 dias e valor exato foram falsos. O resultado é sanitizado e não contém valores privados.
+Handoff mais recente: [checkpoint 055 — Gate M5-M de cobertura PNCP contratos/empenhos preparado](ARCA_HANDOFF_CHECKPOINT_2026-09-24_055.md). O M5-M não repete a triagem sem candidato; ele amplia cobertura pela superfície oficial PNCP `GET /v1/orgaos/{cnpj}/contratos/contratacao/{ano}/{sequencial}`. O plano deriva privadamente os 2 alvos atuais, publica apenas hashes, fixa `maxRequests=2` e `retries=0`, e mantém o workflow live dormente até autorização humana vinculada ao `candidateSha256`.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico, mas as duas capturas atuais chegaram ao limite probatório: o M5-L não encontrou sequer um candidato entre os 2 pares possíveis. Não executar correlação forte com estas capturas. O próximo passo é ampliar cobertura documental por fonte pública oficial, priorizando fornecedor/adjudicatário PNCP, identificador forte compartilhável de órgão/unidade ou referência cross-source direta. Pesquisa/desenho podem avançar sem novo GET; aquisição live continua em gate separado.
+M5 continua o caminho crítico. O limite probatório do M5-L foi preservado e o M5-M já implementa a expansão documental escolhida: consultar contratos/empenhos vinculados às 2 contratações PNCP atuais, porque essa superfície oficial documenta fornecedor, referência da contratação e número de contrato/empenho. O próximo passo é CI/merge e depois apenas o preflight privado M5-M para gerar o `candidateSha256`; nenhum GET de fonte deve ocorrer antes da autorização explícita daquele candidato.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_054.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_055.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_054.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_053.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_052.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_051.md`;
@@ -217,7 +218,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 054. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 055. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 

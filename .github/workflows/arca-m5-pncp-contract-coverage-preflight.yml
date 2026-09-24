@@ -1,0 +1,66 @@
+name: ARCA M5-M — preflight cobertura PNCP contratos/empenhos
+run-name: M5-M PNCP contract coverage preflight — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'm5-pncp-contract-coverage-preflight-*'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão candidata
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar contrato M5-M sem rede de fonte
+        run: npm run validate:m5-pncp-contract-coverage
+
+      - name: Transportar normalização PNCP criptografada já existente
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+        run: |
+          set -euo pipefail
+          node scripts/fetch-m5-private-screening-envelope.mjs \
+            --source PNCP \
+            --output artifacts/private/pncp.envelope.json
+
+      - name: Gerar candidato M5-M sanitizado
+        env:
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/proof
+          node scripts/prepare-m5-pncp-contract-coverage-preflight.mjs \
+            --pncp-envelope artifacts/private/pncp.envelope.json \
+            --output artifacts/proof/m5-pncp-contract-coverage-candidate.json
+
+      - name: Publicar somente candidato sanitizado
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-pncp-contract-coverage-candidate-${{ github.run_id }}
+          path: artifacts/proof/m5-pncp-contract-coverage-candidate.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Limpar material privado
+        if: always()
+        run: rm -rf artifacts/private

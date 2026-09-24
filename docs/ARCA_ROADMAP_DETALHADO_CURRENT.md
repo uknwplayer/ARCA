@@ -470,6 +470,32 @@ Próximo passo: ampliar cobertura documental por fonte pública oficial, prioriz
 
 Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
 
+### M5-M — cobertura PNCP por contratos/empenhos
+
+Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE / ZERO NOVO GET**.
+
+Motivação: o M5-L concluiu `NO_CANDIDATE_BRIDGE_OBSERVED`. Repetir a mesma triagem não aumenta evidência. O gargalo é cobertura documental.
+
+Superfície oficial priorizada:
+
+`GET /v1/orgaos/{cnpj}/contratos/contratacao/{anoContratacao}/{sequencialContratacao}`
+
+Base de produção PNCP:
+
+`https://pncp.gov.br/api/pncp`
+
+O retorno documentado inclui `numeroControlePNCPCompra`, `numeroContratoEmpenho`, `processo`, `niFornecedor`, `nomeRazaoSocialFornecedor`, órgão e valores. Essa combinação pode preencher as três pontes fortes que faltam: fornecedor, referência direta à contratação e referência contrato/empenho.
+
+O gate deriva privadamente exatamente 2 alvos a partir da normalização PNCP M5-J atual. A saída do preflight contém apenas hashes.
+
+Budgets fixos: `maxRequests=2`, `retries=0`, 30 s, 64 KiB por resposta e até 25 registros por resposta.
+
+O workflow live exige branch bound ao `candidateSha256` e confirmação `PNCP_CONTRACT_COVERAGE_GET_ONLY`. Até o preflight final e autorização explícita, a source network permanece desligada.
+
+Próximo passo: merge → preflight privado na revisão final → revisão do candidato → autorização humana explícita para os 2 GETs.
+
+Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 055.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.

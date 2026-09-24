@@ -94,6 +94,10 @@ jobs:
       - name: Validar contrato M5-L de triagem privada
         run: npm run validate:m5-private-screening-contract
 
+      - name: Validar gate M5-M de cobertura PNCP contratos/empenhos
+        run: npm run validate:m5-pncp-contract-coverage
+
+
 
 
 
