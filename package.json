@@ -62,7 +62,8 @@
     "validate:m5-pncp-normalization-auth": "node scripts/validate-m5-pncp-normalization-authorization.mjs",
     "validate:m5-pncp-live-binding": "node scripts/validate-m5-pncp-live-binding.mjs",
     "validate:m5-correlation-readiness": "node scripts/validate-m5-correlation-readiness.mjs",
-    "validate:m5-private-screening-contract": "node --test tests/m5-private-normalization-reader.test.mjs tests/m5-private-candidate-screening.test.mjs"
+    "validate:m5-private-screening-contract": "node --test tests/m5-private-normalization-reader.test.mjs tests/m5-private-candidate-screening.test.mjs",
+    "validate:m5-pncp-contract-coverage": "node --test tests/m5-pncp-contract-coverage-plan.test.mjs tests/m5-pncp-contract-coverage-private.test.mjs tests/m5-pncp-contract-coverage-transport.test.mjs tests/m5-pncp-contract-coverage-workflow.test.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"
