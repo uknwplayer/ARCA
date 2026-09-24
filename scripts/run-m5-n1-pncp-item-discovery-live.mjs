@@ -29,6 +29,12 @@ export async function runM5N1Live({env=process.env,fetchImpl=globalThis.fetch,cu
   });
   const expected=h64(env.ARCA_M5_N1_CANDIDATE_SHA256,"ARCA_M5_N1_CANDIDATE_REQUIRED");
   if(derived.candidate.candidateSha256!==expected)throw new Error("ARCA_M5_N1_CANDIDATE_MISMATCH");
+  if(derived.candidate.getCostPolicy?.costClass!=="NO_MONETARY_CHARGE_OBSERVED"||
+     derived.candidate.getCostPolicy?.autoExecutionAllowed!==true||
+     derived.candidate.humanAuthorizationRequired!==false||
+     derived.candidate.sourceNetworkAuthorized!==true||
+     derived.candidate.newPncpGetAuthorized!==true)
+    throw new Error("ARCA_M5_N1_COST_POLICY_NOT_EXECUTABLE");
   const executed=await createM5N1ItemDiscoveryTransport({
     fetchImpl,timeoutMs:derived.plan.budgets.timeoutMs,
     maxBytesPerResponse:derived.plan.budgets.maxBytesPerResponse,maxRequests:2
