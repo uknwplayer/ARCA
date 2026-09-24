@@ -59,7 +59,8 @@
     "normalize:m5-portal-custody-local": "node scripts/normalize-m5-portal-custody-local.mjs",
     "validate:m5-live-normalized-binding": "node scripts/validate-m5-live-normalized-binding.mjs",
     "validate:m5-pncp-live-parser": "node scripts/validate-m5-pncp-live-parser.mjs",
-    "validate:m5-pncp-normalization-auth": "node scripts/validate-m5-pncp-normalization-authorization.mjs"
+    "validate:m5-pncp-normalization-auth": "node scripts/validate-m5-pncp-normalization-authorization.mjs",
+    "validate:m5-pncp-live-binding": "node scripts/validate-m5-pncp-live-binding.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"
