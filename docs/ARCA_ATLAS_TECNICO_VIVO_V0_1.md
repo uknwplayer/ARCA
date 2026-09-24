@@ -409,3 +409,24 @@ O parser V1 exige estrutura exata, valida o vínculo número de controle↔CNPJ�
 Limites: fixture sintética apenas; normalização live ainda bloqueada; sem correlação/publicação; ausência de fornecedor é lacuna de cobertura, não indício.
 
 Runbook: `docs/ARCA_M5_PNCP_LIVE_PARSER_V0_1.md`.
+
+
+### M5-J — binding PNCP live normalizado
+
+Componente: `m5-j-pncp-live-normalized-binding`.
+
+Função: preservar a captura PNCP original como âncora, a normalização privada como derivação e emitir entradas compatíveis com a Fase B sem executar correlação.
+
+Estado: **NORMALIZAÇÃO REAL CONCLUÍDA / PERSISTIDA PRIVADAMENTE / BINDING IMPLEMENTADO / CORRELAÇÃO BLOQUEADA**.
+
+Normalização canônica: run `36026221085`, 2 registros, `normalizationSha256=c91e5bce7240fa6ca127aeeb33f7a7763a891bd84c65ee1a29950e66a32b7a2d`, envelope normalizado `95eaf8fa048860dc2e41edcb1de043405d5e7a0a60d4183420b0fb4bf3791f33`, receipt privado `00d024c3b7e9dfc657b2dc8705e93d2a6d2ddadde4dd55718b2c4b46833b9447`.
+
+Cobertura: `supplierObserved=false`, `supplierIdentifierAvailable=false`, `supplierMayBeInferred=false`.
+
+Saída: `custodyInput`, `sourceBinding`, `derivedNormalization` e `coverage`, todos hash-bound.
+
+Limites: `correlationAuthorized=false`, `publicationAuthorized=false`; ausência de fornecedor não é evidência adversa e bloqueia qualquer ponte forte baseada em fornecedor.
+
+Recuperação: drift de hash, record count, cobertura ou binding falha fechado. Não repetir GET para preencher lacuna; somente fonte pública adicional ou novo escopo explicitamente autorizado pode ampliar cobertura.
+
+Runbook: `docs/ARCA_M5_PNCP_LIVE_NORMALIZED_BINDING_V0_1.md`.
