@@ -461,16 +461,16 @@ Componente: `m5-l-private-candidate-screening`.
 
 Função: comparar privadamente as normalizações Portal/PNCP já custodiais e emitir somente candidatos hash-only.
 
-Estado: **IMPLEMENTADO EM BRANCH / LIVE PRIVADO PENDENTE**.
+Estado: **INTEGRADO E EXECUTADO / RUN 36028937585 / NO_CANDIDATE_BRIDGE_OBSERVED**.
 
 Transporte: somente envelopes criptografados allowlisted do cofre privado, com verificação do hash esperado antes da abertura.
 
-Dimensões candidatas: referência documental exata normalizada e texto de órgão/unidade exato normalizado.
+Resultado live privado: 2 pares avaliados, 0 candidatos, 2 `NOT_OBSERVED`, 0 confirmados. Nos dois pares, referência documental exata, texto de órgão/unidade, mesma data, janela de 30 dias e valor exato foram falsos.
 
-Contexto fraco: data e valor; nunca criam candidato sozinhos.
+`screeningSha256=06440986b4e2a360e13add77709ab6b2bc1b9d66847cb71173618f9c32881e95`.
 
-Limites: fornecedor não comparado/inferido, `confirmedCount=0`, `correlationAttempted=false`, zero novo GET, zero publicação de valores.
+Limites: fornecedor não comparado/inferido, `confirmedCount=0`, `correlationAttempted=false`, zero novo GET, zero publicação de valores. O resultado prova ausência de ponte nas capturas atuais, não ausência de relação no mundo real.
 
-Recuperação: qualquer hash, binding, readiness ou envelope divergente falha fechado e mantém M5-L sem resultado.
+Recuperação: não repetir a mesma triagem para “forçar” candidato. Ampliar cobertura apenas por fonte pública oficial adicional/gate separado, mantendo as capturas atuais como contraprova de não observação.
 
-Runbook: `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md`.
+Runbook: `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
