@@ -91,6 +91,10 @@ jobs:
       - name: Validar gate M5-K de prontidão de correlação
         run: npm run validate:m5-correlation-readiness
 
+      - name: Validar contrato M5-L de triagem privada
+        run: npm run validate:m5-private-screening-contract
+
+
 
 
       - name: Executar gate M5 Fase D de prontidão da credencial Portal

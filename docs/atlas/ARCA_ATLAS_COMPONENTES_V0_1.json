@@ -2067,6 +2067,85 @@
         "adverseFinding=false",
         "humanReviewRequired=true"
       ]
+    },
+    {
+      "id": "m5-l-private-candidate-screening",
+      "nome": "M5-L — Triagem privada de candidatos",
+      "tipo": "investigacao_triagem_privada",
+      "finalidade": "Comparar normalizações privadas Portal/PNCP já custodiais e emitir apenas candidatos sanitizados, sem correlação forte.",
+      "estado": "implementado_branch_live_privado_pendente",
+      "localizacao": [
+        "src/investigation/m5-private-normalization-reader.mjs",
+        "src/investigation/m5-private-candidate-screening.mjs",
+        "scripts/fetch-m5-private-screening-envelope.mjs",
+        "scripts/run-m5-private-candidate-screening.mjs",
+        ".github/workflows/arca-m5-private-candidate-screening.yml",
+        "docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-i-portal-live-normalized-binding",
+        "m5-j-pncp-live-parser",
+        "m5-k-correlation-readiness"
+      ],
+      "chamadoPor": [
+        "operador_humano"
+      ],
+      "entradas": [
+        "envelope normalizado Portal criptografado",
+        "envelope normalizado PNCP criptografado",
+        "bindings M5-I/M5-J",
+        "readiness M5-K"
+      ],
+      "saidas": [
+        "pairRef hash-only",
+        "CANDIDATE ou NOT_OBSERVED",
+        "screeningSha256",
+        "contagens sanitizadas"
+      ],
+      "capabilities": [
+        "transporte privado allowlisted",
+        "comparacao documental exata",
+        "comparacao textual exata",
+        "contexto temporal e monetario fraco"
+      ],
+      "limites": [
+        "sem CONFIRMED",
+        "sem fornecedor inferido",
+        "data/valor nao criam candidato sozinhos",
+        "sem novo GET",
+        "sem publicacao de valores",
+        "sem correlator M5-B"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-private-screening-contract",
+        "node --test tests/m5-private-candidate-screening.test.mjs"
+      ],
+      "modosDeFalha": [
+        "vault nao privado",
+        "envelope hash mismatch",
+        "normalization hash mismatch",
+        "readiness invalido",
+        "pair budget excedido"
+      ],
+      "recuperacao": [
+        "falhar fechado",
+        "limpar envelopes do workspace",
+        "preservar apenas prova sanitizada"
+      ],
+      "fallback": "NO_CANDIDATE_BRIDGE_OBSERVED ou nenhuma execucao",
+      "riscoDeReexecucao": "baixo sobre custodia existente; nenhuma aquisicao de fonte",
+      "runbook": [
+        "docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md"
+      ],
+      "seguranca": [
+        "sourceNetworkUsed=false",
+        "correlationAttempted=false",
+        "confirmedCount=0",
+        "supplierInferenceAllowed=false",
+        "privateValuesIncluded=false",
+        "humanReviewRequired=true",
+        "adverseFinding=false"
+      ]
     }
   ]
 }

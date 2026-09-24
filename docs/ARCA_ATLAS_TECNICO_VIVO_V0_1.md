@@ -453,3 +453,24 @@ Limites: `readyForStrongCorrelation=false`, `supplierInferenceAllowed=false`, `c
 Recuperação: ausência de ponte forte não autoriza inferência nem novo GET automático. O próximo passo permitido é triagem privada de candidatos, com saída máxima `CANDIDATE`.
 
 Runbook: `docs/ARCA_M5_CORRELATION_READINESS_V0_1.md`.
+
+
+### M5-L — triagem privada de candidatos
+
+Componente: `m5-l-private-candidate-screening`.
+
+Função: comparar privadamente as normalizações Portal/PNCP já custodiais e emitir somente candidatos hash-only.
+
+Estado: **IMPLEMENTADO EM BRANCH / LIVE PRIVADO PENDENTE**.
+
+Transporte: somente envelopes criptografados allowlisted do cofre privado, com verificação do hash esperado antes da abertura.
+
+Dimensões candidatas: referência documental exata normalizada e texto de órgão/unidade exato normalizado.
+
+Contexto fraco: data e valor; nunca criam candidato sozinhos.
+
+Limites: fornecedor não comparado/inferido, `confirmedCount=0`, `correlationAttempted=false`, zero novo GET, zero publicação de valores.
+
+Recuperação: qualquer hash, binding, readiness ou envelope divergente falha fechado e mantém M5-L sem resultado.
+
+Runbook: `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md`.

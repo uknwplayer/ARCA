@@ -1,0 +1,73 @@
+name: ARCA M5-L — triagem privada de candidatos
+run-name: M5-L private candidate screening — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'm5-private-candidate-screening-*'
+
+permissions:
+  contents: read
+
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão autorizada
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar contrato M5-K/M5-L offline
+        run: |
+          npm run validate:m5-correlation-readiness
+          npm run validate:m5-private-screening-contract
+
+      - name: Transportar envelope Portal criptografado do cofre privado
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+        run: |
+          set -euo pipefail
+          node scripts/fetch-m5-private-screening-envelope.mjs             --source PORTAL             --output artifacts/private/portal.envelope.json
+
+      - name: Transportar envelope PNCP criptografado do cofre privado
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+        run: |
+          set -euo pipefail
+          node scripts/fetch-m5-private-screening-envelope.mjs             --source PNCP             --output artifacts/private/pncp.envelope.json
+
+      - name: Executar triagem privada sem correlacao forte
+        env:
+          ARCA_PORTAL_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PORTAL_CUSTODY_PASSPHRASE }}
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/proof
+          node scripts/run-m5-private-candidate-screening.mjs             --portal-envelope artifacts/private/portal.envelope.json             --pncp-envelope artifacts/private/pncp.envelope.json             --output artifacts/proof/m5-private-candidate-screening-proof.json
+
+      - name: Publicar somente prova sanitizada
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-private-candidate-screening-proof-${{ github.run_id }}
+          path: artifacts/proof/m5-private-candidate-screening-proof.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Limpar envelopes e material privado
+        if: always()
+        run: rm -rf artifacts/private
