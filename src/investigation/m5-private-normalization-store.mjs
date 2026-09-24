@@ -37,6 +37,12 @@ const NORMALIZATION_PROOF_SCHEMAS=new Set([
 ]);
 
 function validProof(proof,envelope){
+  const portalProof=proof?.schema==="arca.m5-portal-custodial-normalization-proof.v1";
+  const pncpProof=proof?.schema==="arca.m5-pncp-custodial-normalization-proof.v1";
+  const requestFlagOk=
+    (portalProof&&proof?.portalRequestUsed===false&&proof?.pncpRequestUsed===undefined)||
+    (pncpProof&&proof?.pncpRequestUsed===false&&proof?.portalRequestUsed===undefined);
+
   if(envelope?.schema!=="arca.encrypted-custody-envelope.v0.1"||
      envelope?.status!=="SEALED"||
      envelope?.algorithm!=="AES-256-GCM"||
@@ -45,7 +51,7 @@ function validProof(proof,envelope){
      !NORMALIZATION_PROOF_SCHEMAS.has(proof?.schema)||
      proof?.status!=="NORMALIZED_CUSTODIAL_OFFLINE"||
      proof?.sourceNetworkUsed!==false||
-     proof?.portalRequestUsed!==false||
+     requestFlagOk!==true||
      proof?.publicationAttempted!==false||
      proof?.correlationAttempted!==false||
      proof?.normalizedValuesIncludedInProof!==false||
