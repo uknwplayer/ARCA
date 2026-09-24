@@ -1,0 +1,52 @@
+name: ARCA M5-N1 — observação offline da custódia
+run-name: M5-N1 offline custody observation — ${{ github.run_id }}
+
+on:
+  push:
+    branches:
+      - 'm5-n1-offline-observation-*'
+
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter revisão observadora
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+
+      - name: Preparar Node 22.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+
+      - name: Instalar dependências travadas
+        run: npm ci
+
+      - name: Validar observação offline M5-N1
+        run: npm run validate:m5-n1-offline-observation
+
+      - name: Reabrir somente a custódia M5-N1 e observar itens
+        env:
+          ARCA_CUSTODY_VAULT_REPOSITORY: ${{ secrets.ARCA_CUSTODY_VAULT_REPOSITORY }}
+          ARCA_CUSTODY_VAULT_TOKEN: ${{ secrets.ARCA_CUSTODY_VAULT_TOKEN }}
+          ARCA_CUSTODY_VAULT_BRANCH: ${{ secrets.ARCA_CUSTODY_VAULT_BRANCH }}
+          ARCA_PNCP_CUSTODY_PASSPHRASE: ${{ secrets.ARCA_PNCP_CUSTODY_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/proof
+          node scripts/run-m5-n1-offline-observation.mjs \
+            --output artifacts/proof/m5-n1-offline-observation.json
+
+      - name: Publicar somente observação sanitizada
+        uses: actions/upload-artifact@v4
+        with:
+          name: m5-n1-offline-observation-${{ github.run_id }}
+          path: artifacts/proof/m5-n1-offline-observation.json
+          if-no-files-found: error
+          retention-days: 7
