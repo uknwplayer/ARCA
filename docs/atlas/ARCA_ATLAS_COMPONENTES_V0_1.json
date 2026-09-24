@@ -1,7 +1,7 @@
 {
   "schema": "arca.atlas-tecnico.componentes.v0.1",
   "idioma": "pt-BR",
-  "atualizadoEm": "2026-09-23",
+  "atualizadoEm": "2026-09-24",
   "regras": {
     "fonteHumana": "docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md",
     "idiomaOficial": "docs/ARCA_POLITICA_IDIOMA_PT_BR.md",
@@ -1922,72 +1922,80 @@
     },
     {
       "id": "m5-j-pncp-live-parser",
-      "nome": "M5-J — Observação e parser PNCP live",
+      "nome": "M5-J — PNCP live normalizado e binding",
       "tipo": "investigacao_normalizacao",
-      "finalidade": "Normalizar futuramente a custódia PNCP live a partir do schema efetivamente observado, sem novo GET.",
-      "estado": "observacao_concluida_parser_v1_branch_live_bloqueado",
+      "finalidade": "Preservar captura PNCP original e derivação normalizada privada, emitindo binding compatível com a Fase B sem executar correlação.",
+      "estado": "normalizacao_real_concluida_binding_branch_correlacao_bloqueada",
       "localizacao": [
-        "src/investigation/m5-pncp-custody-structure-observer.mjs",
         "src/investigation/m5-pncp-live-parser.mjs",
-        "docs/ARCA_M5_PNCP_LIVE_PARSER_V0_1.md"
+        "src/investigation/m5-pncp-custodial-normalization.mjs",
+        "src/investigation/m5-pncp-live-normalized-binding.mjs",
+        "config/m5-pncp-live-normalized-binding.json",
+        "docs/ARCA_M5_PNCP_LIVE_NORMALIZED_BINDING_V0_1.md"
       ],
       "dependeDe": [
         "custodia-privada",
-        "pncp-controlled-live"
+        "m5-a-pre-correlacao"
       ],
       "chamadoPor": [
-        "ci-principal",
-        "futuro-normalizador-pncp"
+        "m5-b-pos-custodia"
       ],
       "entradas": [
-        "custodia PNCP run 35547609136",
-        "observedStructureSha256 4a00de8f...fabb9",
-        "fixture sintetica"
+        "captura PNCP custodial histórica",
+        "observedStructureSha256",
+        "parser contract",
+        "normalization proof",
+        "private store receipt"
       ],
       "saidas": [
-        "estrutura sanitizada",
-        "parser contract",
-        "registro normalizado sintetico"
+        "custodyInput PNCP NORMALIZED",
+        "sourceBinding PNCP",
+        "derivedNormalization",
+        "coverage supplierObserved=false"
       ],
       "capabilities": [
-        "observacao estrutural sem valores",
-        "parse de contratacao PNCP",
-        "validacao de CNPJ/controle/ano/sequencial",
-        "normalizacao de valor estimado"
+        "normalizacao custodial offline",
+        "binding hash-only para Fase B",
+        "preservacao de captura e derivacao"
       ],
       "limites": [
-        "sem novo GET PNCP",
         "supplierObserved=false",
-        "normalizacao live ainda bloqueada",
-        "sem correlacao",
-        "sem publicacao"
+        "supplierIdentifierAvailable=false",
+        "supplierMayBeInferred=false",
+        "correlationAuthorized=false",
+        "publicationAuthorized=false",
+        "nenhum novo GET"
       ],
       "healthCheck": [
-        "run 35932200063 success",
         "npm run validate:m5-pncp-live-parser",
-        "node --test tests/m5-pncp-live-parser.test.mjs"
+        "npm run validate:m5-pncp-normalization-auth",
+        "npm run validate:m5-pncp-live-binding",
+        "run 36026221085 success"
       ],
       "modosDeFalha": [
         "schema drift",
-        "control binding mismatch",
-        "valor ambiguo",
-        "estrutura aninhada divergente"
+        "hash divergente",
+        "private-store proof incompatível",
+        "tentativa de inferir fornecedor",
+        "record count inválido"
       ],
       "recuperacao": [
-        "manter custodia fechada",
-        "revisar parser",
-        "admissao separada antes de normalizacao live"
+        "falhar fechado",
+        "preservar custodia original",
+        "não repetir GET para preencher lacuna",
+        "ampliar cobertura somente por fonte pública adicional autorizada"
       ],
-      "fallback": "não usar PNCP live na Fase B",
-      "riscoDeReexecucao": "baixo em fixture/observador; sem novo GET",
+      "fallback": "manter correlação bloqueada e registrar lacuna de fornecedor",
+      "riscoDeReexecucao": "baixo para normalização da custódia já capturada; nenhuma nova aquisição",
       "runbook": [
-        "docs/ARCA_M5_PNCP_LIVE_PARSER_V0_1.md"
+        "docs/ARCA_M5_PNCP_LIVE_NORMALIZED_BINDING_V0_1.md",
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_052.md"
       ],
       "seguranca": [
-        "valuesIncluded=false no observador",
-        "rawBytesIncluded=false no observador",
-        "publicationAuthorized=false",
+        "supplierMayBeInferred=false",
         "correlationAuthorized=false",
+        "publicationAuthorized=false",
+        "sourceNetworkUsed=false",
         "humanReviewRequired=true"
       ]
     }
