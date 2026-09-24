@@ -8,6 +8,18 @@ export const M5_PNCP_CONTRACT_COVERAGE_ENDPOINT_ID=
   "PNCP_CONTRATOS_EMPENHOS_DA_CONTRATACAO";
 export const M5_PNCP_CONTRACT_COVERAGE_PATH_TEMPLATE=
   "/api/pncp/v1/orgaos/{cnpj}/contratos/contratacao/{ano}/{sequencial}";
+export const M5_PNCP_CONTRACT_COVERAGE_RUNTIME_QUERY=Object.freeze({pagina:1});
+export const M5_PNCP_CONTRACT_COVERAGE_RUNTIME_OBSERVATION=Object.freeze({
+  liveRunId:"36036733351",
+  httpStatus:400,
+  responseCount:2,
+  responseBytesEach:251,
+  messageSha256:"c1d6bb85779fbebfd285b2e31d103f4c4b97ccf8128403e5a1db6092833f6fc2",
+  diagnosisSha256:"a3651eadf7af9a0f8d072a43853b5778f785447b52e91fef4a5f4bcdffa0f9de",
+  observedRequiredParameter:"pagina",
+  observedParameterType:"Integer",
+  selectedValue:1
+});
 
 const H64=/^[a-f0-9]{64}$/;
 const H40=/^[a-f0-9]{40}$/;
@@ -55,6 +67,7 @@ function targetFor(record){
     endpointId:M5_PNCP_CONTRACT_COVERAGE_ENDPOINT_ID,
     method:"GET",
     path,
+    query:M5_PNCP_CONTRACT_COVERAGE_RUNTIME_QUERY,
     procurementRecordRef:r.recordRef,
     procurementControlRef:`pncp:control:sha256:${sha256(r.control)}`
   };
@@ -81,6 +94,7 @@ export function buildM5PncpContractCoveragePlan({records}={}){
       maxBytesPerResponse:65536,
       maxResponseRecords:25
     }),
+    runtimeCompatibility:M5_PNCP_CONTRACT_COVERAGE_RUNTIME_OBSERVATION,
     expectedCoverage:Object.freeze({
       supplierIdentifier:true,
       supplierName:true,
