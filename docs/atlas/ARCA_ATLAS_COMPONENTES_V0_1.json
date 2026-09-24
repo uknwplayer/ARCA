@@ -2264,7 +2264,7 @@
       "nome": "M5-N1 — Descoberta PNCP de itens",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Descobrir itens e indicador temResultado das duas contratações PNCP atuais antes de qualquer consulta de resultados.",
-      "estado": "live_page10_shape_inesperado_fix_custody_before_observation_branch",
+      "estado": "live_200_200_stored_private_bare_array_offline_observation_branch",
       "localizacao": [
         "src/investigation/m5-n1-pncp-item-discovery-plan.mjs",
         "src/investigation/m5-n1-pncp-item-discovery-private.mjs",
@@ -2298,7 +2298,11 @@
         "itemCount/itemsWithResultCount hash-only",
         "targetCount=2",
         "preflight 36050289566 candidate=8fbe4dc9...17c7b",
-        "live 36050412298: 2 GETs, zero retries, ARCA_M5_N1_RESPONSE_SHAPE_INVALID"
+        "live 36050412298: 2 GETs, zero retries, ARCA_M5_N1_RESPONSE_SHAPE_INVALID",
+        "preflight 36051311684 candidate=e13bb2cc...ecae",
+        "live 36051395397: HTTP 200 + HTTP 200, zero retries, STORED_PRIVATE",
+        "custodyEnvelopeSha256=41110be726a598a2e620a55dc65d8fb4366fc04381182c264c641f322ebc3d4b",
+        "runtime shapes: BARE_ARRAY lengths 4 and 5"
       ],
       "capabilities": [
         "derivacao privada de alvos",
@@ -2310,7 +2314,10 @@
         "pagina=1 tamanhoPagina=10",
         "autoexecucao GET sem custo monetario observado",
         "persistencia duravel antes da observacao estrutural",
-        "diagnostico sanitizado de shape inesperado"
+        "diagnostico sanitizado de shape inesperado",
+        "parser OBJECT_ITENS",
+        "parser BARE_ARRAY observado live",
+        "observacao offline da custodia sem source network"
       ],
       "limites": [
         "sem consulta de resultados",
@@ -2322,14 +2329,17 @@
         "M5-N2 continua separado",
         "pagina cheia com 10 itens bloqueia avanço",
         "candidato 8fbe4dc9...17c7b nao reutilizavel",
-        "run 36050412298 nao deixou corpos recuperaveis por falha de ordem"
+        "run 36050412298 nao deixou corpos recuperaveis por falha de ordem",
+        "array length não equivale a itemCount sem validação semântica",
+        "nenhum novo GET necessário para interpretar capture 36051395397"
       ],
       "healthCheck": [
         "npm run validate:m5-n1-item-discovery",
         "workflow M5-N1 preflight",
         "run 36044350610 preflight success",
         "CI pós-merge 36044297566 success",
-        "npm run validate:get-cost-policy"
+        "npm run validate:get-cost-policy",
+        "run 36051395397 live success"
       ],
       "modosDeFalha": [
         "envelope hash mismatch",
@@ -2342,11 +2352,10 @@
         "response shape inesperado após HTTP 200"
       ],
       "recuperacao": [
-        "persistir envelope antes de parse",
-        "emitir SCHEMA_UNEXPECTED sem perder bytes",
-        "gerar novo candidato na revisão corrigida",
-        "executar novo live automático sob cost policy válida",
-        "não reutilizar o candidato do run falho"
+        "reabrir envelope 41110be7...3d4b",
+        "revalidar candidate/plan/target/response/shape hashes",
+        "validar numeroItem e temResultado offline",
+        "construir M5-N2 somente se cobertura completa e houver temResultado=true"
       ],
       "fallback": "não consultar resultados e manter fornecedor não observado",
       "riscoDeReexecucao": "baixo no preflight; live consome autorização de fonte",

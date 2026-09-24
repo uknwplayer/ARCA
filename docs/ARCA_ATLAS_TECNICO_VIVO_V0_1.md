@@ -544,7 +544,7 @@ Componente: `m5-n1-pncp-item-discovery`.
 
 Função: descobrir os itens das duas contratações PNCP já normalizadas sem repetir o endpoint M5-M e sem consultar resultados ainda.
 
-Estado: **POLÍTICA GET INTEGRADA / PRIMEIRO LIVE PAGE10 EXECUTADO / SHAPE INESPERADO / CUSTÓDIA DURÁVEL NÃO PERSISTIDA / CORREÇÃO CUSTODY-BEFORE-OBSERVATION EM BRANCH**.
+Estado: **CUSTODY-BEFORE-OBSERVATION INTEGRADO / LIVE 36051395397 HTTP 200+200 / STORED_PRIVATE / RUNTIME BARE_ARRAY / OBSERVAÇÃO OFFLINE EM BRANCH**.
 
 Endpoint allowlisted:
 
@@ -627,4 +627,25 @@ Falha arquitetural: o executor selava localmente, mas fazia a observação antes
 Correção: `GETs → seal → durable persist → structural observation`.
 
 Se o shape divergir novamente, o ARCA preserva a captura e publica apenas `SCHEMA_UNEXPECTED` + diagnóstico estrutural sanitizado.
+
+
+
+#### Atualização M5-N1 — captura durável 200/200 e shape runtime
+
+Preflight: `36051311684`.
+
+Live: `36051395397`.
+
+- candidato `e13bb2cc94b85d599434f2287b4718f18b26136a6b6b2a97380e033e3568ecae`;
+- 2 GETs;
+- zero retries;
+- HTTP 200 + HTTP 200;
+- `STORED_PRIVATE`;
+- envelope `41110be726a598a2e620a55dc65d8fb4366fc04381182c264c641f322ebc3d4b`;
+- runtime alvo 1: `BARE_ARRAY`, 4 elementos;
+- runtime alvo 2: `BARE_ARRAY`, 5 elementos;
+- raw values não publicados;
+- publicação/correlação desligadas.
+
+O parser M5-N1 passa a aceitar explicitamente o wrapper documentado `OBJECT_ITENS` e o `BARE_ARRAY` observado live. A observação semântica de `numeroItem` e `temResultado` será feita offline sobre a custódia existente, sem novo GET.
 
