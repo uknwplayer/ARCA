@@ -19,10 +19,15 @@ export function observeM5N1ItemsResponse({bytes,httpStatus,targetSha256,pageSize
     rawValuesIncluded:false
   });
   const parsed=parseJson(bytes);
-  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed)||!Array.isArray(parsed.itens))
-    throw new Error("ARCA_M5_N1_RESPONSE_SHAPE_INVALID");
-  if(parsed.itens.length>pageSize)throw new Error("ARCA_M5_N1_ITEM_BUDGET_EXCEEDED");
-  const items=parsed.itens.map(item);
+  const runtimeShape=Array.isArray(parsed)
+    ?"BARE_ARRAY"
+    :(parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&Array.isArray(parsed.itens)
+      ?"OBJECT_ITENS"
+      :null);
+  if(runtimeShape===null)throw new Error("ARCA_M5_N1_RESPONSE_SHAPE_INVALID");
+  const rawItems=runtimeShape==="BARE_ARRAY"?parsed:parsed.itens;
+  if(rawItems.length>pageSize)throw new Error("ARCA_M5_N1_ITEM_BUDGET_EXCEEDED");
+  const items=rawItems.map(item);
   if(new Set(items.map(x=>x.numeroItem)).size!==items.length)
     throw new Error("ARCA_M5_N1_DUPLICATE_ITEM");
   const resultItems=items.filter(x=>x.temResultado).map(x=>x.numeroItem).sort((a,b)=>a-b);
@@ -31,6 +36,7 @@ export function observeM5N1ItemsResponse({bytes,httpStatus,targetSha256,pageSize
     targetSha256,
     httpStatus,
     parsed:true,
+    responseShape:runtimeShape,
     itemCount:items.length,
     itemsWithResultCount:resultItems.length,
     pagePossiblyTruncated,
