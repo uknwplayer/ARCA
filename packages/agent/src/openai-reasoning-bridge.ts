@@ -127,7 +127,9 @@ export async function runOpenAITermuxAsk({
   });
 
   const output=reasoning.output;
-  const usageCost=estimateOpenAIUsageUsd({model:client.model,usage:output?.usage??{}});
+  const usageAvailable=!!output?.usage&&Number.isFinite(Number(output.usage.input_tokens))&&Number.isFinite(Number(output.usage.output_tokens));
+  const usageCost=usageAvailable?estimateOpenAIUsageUsd({model:client.model,usage:output.usage}):null;
+  const accountedUsd=usageCost?.estimatedUsd??budgetDecision.conservativeMaxUsd;
   return Object.freeze({
     format:ARCA_TERMUX_GPT_ASK_FORMAT,
     version:1,
@@ -143,7 +145,9 @@ export async function runOpenAITermuxAsk({
       pricingAsOf:budgetDecision.pricingAsOf,
       maxRequestUsd:budgetDecision.maxRequestUsd,
       conservativeMaxUsd:budgetDecision.conservativeMaxUsd,
-      actualEstimatedUsd:usageCost.estimatedUsd,
+      actualEstimatedUsd:usageCost?.estimatedUsd??null,
+      accountedUsd,
+      usageAvailable,
       billingCapGuaranteed:false,
       exactBillingAmount:false
     }),
