@@ -401,6 +401,27 @@ Próximo passo: merge → gate de admissão → normalização custodial dos 2 r
 
 Ver `docs/ARCA_M5_PNCP_LIVE_PARSER_V0_1.md` e checkpoint 051.
 
+### M5-J — binding PNCP live normalizado
+
+Estado: **IMPLEMENTADO EM BRANCH / NORMALIZAÇÃO REAL CONCLUÍDA / PRONTO PARA FASE B / CORRELAÇÃO BLOQUEADA**.
+
+O run `36026221085` normalizou 2 registros PNCP já custodiais, sem novo GET, e persistiu a derivação no cofre privado.
+
+Hashes canônicos:
+
+- `normalizationSha256=c91e5bce7240fa6ca127aeeb33f7a7763a891bd84c65ee1a29950e66a32b7a2d`;
+- `normalizedEnvelopeSha256=95eaf8fa048860dc2e41edcb1de043405d5e7a0a60d4183420b0fb4bf3791f33`;
+- `normalizedStoreReceiptSha256=00d024c3b7e9dfc657b2dc8705e93d2a6d2ddadde4dd55718b2c4b46833b9447`;
+- `proofSha256=450174620c2490c77953ece5a2aa20d0eec3829e6e45c9d46e4382d9773dc862`.
+
+O M5-J preserva a captura original como âncora e a normalização privada como derivação, emitindo `custodyInput` e `sourceBinding` compatíveis com a Fase B.
+
+Cobertura obrigatória: `supplierObserved=false`, `supplierIdentifierAvailable=false`, `supplierMayBeInferred=false`.
+
+Próximo passo: gate offline de prontidão de correlação M5-I ↔ M5-J. Nenhuma correlação deve ser executada até identificar quais pontes documentais estão realmente disponíveis.
+
+Ver `docs/ARCA_M5_PNCP_LIVE_NORMALIZED_BINDING_V0_1.md` e checkpoint 052.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.

@@ -85,6 +85,10 @@ jobs:
       - name: Validar autorização da normalização PNCP
         run: npm run validate:m5-pncp-normalization-auth
 
+      - name: Validar binding PNCP live normalizado M5-J
+        run: npm run validate:m5-pncp-live-binding
+
+
       - name: Executar gate M5 Fase D de prontidão da credencial Portal
         run: npm run validate:m5-phase-d
 
