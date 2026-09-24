@@ -39,3 +39,56 @@ export function observeM5N1ItemsResponse({bytes,httpStatus,targetSha256,pageSize
     rawValuesIncluded:false
   });
 }
+
+
+export function diagnoseM5N1ResponseShape({bytes,httpStatus,targetSha256}={}){
+  const raw=Buffer.from(bytes??[]);
+  let jsonKind="NOT_JSON";
+  let topLevelKeys=[];
+  let arrayLength=null;
+  let hasItensArray=false;
+  let itensLength=null;
+  let utf8Valid=true;
+  let parsed=null;
+  try{
+    const text=new TextDecoder("utf-8",{fatal:true}).decode(raw);
+    try{parsed=JSON.parse(text)}catch{}
+  }catch{
+    utf8Valid=false;
+  }
+  if(utf8Valid&&parsed!==null){
+    if(Array.isArray(parsed)){
+      jsonKind="ARRAY";
+      arrayLength=parsed.length;
+    }else if(typeof parsed==="object"){
+      jsonKind="OBJECT";
+      topLevelKeys=Object.keys(parsed).sort().filter(k=>/^[A-Za-z0-9_.-]{1,80}$/.test(k)).slice(0,50);
+      hasItensArray=Array.isArray(parsed.itens);
+      if(hasItensArray)itensLength=parsed.itens.length;
+    }else{
+      jsonKind="SCALAR";
+    }
+  }else if(!utf8Valid){
+    jsonKind="INVALID_UTF8";
+  }
+  const shapeDescriptor={
+    httpStatus,
+    jsonKind,
+    topLevelKeys,
+    arrayLength,
+    hasItensArray,
+    itensLength
+  };
+  return Object.freeze({
+    targetSha256,
+    httpStatus,
+    utf8Valid,
+    jsonKind,
+    topLevelKeys:Object.freeze(topLevelKeys),
+    arrayLength,
+    hasItensArray,
+    itensLength,
+    shapeSha256:sha256(canonicalJson(shapeDescriptor)),
+    rawValuesIncluded:false
+  });
+}
