@@ -83,8 +83,17 @@ export function createOpenAITermuxChatSession({
         throw error;
       }
       const current=text(message,"chat message",8000);
-      const compact=trimHistory(history,historyLimit);
-      const prompt=transcript(compact,current);
+      let compact=trimHistory(history,historyLimit);
+      let prompt=transcript(compact,current);
+      while(compact.length&&prompt.length>15000){
+        compact=compact.slice(1);
+        prompt=transcript(compact,current);
+      }
+      if(prompt.length>15000){
+        const error=new Error("ARCA chat prompt exceeds safe one-shot limit");
+        error.code="ARCA_TERMUX_CHAT_PROMPT_LIMIT";
+        throw error;
+      }
       const remaining=Math.max(0,budget-spentUsd);
       if(remaining<=0){
         const error=new Error("ARCA chat session budget exhausted");
@@ -103,8 +112,8 @@ export function createOpenAITermuxChatSession({
         maxOutputTokens,
         now
       });
-      const actual=Number(result.cost?.actualEstimatedUsd??0);
-      spentUsd+=Number.isFinite(actual)?actual:0;
+      const accounted=Number(result.cost?.accountedUsd??result.cost?.conservativeMaxUsd??0);
+      spentUsd+=Number.isFinite(accounted)?accounted:0;
       turns+=1;
       history=trimHistory([
         ...compact,
