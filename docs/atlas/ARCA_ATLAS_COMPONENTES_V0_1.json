@@ -1998,6 +1998,75 @@
         "sourceNetworkUsed=false",
         "humanReviewRequired=true"
       ]
+    },
+    {
+      "id": "m5-k-correlation-readiness",
+      "nome": "M5-K — Prontidão de correlação",
+      "tipo": "investigacao_gate",
+      "finalidade": "Classificar a suficiência estrutural das pontes entre Portal M5-I e PNCP M5-J sem abrir valores privados.",
+      "estado": "implementado_branch_candidate_screening_only",
+      "localizacao": [
+        "src/investigation/m5-correlation-readiness.mjs",
+        "tests/m5-correlation-readiness.test.mjs",
+        "scripts/validate-m5-correlation-readiness.mjs",
+        "docs/ARCA_M5_CORRELATION_READINESS_V0_1.md"
+      ],
+      "dependeDe": [
+        "m5-i-portal-live-normalized-binding",
+        "m5-j-pncp-live-parser"
+      ],
+      "chamadoPor": [
+        "operador_humano",
+        "ci-principal"
+      ],
+      "entradas": [
+        "binding sanitizado Portal M5-I",
+        "binding sanitizado PNCP M5-J"
+      ],
+      "saidas": [
+        "readinessSha256",
+        "inventario de pontes",
+        "LIMITED_CANDIDATE_SCREENING_ONLY"
+      ],
+      "capabilities": [
+        "classificacao estrutural de pontes",
+        "separacao forte/candidata/fraca/indisponivel"
+      ],
+      "limites": [
+        "nao abre valores privados",
+        "nao executa correlacao",
+        "supplierInferenceAllowed=false",
+        "readyForStrongCorrelation=false",
+        "publicationAuthorized=false"
+      ],
+      "healthCheck": [
+        "npm run validate:m5-correlation-readiness",
+        "node --test tests/m5-correlation-readiness.test.mjs"
+      ],
+      "modosDeFalha": [
+        "binding adulterado",
+        "estado de normalizacao invalido",
+        "cobertura de fornecedor adulterada"
+      ],
+      "recuperacao": [
+        "falhar fechado",
+        "manter correlacao forte bloqueada",
+        "prosseguir apenas para triagem privada candidata"
+      ],
+      "fallback": "sem correlacao; preservar lacunas",
+      "riscoDeReexecucao": "baixo; opera apenas sobre hashes e metadados sanitizados",
+      "runbook": [
+        "docs/ARCA_M5_CORRELATION_READINESS_V0_1.md",
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_053.md"
+      ],
+      "seguranca": [
+        "networkUsed=false",
+        "correlationAttempted=false",
+        "correlationAuthorized=false",
+        "publicationAttempted=false",
+        "adverseFinding=false",
+        "humanReviewRequired=true"
+      ]
     }
   ]
 }
