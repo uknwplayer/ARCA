@@ -472,7 +472,7 @@ Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
 
 ### M5-M — cobertura PNCP por contratos/empenhos
 
-Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE / ZERO NOVO GET**.
+Estado: **INTEGRADO E EXECUTADO / RUN 36036733351 / 2 GETS / 0 RETRIES / HTTP 400 + HTTP 400 / CUSTÓDIA PRIVADA / DIAGNÓSTICO OFFLINE EM BRANCH**.
 
 Motivação: o M5-L concluiu `NO_CANDIDATE_BRIDGE_OBSERVED`. Repetir a mesma triagem não aumenta evidência. O gargalo é cobertura documental.
 
@@ -490,9 +490,9 @@ O gate deriva privadamente exatamente 2 alvos a partir da normalização PNCP M5
 
 Budgets fixos: `maxRequests=2`, `retries=0`, 30 s, 64 KiB por resposta e até 25 registros por resposta.
 
-O workflow live exige branch bound ao `candidateSha256` e confirmação `PNCP_CONTRACT_COVERAGE_GET_ONLY`. Até o preflight final e autorização explícita, a source network permanece desligada.
+O candidato canônico `aa995fd2886bc5707ff63dc6e672b3a1a5a1d6770b179122927775aa752c99ec` foi autorizado e consumido no run `36036733351`. Foram executados exatamente 2 GETs, ambos HTTP 400 com 251 bytes, zero retries. As duas respostas foram seladas e persistidas no cofre privado; nenhuma correlação/publicação ocorreu.
 
-Próximo passo: merge → preflight privado na revisão final → revisão do candidato → autorização humana explícita para os 2 GETs.
+Próximo passo: diagnóstico offline dos dois corpos já custodiais. Nenhum novo GET está autorizado. Se houver correção de rota/parâmetro, gerar novo preflight/candidato antes de qualquer nova consulta.
 
 Ver `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md` e checkpoint 055.
 

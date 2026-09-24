@@ -97,6 +97,10 @@ jobs:
       - name: Validar gate M5-M de cobertura PNCP contratos/empenhos
         run: npm run validate:m5-pncp-contract-coverage
 
+      - name: Validar diagnóstico offline M5-M HTTP 400
+        run: npm run validate:m5-m-http400-diagnosis
+
+
 
 
 

@@ -482,7 +482,7 @@ Componente: `m5-m-pncp-contract-coverage`.
 
 Função: ampliar a cobertura documental depois do M5-L sem candidato, consultando a superfície oficial PNCP de contratos/empenhos vinculados diretamente às contratações já normalizadas.
 
-Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE**.
+Estado: **INTEGRADO E EXECUTADO / 2 GETS / HTTP 400 + HTTP 400 / CUSTÓDIA PRIVADA / DIAGNÓSTICO OFFLINE EM BRANCH**.
 
 Endpoint allowlisted:
 
@@ -494,10 +494,10 @@ Orçamento: exatamente os 2 alvos atuais, no máximo 2 requests, zero retries, t
 
 Preflight: abre somente a normalização PNCP privada já custodial e publica apenas hashes dos alvos + `candidateSha256`.
 
-Live: exige branch bound ao candidato e confirmação explícita. As respostas serão seladas e persistidas no cofre antes de qualquer uso posterior.
+Live: o candidato `aa995fd2...c99ec` foi executado no run `36036733351`: exatamente 2 requests, zero retry, ambos HTTP 400. As respostas foram seladas e persistidas no cofre privado antes de qualquer análise.
 
-Limites: nenhum GET está autorizado pelo desenho; sem publicação, sem correlação, sem inferência de fornecedor e sem conclusão adversa.
+Limites: a autorização dos 2 GETs foi consumida; nenhum novo GET está autorizado. Sem publicação, sem correlação, sem inferência de fornecedor e sem conclusão adversa.
 
-Recuperação: qualquer drift de binding, alvo, host, path, orçamento ou candidato falha antes da source network.
+Recuperação: diagnosticar offline os dois corpos HTTP 400 já custodiais. Qualquer nova tentativa de fonte exige novo preflight/candidato e nova autorização.
 
 Runbook: `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md`.

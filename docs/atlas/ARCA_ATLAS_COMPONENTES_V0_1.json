@@ -2156,7 +2156,7 @@
       "nome": "M5-M — Cobertura PNCP por contratos/empenhos",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Ampliar cobertura documental PNCP após M5-L sem candidato, buscando fornecedor e referências contratuais diretamente vinculadas às contratações já normalizadas.",
-      "estado": "implementado_branch_preflight_privado_live_dormente",
+      "estado": "executado_2_gets_http400_http400_custodiado_diagnostico_offline",
       "localizacao": [
         "src/investigation/m5-pncp-contract-coverage-plan.mjs",
         "src/investigation/m5-pncp-contract-coverage-private.mjs",
@@ -2184,7 +2184,10 @@
       "saidas": [
         "plano privado com 2 alvos",
         "candidato sanitizado hash-only",
-        "futura captura custodial de contratos/empenhos"
+        "futura captura custodial de contratos/empenhos",
+        "run 36036733351: 2 GETs, HTTP 400 + HTTP 400, zero retries",
+        "custodyEnvelopeSha256=722c2e858cfd4530b7f1531248836cf2e4a88de28e3f891bdfef5607a68f240a",
+        "durableReceiptSha256=ae9bec4cf918c878971999c85056aa7983222593618a6ce80af97b2c13e0ab23"
       ],
       "capabilities": [
         "derivacao privada de alvos",
@@ -2198,11 +2201,15 @@
         "live depende de candidateSha256 e confirmacao explicita",
         "sem publicacao",
         "sem correlacao",
-        "sem inferencia de fornecedor"
+        "sem inferencia de fornecedor",
+        "autorizacao live consumida",
+        "nenhum novo GET autorizado",
+        "diagnostico somente sobre custodia existente"
       ],
       "healthCheck": [
         "npm run validate:m5-pncp-contract-coverage",
-        "workflow M5-M preflight"
+        "workflow M5-M preflight",
+        "run 36036733351 success"
       ],
       "modosDeFalha": [
         "envelope hash mismatch",
@@ -2214,9 +2221,9 @@
         "response size excedido"
       ],
       "recuperacao": [
-        "falhar fechado",
-        "manter M5-L NO_CANDIDATE_BRIDGE_OBSERVED",
-        "gerar novo preflight somente em revisao final"
+        "diagnosticar offline corpos HTTP 400 já custodiais",
+        "corrigir gate somente se a causa for identificada",
+        "novo preflight/candidato/autorização antes de qualquer novo GET"
       ],
       "fallback": "sem novo GET e sem correlacao forte",
       "riscoDeReexecucao": "baixo no preflight; live consome autorizacao de fonte",
