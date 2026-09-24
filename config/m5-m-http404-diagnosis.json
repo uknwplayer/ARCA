@@ -1,0 +1,26 @@
+{
+  "schema": "arca.m5-m-http404-diagnosis-config.v1",
+  "liveRunId": "36039677768",
+  "candidateSha256": "3905c087fb9fe6c8d2f4a984d5f79b9a22dba8d6bb81ca7d33b32147032ba606",
+  "planSha256": "a43caaaeda2107603eb0345dbca7cedf720620f86735328fe532f90cc021c097",
+  "custodyEnvelopeSha256": "568f3eb14ec3c024e3a8b1d8d3e2487062e96d7361e4d734fa8d566f4e6814eb",
+  "vaultEnvelopePath": "custody/56/568f3eb14ec3c024e3a8b1d8d3e2487062e96d7361e4d734fa8d566f4e6814eb.envelope.json",
+  "responses": [
+    {
+      "targetSha256": "723ebaec0eeb288d0b1bafd80174e46a7e9938237429820571233df1c6d06b27",
+      "fileName": "response-1-723ebaec0eeb.bin",
+      "responseBytesSha256": "da095a39f518b12f0877e1a2bb87a4f14c91ff3126446838ae97f41c5892e6ed"
+    },
+    {
+      "targetSha256": "c7197776aa0a3a2f8ad3bab227e836b34b49e840fe8d4fe7c87509f353d5e949",
+      "fileName": "response-2-c7197776aa0a.bin",
+      "responseBytesSha256": "b13e8797cfb5135476bd2bc08f23762a4e5031dfbbca7c2496e88243ee0e049e"
+    }
+  ],
+  "constraints": {
+    "sourceNetworkAuthorized": false,
+    "newPncpGetAuthorized": false,
+    "publicationAuthorized": false,
+    "correlationAuthorized": false
+  }
+}

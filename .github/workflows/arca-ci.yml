@@ -100,6 +100,9 @@ jobs:
       - name: Validar diagnóstico offline M5-M HTTP 400
         run: npm run validate:m5-m-http400-diagnosis
 
+      - name: Validar diagnóstico offline M5-M HTTP 404
+        run: npm run validate:m5-m-http404-diagnosis
+
 
 
 
