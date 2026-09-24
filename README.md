@@ -15,6 +15,7 @@ Documentos de entrada:
 - [Atlas Técnico Vivo](docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md)
 - [Inventário machine-readable do Atlas](docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json)
 - [Guia geral de comandos do ARCA no Termux](docs/ARCA_TERMUX_COMMANDS_V0_1.md)
+- [Ponte Termux ↔ GPT V0.1](docs/ARCA_TERMUX_GPT_BRIDGE_V0_1.md)
 
 ## Idioma oficial
 
@@ -107,7 +108,7 @@ A prioridade imediata passa a ser uma interface de conversação pelo Termux:
 Termux → ARCA CLI/Chat Gateway → provedor de raciocínio → GPT → ARCA → Termux
 ```
 
-Os comandos pretendidos são `arca chat` e `arca ask`, mas **eles ainda não existem no código atual**. A implementação deverá reutilizar Creator Chat Gateway, adapters de raciocínio, Machine Bridge e controles de capability, com secrets fora do repositório, budgets explícitos e separação entre conversa e autoridade para executar ferramentas.
+A **Fase A** adiciona `arca ask` para uma pergunta única via OpenAI Responses API, passando pelo `ReasoningProviderRegistry` e pelo Reasoning Transport Gate. O envio exige `--allow-external`, a chave fica em `OPENAI_API_KEY`, `store:false` é usado e nenhuma ferramenta/Core mutation é autorizada. O futuro `arca chat` interativo permanece como Fase B.
 
 O ChatGPT Work permanece uma função separada: pode atuar como executor externo de tarefas maiores, enquanto a nova interface Termux ↔ GPT será voltada à conversa/raciocínio interativo.
 
