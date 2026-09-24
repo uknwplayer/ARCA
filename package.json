@@ -65,8 +65,9 @@
     "validate:m5-private-screening-contract": "node --test tests/m5-private-normalization-reader.test.mjs tests/m5-private-candidate-screening.test.mjs",
     "validate:m5-pncp-contract-coverage": "node --test tests/m5-pncp-contract-coverage-plan.test.mjs tests/m5-pncp-contract-coverage-private.test.mjs tests/m5-pncp-contract-coverage-transport.test.mjs tests/m5-pncp-contract-coverage-workflow.test.mjs",
     "validate:m5-m-http400-diagnosis": "node --test tests/m5-m-http400-diagnosis.test.mjs",
-    "validate:m5-m-http404-diagnosis": "node --test tests/m5-m-http404-diagnosis.test.mjs"
+    "validate:m5-m-http404-diagnosis": "node --test tests/m5-m-http404-diagnosis.test.mjs",
+    "validate:m5-n1-item-discovery": "node --test tests/m5-n1-pncp-item-discovery.test.mjs"
   },
   "license": "Apache-2.0",
   "author": "ARCA Project"
-}
+}\n
