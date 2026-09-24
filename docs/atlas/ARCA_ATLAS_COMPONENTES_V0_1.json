@@ -2156,7 +2156,7 @@
       "nome": "M5-M — Cobertura PNCP por contratos/empenhos",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Ampliar cobertura documental PNCP após M5-L sem candidato, buscando fornecedor e referências contratuais diretamente vinculadas às contratações já normalizadas.",
-      "estado": "drift_runtime_pagina_diagnosticado_correcao_pagina1_branch",
+      "estado": "segundo_live_404_404_custodiado_diagnostico_unclassified",
       "localizacao": [
         "src/investigation/m5-pncp-contract-coverage-plan.mjs",
         "src/investigation/m5-pncp-contract-coverage-private.mjs",
@@ -2190,7 +2190,12 @@
         "custodyEnvelopeSha256=722c2e858cfd4530b7f1531248836cf2e4a88de28e3f891bdfef5607a68f240a",
         "durableReceiptSha256=ae9bec4cf918c878971999c85056aa7983222593618a6ce80af97b2c13e0ab23",
         "diagnosisSha256=a3651eadf7af9a0f8d072a43853b5778f785447b52e91fef4a5f4bcdffa0f9de",
-        "runtimeRequiredParameter=pagina Integer"
+        "runtimeRequiredParameter=pagina Integer",
+        "run 36039677768: 2 GETs pagina=1, HTTP 404 + HTTP 404, zero retries",
+        "custodyEnvelopeSha256=568f3eb14ec3c024e3a8b1d8d3e2487062e96d7361e4d734fa8d566f4e6814eb",
+        "durableReceiptSha256=fcf51b092da17bc741c2e705732cd54fc49823ab4586e8214150c3ec44ef9fd3",
+        "diagnosisSha256=edfbd87889c3b38733faa72d226d8fbbc32a145d384a5568979c14a3204bae5c",
+        "diagnosis=UNCLASSIFIED"
       ],
       "capabilities": [
         "derivacao privada de alvos",
@@ -2211,13 +2216,17 @@
         "nenhum novo GET autorizado",
         "diagnostico somente sobre custodia existente",
         "tamanhoPagina não presumido",
-        "candidato antigo consumido e não reutilizável"
+        "candidato antigo consumido e não reutilizável",
+        "404 não prova ausência de contrato/empenho",
+        "não repetir endpoint para forçar resultado"
       ],
       "healthCheck": [
         "npm run validate:m5-pncp-contract-coverage",
         "workflow M5-M preflight",
         "run 36036733351 success",
-        "run 36037934342 offline diagnosis success"
+        "run 36037934342 offline diagnosis success",
+        "run 36039677768 live success",
+        "run 36040450553 offline diagnosis success"
       ],
       "modosDeFalha": [
         "envelope hash mismatch",
@@ -2230,10 +2239,11 @@
         "runtime exigir parâmetro adicional não observado"
       ],
       "recuperacao": [
-        "usar pagina=1 exatamente no novo alvo",
-        "gerar novo preflight/candidato na revisão final",
-        "exigir nova autorização antes de qualquer GET",
-        "parar sem retry se outro parâmetro runtime for exigido"
+        "preservar 404/404 como fato observado sem interpretação adversa",
+        "não repetir a mesma aquisição",
+        "desenhar nova superfície PNCP item→resultado",
+        "gerar novo preflight/candidato",
+        "exigir nova autorização humana antes de rede"
       ],
       "fallback": "sem novo GET e sem correlacao forte",
       "riscoDeReexecucao": "baixo no preflight; live consome autorizacao de fonte",
