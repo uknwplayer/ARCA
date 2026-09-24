@@ -1,6 +1,6 @@
 # ARCA — M5-N1 Descoberta PNCP de Itens V0.1
 
-Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE / ZERO NOVO GET**.
+Estado: **POLÍTICA GET POR CUSTO APLICADA / `tamanhoPagina=10` / PREFLIGHT PRIVADO / LIVE CONTROLADO SEM GATE HUMANO POR REQUEST**.
 
 ## Objetivo
 
@@ -30,7 +30,7 @@ Base:
 Query fixada:
 
 - `pagina=1`;
-- `tamanhoPagina=50`.
+- `tamanhoPagina=10`.
 
 O manual documenta `pagina`, `tamanhoPagina` e o campo de retorno `temResultado`.
 
@@ -45,11 +45,11 @@ O M5-N1 fixa:
 - uma chamada por contratação;
 - `timeoutMs=30000`;
 - `maxBytesPerResponse=524288`;
-- `maxItemsPerResponse=50`.
+- `maxItemsPerResponse=10`.
 
 ## Cobertura completa vs. truncamento
 
-Se uma resposta retornar exatamente 50 itens, o ARCA marca:
+Se uma resposta retornar exatamente 10 itens, o ARCA marca:
 
 `pagePossiblyTruncated=true`
 
@@ -59,7 +59,7 @@ e:
 
 Isso impede tratar a primeira página como lista completa sem evidência.
 
-Se a página tiver menos de 50 itens, o M5-N1 pode calcular privadamente quais itens têm `temResultado=true`.
+Se a página tiver menos de 10 itens, o M5-N1 pode calcular privadamente quais itens têm `temResultado=true`.
 
 A prova sanitizada publica apenas:
 
@@ -102,17 +102,22 @@ Branch exigido:
 
 `m5-n1-pncp-item-discovery-live-c<CANDIDATE_SHA256>`
 
-Confirmação exigida:
+Política de execução:
 
-`PNCP_ITEM_DISCOVERY_GET_ONLY`
+- PNCP consulta pública classificada como `NO_MONETARY_CHARGE_OBSERVED`;
+- `humanAuthorizationRequired=false`;
+- `autoExecutionAllowed=true`;
+- o live continua hash-bound ao `candidateSha256`;
+- custo desconhecido bloqueia execução até classificação;
+- GET com custo monetário continua exigindo autorização humana.
 
-Sem candidato final e autorização humana explícita, nenhum GET é executado.
+Não existe mais confirmação humana por request para este GET público sem custo monetário observado.
 
 ## Segurança
 
 - host fixo `pncp.gov.br`;
 - path allowlisted;
-- query exata `pagina=1&tamanhoPagina=50`;
+- query exata `pagina=1&tamanhoPagina=10`;
 - zero redirects;
 - zero retries;
 - custódia antes de uso;
@@ -126,8 +131,8 @@ Sem candidato final e autorização humana explícita, nenhum GET é executado.
 1. CI;
 2. merge;
 3. preflight privado na revisão final;
-4. obter `planSha256`, `candidateSha256` e dois target hashes;
-5. pedir autorização humana para exatamente os 2 GETs de itens;
-6. somente depois executar o live M5-N1.
+4. obter novo `planSha256`, `candidateSha256` e dois target hashes para `tamanhoPagina=10`;
+5. validar `NO_MONETARY_CHARGE_OBSERVED` + budgets + bindings;
+6. executar automaticamente o live M5-N1, sem pedir autorização humana por request.
 
-Nenhum novo GET é necessário para concluir esta etapa.
+O candidato anterior com `tamanhoPagina=50` é obsoleto.
