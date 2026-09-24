@@ -446,6 +446,24 @@ Próximo passo: M5-L — triagem privada de candidatos sobre as normalizações 
 
 Ver `docs/ARCA_M5_CORRELATION_READINESS_V0_1.md` e checkpoint 053.
 
+### M5-L — triagem privada de candidatos
+
+Estado: **IMPLEMENTADO EM BRANCH / EXECUÇÃO PRIVADA PENDENTE / SEM NOVO GET / SEM CORRELAÇÃO FORTE**.
+
+O M5-L transporta somente os envelopes normalizados criptografados já existentes no cofre privado, revalida seus hashes e abre o plaintext apenas dentro do runner.
+
+Dimensões candidatas permitidas: referência documental exata normalizada e texto de órgão/unidade exato normalizado.
+
+Contexto fraco: data e valor. Mesmo coincidindo simultaneamente, data/valor não criam candidato sozinhos.
+
+Saída máxima por par: `CANDIDATE`; `CONFIRMED` é impossível neste estágio.
+
+A prova pública é sanitizada e não contém nomes, documentos, datas ou valores.
+
+Próximo passo: merge → executar uma única triagem privada → registrar checkpoint com `candidateCount` e `screeningSha256`.
+
+Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md`.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
