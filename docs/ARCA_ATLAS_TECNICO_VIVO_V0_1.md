@@ -474,3 +474,30 @@ Limites: fornecedor não comparado/inferido, `confirmedCount=0`, `correlationAtt
 Recuperação: não repetir a mesma triagem para “forçar” candidato. Ampliar cobertura apenas por fonte pública oficial adicional/gate separado, mantendo as capturas atuais como contraprova de não observação.
 
 Runbook: `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
+
+
+### M5-M — cobertura PNCP por contratos/empenhos
+
+Componente: `m5-m-pncp-contract-coverage`.
+
+Função: ampliar a cobertura documental depois do M5-L sem candidato, consultando a superfície oficial PNCP de contratos/empenhos vinculados diretamente às contratações já normalizadas.
+
+Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE**.
+
+Endpoint allowlisted:
+
+`GET https://pncp.gov.br/api/pncp/v1/orgaos/{cnpj}/contratos/contratacao/{ano}/{sequencial}`
+
+Capacidade esperada: observar `niFornecedor`, `nomeRazaoSocialFornecedor`, `numeroControlePNCPCompra`, `numeroContratoEmpenho`, `processo`, órgão e valores, sem inferir relações antes da custódia.
+
+Orçamento: exatamente os 2 alvos atuais, no máximo 2 requests, zero retries, timeout 30 s e 64 KiB por resposta.
+
+Preflight: abre somente a normalização PNCP privada já custodial e publica apenas hashes dos alvos + `candidateSha256`.
+
+Live: exige branch bound ao candidato e confirmação explícita. As respostas serão seladas e persistidas no cofre antes de qualquer uso posterior.
+
+Limites: nenhum GET está autorizado pelo desenho; sem publicação, sem correlação, sem inferência de fornecedor e sem conclusão adversa.
+
+Recuperação: qualquer drift de binding, alvo, host, path, orçamento ou candidato falha antes da source network.
+
+Runbook: `docs/ARCA_M5_PNCP_CONTRACT_COVERAGE_V0_1.md`.
