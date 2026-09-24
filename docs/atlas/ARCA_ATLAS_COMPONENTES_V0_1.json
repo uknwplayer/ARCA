@@ -2263,7 +2263,7 @@
       "nome": "M5-N1 — Descoberta PNCP de itens",
       "tipo": "investigacao_aquisicao_controlada",
       "finalidade": "Descobrir itens e indicador temResultado das duas contratações PNCP atuais antes de qualquer consulta de resultados.",
-      "estado": "implementado_branch_preflight_privado_live_dormente",
+      "estado": "integrado_preflight_concluido_candidato_emitido_live_dormente",
       "localizacao": [
         "src/investigation/m5-n1-pncp-item-discovery-plan.mjs",
         "src/investigation/m5-n1-pncp-item-discovery-private.mjs",
@@ -2293,7 +2293,10 @@
         "plano privado com 2 alvos",
         "candidato sanitizado hash-only",
         "futura captura de itens",
-        "itemCount/itemsWithResultCount hash-only"
+        "itemCount/itemsWithResultCount hash-only",
+        "planSha256=75b7910e40b1873a5f694c13eda1c4e00ae1b10ad52e8ebb4c36ef968b29b0b7",
+        "candidateSha256=13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844",
+        "targetCount=2"
       ],
       "capabilities": [
         "derivacao privada de alvos",
@@ -2313,7 +2316,9 @@
       ],
       "healthCheck": [
         "npm run validate:m5-n1-item-discovery",
-        "workflow M5-N1 preflight"
+        "workflow M5-N1 preflight",
+        "run 36044350610 preflight success",
+        "CI pós-merge 36044297566 success"
       ],
       "modosDeFalha": [
         "envelope hash mismatch",
@@ -2325,10 +2330,10 @@
         "pagina possivelmente truncada"
       ],
       "recuperacao": [
-        "falhar fechado",
-        "preservar custodia",
-        "paginar sob novo gate se primeira página estiver cheia",
-        "gerar M5-N2 somente após cobertura suficiente"
+        "manter live dormente até autorização explícita",
+        "executar exatamente 2 GETs de itens se autorizado",
+        "custodiar antes de observar itemCount/temResultado",
+        "bloquear M5-N2 se qualquer página vier cheia"
       ],
       "fallback": "não consultar resultados e manter fornecedor não observado",
       "riscoDeReexecucao": "baixo no preflight; live consome autorização de fonte",
