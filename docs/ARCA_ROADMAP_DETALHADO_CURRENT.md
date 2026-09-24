@@ -529,6 +529,26 @@ O live `36051395397` executou 2 GETs, zero retries, HTTP 200+200 e persistiu a c
 
 Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 064.
 
+### M5-O1 — ponte PNCP por contratos publicados
+
+Estado: **PLANO + GATE OFFLINE EM PR #212 / SEM NOVO GET / REDE FAIL-CLOSED**.
+
+Motivação: M5-N1 preservou a amostra atual, mas encontrou 9 itens válidos e zero `temResultado=true`. Em vez de trocar a amostra para procurar um caso favorável, M5-O1 mantém as duas contratações já custodiais e usa a API pública de consulta de contratos por data de publicação para procurar um vínculo documental independente.
+
+Superfície planejada:
+
+`GET /api/consulta/v1/contratos?dataInicial=AAAAMMDD&dataFinal=AAAAMMDD&cnpjOrgao=...&pagina=1`
+
+Regra forte: um contrato só pode ser ligado a uma contratação atual quando `numeroControlePNCPCompra` corresponder exatamente ao `numeroControlePNCP` da contratação. Nome, valor, data e similaridade textual isolados não confirmam identidade. Após match exato, `niFornecedor` pode preencher a dimensão de fornecedor ausente no M5-L.
+
+Seleção: janela determinística de até 180 dias após a publicação da contratação, limitada pela data `asOf`; GETs idênticos são deduplicados. Budgets do primeiro estágio: 1–2 requests, zero retries, 30 s, 1 MiB/resposta e somente página 1.
+
+A política de custo classifica o GET como sem cobrança monetária observada, portanto sem autorização humana monetária. Porém o PR #212 entrega somente plano/gate offline: `sourceNetworkAuthorized=false` e `newPncpGetAuthorized=false` até transporte, custody-before-observation e observador offline estarem implementados/testados.
+
+Próximo passo após CI/merge: M5-O1B — transporte controlado + selagem/persistência antes de observação + parser offline + match exato.
+
+Ver `docs/ARCA_M5_O1_PNCP_CONTRACT_PUBLICATION_BRIDGE_V0_1.md` e checkpoint 065.
+
 ### M5 Fase E — binding do preflight ao probe live
 
 Estado: **INTEGRADO E TESTADO OFFLINE / PR #173 / CI #356 E #357 VERDES / nenhum quarto GET**.
