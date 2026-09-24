@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 060 — preflight M5-N1 concluído e candidato canônico emitido**
+Checkpoint: **2026-09-24 / Checkpoint 061 — política GET por custo monetário e M5-N1 page10**
 
-Estado: **M5-N1 integrado no main; CI pós-merge 36044297566 verde; preflight privado 36044350610 concluiu `READY_FOR_EXPLICIT_SOURCE_AUTHORIZATION`; candidateSha256 `13816eb8...d844`; exatamente 2 alvos de itens, `pagina=1&tamanhoPagina=50`, zero retries; nenhum source GET executado; live dormente até autorização explícita; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **política transversal redefinida: GET público sem custo monetário observado não exige mais autorização humana por request; GET pago exige autorização; custo desconhecido bloqueia até classificação. M5-N1 foi reduzido para `pagina=1&tamanhoPagina=10`; o candidato `13816eb8...d844` do checkpoint 060 ficou obsoleto; novo preflight/live serão executados automaticamente após CI/merge se a política de custo e os bindings passarem; publicação/correlação continuam bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 060 — preflight M5-N1 concluído](ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md). O candidato canônico `13816eb8bd0582c0046018fffd652ddc425a2258cc0802453767dcf4f0bdd844` representa exatamente 2 GETs de itens, um por contratação, com `pagina=1&tamanhoPagina=50`, zero retries e sem publicação/correlação. Nenhum GET foi executado. O live continua dormente até autorização humana explícita.
+Handoff mais recente: [checkpoint 061 — política GET por custo monetário](ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md). A exigência de autorização humana por GET foi removida para APIs sem custo monetário observado. O PNCP de consulta pública passa a `AUTO_EXECUTION_ALLOWED` sob budgets/allowlists/custódia. M5-N1 usa agora `tamanhoPagina=10`; o candidato do checkpoint 060 é obsoleto e será substituído por novo preflight hash-bound.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -24,6 +24,7 @@ CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853
 CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
 
 ## Decisões transversais novas
+- **Política de autorização de GET por custo monetário V0.1**: GET público sem cobrança monetária observada pode executar automaticamente dentro de allowlist/budget/custódia; GET pago exige autorização humana; custo desconhecido bloqueia até classificação. A política não concede POST/PUT/PATCH/DELETE, publicação, correlação ou expansão de budget.
 
 - **Atlas Técnico Vivo V0.1** criado como mapa canônico de componentes, dependências, falhas, recuperação e runbooks.
 - Inventário inicial machine-readable em `docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json`.
@@ -67,11 +68,11 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. O M5-N1 já está integrado e o preflight privado emitiu o candidato canônico. O próximo passo é exclusivamente uma autorização humana para os 2 GETs de itens vinculados ao `candidateSha256`; depois do live, a custódia e a regra de truncamento decidirão se M5-N2 pode ser construído.
+M5 continua o caminho crítico. O próximo passo é validar/mesclar a política GET por custo e o M5-N1 `tamanhoPagina=10`, gerar novo candidato na revisão final e, se o GET continuar classificado como sem custo monetário, executar automaticamente os 2 GETs controlados sem novo pedido de autorização humana. Depois do live, a custódia e a regra de truncamento decidirão se M5-N2 pode ser construído.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O Gate 040 isolado já foi executado com os secrets reais e sua saída sanitizada foi revisada; atividade real da credencial foi comprovada no run `35910916588`; depois, o primeiro 2xx financeiro foi obtido no run `35917902630` em `documentos-relacionados`, com 1 registro e schema observado. Ambas as autorizações foram consumidas. Não executar novo GET Portal sem nova autorização explícita. Ler também o checkpoint 012 e o método V0.1.
+O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O Gate 040 isolado já foi executado com os secrets reais e sua saída sanitizada foi revisada; atividade real da credencial foi comprovada no run `35910916588`; depois, o primeiro 2xx financeiro foi obtido no run `35917902630` em `documentos-relacionados`, com 1 registro e schema observado. Ambas as autorizações históricas foram consumidas sob a política vigente à época. Para novos GETs, aplicar `ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`: GET sem custo monetário observado não exige autorização humana; GET pago exige; custo desconhecido bloqueia até classificação. Ler também o checkpoint 012 e o método V0.1.
 
 M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
 
@@ -83,7 +84,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_058.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_057.md`;
@@ -223,7 +225,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 060. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 061. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
@@ -241,4 +243,4 @@ PYTHONPATH=. python scripts/validate-investigative-roadmap.py
 npm run check:public
 ```
 
-Nunca ativar rede, classificador, ingresso ou publicação por inferência. Todo avanço live exige gate explícito e escopo limitado.
+Nunca ativar rede sem gate técnico, allowlist e budget. GET sem custo monetário observado pode avançar automaticamente quando o gate estiver válido; GET pago exige autorização humana. Classificador, ingresso, publicação e correlação continuam com seus próprios gates.
