@@ -1,11 +1,11 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 052 — PNCP live normalizado e binding M5-J preparado**
+Checkpoint: **2026-09-24 / Checkpoint 053 — Gate M5-K de prontidão de correlação**
 
-Estado: **Portal Gate 046 normalizado e M5-I integrado; PNCP histórico normalizado no run 36026221085 com 2 registros, persistido em cofre privado e M5-J preparado para Fase B; fornecedor continua não observado/não inferível; nenhum novo GET PNCP/Portal; correlação e publicação continuam bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
+Estado: **Portal M5-I e PNCP M5-J prontos para Fase B; Gate M5-K implementado offline e classifica o estado como `LIMITED_CANDIDATE_SCREENING_ONLY`; correlação forte não está pronta por ausência de fornecedor/identificador compartilhado/referência cross-source; triagem privada de candidatos é o próximo passo possível; nenhum novo GET; nenhuma correlação executada; Vince Probe 011 estável; frentes futuras congeladas**
 Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
 
-Handoff mais recente: [checkpoint 052 — PNCP live normalizado e binding M5-J preparado](ARCA_HANDOFF_CHECKPOINT_2026-09-24_052.md). O run `36026221085` reabriu somente a custódia PNCP histórica, normalizou 2 registros com o parser V1, preservou `supplierObserved=false`, resselou e persistiu o resultado no cofre privado. O M5-J mantém captura original e derivação normalizada como camadas distintas e produz entradas compatíveis com a Fase B sem autorizar correlação. Portal M5-I e PNCP M5-J estão prontos para um gate offline de prontidão das pontes documentais.
+Handoff mais recente: [checkpoint 053 — Gate M5-K de prontidão de correlação](ARCA_HANDOFF_CHECKPOINT_2026-09-24_053.md). O M5-K usa somente os bindings sanitizados M5-I/M5-J e conclui `readyForStrongCorrelation=false`, `readyForPrivateCandidateScreening=true`. Fornecedor está indisponível por cobertura PNCP, identificador forte compartilhado de órgão não existe no contrato atual e referência cross-source direta não foi observada. Referência documental/texto de órgão são apenas dimensões candidatas; data/valor são contexto fraco.
 
 Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
 Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
@@ -67,7 +67,7 @@ CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/356
 
 ## Retomada imediata
 
-M5 continua o caminho crítico. Portal M5-I e PNCP M5-J agora têm captura original + normalização privada + binding para a Fase B. O próximo passo é um gate offline de prontidão de correlação que inventarie apenas pontes documentais realmente observadas. Como a captura PNCP não inclui fornecedor, `supplierObserved=false` deve bloquear qualquer ponte forte por fornecedor e nunca ser tratado como indício.
+M5 continua o caminho crítico. O M5-K mostra que não há ponte forte suficiente para correlação confirmada. O próximo passo é M5-L, uma triagem privada de candidatos sobre as normalizações já custodiais, comparando apenas dimensões allowlisted e emitindo no máximo `CANDIDATE`; nenhum novo GET é necessário.
 
 Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
 
@@ -83,7 +83,8 @@ O M2 implementou o núcleo offline de correlação entre contratação PNCP e ex
 
 Ler primeiro:
 
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_052.md`;
+1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_053.md`;
+2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_052.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_051.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_050.md`;
 2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_049.md`;
@@ -215,7 +216,7 @@ M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação f
 
 ## Instruções de retomada para um chat com contexto limitado
 
-Consultar primeiro o checkpoint 052. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
+Consultar primeiro o checkpoint 053. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
 
 Executar:
 
