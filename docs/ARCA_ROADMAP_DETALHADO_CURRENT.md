@@ -509,7 +509,7 @@ Ver `docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`.
 
 ### M5-N1 — descoberta PNCP de itens
 
-Estado: **POLÍTICA GET INTEGRADA / PAGE10 LIVE 36050412298 EXECUTOU 2 GETS / ZERO RETRIES / SHAPE INESPERADO / CUSTÓDIA DURÁVEL NÃO PERSISTIDA POR ORDEM INCORRETA / CORREÇÃO CUSTODY-BEFORE-OBSERVATION EM BRANCH**.
+Estado: **CUSTODY-BEFORE-OBSERVATION INTEGRADO / LIVE 36051395397 HTTP 200+200 / STORED_PRIVATE / RUNTIME BARE_ARRAY 4+5 / PARSER OFFLINE ADAPTADO EM BRANCH / ZERO NOVO GET NECESSÁRIO**.
 
 Motivação: o M5-M chegou a 404/404 `UNCLASSIFIED` e não deve ser repetido para forçar interpretação. A expansão documental migra para a superfície oficial de itens da própria contratação.
 
@@ -525,9 +525,9 @@ A prova sanitizada futura publica apenas contagens e hashes. Se uma página reto
 
 M5-N2 futuro: somente itens reais com `temResultado=true` poderão originar alvos para `/itens/{numeroItem}/resultados`. O número de requests desse estágio ainda não é definido e dependerá da observação M5-N1.
 
-O preflight page10 `36050289566` emitiu `candidateSha256=8fbe4dc91e2ac31a3130627a9fb1d3a60cbb4eb41c60f46af61a278a23517c7b`; o live `36050412298` executou os 2 GETs e falhou depois em `ARCA_M5_N1_RESPONSE_SHAPE_INVALID`. Como a persistência durável vinha após a observação, os corpos foram perdidos no cleanup. A correção inverte a ordem para `seal → persist → observe` e adiciona diagnóstico estrutural sanitizado. Próximo passo: CI/merge → novo preflight → novo live automático.
+O preflight corrigido `36051311684` emitiu `candidateSha256=e13bb2cc94b85d599434f2287b4718f18b26136a6b6b2a97380e033e3568ecae`. O live `36051395397` executou 2 GETs, zero retries, HTTP 200+200 e persistiu a custódia antes de observar o schema. O runtime devolveu BARE_ARRAY com 4 e 5 elementos. O parser passa a aceitar `OBJECT_ITENS` e `BARE_ARRAY`, e a próxima etapa é observação offline do envelope `41110be7...3d4b`, sem novo GET.
 
-Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 062.
+Ver `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md` e checkpoint 063.
 
 ### M5 Fase E — binding do preflight ao probe live
 
