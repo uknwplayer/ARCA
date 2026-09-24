@@ -1,0 +1,18 @@
+{
+  "schema": "arca.m5-pncp-contract-coverage-config.v1",
+  "pncpBindingConfig": "config/m5-pncp-live-normalized-binding.json",
+  "vaultEnvelopePath": "derived/m5-h/c9/c91e5bce7240fa6ca127aeeb33f7a7763a891bd84c65ee1a29950e66a32b7a2d.envelope.json",
+  "normalizedEnvelopeSha256": "95eaf8fa048860dc2e41edcb1de043405d5e7a0a60d4183420b0fb4bf3791f33",
+  "screeningSha256": "06440986b4e2a360e13add77709ab6b2bc1b9d66847cb71173618f9c32881e95",
+  "constraints": {
+    "maxRequests": 2,
+    "retries": 0,
+    "timeoutMs": 30000,
+    "maxBytesPerResponse": 65536,
+    "maxResponseRecords": 25,
+    "sourceNetworkAuthorized": false,
+    "newPncpGetAuthorized": false,
+    "publicationAuthorized": false,
+    "correlationAuthorized": false
+  }
+}
