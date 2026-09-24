@@ -1,6 +1,6 @@
 # ARCA — Matriz de estado 0.4.0-rc.1
 
-Data de corte: 2026-09-23. Referência Vince: Probe 011 selected one-shot live-proven.
+Data de corte: 2026-09-24. Referência Vince: Probe 011 selected one-shot live-proven.
 
 Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada e registrada; não significa produção.
 
@@ -19,7 +19,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | Gate Offline Multifonte V1 + M3 correlacionado | sim, fixtures sintéticas | sim | não | não | PR #81; CI 35695672043; 11 envelopes, 8 vínculos, AC/AL/AM, 2 agentes | M4: aquisição live limitada e custódia validada |
 | Transferegov Transferências Especiais S1 | sim, fixture sintética | sim, integrado PR #179 | não | não | snapshot S1 + adaptador offline + Evidence Envelopes hash-only; CI pós-merge 35895334779 | gate live separado somente se necessário |
 | TCU Acórdãos S2 | sim, fixture sintética nacional | sim, integrado PR #180 | não | não | snapshot S2 + `BR/NATIONAL` + adaptador/validador; CI 35895838624 e pós-merge 35909777789 | Siconfi S3 |
-| Correlação PNCP ↔ execução financeira M2/M5-A…M5-K | sim, contratos/gates + Portal e PNCP live normalizados + readiness estrutural | sim | parcial: duas fontes live normalizadas; readiness classificado como candidato apenas | não | M5-K `LIMITED_CANDIDATE_SCREENING_ONLY`; sem ponte forte compartilhada | M5-L: triagem privada de candidatos, sem confirmar vínculo |
+| Correlação PNCP ↔ execução financeira M2/M5-A…M5-L | sim, contratos/gates + duas fontes live normalizadas + triagem privada | sim | parcial: M5-L executado, 2 pares e 0 candidatos | não | run 36028937585; `NO_CANDIDATE_BRIDGE_OBSERVED`; `confirmedCount=0` | ampliar cobertura documental antes de qualquer correlação forte |
 | M5-C Observador estrutural do schema Portal | sim | sim | sim: schema financeiro observado no run 35917902630 | não | `SCHEMA_OBSERVED`; `observedSchemaSha256=79f6c837...666f6`; parser V1 implementado depois | admissão da normalização live continua separada |
 | M5-F Parser Portal do schema Gate 046 | sim, fixture sintética | sim, parser fail-closed | não aplica bytes live | não | 11 campos exatos; parser contract hash; `liveNormalizationAuthorized=false` | M5-G implementado; falta decisão canônica e aplicação custodial |
 | M5-G Admissão da normalização custodial | sim, gate candidato | sim | candidato canônico admitido e consumido | não | `candidateSha256=0bcf1806...e97f9`; `decisionSha256=343392fa...ae420` | concluído; decisão usada no M5-H |
@@ -27,7 +27,7 @@ Legenda: **sim**, **parcial**, **não**. “Ao vivo” significa prova limitada 
 | M5-I Binding live normalizado Portal | sim, binding sanitizado | sim | sim: fonte live normalizada pronta | não | captura original + derivação normalizada preservadas; `correlationAuthorized=false` | integrar e abrir gate separado de correlação |
 | M5-J Binding PNCP live normalizado | sim, captura + parser + normalização + binding | sim | sim: 2 registros normalizados e persistidos | não | run 36026221085; `normalizationSha256=c91e5bce...b7a2d`; receipt privado `00d024c3...b9447`; `supplierObserved=false` | gate de prontidão de correlação; fornecedor não pode ser inferido |
 | M5-K Prontidão de correlação | sim, gate estrutural | sim | não abre valores privados | não | `readyForStrongCorrelation=false`; `readyForPrivateCandidateScreening=true`; fornecedor indisponível por cobertura | M5-L triagem privada de candidatos, mantendo estado no máximo `CANDIDATE` |
-| M5-L Triagem privada de candidatos | sim, branch | sim, sintético/contrato | execução live privada pendente | não | envelopes privados allowlisted; saída máxima `CANDIDATE`; data/valor não bastam | executar triagem privada e registrar prova sanitizada |
+| M5-L Triagem privada de candidatos | sim, integrado | sim | sim: run 36028937585 | não | 2 pares, 0 candidatos, 0 confirmados; `screeningSha256=06440986...81e95`; nenhum sinal fraco/candidato coincidiu | ampliar cobertura documental; não executar correlação forte com estas capturas |
 | M5-E Binding do preflight ao probe live | sim | sim | sim: binding usado com sucesso também no Gate 046 financeiro | não | Gate 046 preflight 35916999807 + live 35917902630 | manter padrão em futuros requests; nenhum novo request necessário para parser |
 | Gate 040 Preflight Portal isolado | sim | sim | sim: histórico, SI e Gate 046 financeiro, todos 0 GET no gate | não | Gate 046 preflight 35916999807; `READY_FOR_EXPLICIT_AUTHORIZATION`; cofre privado pronto | cada novo request futuro exige novo preflight/autorização; parser não exige rede |
 | M5-D Prontidão da credencial Portal | sim | sim | sim: HTTP 200 observado no endpoint recomendado pela CGU | não | run 35910916588; fingerprint `37c90b...a8092`; `ACCEPTED_ON_OBSERVED_REQUEST`; `activeVerified=true` | atividade da chave comprovada; falta provar endpoint financeiro específico |
