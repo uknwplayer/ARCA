@@ -2073,7 +2073,7 @@
       "nome": "M5-L — Triagem privada de candidatos",
       "tipo": "investigacao_triagem_privada",
       "finalidade": "Comparar normalizações privadas Portal/PNCP já custodiais e emitir apenas candidatos sanitizados, sem correlação forte.",
-      "estado": "implementado_branch_live_privado_pendente",
+      "estado": "executado_no_candidate_bridge_observed",
       "localizacao": [
         "src/investigation/m5-private-normalization-reader.mjs",
         "src/investigation/m5-private-candidate-screening.mjs",
@@ -2100,7 +2100,9 @@
         "pairRef hash-only",
         "CANDIDATE ou NOT_OBSERVED",
         "screeningSha256",
-        "contagens sanitizadas"
+        "contagens sanitizadas",
+        "run 36028937585: pairCount=2 candidateCount=0 confirmedCount=0",
+        "screeningSha256=06440986b4e2a360e13add77709ab6b2bc1b9d66847cb71173618f9c32881e95"
       ],
       "capabilities": [
         "transporte privado allowlisted",
@@ -2118,7 +2120,8 @@
       ],
       "healthCheck": [
         "npm run validate:m5-private-screening-contract",
-        "node --test tests/m5-private-candidate-screening.test.mjs"
+        "node --test tests/m5-private-candidate-screening.test.mjs",
+        "run 36028937585 success"
       ],
       "modosDeFalha": [
         "vault nao privado",
@@ -2128,14 +2131,15 @@
         "pair budget excedido"
       ],
       "recuperacao": [
-        "falhar fechado",
-        "limpar envelopes do workspace",
-        "preservar apenas prova sanitizada"
+        "não repetir triagem para forçar candidato",
+        "preservar NO_CANDIDATE_BRIDGE_OBSERVED",
+        "ampliar cobertura somente por fonte pública adicional e gate separado"
       ],
-      "fallback": "NO_CANDIDATE_BRIDGE_OBSERVED ou nenhuma execucao",
+      "fallback": "não executar correlação forte com as capturas atuais",
       "riscoDeReexecucao": "baixo sobre custodia existente; nenhuma aquisicao de fonte",
       "runbook": [
-        "docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md"
+        "docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md",
+        "docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_054.md"
       ],
       "seguranca": [
         "sourceNetworkUsed=false",

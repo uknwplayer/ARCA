@@ -1,0 +1,61 @@
+{
+  "schema": "arca.m5-private-candidate-screening.v1",
+  "version": 1,
+  "status": "NO_CANDIDATE_BRIDGE_OBSERVED",
+  "runId": "36028937585",
+  "revision": "672d410cbdf1a73d7ed2a5dfb1edef828a9f4279",
+  "readinessSha256": "df305e879b38aa6522967f2e9614940c4e475728b019303df11648f350edb0cc",
+  "portalBindingSha256": "ad179e44d215b3a5e3cea9b05abe116f6c88f106c293000324ef1a8ba7758312",
+  "pncpBindingSha256": "26a277d3fc8bcb6519da58065d77be82b685cb9973d5705c142679cbf8145bfa",
+  "pairCount": 2,
+  "candidateCount": 0,
+  "notObservedCount": 2,
+  "pairs": [
+    {
+      "pairRef": "m5l:pair:sha256:0e557c9f5d0b13f7b5d592559dda2ca17c795ac3dd88206033a685a45f32efae",
+      "portalRecordRef": "portal:document:sha256:4fda36695b49556daca9b3bd2a3743043dbded645cfc7df7119f344a5db33011",
+      "pncpRecordRef": "pncp:control:sha256:a07e0454e5cae29b0b4e680f20164ef87002bb82d88988e484093a63dfece140",
+      "classification": "NOT_OBSERVED",
+      "candidateDimensions": {
+        "documentReferenceExact": false,
+        "agencyTextExact": false
+      },
+      "weakContext": {
+        "sameDate": false,
+        "within30Days": false,
+        "amountExact": false
+      }
+    },
+    {
+      "pairRef": "m5l:pair:sha256:62471fc29eb3baf0499cc1f19d9ddf667d64daec54475f2f2f911fe6f0948f36",
+      "portalRecordRef": "portal:document:sha256:4fda36695b49556daca9b3bd2a3743043dbded645cfc7df7119f344a5db33011",
+      "pncpRecordRef": "pncp:control:sha256:efcd9272c33afdfa38bc7ed59c90764e0df4b8b4d3e656eb57f380955bb38c1a",
+      "classification": "NOT_OBSERVED",
+      "candidateDimensions": {
+        "documentReferenceExact": false,
+        "agencyTextExact": false
+      },
+      "weakContext": {
+        "sameDate": false,
+        "within30Days": false,
+        "amountExact": false
+      }
+    }
+  ],
+  "strongBridgeObserved": false,
+  "confirmedCount": 0,
+  "supplierBridgeObserved": false,
+  "supplierInferenceAllowed": false,
+  "candidateScreeningAttempted": true,
+  "correlationAttempted": false,
+  "sourceNetworkUsed": false,
+  "vaultTransportUsed": true,
+  "portalRequestUsed": false,
+  "pncpRequestUsed": false,
+  "publicationAttempted": false,
+  "privateValuesIncluded": false,
+  "humanReviewRequired": true,
+  "adverseFinding": false,
+  "screeningSha256": "06440986b4e2a360e13add77709ab6b2bc1b9d66847cb71173618f9c32881e95",
+  "artifactDigestSha256": "dafb3f3769ff31bf3d801a2720596efecbebb9ade83d1bff0dd49578088f66fd"
+}

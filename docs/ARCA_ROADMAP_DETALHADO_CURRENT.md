@@ -1,6 +1,6 @@
 # ARCA — Roadmap detalhado atual
 
-Atualizado em: **2026-09-23**
+Atualizado em: **2026-09-24**
 
 Base canônica após M2: `0.4.0-rc.1` / `bb006433f21a622aea4aaf618b728a19e4c327f5`
 
@@ -448,21 +448,27 @@ Ver `docs/ARCA_M5_CORRELATION_READINESS_V0_1.md` e checkpoint 053.
 
 ### M5-L — triagem privada de candidatos
 
-Estado: **IMPLEMENTADO EM BRANCH / EXECUÇÃO PRIVADA PENDENTE / SEM NOVO GET / SEM CORRELAÇÃO FORTE**.
+Estado: **INTEGRADO E EXECUTADO / RUN 36028937585 / 2 PARES / 0 CANDIDATOS / 0 CONFIRMADOS / SEM NOVO GET / SEM CORRELAÇÃO FORTE**.
 
-O M5-L transporta somente os envelopes normalizados criptografados já existentes no cofre privado, revalida seus hashes e abre o plaintext apenas dentro do runner.
+O M5-L transportou somente os envelopes normalizados criptografados já existentes no cofre privado, revalidou seus hashes e abriu o plaintext apenas dentro do runner.
 
-Dimensões candidatas permitidas: referência documental exata normalizada e texto de órgão/unidade exato normalizado.
+Resultado:
 
-Contexto fraco: data e valor. Mesmo coincidindo simultaneamente, data/valor não criam candidato sozinhos.
+- `status=NO_CANDIDATE_BRIDGE_OBSERVED`;
+- `pairCount=2`;
+- `candidateCount=0`;
+- `notObservedCount=2`;
+- `confirmedCount=0`;
+- `strongBridgeObserved=false`;
+- `screeningSha256=06440986b4e2a360e13add77709ab6b2bc1b9d66847cb71173618f9c32881e95`.
 
-Saída máxima por par: `CANDIDATE`; `CONFIRMED` é impossível neste estágio.
+Nos dois pares, referência documental exata, texto de órgão/unidade, mesma data, janela de 30 dias e valor exato foram todos falsos. Fornecedor não foi comparado nem inferido.
 
-A prova pública é sanitizada e não contém nomes, documentos, datas ou valores.
+Interpretação: as capturas atuais não sustentam sequer um `CANDIDATE`. Isso é um limite de cobertura/prova, não afirma inexistência de relação no mundo real.
 
-Próximo passo: merge → executar uma única triagem privada → registrar checkpoint com `candidateCount` e `screeningSha256`.
+Próximo passo: ampliar cobertura documental por fonte pública oficial, priorizando fornecedor/adjudicatário PNCP, identificador forte compartilhável de órgão/unidade ou referência cross-source direta. Não repetir automaticamente as mesmas consultas.
 
-Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md`.
+Ver `docs/ARCA_M5_PRIVATE_CANDIDATE_SCREENING_V0_1.md` e checkpoint 054.
 
 ### M5 Fase E — binding do preflight ao probe live
 
