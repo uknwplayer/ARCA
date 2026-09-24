@@ -125,6 +125,20 @@ export async function runM5PncpContractCoverageLive({
         r.bodyBytes,{mode:0o600,flag:"wx"}
       );
     }
+    fs.writeFileSync(
+      path.join(staging,"capture-meta.json"),
+      canonicalJson({
+        candidateSha256:derived.candidate.candidateSha256,
+        planSha256:derived.plan.planSha256,
+        responses:executed.results.map(r=>({
+          targetSha256:r.targetSha256,
+          httpStatus:r.status,
+          responseByteCount:r.responseByteCount,
+          responseBytesSha256:r.responseBytesSha256
+        }))
+      })+"\n",
+      {encoding:"utf8",mode:0o600,flag:"wx"}
+    );
     const sourceRepo=repo(env.GITHUB_REPOSITORY);
     const custodyEnvelope=sealCustodyDirectory({
       root:staging,
