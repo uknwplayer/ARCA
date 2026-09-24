@@ -35,9 +35,10 @@ async function main(){
     const c=runM5N1Preflight();
     process.stdout.write(JSON.stringify({
       status:c.status,targetCount:c.targetCount,planSha256:c.planSha256,candidateSha256:c.candidateSha256,
-      targetHashes:c.targetHashes,pagination:c.pagination,sourceNetworkAuthorized:c.sourceNetworkAuthorized,
-      newPncpGetAuthorized:c.newPncpGetAuthorized,publicationAuthorized:c.publicationAuthorized,
-      correlationAuthorized:c.correlationAuthorized
+      targetHashes:c.targetHashes,pagination:c.pagination,getCostPolicy:c.getCostPolicy,
+      sourceNetworkAuthorized:c.sourceNetworkAuthorized,newPncpGetAuthorized:c.newPncpGetAuthorized,
+      humanAuthorizationRequired:c.humanAuthorizationRequired,
+      publicationAuthorized:c.publicationAuthorized,correlationAuthorized:c.correlationAuthorized
     })+"\n");
   }catch(error){
     const code=/^ARCA_[A-Z0-9_]+$/.test(String(error?.message??""))?error.message:"ARCA_M5_N1_PREFLIGHT_FAILED";
