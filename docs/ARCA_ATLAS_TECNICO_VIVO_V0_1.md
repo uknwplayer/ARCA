@@ -544,7 +544,7 @@ Componente: `m5-n1-pncp-item-discovery`.
 
 Função: descobrir os itens das duas contratações PNCP já normalizadas sem repetir o endpoint M5-M e sem consultar resultados ainda.
 
-Estado: **POLÍTICA GET POR CUSTO APLICADA / `tamanhoPagina=10` / CANDIDATO 060 OBSOLETO / NOVO PREFLIGHT PENDENTE**.
+Estado: **POLÍTICA GET INTEGRADA / PRIMEIRO LIVE PAGE10 EXECUTADO / SHAPE INESPERADO / CUSTÓDIA DURÁVEL NÃO PERSISTIDA / CORREÇÃO CUSTODY-BEFORE-OBSERVATION EM BRANCH**.
 
 Endpoint allowlisted:
 
@@ -606,4 +606,25 @@ Regra vigente:
 A política não concede autoridade para métodos mutáveis, publicação ou correlação.
 
 Runbook: `docs/ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`.
+
+
+
+#### Atualização M5-N1 — falha de shape e correção de ordem de custódia
+
+Preflight page10: `36050289566`.
+
+Live automático: `36050412298`.
+
+- 2 GETs executados;
+- zero retries;
+- falha posterior: `ARCA_M5_N1_RESPONSE_SHAPE_INVALID`;
+- candidato: `8fbe4dc91e2ac31a3130627a9fb1d3a60cbb4eb41c60f46af61a278a23517c7b`;
+- pelo menos a primeira resposta observada foi HTTP 200/JSON, pois o erro de shape só é emitido nesse ramo;
+- shape real não deve ser inferido sem nova captura.
+
+Falha arquitetural: o executor selava localmente, mas fazia a observação antes do persist durável. O cleanup eliminou a captura quando o parse falhou.
+
+Correção: `GETs → seal → durable persist → structural observation`.
+
+Se o shape divergir novamente, o ARCA preserva a captura e publica apenas `SCHEMA_UNEXPECTED` + diagnóstico estrutural sanitizado.
 
