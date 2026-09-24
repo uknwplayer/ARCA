@@ -536,3 +536,43 @@ Diagnóstico offline: `36040450553`.
 
 Limite: 404 não é convertido em `NO_LINKED_CONTRACT_OR_COMMITMENT_OBSERVED` sem evidência semântica suficiente.
 
+
+
+### M5-N1 — descoberta PNCP de itens
+
+Componente: `m5-n1-pncp-item-discovery`.
+
+Função: descobrir os itens das duas contratações PNCP já normalizadas sem repetir o endpoint M5-M e sem consultar resultados ainda.
+
+Estado: **IMPLEMENTADO EM BRANCH / PREFLIGHT PRIVADO / LIVE DORMENTE**.
+
+Endpoint allowlisted:
+
+`GET https://pncp.gov.br/api/pncp/v1/orgaos/{cnpj}/compras/{ano}/{sequencial}/itens?pagina=1&tamanhoPagina=50`
+
+Capacidade observável futura:
+
+- `numeroItem`;
+- `temResultado`;
+- contagem de itens;
+- contagem de itens com resultado;
+- detecção de página possivelmente truncada.
+
+Orçamento:
+
+- exatamente 2 alvos atuais;
+- `maxRequests=2`;
+- `retries=0`;
+- timeout 30 s;
+- 512 KiB por resposta;
+- 50 itens por página.
+
+Privacidade: CNPJ/ano/sequencial permanecem privados; candidato/preflight publica apenas hashes dos alvos.
+
+Regra de completude: se `itemCount=50`, marcar `pagePossiblyTruncated=true` e bloquear M5-N2 até paginação adicional.
+
+M5-N2 só poderá ser derivado de itens com `temResultado=true`, e sua quantidade de requests dependerá da captura M5-N1 real.
+
+Limites: nenhum GET autorizado pelo desenho; sem fornecedor, publicação, correlação ou conclusão adversa.
+
+Runbook: `docs/ARCA_M5_N1_PNCP_ITEM_DISCOVERY_V0_1.md`.
