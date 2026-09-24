@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import {canonicalJson,sha256} from "./public-source-contract.mjs";
 import {openCustodyEnvelope} from "../machine-bridge/encrypted-custody-envelope.mjs";
-import {observeM5N1ItemsResponse} from "./m5-n1-pncp-item-response.mjs";
+import {observeM5N1ItemsResponse,diagnoseM5N1ResponseShape} from "./m5-n1-pncp-item-response.mjs";
 
 export const M5_N1_OFFLINE_OBSERVATION_SCHEMA="arca.m5-n1-offline-observation.v1";
 const H64=/^[a-f0-9]{64}$/;
@@ -54,6 +54,12 @@ export function observeM5N1CustodialEnvelope({
     const bytes=Buffer.from(file.data,"base64");
     if(hashBytes(bytes)!==mr.responseBytesSha256)
       throw new Error("ARCA_M5_N1_OFFLINE_RESPONSE_HASH_MISMATCH");
+    const shape=diagnoseM5N1ResponseShape({
+      bytes,httpStatus:200,targetSha256
+    });
+    const expectedShape=h64(target.observedShapeSha256,"ARCA_M5_N1_OFFLINE_SHAPE_HASH_INVALID");
+    if(shape.shapeSha256!==expectedShape)
+      throw new Error("ARCA_M5_N1_OFFLINE_SHAPE_HASH_MISMATCH");
     const observed=observeM5N1ItemsResponse({
       bytes,httpStatus:200,targetSha256,pageSize
     });
