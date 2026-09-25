@@ -1,6 +1,6 @@
 # ARCA — Roadmap detalhado atual
 
-Atualizado em: **2026-09-24**
+Atualizado em: **2026-09-25**
 
 Base canônica após M2: `0.4.0-rc.1` / `bb006433f21a622aea4aaf618b728a19e4c327f5`
 
@@ -911,6 +911,34 @@ Fontes candidatas prioritárias: Dados Abertos da Câmara, Dados Abertos do Sena
 
 Pré-condições: contrato de fonte próprio, política de dados pessoais e proteção contra homônimos, estados epistêmicos específicos, testes sintéticos, revisão jurídica/privacidade e gate humano antes de qualquer publicação.
 
+
+## Linha E1 — Enriquecimento externo controlado (Sixtyfour)
+
+Estado: **ESPECIFICAÇÃO V0.1 PROPOSTA / NÃO IMPLEMENTADO / ZERO REDE / ZERO CUSTO**.
+
+Objetivo: permitir que o ARCA, depois de esgotar dados próprios, fontes oficiais e OSINT gratuita admitida, possa consultar provedores externos opcionais para gerar novas pistas sobre pessoas, empresas e organizações sem transformar retorno de terceiro em evidência oficial.
+
+Primeiro provedor especificado: **Sixtyfour Intelligence**.
+
+Regras:
+
+- o núcleo do ARCA não pode depender do provedor;
+- fonte oficial continua prioritária;
+- resultados começam como `THIRD_PARTY_LEAD`;
+- confirmação independente é exigida quando houver fonte primária disponível;
+- nenhuma conclusão adversa, score de culpa ou publicação automática;
+- dados pessoais e campos solicitados devem ser minimizados;
+- busca reversa de telefone/e-mail, contato pessoal, dark-web e enriquecimento em massa ficam bloqueados na V0.1;
+- API keys e respostas privadas nunca entram no repositório público;
+- chamadas com custo monetário exigem autorização humana específica, teto de custo e zero retry pago automático;
+- preços/tiers devem ser reconsultados no momento de eventual ativação.
+
+Artefatos desta etapa:
+
+- `docs/ARCA_SIXTYFOUR_INTELLIGENCE_V0_1.md`;
+- `schemas/arca-external-enrichment-v1.schema.json`.
+
+Próximo gate: fixture sintética + validador offline do contrato, ainda sem cliente HTTP, segredo ou chamada externa. Implementação executável só entra em ciclo posterior e deverá atualizar o Atlas Técnico Vivo.
 
 ## Marco M8 — Interface humana do Observador
 
