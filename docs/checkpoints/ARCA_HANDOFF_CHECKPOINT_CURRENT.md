@@ -1,249 +1,65 @@
 # ARCA — Handoff checkpoint atual
 
-Checkpoint: **2026-09-24 / Checkpoint 064 — observação offline M5-N1 validou 9 itens e zero resultados**
+Checkpoint: **2026-09-26 / Checkpoint 065 — Arquitetura de Memória V0.1 integrada documentalmente**
 
-Estado: **M5-N1 concluído para as duas contratações atuais: live `36051395397` HTTP 200+200/STORED_PRIVATE; observação offline `36052511200` usou zero source requests, validou 9 itens (4+5), cobertura completa e `totalItemsWithResult=0`; M5-N2 não se aplica a esses itens e não deve executar GETs de resultados; política GET por custo continua vigente; publicação/correlação bloqueadas; Vince Probe 011 estável; frentes futuras congeladas**
-Âncora canônica M4a: `d36df26a45d736f1fdc605721426b3a8b228d4ba`
+Estado: **nova arquitetura transversal de memória registrada; zero mudança de runtime, zero rede e zero novo banco; M5 permanece no estado operacional do checkpoint 064**.
 
-Handoff mais recente: [checkpoint 064 — observação offline M5-N1 validou 9 itens e zero resultados](ARCA_HANDOFF_CHECKPOINT_2026-09-24_064.md). O run `36052511200` reabriu somente a custódia do live `36051395397`, validou `numeroItem`/`temResultado` em 4+5 itens e encontrou `itemsWithResultCount=0` nos dois alvos. Como ambas as páginas têm menos de 10 itens, `coverageComplete=true`; M5-N2 fica `NOT_APPLICABLE` para essas duas contratações.
+Handoff mais recente: [checkpoint 065 — Arquitetura de Memória V0.1](ARCA_HANDOFF_CHECKPOINT_2026-09-26_065.md).
 
-Decisão M5-R: [checkpoint 012](ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md)
-Método normativo: [`ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`](../ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md)
+Checkpoint operacional anterior do núcleo investigativo: [checkpoint 064 — observação offline M5-N1 validou 9 itens e zero resultados](ARCA_HANDOFF_CHECKPOINT_2026-09-24_064.md).
 
-PR M4a: [#84](https://github.com/uknwplayer/ARCA/pull/84)
-CI da PR: [35745211122](https://github.com/uknwplayer/ARCA/actions/runs/35745211122)
-CI pós-merge: [35745354987](https://github.com/uknwplayer/ARCA/actions/runs/35745354987)
-Handoff detalhado: [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md). O checkpoint 010 registra o estado anterior à integração.
+## Decisão transversal nova — Arquitetura de Memória V0.1
 
-PR M3: [#81](https://github.com/uknwplayer/ARCA/pull/81)
-CI da PR: [35695562784](https://github.com/uknwplayer/ARCA/actions/runs/35695562784)
-CI pós-merge: [35695672043](https://github.com/uknwplayer/ARCA/actions/runs/35695672043)
+O ARCA passa a separar explicitamente:
 
-PR M2: [#79](https://github.com/uknwplayer/ARCA/pull/79)  
-CI da PR: [35690853847](https://github.com/uknwplayer/ARCA/actions/runs/35690853847)  
-CI pós-merge: [35690990372](https://github.com/uknwplayer/ARCA/actions/runs/35690990372)
+1. **memória cognitiva** — contexto, preferências e decisões de trabalho de IA/agentes;
+2. **memória de projeto** — GitHub, código, docs, checkpoints, roadmap, Atlas, políticas, PRs e CI;
+3. **memória operacional** — estado exato consultável por máquina, como eventos, filas, jobs, hashes, timestamps, budgets, leases e registros equivalentes;
+4. **evidência/custódia** — camada separada, com proveniência, integridade, privacidade e revisão próprias.
 
-## Decisões transversais novas
-- **Política de autorização de GET por custo monetário V0.1**: GET público sem cobrança monetária observada pode executar automaticamente dentro de allowlist/budget/custódia; GET pago exige autorização humana; custo desconhecido bloqueia até classificação. A política não concede POST/PUT/PATCH/DELETE, publicação, correlação ou expansão de budget.
+Regra crítica: **memória cognitiva nunca, sozinha, cria ou altera fato investigativo, evidência, relação probatória, conclusão ou estado operacional canônico.**
 
-- **Atlas Técnico Vivo V0.1** criado como mapa canônico de componentes, dependências, falhas, recuperação e runbooks.
-- Inventário inicial machine-readable em `docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json`.
-- **pt-BR é o idioma padrão obrigatório do ARCA para conteúdo humano novo/significativamente alterado**; históricos em inglês migram gradualmente quando tocados.
-- **Vince Discovery Global / Connectivity Investigator** registrado como capacidade futura, mundial, incluindo China, somente por superfícies públicas/allowlisted/explicitamente conectadas e sem bypass de autenticação.
-- Essas decisões não reativam Vince/Edge nem alteram o caminho crítico M5.
+Ordem de autoridade em conflito:
 
-## Decisões futuras registradas
+1. evidência/fonte primária verificada para fatos;
+2. armazenamento operacional validado para estado de execução;
+3. documentação técnica versionada para arquitetura/políticas/decisões;
+4. memória cognitiva apenas como contexto auxiliar.
 
-- **M10 — Produto, governança, interface e acesso**: totalmente congelado até o ARCA estar funcional de ponta a ponta e haver decisão humana explícita. Abrange Política de Privacidade, Política de Segurança, Termos de Uso, frontend/site, design próprio inspirado em princípios de organização do gov.br sem imitação institucional, conclusão do Painel do Criador e análise sobre necessidade de login.
-- **M7-CIV — Inteligência cívica documental**: planejado para projetos de lei, atividade legislativa e histórico público institucional/judicial/administrativo de agentes públicos. O ARCA avaliará confiabilidade de fonte/evidência, não “confiabilidade” de pessoas; processos, acusações, condenações, absolvições e sanções serão estados distintos e nunca convertidos automaticamente em culpa.
-- Essas frentes não alteram o caminho crítico M5.
+Documentos:
 
-## Frente futura registrada — ARCA Device Agent / Runtime Autônomo Local
+- [`ARCA_MEMORY_ARCHITECTURE_V0_1.md`](../ARCA_MEMORY_ARCHITECTURE_V0_1.md) — contrato normativo;
+- [`ARCA_ATLAS_MEMORY_ARCHITECTURE_V0_1.md`](../atlas/ARCA_ATLAS_MEMORY_ARCHITECTURE_V0_1.md) — registro no Atlas;
+- [`ARCA_MEMORY_ARCHITECTURE_ROADMAP_V0_1.md`](../ARCA_MEMORY_ARCHITECTURE_ROADMAP_V0_1.md) — trilho MA-0..MA-5.
 
-- Planejado e congelado; não compete com M5.
-- Níveis futuros: ARCA-only → Termux → Device.
-- Capability catalog, deny-by-default, identidade, replay protection, revogação, watchdog, budgets e kill switch.
-- Variante local soberana poderá rodar modelo/memória/scheduler/tools em infraestrutura do operador.
-- **Decisão atual: ARCA Device Agent é o caminho preferencial; Runtime Autônomo Local permanece congelado até solicitação explícita do usuário.**
-- PocketPal pode servir como fallback local/manual e bancada de benchmark, sem virar dependência do ARCA.
-- Isso não é transferência da instância ChatGPT hospedada para o telefone; é um runtime/modelo local separado que pode interoperar com o ARCA.
+## Estado investigativo preservado
 
-## Frente futura registrada — ARCA AI Gateway / OpenAI-compatible
+O checkpoint 064 continua sendo a referência operacional para M5. M5-N1 foi concluído para as duas contratações atuais: o live `36051395397` obteve HTTP 200+200/STORED_PRIVATE; a observação offline `36052511200` usou zero source requests, validou 9 itens (4+5), cobertura completa e `totalItemsWithResult=0`. M5-N2 não se aplica a esses itens e não deve executar GETs de resultados.
 
-- Planejado e congelado até solicitação explícita do usuário.
-- Pode usar OpenAI API sem servidor próprio.
-- Custos tratados por uso/budget e revalidados no momento da ativação.
-- Futuramente pode rotear entre OpenAI, modelos locais, servidores próprios e outros providers compatíveis.
-- Nenhuma API key, billing ou chamada externa ativada enquanto congelado.
+O próximo passo investigativo continua sendo procurar outra ponte pública oficial ou ampliar a amostra de contratações sob os controles existentes. A Arquitetura de Memória não reativa Edge Steward, Runtime Autônomo Local, Vince Discovery Global ou outras frentes congeladas.
 
-## M5 Fase E — binding do preflight ao probe live
+## Estado da ponte Termux ↔ GPT
 
-- **Integrada e testada offline** pela PR #173.
-- CI #356 e pós-merge #357 verdes.
-- O Gate 040 emite `preflightSha256`.
-- O live probe exige binding exato de scope + preflight + fingerprint.
-- Mudança de token/revisão/documento/cofre falha antes da criação do transporte.
-- A Fase E não autoriza o quarto GET; autorização humana continua separada.
-- Prova operacional do Gate 040: run `35884318441` — **success**, `READY_FOR_EXPLICIT_AUTHORIZATION`, `ACTIVE_UNKNOWN`, cofre privado pronto e `portalNetworkUsed=false`.
+O foco temporário de conversa ARCA ↔ GPT permanece válido. `arca ask` e `arca chat` seguem sujeitos ao `ReasoningProviderRegistry`, Reasoning Transport Gate e gate monetário. O histórico de chat atual permanece em memória de processo; persistência durável futura deverá obedecer à Arquitetura de Memória V0.1.
 
-## Retomada imediata
+## Próximos passos do trilho de memória
 
-M5 continua o caminho crítico, mas M5-N1 esgotou esta rota para as duas contratações atuais: 9 itens válidos e nenhum com `temResultado=true`. Não construir M5-N2 nem consultar `/resultados` para esses itens. O próximo passo deve procurar outra ponte pública oficial ou ampliar a amostra de contratações sob os mesmos controles de custo/budget/custódia.
+- MA-0: concluído documentalmente;
+- MA-1: classificar persistências existentes quando houver decisão de ativar essa frente;
+- MA-2: persistência local leve somente quando existir caso de uso operacional real;
+- MA-3: banco multiwriter somente se concorrência/serviço contínuo justificarem;
+- MA-4: recuperação semântica futura sempre apontando para fonte canônica;
+- MA-5: memória do Runtime Autônomo Local permanece congelada junto com esse runtime.
 
-Vince permanece no Probe 011, sem ampliar capability. O future patch `Controlled Self-Improvement` e o Edge Steward continuam congelados.
+Não criar banco apenas para “ter memória”.
 
-O método de investigação pública V0.1 foi formalizado e o roadmap recebeu o marco dependente `M5-R — Public Investigation & Referral Dossier`. O fluxo aprovado separa natureza econômica dos valores, normaliza estornos e duplicidades, preserva proveniência e contraprovas, registra o fim legal da trilha como `PUBLIC_TRAIL_END` e exige revisão humana antes de qualquer exportação ou encaminhamento. `PUBLIC_TRAIL_END` é lacuna probatória, nunca indício de culpa. Esta entrega é documental: schema, validador, renderer, exportação e protocolo M5-R ainda não existem. M5-R depende do aceite de M5. M4b está integrado; M5 Fase A e o preview offline do manifesto também estão canônicos. O token já foi confirmado pelo fluxo oficial de cadastro/recebimento por e-mail. O Gate 040 isolado já foi executado com os secrets reais e sua saída sanitizada foi revisada; atividade real da credencial foi comprovada no run `35910916588`; depois, o primeiro 2xx financeiro foi obtido no run `35917902630` em `documentos-relacionados`, com 1 registro e schema observado. Ambas as autorizações históricas foram consumidas sob a política vigente à época. Para novos GETs, aplicar `ARCA_GET_COST_AUTHORIZATION_POLICY_V0_1.md`: GET sem custo monetário observado não exige autorização humana; GET pago exige; custo desconhecido bloqueia até classificação. Ler também o checkpoint 012 e o método V0.1.
+## Continuidade
 
-M4a: `src/investigation/m4-controlled-scope.mjs` valida manifesto de exatamente uma fonte (`PNCP` ou `PORTAL`), confirmação exata, revisão, parâmetros obrigatórios e budgets; o código do documento Portal vira somente hash no manifesto, que mantém `networkAuthorizedForThisManifest:false`. O backend de custódia privada aceita o esquema de prova Portal com restrições de segurança e `proofSchema` exclusivo; o recibo PNCP mantém formato antigo. PR #84 e CI Node 22.18 permaneceram verdes. M4b adiciona transporte, captura e workflow manual no branch indicado no topo, sem prova Portal real nem autorização de GET. Ver checkpoint 013 para resultados locais e limites; ver o [checkpoint 011](ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md) e desenho M4 para contexto histórico.
+Ao retomar qualquer trabalho que envolva memória, contexto persistente, cache, banco, embeddings, vector store, histórico de chat ou armazenamento de agente, ler primeiro:
 
-Preparação M4: ler `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md` e o [checkpoint 009](ARCA_HANDOFF_CHECKPOINT_2026-09-22_009.md). O desenho prioriza a reutilização do PNCP durável já provado e planeja uma consulta pontual independente da API do Portal para avançar a fonte financeira, com token privado, documento explícito, teto de bytes, fake fetch e custódia durável antes de qualquer GET real. Nenhum código de documento, segredo ou novo acesso à rede foi definido/executado neste ciclo. A execução live exige manifesto concreto e autorização explícita posterior. M4a não comprova dado real novo. Edge Steward segue congelado.
+1. este checkpoint;
+2. `docs/ARCA_MEMORY_ARCHITECTURE_V0_1.md`;
+3. o checkpoint operacional específico da frente em andamento;
+4. o Atlas Técnico Vivo e o roadmap correspondente.
 
-M3 foi integrado em `d10d851` após corrigir o teste de correlação não coletada. O CI da PR e o pós-merge passaram integralmente: 886/886 Node no Node 22.18, 27/27 Python, piloto investigativo, validadores multifonte M0/M1, financeiro M2, correlacionado M3 e verificação pública. A fixture M3 produziu 11 envelopes, 2 lacunas, 8 relações vinculadas, 2 agentes, verificação adversarial e `HUMAN_REVIEW`; rede e publicação desligadas. Ler o [checkpoint final M3](ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md), o histórico pré-merge 007 e `docs/ARCA_MULTISOURCE_CORRELATED_OFFLINE_M3.md`. Próximo marco M4: primeiro acesso live de uma fonte por vez, apenas após pré-registro de escopo, cofre durável, autorização explícita para rede e limites; não iniciar aquisição live por inferência. Edge Steward #78 permanece draft e congelado.
-
-O M2 implementou o núcleo offline de correlação entre contratação PNCP e execução financeira, sem rede e sem publicação. O M3 integrou o correlator M2 ao piloto multifonte com três UFs, orçamento fixo, dois agentes independentes, verificação adversarial e fila de revisão humana.
-
-Ler primeiro:
-
-1. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_064.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_063.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_062.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_061.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_060.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_059.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_058.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_057.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_056.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_055.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_054.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_053.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-24_052.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_051.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_050.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_049.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_048.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_047.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_046.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_045.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_044.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_043.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_042.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_041.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_040.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_039.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_038.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_037.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_036.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_035.md`;
-2. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_034.md`;
-3. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-23_033.md`;
-4. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_012.md`;
-5. `docs/ARCA_PUBLIC_INVESTIGATION_REFERRAL_METHOD_V0_1.md`;
-6. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_011.md`;
-7. `docs/ARCA_ROADMAP_DETALHADO_CURRENT.md`;
-8. `docs/ARCA_M5_POST_CUSTODY_CORRELATION_V0_1.md`;
-9. `docs/ARCA_M4_CONTROLLED_LIVE_DESIGN.md`;
-10. `docs/checkpoints/ARCA_HANDOFF_CHECKPOINT_2026-09-22_008.md` para histórico M3;
-11. `docs/ARCA_STATUS_MATRIX_0_4_0_RC1.md`.
-
-## Resultado entregue no M2
-
-Foi adicionado `src/investigation/financial-correlation-offline.mjs` com:
-
-- identificadores canônicos hash-only para órgão e fornecedor;
-- namespaces controlados para CNPJ/SIAFI e fixtures;
-- relação pagamento → empenho com cardinalidade um-para-muitos;
-- relação empenho ↔ contratação em quatro estados:
-  - `CONFIRMED`;
-  - `CANDIDATE`;
-  - `CONFLICTING`;
-  - `NOT_OBSERVED`;
-- proveniência por vínculo e contraprova preservada;
-- diferença temporal e explicações alternativas;
-- relatório determinístico e sanitizado;
-- bloqueio explícito de rede e publicação.
-
-Fixture M2:
-
-`examples/multisource-offline-fixtures/financial-correlation-m2-v1.json`
-
-Validador:
-
-`npm run validate:financial-correlation`
-
-Resultado pós-merge:
-
-- 878/878 testes Node;
-- 27/27 testes Python da malha executora;
-- piloto investigativo controlado: PASS;
-- Gate Offline Multifonte V1: PASS;
-- Gate de correlação financeira M2: PASS;
-- `check:public`: sem violações;
-- rede usada: `false`;
-- publicação tentada: `false`.
-
-Digest do relatório M2:
-
-`27dfca7e04f3068fda3446254378a9ecfb13dd074ce0932eedf2bacba54e36a0`
-
-Digest da fixture M2:
-
-`3355887e5c538a1fa15b2193da2b1076949d21efbf52e3549055c4459fb4b35e`
-
-A prova sintética contém 3 pagamentos, 4 relações pagamento→empenho, 4 contratações e 2 pontes fortes. Um pagamento afeta dois empenhos. O resultado contém exatamente um caso de cada estado de correlação.
-
-## Invariantes confirmados
-
-1. Nome ou valor isolado nunca confirma identidade.
-2. Compatibilidade temporal nunca confirma causalidade ou identidade.
-3. `NOT_OBSERVED` não significa desaparecimento, desvio ou irregularidade.
-4. `CONFLICTING` preserva contraprova e exige resolução humana.
-5. Mesmo `CONFIRMED` confirma somente o vínculo documental representado; não prova regularidade, entrega ou adequação de preço.
-6. Identificadores brutos de fixture não aparecem no relatório M2.
-7. Rede e publicação permanecem fail-closed.
-8. Revisão humana continua obrigatória.
-
-## Base multifonte preservada
-
-M0 e M1 continuam válidos:
-
-- `Public Source Adapter V1`;
-- `Evidence Envelope V1`;
-- registro das oito famílias oficiais;
-- PNCP offline;
-- Portal da Transparência offline em fixture;
-- dois agentes independentes;
-- verificação adversarial;
-- fila em `HUMAN_REVIEW`;
-- indisponibilidade de fonte não gera suspeita.
-
-Ainda **não há CSV oficial capturado do Portal da Transparência** e nenhuma correlação M2 representa um pagamento ou contratação real.
-
-## Edge Steward congelado
-
-O trabalho paralelo **ARCA Edge Steward v0.1** permanece congelado no [PR #78](https://github.com/uknwplayer/ARCA/pull/78), em draft.
-
-Decisão vigente: não implementar nem mesclar o Edge Steward antes de o núcleo investigativo estar funcional de verdade e online. O PR #78 serve apenas como documentação preservada e não faz parte do caminho crítico M3–M5.
-
-## O que ainda não foi provado
-
-Não existe ainda prova completa:
-
-`PNCP live → execução financeira live → correlação → classificador → fila → investigação multiagente → verificação adversarial → revisão humana`.
-
-Também não existem serviço 24/7, SLOs, telemetria de produção, precisão/recall real, interface comunitária madura, rotação formal de segredos ou armazenamento WORM/Object Lock.
-
-Não alegar:
-
-- pagamento real observado pelo M2;
-- dinheiro desaparecido;
-- irregularidade;
-- cobertura nacional contínua;
-- todos os municípios consultados;
-- prontidão de produção;
-- publicação autônoma.
-
-## Próximo trabalho recomendado — M4 condicionado
-
-M4b, M5 Fase A e o Portal Manifest Preview estão integrados. A autenticação foi resolvida e o primeiro 2xx financeiro foi obtido no Gate 046; o próximo passo é admitir offline o parser do schema observado antes de qualquer nova aquisição. Depois, pré-registrar um probe de **uma fonte por vez** com documento, limite de registros, timeout, zero retries e cofre privado. Exigir autorização explícita para aquele GET antes de usar rede. Validar custódia antes de classificar; não correlacionar fontes no primeiro acesso. Manter publicação desligada. Ver checkpoint 013 para o gate atual e checkpoint 011 para as condições de parada.
-
-## Instruções de retomada para um chat com contexto limitado
-
-Consultar primeiro o checkpoint 064. Para o trilho investigativo, nenhum GET Portal deve ser executado por inferência; primeiro confirmar a pré-condição vigente, gerar o preview offline aplicável e revisar o manifesto.
-
-Executar:
-
-```bash
-npm ci
-node --test tests/multisource-correlated-offline-m3.test.mjs
-node --test tests/financial-correlation-offline.test.mjs
-node --test tests/m4-controlled-scope.test.mjs tests/durable-private-custody.test.mjs
-npm run validate:multisource-correlated
-npm run validate:financial-correlation
-npm run validate:multisource
-npm test
-PYTHONPATH=. python -m unittest discover -s tests/executor_mesh -v
-PYTHONPATH=. python scripts/validate-investigative-roadmap.py
-npm run check:public
-```
-
-Nunca ativar rede sem gate técnico, allowlist e budget. GET sem custo monetário observado pode avançar automaticamente quando o gate estiver válido; GET pago exige autorização humana. Classificador, ingresso, publicação e correlação continuam com seus próprios gates.
+Para o núcleo investigativo M5, ler também o checkpoint 064 antes de qualquer execução.
