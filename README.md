@@ -14,6 +14,7 @@ Documentos de entrada:
 - [Política oficial de idioma pt-BR](docs/ARCA_POLITICA_IDIOMA_PT_BR.md)
 - [Atlas Técnico Vivo](docs/ARCA_ATLAS_TECNICO_VIVO_V0_1.md)
 - [Inventário machine-readable do Atlas](docs/atlas/ARCA_ATLAS_COMPONENTES_V0_1.json)
+- [Arquitetura de Memória V0.1](docs/ARCA_MEMORY_ARCHITECTURE_V0_1.md)
 - [Guia geral de comandos do ARCA no Termux](docs/ARCA_TERMUX_COMMANDS_V0_1.md)
 - [Ponte Termux ↔ GPT V0.1](docs/ARCA_TERMUX_GPT_BRIDGE_V0_1.md)
 
@@ -31,6 +32,10 @@ O ARCA é um projeto brasileiro. **Português brasileiro (pt-BR) é o padrão ob
 - indisponibilidade transitória de fonte gera lacuna explícita e retentativa controlada, nunca suspeita automática;
 - dados sensíveis, credenciais e material bruto não pertencem ao repositório público.
 
+## Arquitetura de memória
+
+O ARCA separa memória em três responsabilidades: **memória cognitiva** para contexto e preferências de IA/agentes, **memória de projeto** para decisões e documentação versionada/auditável e **memória operacional** para estado exato consultável por máquina. Evidência e custódia permanecem em camada separada. Memória cognitiva nunca é fonte única de verdade para fatos críticos, evidência ou estado operacional. Ver [Arquitetura de Memória V0.1](docs/ARCA_MEMORY_ARCHITECTURE_V0_1.md).
+
 ## Componentes
 
 | Camada | Papel | Estado |
@@ -43,6 +48,7 @@ O ARCA é um projeto brasileiro. **Português brasileiro (pt-BR) é o padrão ob
 | Observador PNCP | agenda nacional, 27 UFs, aquisição limitada e disponibilidade de fonte | implementado; provas ao vivo de um shard |
 | Gate multifonte | contrato de fonte, envelopes com hash, deduplicação, dois agentes e revisão | V1 offline; PNCP e Portal da Transparência executam fixtures separadas |
 | Custódia | envelope AES-256-GCM/scrypt e backend privado endereçado por conteúdo | prova durável controlada |
+| Memória | contexto cognitivo + documentação auditável + estado operacional estruturado; evidência separada | arquitetura V0.1 ativa; sem novo banco neste bloco |
 | Publicação | fronteira sanitizada e revisão humana | portão implementado; publicação autônoma proibida |
 
 ## Provas controladas principais
@@ -120,6 +126,7 @@ O ChatGPT Work permanece uma função separada: pode atuar como executor externo
 - anomalia não é irregularidade;
 - evidência só exerce efeito por relação explícita;
 - agentes propõem; pessoas revisam; o Core valida e registra;
+- memória cognitiva auxilia contexto, mas nunca substitui a fonte canônica técnica, operacional ou probatória;
 - nenhuma falha de transporte é convertida automaticamente em acusação;
 - a publicação pública deve ser sanitizada, proporcional e revisada.
 
