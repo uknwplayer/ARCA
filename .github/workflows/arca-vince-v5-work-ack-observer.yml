@@ -1,0 +1,62 @@
+name: ARCA Vince V5 Work ACK Observer
+
+run-name: Vince V5 Work correlated ACK observation
+
+on:
+  workflow_dispatch:
+    inputs:
+      wake_id:
+        description: 64-hex wakeId to correlate
+        required: true
+        type: string
+      commit_sha:
+        description: 40-hex wake commit SHA to correlate
+        required: true
+        type: string
+      expect:
+        description: Expected state
+        required: true
+        default: no-ack
+        type: choice
+        options:
+          - no-ack
+          - ack
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      ARCA_GITHUB_TOKEN: ${{ github.token }}
+      ARCA_GITHUB_REPOSITORY: uknwplayer/ARCA
+      ARCA_WORK_WAKE_REF: test/work-access-check-v2
+      ARCA_WORK_WAKE_PR: '90'
+      ARCA_WORK_ENDPOINT_ID: chatgpt-work
+      ARCA_WORK_WAKE_ID: ${{ inputs.wake_id }}
+      ARCA_WORK_WAKE_COMMIT_SHA: ${{ inputs.commit_sha }}
+      ARCA_WORK_MAX_ACK_AGE_MS: '300000'
+    steps:
+      - name: Checkout canonical ARCA
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+
+      - name: Observe correlated ACK without dispatch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.expect }}" == "ack" ]]; then
+            node scripts/arca-vince-v5-work-ack-observer.mjs --expect-ack
+          else
+            node scripts/arca-vince-v5-work-ack-observer.mjs --expect-no-ack
+          fi
