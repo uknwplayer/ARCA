@@ -1,317 +1,88 @@
 # ARCA — Guia geral de comandos no Termux
 
-Versão: **V0.1**  
-Data: **2026-09-24**  
+Versão: **V0.2**  
+Atualizado em: **2026-10-03**  
 Ambiente principal: **Android + Termux**  
 Repositório: `uknwplayer/ARCA`
 
-Este documento reúne os comandos gerais atualmente disponíveis para operar o ARCA pelo Termux. Ele diferencia comandos **existentes hoje** de capacidades **planejadas**, para evitar confundir uma interface futura com algo já implementado.
-
-> Regra importante: execute os comandos a partir do diretório do projeto, salvo indicação contrária.
+Este documento reúne os comandos de operação do ARCA no Termux. Execute-os a partir do repositório, salvo indicação contrária.
 
 ```bash
 cd ~/ARCA
 ```
 
----
+> O trabalho Vince/Edge/Runtime móvel continua congelado no caminho crítico. Os comandos Vince abaixo existem e permanecem documentados, mas não reativam essa frente por si só.
 
-## 1. Diagnóstico rápido do ambiente
-
-### Verificar Vince/Termux
+## 1. Diagnóstico e Git
 
 ```bash
 node scripts/arca-vince-v41-termux.mjs doctor
-```
-
-Verifica:
-
-- versão do Node.js;
-- versão do Git;
-- versão do GitHub CLI (`gh`);
-- estado da autenticação do GitHub.
-
-É o primeiro comando recomendado quando algo deixa de funcionar no Termux.
-
-### Ver ajuda do worker Termux
-
-```bash
 node scripts/arca-vince-v41-termux.mjs --help
+git status
+git fetch
+git pull --ff-only
+gh auth status
+gh pr list
+gh run list --limit 10
 ```
 
-Mostra os comandos oficiais disponíveis no worker Vince V4.1.
+O `doctor` verifica Node.js, Git, `gh` e autenticação GitHub.
 
----
-
-## 2. Identidade do Vince no celular
-
-### Criar identidade
+## 2. Vince/Termux existente
 
 ```bash
 node scripts/arca-vince-v41-termux.mjs init-identity
-```
-
-Cria uma identidade Ed25519 local para o worker do Termux.
-
-Para escolher um ID:
-
-```bash
 node scripts/arca-vince-v41-termux.mjs init-identity --node-id meu-worker
-```
-
-A chave privada permanece local e não é impressa.
-
-### Mostrar identidade pública
-
-```bash
 node scripts/arca-vince-v41-termux.mjs show-identity
-```
-
-Exibe somente os dados públicos da identidade do worker.
-
-### Publicar identidade pública
-
-```bash
 node scripts/arca-vince-v41-termux.mjs publish-identity
-```
-
-Publica a identidade pública do worker no canal GitHub configurado pelo ARCA.
-
-É possível indicar diretório de identidade e canal explicitamente:
-
-```bash
-node scripts/arca-vince-v41-termux.mjs publish-identity \
-  --identity-dir ~/.arca/vince-v41-b \
-  --channel-repo uknwplayer/ARCA \
-  --channel-branch vince-v41-termux-channel
-```
-
----
-
-## 3. Executar uma tarefa recebida pelo Vince
-
-```bash
 node scripts/arca-vince-v41-termux.mjs once --job-id ID_DA_TAREFA
 ```
 
-Executa uma única tarefa remota destinada ao worker Termux e encerra o processo depois.
+A identidade é Ed25519 e a chave privada deve permanecer local. O worker V4.1 é one-shot; esse script não oferece daemon permanente.
 
-Também pode indicar explicitamente o projeto e a identidade:
-
-```bash
-node scripts/arca-vince-v41-termux.mjs once \
-  --job-id ID_DA_TAREFA \
-  --repo-path ~/ARCA \
-  --identity-dir ~/.arca/vince-v41-b
-```
-
-**Estado atual:** V4.1 é one-shot. Não existe modo daemon/serviço permanente nesse script.
-
----
-
-## 4. ARCA Core CLI
-
-### Ajuda
+## 3. ARCA Core CLI
 
 ```bash
 npm run arca -- help
-```
-
-Exibe a CLI principal do Core.
-
-### Inicializar armazenamento local
-
-```bash
 npm run arca -- init
-```
-
-Inicializa o diretório local do ARCA.
-
-### Listar investigações
-
-```bash
 npm run arca -- list
-```
-
-Lista as investigações existentes no armazenamento local.
-
-### Criar investigação
-
-```bash
 npm run arca -- investigation create \
-  --question "Pergunta da investigação" \
+  --question "Pergunta" \
   --objective "Objetivo" \
   --scope "Escopo" \
   --limits "Limites"
-```
-
-Cria uma investigação auditável no Core.
-
-### Mostrar investigação
-
-```bash
 npm run arca -- investigation show --investigation INV-000001
-```
-
-Mostra o estado completo da investigação indicada.
-
-### Ver status
-
-```bash
 npm run arca -- investigation status --investigation INV-000001
-```
-
-Mostra um resumo operacional da investigação.
-
-### Validar investigação
-
-```bash
 npm run arca -- validate --investigation INV-000001
+npm run arca -- trace --investigation INV-000001 --target CON-000001
+npm run arca -- export --investigation INV-000001 --out investigacao.arca.json
 ```
 
-Executa as validações estruturais do Core.
+Outros comandos do Core continuam disponíveis para adicionar/atualizar objetos, relacionar, invalidar, reavaliar e fechar/reabrir conclusões. Use `npm run arca -- help` como fonte operacional.
 
-### Exportar investigação
-
-```bash
-npm run arca -- export \
-  --investigation INV-000001 \
-  --out investigacao.arca.json
-```
-
-Exporta o estado auditável para um arquivo JSON.
-
-### Rastrear relações
-
-```bash
-npm run arca -- trace \
-  --investigation INV-000001 \
-  --target CON-000001
-```
-
-Mostra a cadeia de relações que sustenta ou deriva do objeto indicado.
-
-Para descendentes:
-
-```bash
-npm run arca -- trace \
-  --investigation INV-000001 \
-  --target DOC-000001 \
-  --direction descendants
-```
-
-### Invalidar um objeto
-
-```bash
-npm run arca -- invalidate \
-  --investigation INV-000001 \
-  --id DOC-000001 \
-  --reason "Motivo da invalidação"
-```
-
-Invalida o objeto mantendo o histórico append-only.
-
-### Reavaliar um objeto
-
-```bash
-npm run arca -- reevaluate \
-  --investigation INV-000001 \
-  --id PRO-000001 \
-  --justification "Nova evidência"
-```
-
-Reabre a avaliação do objeto indicado.
-
----
-
-## 5. Demonstração local
+## 4. Demonstração, Workbench e Creator
 
 ```bash
 npm run demo
-```
-
-Executa um fluxo sintético isolado do Core.
-
-É útil para verificar se o ARCA básico está funcionando sem usar dados externos reais.
-
----
-
-## 6. Workbench local
-
-```bash
 npm run workbench
-```
-
-Inicia o Workbench local.
-
-Endereço padrão:
-
-```text
-http://127.0.0.1:4317
-```
-
-Por padrão o servidor aceita somente conexões locais.
-
-Ajuda:
-
-```bash
-npm run workbench -- --help
-```
-
-Porta personalizada:
-
-```bash
-npm run workbench -- --port 5000
-```
-
-**Atenção:** o modo remoto do Workbench não possui autenticação própria. Não exponha diretamente à internet.
-
----
-
-## 7. Creator Console
-
-```bash
 npm run creator
 ```
 
-Abre o Creator Console local.
+Workbench padrão: `http://127.0.0.1:4317`. Não exponha o modo remoto diretamente à internet sem uma camada própria de autenticação.
 
-Ele possui infraestrutura de chat, sessões, passkeys e gateway de raciocínio, porém o launcher standalone atual **não conecta automaticamente um provedor GPT**.
+O Creator Console possui infraestrutura de chat/gateway, mas o launcher standalone não ganha automaticamente um provedor de raciocínio.
 
-Ajuda:
-
-```bash
-npm run creator -- --help
-```
-
-Essa infraestrutura será uma das bases da futura conversação ARCA ↔ GPT pelo Termux.
-
----
-
-## 8. Machine Bridge
-
-### Enviar tarefa sem aguardar resultado
+## 5. Machine Bridge e revisão
 
 ```bash
 npm run remote:submit -- --help
-```
-
-Exemplo:
-
-```bash
-npm run remote:submit -- \
-  --repo uknwplayer/ARCA \
-  --action worker.ping
-```
-
-O comando cria uma tarefa Machine Bridge e retorna imediatamente.
-
-### Enviar tarefa e aguardar resultado
-
-```bash
 npm run remote:call -- --help
+npm run review:wake -- --once
+npm run review:wake
+npm run review:sync
 ```
 
-Exemplo:
+Exemplo de chamada Machine Bridge:
 
 ```bash
 npm run remote:call -- \
@@ -319,190 +90,44 @@ npm run remote:call -- \
   --action worker.ping
 ```
 
-O `remote:call` cria a tarefa, acompanha o resultado e retorna o estado final.
+Pode exigir `ARCA_GITHUB_TOKEN` ou `GITHUB_TOKEN`. Nunca grave tokens no repositório.
 
-### Credencial GitHub
-
-Os comandos GitHub Machine Bridge podem exigir:
-
-```bash
-export ARCA_GITHUB_TOKEN='TOKEN'
-```
-
-ou `GITHUB_TOKEN`.
-
-**Nunca grave tokens no repositório, README, scripts públicos ou commits.**
-
----
-
-## 9. Revisão humana
-
-### Executar o observador uma vez
-
-```bash
-npm run review:wake -- --once
-```
-
-Procura decisões autorizadoras na fila de revisão e cria um wake pointer durável.
-
-Ele **não executa** a continuação; apenas registra que ela pode ser retomada.
-
-### Manter observador ativo
-
-```bash
-npm run review:wake
-```
-
-### Sincronizar fila de revisão
-
-```bash
-npm run review:sync
-```
-
-Por padrão executa um ciclo. O comportamento pode ser configurado por variáveis de ambiente.
-
----
-
-## 10. ChatGPT Work Execution Endpoint
-
-Esta é uma ponte experimental já implementada entre o ARCA e uma superfície event-driven do ChatGPT Work.
-
-### Heartbeat
+## 6. ChatGPT Work Execution Endpoint
 
 ```bash
 npm run work:endpoint -- heartbeat
-```
-
-Valida a configuração do endpoint.
-
-### Acordar o Work para uma tarefa
-
-```bash
 npm run work:endpoint -- wake --job ./job.json
-```
-
-Cria o estímulo de wake correlacionado com uma tarefa Machine Bridge já existente.
-
-### Consultar ACK
-
-```bash
 npm run work:endpoint -- ack --wake-id HASH_DO_WAKE
+npm run work:endpoint -- result --job-id ID_DA_TAREFA --request-id ID_DA_REQUISICAO
 ```
 
-Pode incluir o commit:
+`wake` não significa claim, execução ou autoridade. Essa ponte event-driven não é um chat interativo do ChatGPT.
 
-```bash
-npm run work:endpoint -- ack \
-  --wake-id HASH_DO_WAKE \
-  --commit-sha SHA_DO_COMMIT
-```
-
-### Consultar resultado
-
-```bash
-npm run work:endpoint -- result \
-  --job-id ID_DA_TAREFA \
-  --request-id ID_DA_REQUISICAO
-```
-
-Variáveis normalmente necessárias:
-
-```bash
-export ARCA_GITHUB_TOKEN='...'
-export ARCA_GITHUB_REPOSITORY='uknwplayer/ARCA'
-export ARCA_WORK_WAKE_REF='branch-isolada'
-export ARCA_WORK_WAKE_PR='NUMERO_DA_PR'
-```
-
-**Importante:** `wake` não significa execução, autoridade ou permissão de alterar código.
-
----
-
-## 11. Aquisição e cadeia de custódia
-
-Ajuda básica:
+## 7. Aquisição e custódia
 
 ```bash
 npm run acquire
-```
-
-Comandos suportados pelo binário:
-
-```text
-capture
-verify
-transform
-review
-enqueue
-from-json
-```
-
-### Verificar uma captura
-
-```bash
 npm run acquire -- verify \
   --home .arca \
   --investigation INV-000001 \
   --acquisition ACQ-000001
 ```
 
-### Capturar arquivo local
+O binário suporta `capture`, `verify`, `transform`, `review`, `enqueue` e `from-json`. Operações reais devem respeitar os contratos de origem, acesso, custódia e publicação.
 
-A captura exige declaração explícita de origem, acesso, ator e localização. Consulte o contrato antes de usar em dados reais.
-
----
-
-## 12. Testes e saúde do repositório
-
-### Testes gerais
+## 8. Testes e saúde
 
 ```bash
 npm test
-```
-
-### Verificações gerais
-
-```bash
 npm run check
-```
-
-### Verificação da fronteira pública
-
-```bash
 npm run check:public
-```
-
-### Testes PNCP
-
-```bash
+npm run test:core
+npm run test:agent
+npm run test:workbench
 npm run test:pncp
 ```
 
-### Testes do Core
-
-```bash
-npm run test:core
-```
-
-### Testes de agentes
-
-```bash
-npm run test:agent
-```
-
-### Testes do Workbench
-
-```bash
-npm run test:workbench
-```
-
----
-
-## 13. Comandos investigativos M5
-
-Esses comandos são principalmente validadores de desenvolvimento e gates; não devem ser usados como atalhos para ignorar políticas de rede/custódia.
-
-Exemplos:
+Validadores M5 disponíveis incluem:
 
 ```bash
 npm run validate:m5-phase-a
@@ -517,64 +142,84 @@ npm run validate:m5-n1-offline-observation
 npm run validate:get-cost-policy
 ```
 
-Esses comandos validam contratos, parsers, gates e invariantes. Um validador verde não equivale a autorização para qualquer operação externa fora das regras do ARCA.
+Validador verde não concede autoridade externa adicional.
 
----
+## 9. Conversação pelo Termux
 
-## 14. Git e atualização do projeto
-
-### Ver estado local
+### 9.1 `arca chat` offline — padrão e sem chave
 
 ```bash
-git status
+npm run arca -- chat
 ```
 
-### Atualizar referências remotas
+Esse é o modo padrão. Ele abre a interface do chat e **não faz chamada de rede para modelo**.
+
+Comandos locais:
+
+```text
+/status      estado da sessão
+/context     contexto ativo
+/providers   lista os provedores disponíveis
+/clear       limpa o histórico em memória
+/help        ajuda
+/exit        encerra
+```
+
+No modo offline, uma mensagem comum informa que nenhum modelo externo está ativo. Isso permite abrir o console e inspecionar os provedores sem chave e sem budget.
+
+### 9.2 Gemini — provedor externo opt-in
 
 ```bash
-git fetch
+export GEMINI_API_KEY='SUA_CHAVE'
+
+npm run arca -- chat \
+  --provider gemini \
+  --allow-external
 ```
 
-### Atualizar a branch atual com segurança quando ela acompanha a remota
+Modelo padrão atual do adaptador Termux:
+
+```text
+gemini-2.5-flash
+```
+
+Para escolher outro modelo explicitamente:
 
 ```bash
-git pull --ff-only
+npm run arca -- chat \
+  --provider gemini \
+  --model gemini-2.5-flash \
+  --allow-external
 ```
 
-### Ver autenticação GitHub
+O catálogo marca Gemini como **elegível a free tier**, mas isso **não é garantia de gratuidade**. Cotas, disponibilidade e eventual cobrança dependem do projeto/conta do Google e podem mudar. O ARCA não faz fallback automático para OpenAI ou outro tier pago.
+
+A sessão Gemini exige `--allow-external`, mantém histórico somente em memória e não recebe ferramentas, shell ou autoridade para alterar o Core.
+
+### 9.3 OpenAI — provedor externo com gate monetário
 
 ```bash
-gh auth status
+export OPENAI_API_KEY='SUA_CHAVE'
+
+npm run arca -- chat \
+  --provider openai \
+  --model gpt-6-luna \
+  --allow-external \
+  --allow-paid-api \
+  --session-budget-usd 0.05
 ```
 
-### Ver PRs
+A rota OpenAI preserva os controles existentes:
 
-```bash
-gh pr list
-```
+- `--allow-external` obrigatório;
+- `--allow-paid-api` obrigatório;
+- budget de sessão explícito;
+- modelo com preço conhecido no snapshot;
+- estimativa conservadora abaixo do teto.
 
-### Ver Actions recentes
+O budget local é estimativo e não é garantia de limite na fatura do provedor. `/clear` apaga o histórico, mas não restaura budget consumido.
 
-```bash
-gh run list --limit 10
-```
-
----
-
-## 15. Conversação ARCA ↔ GPT pelo Termux
-
-### Gate monetário
-
-Toda chamada OpenAI desta frente é uma operação potencialmente cobrada. Por isso há duas autorizações independentes:
-
-- `--allow-external`: autoriza enviar a mensagem ao provedor externo;
-- `--allow-paid-api`: autoriza uma chamada de API potencialmente cobrada.
-
-O ARCA também exige um teto monetário local.
-
-A tabela de preços embutida é um snapshot datado de **2026-09-24**, para processamento Standard em contexto curto, e falha fechado após 30 dias sem atualização. O cálculo é uma estimativa conservadora local e **não é um limite de faturamento garantido pelo provedor**.
-
-### `arca ask` — pergunta única
+### 9.4 `arca ask` — pergunta única OpenAI
 
 ```bash
 export OPENAI_API_KEY='SUA_CHAVE'
@@ -587,123 +232,33 @@ npm run arca -- ask \
   --max-request-usd 0.01
 ```
 
-O request é recusado antes da rede se:
+`arca ask` continua sendo a rota de uma pergunta OpenAI com gate monetário; a mudança multi-provedor deste ciclo é limitada a `arca chat`.
 
-- faltar autorização externa;
-- faltar autorização monetária;
-- o modelo não possuir preço conhecido no snapshot;
-- o snapshot estiver vencido;
-- o custo máximo conservador ultrapassar `--max-request-usd`.
+### 9.5 Fronteiras do chat
 
-Para metadados e estimativa de custo:
+Em todos os modos atuais do `arca chat`:
 
-```bash
-npm run arca -- ask \
-  --message "Teste curto" \
-  --allow-external \
-  --allow-paid-api \
-  --max-request-usd 0.01 \
-  --json
-```
-
-### `arca chat` — sessão interativa
-
-```bash
-export OPENAI_API_KEY='SUA_CHAVE'
-
-npm run arca -- chat \
-  --model gpt-6-luna \
-  --allow-external \
-  --allow-paid-api \
-  --session-budget-usd 0.05
-```
-
-Comandos locais:
-
-```text
-/status   mostra modelo, turnos e budget estimado
-/context  mostra qual contexto está ativo
-/clear    limpa apenas o histórico em memória
-/help     mostra os comandos
-/exit     encerra a sessão
-```
-
-A conversa é mantida **somente em memória** pelo processo Termux. `/clear` apaga o histórico, mas não restaura budget já consumido.
-
-Nesta versão o contexto automático do projeto ARCA permanece desligado. O chat lembra somente as mensagens da sessão.
-
-### Limites de segurança
-
-- endpoint fixo em `https://api.openai.com/v1/responses`;
-- `store:false`;
-- redirects recusados;
-- transporte `private-direct` com TLS;
-- comunicação classificada como restrita;
+- histórico é somente em memória do processo;
+- contexto automático de checkpoint/roadmap ainda está desligado;
 - zero ferramentas automáticas;
-- nenhuma resposta altera o Core;
 - nenhum shell é concedido ao modelo;
-- `humanReviewRequired=true`;
-- `coreMutationPerformed=false`;
-- a API key não entra no payload/log público;
-- o budget local é estimativo e não substitui controles de faturamento da conta.
+- nenhuma resposta altera o Core;
+- não há chamada automática ao Work ou Machine Bridge;
+- não há fallback automático de provedor.
+
+O `arca chat` não reutiliza uma conversa da interface de consumidor do ChatGPT; cada provedor usa sua própria rota/API e o ARCA fornece apenas o contexto mantido na sessão local.
 
 Documento técnico: `docs/ARCA_TERMUX_GPT_BRIDGE_V0_1.md`.
 
-### Fronteira com ChatGPT Work
+## 10. Segredos que nunca devem ser publicados
 
-```text
-arca ask/chat  → conversa/raciocínio
-Work           → executor externo de tarefas maiores
-Vince          → descoberta/roteamento/worker
-Machine Bridge → transporte de tarefas/resultados
-```
-
-A conversa não recebe autoridade automática para chamar Work ou Machine Bridge.
-
----
-
-## 16. Comandos que vale decorar
-
-Para uso diário no celular:
-
-```bash
-cd ~/ARCA
-node scripts/arca-vince-v41-termux.mjs doctor
-git status
-git pull --ff-only
-npm run arca -- list
-npm run workbench
-npm test
-npm run check:public
-gh pr list
-gh run list --limit 10
-```
-
-Para Machine Bridge:
-
-```bash
-npm run remote:submit -- --help
-npm run remote:call -- --help
-```
-
-Para Vince:
-
-```bash
-node scripts/arca-vince-v41-termux.mjs --help
-```
-
----
-
-## 17. Regra de segurança operacional
-
-Nunca cole ou publique:
+Nunca cole em commits, issues, README ou logs públicos:
 
 - `ARCA_GITHUB_TOKEN`;
 - `GITHUB_TOKEN`;
-- API keys de provedores de IA;
+- `OPENAI_API_KEY`;
+- `GEMINI_API_KEY`;
 - passphrases de custódia;
 - chaves privadas Ed25519;
 - secrets do Portal da Transparência;
 - conteúdo privado de envelopes de custódia.
-
-Chaves e tokens pertencem ao ambiente local ou ao secret store apropriado, nunca ao Git público.
