@@ -38,6 +38,7 @@ export * from "./reasoning-capability.ts";
 export * from "./openai-provider.ts";
 export * from "./openai-reasoning-bridge.ts";
 export * from "./openai-paid-budget.ts";
+export * from "./termux-chat-providers.ts";
 export * from "./termux-chat-session.ts";
 export * from "./reasoning-durable-opaque-adapter.ts";
 export * from "./reasoning-pending.ts";
