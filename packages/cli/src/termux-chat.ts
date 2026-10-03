@@ -66,7 +66,7 @@ export async function runTermuxChat(argv:string[]=[]):Promise<void>{
   }else if(selected.id==="gemini"){
     const apiKey=String(process.env.GEMINI_API_KEY??"").trim();
     if(!apiKey)throw new Error("GEMINI_API_KEY é obrigatório para --provider gemini");
-    model=textOption(options,"model")??String(process.env.ARCA_GEMINI_MODEL??"").trim()||selected.defaultModel;
+    model=textOption(options,"model")??(String(process.env.ARCA_GEMINI_MODEL??"").trim()||selected.defaultModel);
     session=createGeminiTermuxChatSession({
       apiKey,
       model,
@@ -77,7 +77,7 @@ export async function runTermuxChat(argv:string[]=[]):Promise<void>{
   }else{
     const apiKey=String(process.env.OPENAI_API_KEY??"").trim();
     if(!apiKey)throw new Error("OPENAI_API_KEY é obrigatório para --provider openai");
-    model=textOption(options,"model")??String(process.env.ARCA_OPENAI_MODEL??"").trim()||selected.defaultModel;
+    model=textOption(options,"model")??(String(process.env.ARCA_OPENAI_MODEL??"").trim()||selected.defaultModel);
     session=createOpenAITermuxChatSession({
       apiKey,
       model,
